@@ -1,24 +1,57 @@
-﻿using Halcyon.Web.Models.Token;
+﻿using Halcyon.Web.Data;
+using Halcyon.Web.Models.Token;
+using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
     [Route("[controller]")]
     public class TokenController : BaseController
     {
-        private readonly ILogger<TokenController> _logger;
+        private readonly HalcyonDbContext _context;
 
-        public TokenController(ILogger<TokenController> logger)
+        private readonly IHashService _hashService;
+
+        private readonly IJwtService _jwtService;
+
+        public TokenController(
+            HalcyonDbContext context, 
+            IHashService hashService, 
+            IJwtService jwtService)
         {
-            _logger = logger;
+            _context = context;
+            _hashService = hashService;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
-        public IActionResult CreateToken(CreateTokenModel model)
+        public async Task<IActionResult> CreateToken(CreateTokenModel model)
         {
-            var result = new CreateTokenResult();
-            return Ok(result);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+
+            if (user == null)
+            {
+                return BadRequest("The credentials provided were invalid.");
+            }
+
+            var verified = await _hashService.VerifyHash(model.Password, user.Password);
+            if (verified)
+            {
+                return BadRequest("The credentials provided were invalid.");
+            }
+
+            if (user.IsLockedOut)
+            {
+                return BadRequest("This account has been locked out, please try again later.");
+            }
+
+            var result = _jwtService.GenerateToken(user);
+
+            return Ok(null, result);
         }
     }
 }

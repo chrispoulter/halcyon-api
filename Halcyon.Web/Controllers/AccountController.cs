@@ -53,10 +53,12 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("User successfully registered.", new UserCreatedResult
+            var result = new UserCreatedResult
             {
                 UserId = user.Id
-            });
+            };
+
+            return Ok("User successfully registered.", result);
         }
 
         [HttpPost("forgotpassword")]
