@@ -1,6 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models.User;
-using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +16,68 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IHashService _hashService;
+        private readonly IPasswordService _hashService;
 
-        public UserController(HalcyonDbContext context, IHashService hashService)
+        public UserController(HalcyonDbContext context, IPasswordService hashService)
         {
             _context = context;
             _hashService = hashService;
         }
         [HttpGet]
-        public IActionResult ListUsers()
+        public async Task<IActionResult> ListUsers(ListUsersModel model)
         {
-            var result = new ListUsersResult();
-            return Ok(result);
+            var page = Math.Max(model.Page ?? 1, 1);
+            var size = Math.Min(model.Size ?? 50, 50);
+
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(u => (u.EmailAddress + " " + u.FirstName + " " + u.LastName).Contains(model.Search));
+            }
+
+            var count = await query.CountAsync();
+
+            switch (model.Sort)
+            {
+                case UserSort.EmailAddressDesc:
+                    query.OrderByDescending(r => r.EmailAddress);
+                    break;
+
+                case UserSort.EmailAddressAsc:
+                    query.OrderBy(r => r.EmailAddress);
+                    break;
+
+                case UserSort.NameDesc:
+                    query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName);
+                    break;
+
+                default:
+                    query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName);
+                    break;
+            }
+
+            query = query.Skip(page - 1 * size).Take(size);
+
+            var users = await query
+                .Select(u => new UserResult
+                {
+                    Id = u.Id,
+                    EmailAddress = u.EmailAddress,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .ToListAsync();
+
+            var result = new ListUsersResult
+            {
+                Items = users,
+                Page = page,
+                Size = size,
+                Total = count
+            };
+
+            return Ok(null, result);
         }
 
         [HttpGet("{id}")]
@@ -75,7 +125,7 @@ namespace Halcyon.Web.Controllers
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth,
                 UserRoles = model.Roles.Select(id => new UserRole { RoleId = id }).ToList()
-        };
+            };
 
             _context.Users.Add(user);
 

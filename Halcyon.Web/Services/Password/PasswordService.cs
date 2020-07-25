@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Halcyon.Web.Services.Hash
+namespace Halcyon.Web.Services.Password
 {
-    public class HashService : IHashService
+    public class PasswordService : IPasswordService
     {
         public Task<string> GenerateHashAsync(string str)
         {

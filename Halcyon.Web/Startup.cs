@@ -1,6 +1,6 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Services.Email;
-using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Password;
 using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,7 +43,7 @@ namespace Halcyon.Web
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.AddScoped<IEmailService, EmailService>();
 
-            services.AddScoped<IHashService, HashService>();
+            services.AddScoped<IPasswordService, PasswordService>();
 
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.AddScoped<IJwtService, JwtService>();

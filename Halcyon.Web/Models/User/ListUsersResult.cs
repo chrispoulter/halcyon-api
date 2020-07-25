@@ -1,9 +1,20 @@
-﻿namespace Halcyon.Web.Models.User
+﻿using System.Collections.Generic;
+
+namespace Halcyon.Web.Models.User
 {
-    internal class ListUsersResult
+    public class ListUsersResult
     {
         public ListUsersResult()
         {
+            Items = new List<UserResult>();
         }
+
+        public List<UserResult> Items { get; set; }
+
+        public int Page { get; set; }
+
+        public int Size { get; set; }
+
+        public int Total { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models.Token;
-using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Password;
 using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +13,13 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IHashService _hashService;
+        private readonly IPasswordService _hashService;
 
         private readonly IJwtService _jwtService;
 
         public TokenController(
             HalcyonDbContext context, 
-            IHashService hashService, 
+            IPasswordService hashService, 
             IJwtService jwtService)
         {
             _context = context;

@@ -2,7 +2,7 @@
 using Halcyon.Web.Models.Account;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Email;
-using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,13 +15,13 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IHashService _hashService;
+        private readonly IPasswordService _hashService;
 
         private readonly IEmailService _emailService;
 
         public AccountController(
             HalcyonDbContext context,
-            IHashService hashService,
+            IPasswordService hashService,
             IEmailService emailService)
         {
             _context = context;

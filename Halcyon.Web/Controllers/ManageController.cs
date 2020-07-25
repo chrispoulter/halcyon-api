@@ -1,6 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models.Manage;
-using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +15,9 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IHashService _hashService;
+        private readonly IPasswordService _hashService;
 
-        public ManageController(HalcyonDbContext context, IHashService hashService)
+        public ManageController(HalcyonDbContext context, IPasswordService hashService)
         {
             _context = context;
             _hashService = hashService;
