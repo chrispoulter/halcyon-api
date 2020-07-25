@@ -1,8 +1,8 @@
 ﻿namespace Halcyon.Web.Data
 {
-    public class SystemRoles
+    public class Roles
     {
-        public const string GlobalAdministrator = "Global Administrator";
+        public const string SystemAdministrator = "System Administrator";
 
         public const string UserAdministrator = "User Administrator";
     }

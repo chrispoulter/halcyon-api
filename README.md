@@ -34,6 +34,10 @@ Create `appsettings.json` file in root directory.
         "Issuer": "",
         "Audience": "",
         "ExpiresIn": 3600
+    },
+    "Seed": {
+        "EmailAddress": "",
+        "Password": """
     }
 }
 ```

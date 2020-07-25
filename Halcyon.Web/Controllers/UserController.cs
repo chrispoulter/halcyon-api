@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [Route("[controller]")]
-    [Authorize(Roles = SystemRoles.UserAdministrator)]
+    [Authorize(Roles = Roles.UserAdministrator)]
     public class UserController : BaseController
     {
         private readonly HalcyonDbContext _context;

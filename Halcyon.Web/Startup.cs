@@ -40,6 +40,8 @@ namespace Halcyon.Web
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
+
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.AddScoped<IEmailService, EmailService>();
 
