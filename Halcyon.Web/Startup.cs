@@ -1,9 +1,12 @@
+using Halcyon.Web.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json.Serialization;
 
 namespace Halcyon.Web
 {
@@ -18,7 +21,16 @@ namespace Halcyon.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddDbContext<HalcyonDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("HalcyonDatabase"),
+                    builder => builder.EnableRetryOnFailure()));
+
+            services.AddControllersWithViews()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddSpaStaticFiles(configuration =>
             {
