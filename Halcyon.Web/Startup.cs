@@ -1,4 +1,7 @@
 using Halcyon.Web.Data;
+using Halcyon.Web.Services.Email;
+using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -36,6 +39,11 @@ namespace Halcyon.Web
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IHashService, HashService>();
+            services.AddScoped<IJwtService, JwtService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -52,7 +60,6 @@ namespace Halcyon.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

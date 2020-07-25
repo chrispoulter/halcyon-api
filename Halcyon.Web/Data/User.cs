@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Data
@@ -19,6 +20,9 @@ namespace Halcyon.Web.Data
         [Required]
         public string Password { get; set; }
 
+
+        public string PasswordResetToken { get; set; }
+
         [Required]
         public string FirstName { get; set; }
 
@@ -26,7 +30,7 @@ namespace Halcyon.Web.Data
         public string LastName { get; set; }
 
         [Required]
-        public string DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required]
         public bool IsLockedOut { get; set; }

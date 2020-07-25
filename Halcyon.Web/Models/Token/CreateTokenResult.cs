@@ -1,9 +1,6 @@
 ﻿namespace Halcyon.Web.Models.Token
 {
-    internal class CreateTokenResult
+    public class CreateTokenResult
     {
-        public CreateTokenResult()
-        {
-        }
     }
 }

@@ -6,10 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Halcyon.Web.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = SystemRoles.UserAdministrator)]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly ILogger<UserController> _logger;
 

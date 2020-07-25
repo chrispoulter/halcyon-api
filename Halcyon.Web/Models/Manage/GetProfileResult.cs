@@ -1,9 +1,17 @@
-﻿namespace Halcyon.Web.Models.Manage
+﻿using System;
+
+namespace Halcyon.Web.Models.Manage
 {
-    internal class GetProfileResult
+    public class GetProfileResult
     {
-        public GetProfileResult()
-        {
-        }
+        public int Id { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
     }
 }

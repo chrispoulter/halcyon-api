@@ -4,9 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Halcyon.Web.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
-    public class TokenController : ControllerBase
+    public class TokenController : BaseController
     {
         private readonly ILogger<TokenController> _logger;
 
