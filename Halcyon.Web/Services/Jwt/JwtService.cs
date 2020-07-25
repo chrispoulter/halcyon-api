@@ -1,10 +1,18 @@
 ﻿using Halcyon.Web.Data;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Services.Jwt
 {
     public class JwtService : IJwtService
     {
+        private readonly JwtSettings _jwtSettings;
+
+        public JwtService(IOptions<JwtSettings> jwtSettings)
+        {
+            _jwtSettings = jwtSettings.Value;
+        }
+
         public Task<bool> VerifyToken(string token)
         {
             return Task.FromResult(true);

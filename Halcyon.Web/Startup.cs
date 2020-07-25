@@ -42,7 +42,10 @@ namespace Halcyon.Web
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.AddScoped<IEmailService, EmailService>();
+
             services.AddScoped<IHashService, HashService>();
+
+            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.AddScoped<IJwtService, JwtService>();
         }
 
