@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Web", "Halcyon.Web\Halcyon.Web.csproj", "{52F192B9-969C-4C05-BE03-CE5B93E553FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAC4B4A3-454C-4860-A715-DAC08D35B1E3}
+	EndGlobalSection
+EndGlobal
