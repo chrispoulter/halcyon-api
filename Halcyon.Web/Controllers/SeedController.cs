@@ -29,7 +29,7 @@ namespace Halcyon.Web.Controllers
             _seedSettings = seedSettings.Value;
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> SeedData()
         {
             await _context.Database.MigrateAsync();
