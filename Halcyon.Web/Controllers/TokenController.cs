@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class TokenController : BaseController
     {
@@ -38,7 +39,7 @@ namespace Halcyon.Web.Controllers
                 return BadRequest("The credentials provided were invalid.");
             }
 
-            var verified = await _hashService.VerifyHash(model.Password, user.Password);
+            var verified = _hashService.VerifyHash(model.Password, user.Password);
             if (verified)
             {
                 return BadRequest("The credentials provided were invalid.");

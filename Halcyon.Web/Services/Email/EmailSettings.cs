@@ -2,8 +2,6 @@
 {
     public class EmailSettings
     {
-        public string DropFolder { get; set; }
-
         public string SmtpServer { get; set; }
 
         public int SmtpPort { get; set; }

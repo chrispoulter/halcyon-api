@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class SeedController : BaseController
     {
@@ -48,7 +49,6 @@ namespace Halcyon.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-
             var userRole = await _context.Roles
                 .FirstOrDefaultAsync(u => u.Name == Roles.UserAdministrator);
 
@@ -64,7 +64,6 @@ namespace Halcyon.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-
             var systemUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
 
@@ -78,7 +77,7 @@ namespace Halcyon.Web.Controllers
             systemUser = new User
             {
                 EmailAddress = _seedSettings.EmailAddress,
-                Password = await _hashService.GenerateHashAsync(_seedSettings.Password),
+                Password = _hashService.GenerateHash(_seedSettings.Password),
                 FirstName = "System",
                 LastName = "Administrator",
                 DateOfBirth = new DateTime(1970, 1, 1),

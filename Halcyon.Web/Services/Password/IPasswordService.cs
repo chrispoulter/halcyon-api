@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace Halcyon.Web.Services.Password
+﻿namespace Halcyon.Web.Services.Password
 {
     public interface IPasswordService
     {
-        Task<string> GenerateHashAsync(string str);
+        string GenerateHash(string str);
 
-        Task<bool> VerifyHash(string str, string hash);
+        bool VerifyHash(string str, string hash);
     }
 }

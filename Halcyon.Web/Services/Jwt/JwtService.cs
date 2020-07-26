@@ -1,6 +1,9 @@
 ﻿using Halcyon.Web.Data;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace Halcyon.Web.Services.Jwt
 {
@@ -13,18 +16,24 @@ namespace Halcyon.Web.Services.Jwt
             _jwtSettings = jwtSettings.Value;
         }
 
-        public Task<bool> VerifyToken(string token)
+        public JwtResult GenerateToken(User user)
         {
-            return Task.FromResult(true);
-        }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey));
 
-        public Task<JwtResult> GenerateToken(User user)
-        {
-            return Task.FromResult(new JwtResult 
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _jwtSettings.Issuer,
+                _jwtSettings.Audience,
+                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiresIn),
+                signingCredentials: credentials);
+
+
+            return new JwtResult 
             { 
-                AccessToken = "12345",
-                ExpiresIn = 3600
-            });
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpiresIn = _jwtSettings.ExpiresIn
+            };
         }
     }
 }

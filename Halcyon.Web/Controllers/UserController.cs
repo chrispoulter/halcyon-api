@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = Roles.UserAdministrator)]
     public class UserController : BaseController
@@ -120,7 +121,7 @@ namespace Halcyon.Web.Controllers
             var user = new User
             {
                 EmailAddress = model.EmailAddress,
-                Password = await _hashService.GenerateHashAsync(model.Password),
+                Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth,

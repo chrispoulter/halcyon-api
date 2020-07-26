@@ -50,23 +50,15 @@ namespace Halcyon.Web.Services.Email
 
             try
             {
-                using (var client = new SmtpClient())
+                using var client = new SmtpClient
                 {
-                    if (!string.IsNullOrEmpty(_emailSettings.DropFolder))
-                    {
-                        client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                        client.PickupDirectoryLocation = _emailSettings.DropFolder;
-                    }
-                    else
-                    {
-                        client.Host = _emailSettings.SmtpServer;
-                        client.Port = _emailSettings.SmtpPort;
-                        client.UseDefaultCredentials = false;
-                        client.Credentials = new NetworkCredential(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword);
-                    }
+                    Host = _emailSettings.SmtpServer,
+                    Port = _emailSettings.SmtpPort,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword)
+                };
 
-                    await client.SendMailAsync(mailMessage);
-                }
+                await client.SendMailAsync(mailMessage);
             }
             catch (SmtpException error)
             {

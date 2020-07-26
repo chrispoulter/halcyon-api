@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Halcyon.Web.Controllers
 {
-    [ApiController]
     public class BaseController : ControllerBase
     {
         public int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);

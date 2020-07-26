@@ -1,7 +1,8 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Services.Email;
-using Halcyon.Web.Services.Password;
 using Halcyon.Web.Services.Jwt;
+using Halcyon.Web.Services.Password;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -9,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Halcyon.Web
@@ -28,6 +31,20 @@ namespace Halcyon.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("HalcyonDatabase"),
                     builder => builder.EnableRetryOnFailure()));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"]))
+                    };
+                });
 
             services.AddControllersWithViews()
                 .AddJsonOptions(opts =>
@@ -65,6 +82,7 @@ namespace Halcyon.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

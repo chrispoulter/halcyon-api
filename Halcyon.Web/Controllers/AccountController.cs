@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class AccountController : BaseController
     {
@@ -43,7 +44,7 @@ namespace Halcyon.Web.Controllers
             var user = new User
             {
                 EmailAddress = model.EmailAddress,
-                Password = await _hashService.GenerateHashAsync(model.Password),
+                Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth
@@ -101,7 +102,7 @@ namespace Halcyon.Web.Controllers
                 return BadRequest("Invalid token.");
             }
 
-            user.Password = await _hashService.GenerateHashAsync(model.NewPassword);
+            user.Password = _hashService.GenerateHash(model.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();

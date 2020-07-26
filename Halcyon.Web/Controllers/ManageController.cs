@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     [Authorize]
     public class ManageController : BaseController
@@ -90,13 +91,13 @@ namespace Halcyon.Web.Controllers
                 return NotFound("User not found.");
             }
 
-            var verified = await _hashService.VerifyHash(model.CurrentPassword, user.Password);
+            var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
             if(verified)
             {
                 return BadRequest("Incorrect password.");
             }
 
-            user.Password = await _hashService.GenerateHashAsync(model.NewPassword);
+            user.Password = _hashService.GenerateHash(model.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();
