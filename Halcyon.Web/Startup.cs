@@ -47,9 +47,10 @@ namespace Halcyon.Web
                 });
 
             services.AddControllersWithViews()
-                .AddJsonOptions(opts =>
+                .AddJsonOptions(options =>
                 {
-                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
             services.AddSpaStaticFiles(configuration =>

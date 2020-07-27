@@ -27,15 +27,15 @@ namespace Halcyon.Web.Services.Jwt
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.EmailAddress),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName)
+                new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.EmailAddress),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName)
             };
 
             foreach(var role in user.UserRoles.Select(ur => ur.Role))
             {
-                claims.Add(new Claim("role", role.Name));
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
 
             var token = new JwtSecurityToken(
