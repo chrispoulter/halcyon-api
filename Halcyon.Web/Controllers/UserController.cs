@@ -43,19 +43,19 @@ namespace Halcyon.Web.Controllers
             switch (model.Sort)
             {
                 case UserSort.EmailAddressDesc:
-                    query.OrderByDescending(r => r.EmailAddress);
+                    query = query.OrderByDescending(r => r.EmailAddress);
                     break;
 
                 case UserSort.EmailAddressAsc:
-                    query.OrderBy(r => r.EmailAddress);
+                    query = query.OrderBy(r => r.EmailAddress);
                     break;
 
                 case UserSort.NameDesc:
-                    query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName);
+                    query = query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName);
                     break;
 
                 default:
-                    query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName);
+                    query = query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName);
                     break;
             }
 
