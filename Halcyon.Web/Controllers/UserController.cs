@@ -24,8 +24,9 @@ namespace Halcyon.Web.Controllers
             _context = context;
             _hashService = hashService;
         }
+
         [HttpGet]
-        public async Task<IActionResult> ListUsers(ListUsersModel model)
+        public async Task<IActionResult> ListUsers([FromQuery] ListUsersModel model)
         {
             var page = Math.Max(model.Page ?? 1, 1);
             var size = Math.Min(model.Size ?? 50, 50);
@@ -58,7 +59,12 @@ namespace Halcyon.Web.Controllers
                     break;
             }
 
-            query = query.Skip(page - 1 * size).Take(size);
+            if (page > 1)
+            {
+                query = query.Skip((page - 1) * size);
+            }
+
+            query = query.Take(size);
 
             var users = await query
                 .Select(u => new UserResult
@@ -66,7 +72,8 @@ namespace Halcyon.Web.Controllers
                     Id = u.Id,
                     EmailAddress = u.EmailAddress,
                     FirstName = u.FirstName,
-                    LastName = u.LastName
+                    LastName = u.LastName,
+                    IsLockedOut = u.IsLockedOut
                 })
                 .ToListAsync();
 
@@ -88,7 +95,7 @@ namespace Halcyon.Web.Controllers
                 .Include(u => u.UserRoles)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null || user.IsLockedOut)
+            if (user == null)
             {
                 return NotFound("User not found.");
             }
@@ -124,9 +131,15 @@ namespace Halcyon.Web.Controllers
                 Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth,
-                UserRoles = model.Roles.Select(id => new UserRole { RoleId = id }).ToList()
+                DateOfBirth = model.DateOfBirth
             };
+
+            user.UserRoles.Clear();
+
+            foreach (var roleId in model.Roles)
+            {
+                user.UserRoles.Add(new UserRole { RoleId = roleId });
+            }
 
             _context.Users.Add(user);
 
@@ -144,13 +157,13 @@ namespace Halcyon.Web.Controllers
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
         {
             var user = await _context.Users
+                .Include(u => u.UserRoles)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
             {
                 return NotFound("User not found.");
             }
-
 
             if (!model.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -167,7 +180,13 @@ namespace Halcyon.Web.Controllers
             user.FirstName = user.FirstName;
             user.LastName = user.LastName;
             user.DateOfBirth = user.DateOfBirth;
-            user.UserRoles = model.Roles.Select(id => new UserRole { RoleId = id }).ToList();
+
+            user.UserRoles.Clear();
+
+            foreach (var roleId in model.Roles)
+            {
+                user.UserRoles.Add(new UserRole { RoleId = roleId });
+            }
 
             await _context.SaveChangesAsync();
 
