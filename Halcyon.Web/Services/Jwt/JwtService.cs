@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -24,20 +25,24 @@ namespace Halcyon.Web.Services.Jwt
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new []
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.EmailAddress),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim("role", string.Join(",", user.UserRoles.Select(ur => ur.Role.Name)))
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName)
             };
+
+            foreach(var role in user.UserRoles.Select(ur => ur.Role))
+            {
+                claims.Add(new Claim("role", role.Name));
+            }
 
             var token = new JwtSecurityToken(
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiresIn),
+                expires: DateTime.Now.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
 
 

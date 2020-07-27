@@ -34,59 +34,9 @@ namespace Halcyon.Web.Controllers
         {
             await _context.Database.MigrateAsync();
 
-            var systemRole = await _context.Roles
-                .FirstOrDefaultAsync(u => u.Name == Roles.SystemAdministrator);
-
-            if (systemRole == null)
-            {
-                systemRole = new Role
-                {
-                    Name = Roles.SystemAdministrator
-                };
-
-                _context.Roles.Add(systemRole);
-
-                await _context.SaveChangesAsync();
-            }
-
-            var userRole = await _context.Roles
-                .FirstOrDefaultAsync(u => u.Name == Roles.UserAdministrator);
-
-            if (userRole == null)
-            {
-                userRole = new Role
-                {
-                    Name = Roles.UserAdministrator
-                };
-
-                _context.Roles.Add(userRole);
-
-                await _context.SaveChangesAsync();
-            }
-
-            var systemUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
-
-            if (systemUser != null)
-            {
-                _context.Users.Remove(systemUser);
-
-                await _context.SaveChangesAsync();
-            }
-
-            systemUser = new User
-            {
-                EmailAddress = _seedSettings.EmailAddress,
-                Password = _hashService.GenerateHash(_seedSettings.Password),
-                FirstName = "System",
-                LastName = "Administrator",
-                DateOfBirth = new DateTime(1970, 1, 1),
-                UserRoles = new [] { new UserRole { Role = systemRole } }
-            };
-
-            _context.Users.Add(systemUser);
-
-            await _context.SaveChangesAsync();
+            var systemRole = await AddRoleAsync(Roles.SystemAdministrator);
+            var userRole = await AddRoleAsync(Roles.UserAdministrator);
+            var systemUser = await AddSystemUserAsync(new[] { systemRole, userRole });
 
             var result = new UserCreatedResult
             {
@@ -94,6 +44,56 @@ namespace Halcyon.Web.Controllers
             };
 
             return Ok("User successfully created.", result);
+        }
+
+        private async Task<Role> AddRoleAsync(string name)
+        {
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(u => u.Name == name);
+
+            if (role == null)
+            {
+                role = new Role
+                {
+                    Name = name
+                };
+
+                _context.Roles.Add(role);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return role;
+        }
+
+        private async Task<User> AddSystemUserAsync(Role[] roles)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
+
+            if (user == null)
+            {
+                user = new User();
+                _context.Users.Add(user);
+            }
+
+            user.EmailAddress = _seedSettings.EmailAddress;
+            user.Password = _hashService.GenerateHash(_seedSettings.Password);
+            user.FirstName = "System";
+            user.LastName = "Administrator";
+            user.DateOfBirth = new DateTime(1970, 1, 1);
+
+            user.UserRoles.Clear();
+            
+            foreach (var role in roles)
+            { 
+                user.UserRoles.Add(new UserRole { RoleId = role.Id });
+            }
+
+            await _context.SaveChangesAsync();
+
+            return user;
         }
     }
 }

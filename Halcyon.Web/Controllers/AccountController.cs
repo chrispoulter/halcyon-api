@@ -62,7 +62,7 @@ namespace Halcyon.Web.Controllers
             return Ok("User successfully registered.", result);
         }
 
-        [HttpPost("forgotpassword")]
+        [HttpPut("forgotpassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
             var user = await _context.Users
@@ -71,6 +71,7 @@ namespace Halcyon.Web.Controllers
             if (user != null && !user.IsLockedOut)
             {
                 user.PasswordResetToken = Guid.NewGuid().ToString();
+
                 await _context.SaveChangesAsync();
 
                 var message = new EmailMessage
@@ -79,8 +80,8 @@ namespace Halcyon.Web.Controllers
                 };
 
                 message.To.Add(user.EmailAddress);
-                message.Data.Add("SiteUrl", Request.PathBase);
-                message.Data.Add($"PasswordResetUrl", $"{Request.PathBase}/resetpassword/{user.PasswordResetToken}");
+                message.Data.Add("SiteUrl", $"{Request.Scheme}://{Request.Host}");
+                message.Data.Add($"PasswordResetUrl", $"{Request.Scheme}://{Request.Host}/resetpassword/{user.PasswordResetToken}");
 
                 await _emailService.SendEmailAsync(message);
             }
@@ -88,7 +89,7 @@ namespace Halcyon.Web.Controllers
             return Ok("Instructions as to how to reset your password have been sent to you via email.");
         }
 
-        [HttpPost("resetpassword")]
+        [HttpPut("resetpassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             var user = await _context.Users
