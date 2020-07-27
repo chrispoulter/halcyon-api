@@ -1,16 +1,19 @@
 using Halcyon.Web.Data;
+using Halcyon.Web.Models;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Jwt;
 using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -51,6 +54,20 @@ namespace Halcyon.Web
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                })
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var result = new ApiResult
+                        {
+                            Messages = context.ModelState.Values
+                              .SelectMany(error => error.Errors)
+                              .Select(error => error.ErrorMessage)
+                        };
+
+                        return new BadRequestObjectResult(result);
+                    };
                 });
 
             services.AddSpaStaticFiles(configuration =>
@@ -91,7 +108,7 @@ namespace Halcyon.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "api/{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>
