@@ -54,7 +54,7 @@ namespace Halcyon.Web.Controllers
 
             var result = _jwtService.GenerateToken(user);
 
-            return Ok(null, result);
+            return Ok(result);
         }
     }
 }

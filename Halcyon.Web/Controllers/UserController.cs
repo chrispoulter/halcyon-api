@@ -85,7 +85,7 @@ namespace Halcyon.Web.Controllers
                 Total = count
             };
 
-            return Ok(null, result);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -150,7 +150,7 @@ namespace Halcyon.Web.Controllers
                 UserId = user.Id
             };
 
-            return Ok("User successfully created.", result);
+            return Ok(result, "User successfully created.");
         }
 
         [HttpPut("{id}")]

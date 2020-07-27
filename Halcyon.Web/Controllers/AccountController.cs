@@ -59,7 +59,7 @@ namespace Halcyon.Web.Controllers
                 UserId = user.Id
             };
 
-            return Ok("User successfully registered.", result);
+            return Ok(result, "User successfully registered.");
         }
 
         [HttpPut("forgotpassword")]

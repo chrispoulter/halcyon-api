@@ -7,29 +7,45 @@ namespace Halcyon.Web.Controllers
     {
         public int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
 
-        public OkObjectResult Ok<TResult>(string message, TResult data = null) 
+        public OkObjectResult Ok<TResult>(TResult data, params string[] messages)
             where TResult : class
         {
-            return Ok(new ApiResult
+            return base.Ok(new ApiResult
             {
-                Messages = new[] { message },
-                Data = data
+                Data = data,
+                Messages = messages.Length > 0 
+                    ? messages 
+                    : null
             });
         }
 
-        public NotFoundObjectResult NotFound(string message)
+        public OkObjectResult Ok(params string[] messages) 
         {
-            return NotFound(new ApiResult
+            return base.Ok(new ApiResult
             {
-                Messages = new[] { message }
+                Messages = messages.Length > 0
+                    ? messages
+                    : null
             });
         }
 
-        public BadRequestObjectResult BadRequest(string message)
+        public NotFoundObjectResult NotFound(params string[] messages)
         {
-            return BadRequest(new ApiResult
+            return base.NotFound(new ApiResult
             {
-                Messages = new[] { message }
+                Messages = messages.Length > 0
+                    ? messages
+                    : null
+            });
+        }
+
+        public BadRequestObjectResult BadRequest(params string[] messages)
+        {
+            return base.BadRequest(new ApiResult
+            {
+                Messages = messages.Length > 0
+                    ? messages
+                    : null
             });
         }
     }
