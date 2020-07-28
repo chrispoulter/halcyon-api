@@ -2,7 +2,7 @@
 
 namespace Halcyon.Web.Models
 {
-    public class ApiResult
+    public class ApiResponse
     {
         public IEnumerable<string> Messages { get; set; }
 

@@ -10,7 +10,7 @@ namespace Halcyon.Web.Controllers
         public OkObjectResult Ok<TResult>(TResult data, params string[] messages)
             where TResult : class
         {
-            return base.Ok(new ApiResult
+            return base.Ok(new ApiResponse
             {
                 Data = data,
                 Messages = messages.Length > 0 
@@ -21,7 +21,7 @@ namespace Halcyon.Web.Controllers
 
         public OkObjectResult Ok(params string[] messages) 
         {
-            return base.Ok(new ApiResult
+            return base.Ok(new ApiResponse
             {
                 Messages = messages.Length > 0
                     ? messages
@@ -31,7 +31,7 @@ namespace Halcyon.Web.Controllers
 
         public NotFoundObjectResult NotFound(params string[] messages)
         {
-            return base.NotFound(new ApiResult
+            return base.NotFound(new ApiResponse
             {
                 Messages = messages.Length > 0
                     ? messages
@@ -41,7 +41,7 @@ namespace Halcyon.Web.Controllers
 
         public BadRequestObjectResult BadRequest(params string[] messages)
         {
-            return base.BadRequest(new ApiResult
+            return base.BadRequest(new ApiResponse
             {
                 Messages = messages.Length > 0
                     ? messages

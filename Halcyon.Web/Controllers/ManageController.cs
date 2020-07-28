@@ -35,7 +35,7 @@ namespace Halcyon.Web.Controllers
                 return NotFound("User not found.");
             }
 
-            var result = new GetProfileResult
+            var result = new GetProfileResponse
             {
                 Id = user.Id,
                 EmailAddress = user.EmailAddress,

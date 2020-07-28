@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Web.Models.User
 {
-    public class UserCreatedResult
+    public class UserCreatedResponse
     {
         public int UserId { get; set; }
     }

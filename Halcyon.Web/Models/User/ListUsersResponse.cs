@@ -2,14 +2,14 @@
 
 namespace Halcyon.Web.Models.User
 {
-    public class ListUsersResult
+    public class ListUsersResponse
     {
-        public ListUsersResult()
+        public ListUsersResponse()
         {
-            Items = new List<UserResult>();
+            Items = new List<UserResponse>();
         }
 
-        public List<UserResult> Items { get; set; }
+        public List<UserResponse> Items { get; set; }
 
         public int Page { get; set; }
 

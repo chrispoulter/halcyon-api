@@ -2,7 +2,7 @@
 
 namespace Halcyon.Web.Models.Manage
 {
-    public class GetProfileResult
+    public class GetProfileResponse
     {
         public int Id { get; set; }
 

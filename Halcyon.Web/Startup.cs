@@ -59,7 +59,7 @@ namespace Halcyon.Web
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
-                        var result = new ApiResult
+                        var result = new ApiResponse
                         {
                             Messages = context.ModelState.Values
                               .SelectMany(error => error.Errors)

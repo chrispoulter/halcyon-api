@@ -67,7 +67,7 @@ namespace Halcyon.Web.Controllers
             query = query.Take(size);
 
             var users = await query
-                .Select(u => new UserResult
+                .Select(u => new UserResponse
                 {
                     Id = u.Id,
                     EmailAddress = u.EmailAddress,
@@ -77,7 +77,7 @@ namespace Halcyon.Web.Controllers
                 })
                 .ToListAsync();
 
-            var result = new ListUsersResult
+            var result = new ListUsersResponse
             {
                 Items = users,
                 Page = page,
@@ -100,7 +100,7 @@ namespace Halcyon.Web.Controllers
                 return NotFound("User not found.");
             }
 
-            var result = new GetUserResult
+            var result = new GetUserResponse
             {
                 Id = user.Id,
                 EmailAddress = user.EmailAddress,
@@ -145,7 +145,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserCreatedResult
+            var result = new UserCreatedResponse
             {
                 UserId = user.Id
             };

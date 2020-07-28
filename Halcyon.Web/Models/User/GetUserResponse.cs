@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Halcyon.Web.Models.User
 {
-    public class GetUserResult
+    public class GetUserResponse
     {
         public int Id { get; set; }
 

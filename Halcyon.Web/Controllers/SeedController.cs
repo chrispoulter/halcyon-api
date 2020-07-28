@@ -38,7 +38,7 @@ namespace Halcyon.Web.Controllers
             var userRole = await AddRoleAsync(Roles.UserAdministrator);
             var systemUser = await AddSystemUserAsync(new[] { systemRole, userRole });
 
-            var result = new UserCreatedResult
+            var result = new UserCreatedResponse
             {
                 UserId = systemUser.Id
             };

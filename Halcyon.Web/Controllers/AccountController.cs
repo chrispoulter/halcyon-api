@@ -54,7 +54,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserCreatedResult
+            var result = new UserCreatedResponse
             {
                 UserId = user.Id
             };
