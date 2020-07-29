@@ -76,13 +76,11 @@ namespace Halcyon.Web
             });
 
             services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
-
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
-            services.AddScoped<IEmailService, EmailService>();
-
-            services.AddScoped<IPasswordService, PasswordService>();
-
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IJwtService, JwtService>();
         }
 

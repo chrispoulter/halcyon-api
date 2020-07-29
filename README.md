@@ -14,30 +14,29 @@ A .NET core api project template.
 
 #### Custom Settings
 
-Create `appsettings.json` file in root directory.
+Create `appsettings.development.json` file in web project directory.
 
 ```
 {
     "ConnectionStrings": {
-        "HalcyonDatabase": ""
+        "HalcyonDatabase": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Halcyon;Integrated Security=True;MultipleActiveResultSets=True"
     },
     "Email": {
-        "DropFolder": "",
-        "SmtpServer": "",
-        "SmtpPort": "",
+        "SmtpServer": "smtp.mailgun.org",
+        "SmtpPort": 587,
         "SmtpUserName": "",
         "SmtpPassword": "",
-        "NoReplyAddress": ""
+        "NoReplyAddress": "noreply@chrispoulter.com"
     },
     "Jwt": {
-        "SecurityKey": "",
-        "Issuer": "",
-        "Audience": "",
+        "SecurityKey": "change-me",
+        "Issuer": "HalcyonApi",
+        "Audience": "HalcyonClient",
         "ExpiresIn": 3600
     },
     "Seed": {
         "EmailAddress": "",
-        "Password": """
+        "Password": ""
     }
 }
 ```
