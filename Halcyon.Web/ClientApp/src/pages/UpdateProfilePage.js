@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
-import { GET_PROFILE, UPDATE_PROFILE } from '../graphql';
-import { Spinner, TextInput, DateInput, Button } from '../components';
+import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
 
 const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
@@ -20,9 +18,16 @@ const validationSchema = Yup.object().shape({
 });
 
 export const UpdateProfilePage = ({ history }) => {
-    const { loading, data } = useQuery(GET_PROFILE);
+    const { loading, data } = useFetch({
+        method: 'GET',
+        url: '/manage'
+    });
 
-    const [updateProfile] = useMutation(UPDATE_PROFILE);
+    const { refetch: updateProfile } = useFetch({
+        method: 'PUT',
+        url: '/manage',
+        manual: true
+    });
 
     if (loading) {
         return <Spinner />;
@@ -36,10 +41,10 @@ export const UpdateProfilePage = ({ history }) => {
         );
     }
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
-            const result = await updateProfile({ variables });
-            toast.success(result.data.updateProfile.message);
+            const result = await updateProfile(data);
+            toast.success(result.messages);
             history.push('/my-account');
         } catch (error) {
             console.error(error);
@@ -53,7 +58,7 @@ export const UpdateProfilePage = ({ history }) => {
 
             <Formik
                 enableReinitialize={true}
-                initialValues={data.getProfile}
+                initialValues={data}
                 validationSchema={validationSchema}
                 onSubmit={onSubmit}
             >

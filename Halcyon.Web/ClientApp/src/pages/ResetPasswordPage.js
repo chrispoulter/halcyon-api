@@ -1,11 +1,9 @@
 import React from 'react';
-import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
-import { RESET_PASSWORD } from '../graphql';
-import { TextInput, Button } from '../components';
+import { TextInput, Button, useFetch } from '../components';
 
 const initialValues = {
     emailAddress: '',
@@ -26,15 +24,20 @@ const validationSchema = Yup.object().shape({
 });
 
 export const ResetPasswordPage = ({ match, history }) => {
-    const [resetPassword] = useMutation(RESET_PASSWORD);
+    const { refetch: resetPassword } = useFetch({
+        method: 'PUT',
+        url: '/manage/resetpassword',
+        manual: true
+    });
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
             const result = await resetPassword({
-                variables: { token: match.params.token, ...variables }
+                token: match.params.token,
+                ...data
             });
 
-            toast.success(result.data.resetPassword.message);
+            toast.success(result.messages);
             history.push('/login');
         } catch (error) {
             console.error(error);

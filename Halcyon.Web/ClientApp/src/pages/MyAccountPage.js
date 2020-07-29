@@ -1,21 +1,24 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
-import { GET_PROFILE, DELETE_ACCOUNT } from '../graphql';
-import { Button, Spinner, AuthContext } from '../components';
+import { Button, Spinner, AuthContext, useFetch } from '../components';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useContext(AuthContext);
 
-    const { loading, data } = useQuery(GET_PROFILE);
+    const { loading, data } = useFetch({
+        method: 'GET',
+        url: '/manage'
+    });
 
-    const [deleteAccount, { loading: isDeleting }] = useMutation(
-        DELETE_ACCOUNT
-    );
+    const { refetch: deleteAccount, loading: isDeleting } = useFetch({
+        method: 'DELETE',
+        url: '/manage',
+        manual: true
+    });
 
     if (loading) {
         return <Spinner />;
@@ -42,7 +45,7 @@ export const MyAccountPage = ({ history }) => {
 
         try {
             const result = await deleteAccount();
-            toast.success(result.data.deleteAccount.message);
+            toast.success(result.messages);
             removeToken();
             history.push('/');
         } catch (error) {
@@ -71,7 +74,7 @@ export const MyAccountPage = ({ history }) => {
             <p>
                 <span className="text-muted">Email Address</span>
                 <br />
-                {data.getProfile.emailAddress}
+                {data.emailAddress}
             </p>
 
             <p>
@@ -85,13 +88,13 @@ export const MyAccountPage = ({ history }) => {
             <p>
                 <span className="text-muted">Name</span>
                 <br />
-                {data.getProfile.firstName} {data.getProfile.lastName}
+                {data.firstName} {data.lastName}
             </p>
 
             <p>
                 <span className="text-muted">Date of Birth</span>
                 <br />
-                {moment(data.getProfile.dateOfBirth).format('DD MMMM YYYY')}
+                {moment(data.dateOfBirth).format('DD MMMM YYYY')}
             </p>
 
             <h3>Settings</h3>

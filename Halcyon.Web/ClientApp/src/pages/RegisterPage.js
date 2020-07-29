@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { REGISTER, GENERATE_TOKEN } from '../graphql';
-import { TextInput, DateInput, Button, AuthContext } from '../components';
+import {
+    TextInput,
+    DateInput,
+    Button,
+    AuthContext,
+    useFetch
+} from '../components';
 
 const initialValues = {
     emailAddress: '',
@@ -38,19 +42,28 @@ const validationSchema = Yup.object().shape({
 export const RegisterPage = ({ history }) => {
     const { setToken } = useContext(AuthContext);
 
-    const [register] = useMutation(REGISTER);
+    const { refetch: register } = useFetch({
+        method: 'POST',
+        url: '/account/register',
+        manual: true
+    });
 
-    const [generateToken] = useMutation(GENERATE_TOKEN);
+    const { refetch: generateToken } = useFetch({
+        method: 'POST',
+        url: '/token',
+        manual: true
+    });
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
-            await register({ mutation: REGISTER, variables });
+            await register(data);
 
             const result = await generateToken({
-                variables: { grantType: 'PASSWORD', ...variables }
+                grantType: 'PASSWORD',
+                ...data
             });
 
-            setToken(result.data.generateToken.accessToken);
+            setToken(result.data.accessToken);
             history.push('/');
         } catch (error) {
             console.error(error);

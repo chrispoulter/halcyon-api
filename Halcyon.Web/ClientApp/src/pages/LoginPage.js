@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { GENERATE_TOKEN } from '../graphql';
-import { TextInput, CheckboxInput, Button, AuthContext } from '../components';
+import {
+    TextInput,
+    CheckboxInput,
+    Button,
+    AuthContext,
+    useFetch
+} from '../components';
 
 const initialValues = {
     emailAddress: '',
@@ -21,18 +25,20 @@ const validationSchema = Yup.object().shape({
 export const LoginPage = ({ history }) => {
     const { setToken } = useContext(AuthContext);
 
-    const [generateToken] = useMutation(GENERATE_TOKEN);
+    const { refetch: generateToken } = useFetch({
+        method: 'POST',
+        url: '/token',
+        manual: true
+    });
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
             const result = await generateToken({
-                variables: { grantType: 'PASSWORD', ...variables }
+                grantType: 'PASSWORD',
+                ...data
             });
 
-            setToken(
-                result.data.generateToken.accessToken,
-                variables.rememberMe
-            );
+            setToken(result.data.accessToken, data.rememberMe);
 
             history.push('/');
         } catch (error) {

@@ -1,24 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
 import {
-    GET_USER_BY_ID,
-    UPDATE_USER,
-    LOCK_USER,
-    UNLOCK_USER,
-    DELETE_USER
-} from '../graphql';
-import {
     Spinner,
     TextInput,
     DateInput,
     CheckboxGroupInput,
-    Button
+    Button,
+    useFetch
 } from '../components';
 import { AVAILABLE_ROLES } from '../utils/auth';
 
@@ -34,17 +27,34 @@ const validationSchema = Yup.object().shape({
 });
 
 export const UpdateUserPage = ({ history, match }) => {
-    const { loading, data } = useQuery(GET_USER_BY_ID, {
-        variables: { id: match.params.id }
+    const { loading, data } = useFetch({
+        method: 'GET',
+        url: `/user/${match.params.id}`
     });
 
-    const [updateUser] = useMutation(UPDATE_USER);
+    const { refetch: updateUser } = useFetch({
+        method: 'PUT',
+        url: `/user/${match.params.id}`,
+        manual: true
+    });
 
-    const [lockUser, { loading: isLocking }] = useMutation(LOCK_USER);
+    const { refetch: lockUser, loading: isLocking } = useFetch({
+        method: 'PUT',
+        url: `/user/${match.params.id}/lock`,
+        manual: true
+    });
 
-    const [unlockUser, { loading: isUnlocking }] = useMutation(UNLOCK_USER);
+    const { refetch: unlockUser, loading: isUnlocking } = useFetch({
+        method: 'PUT',
+        url: `/user/${match.params.id}/unlock`,
+        manual: true
+    });
 
-    const [deleteUser, { loading: isDeleting }] = useMutation(DELETE_USER);
+    const { refetch: deleteUser, loading: isDeleting } = useFetch({
+        method: 'DELETE',
+        url: `/user/${match.params.id}`,
+        manual: true
+    });
 
     if (loading) {
         return <Spinner />;
@@ -58,13 +68,10 @@ export const UpdateUserPage = ({ history, match }) => {
         );
     }
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
-            const result = await updateUser({
-                variables: { id: match.params.id, ...variables }
-            });
-
-            toast.success(result.data.updateUser.message);
+            const result = await updateUser({ id: match.params.id, ...data });
+            toast.success(result.messages);
             history.push('/user');
         } catch (error) {
             console.error(error);
@@ -78,7 +85,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to lock{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
@@ -91,10 +98,8 @@ export const UpdateUserPage = ({ history, match }) => {
         }
 
         try {
-            const result = await lockUser({
-                variables: { id: match.params.id }
-            });
-            toast.success(result.data.lockUser.message);
+            const result = await lockUser();
+            toast.success(result.messages);
         } catch (error) {
             console.error(error);
         }
@@ -107,7 +112,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to unlock{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
@@ -120,10 +125,8 @@ export const UpdateUserPage = ({ history, match }) => {
         }
 
         try {
-            const result = await unlockUser({
-                variables: { id: match.params.id }
-            });
-            toast.success(result.data.unlockUser.message);
+            const result = await unlockUser();
+            toast.success(result.messages);
         } catch (error) {
             console.error(error);
         }
@@ -136,7 +139,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to delete{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
@@ -149,10 +152,8 @@ export const UpdateUserPage = ({ history, match }) => {
         }
 
         try {
-            const result = await deleteUser({
-                variables: { id: match.params.id }
-            });
-            toast.success(result.data.deleteUser.message);
+            const result = await deleteUser();
+            toast.success(result.messages);
             history.push('/user');
         } catch (error) {
             console.error(error);
@@ -170,7 +171,7 @@ export const UpdateUserPage = ({ history, match }) => {
 
             <Formik
                 enableReinitialize={true}
-                initialValues={data.getUserById}
+                initialValues={data}
                 validationSchema={validationSchema}
                 onSubmit={onSubmit}
             >
@@ -223,7 +224,7 @@ export const UpdateUserPage = ({ history, match }) => {
                             <Button to="/user" className="mr-1" tag={Link}>
                                 Cancel
                             </Button>
-                            {data.getUserById.isLockedOut ? (
+                            {data.isLockedOut ? (
                                 <Button
                                     color="warning"
                                     className="mr-1"

@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
-import { CREATE_USER } from '../graphql';
 import {
     TextInput,
     DateInput,
     CheckboxGroupInput,
-    Button
+    Button,
+    useFetch
 } from '../components';
 import { AVAILABLE_ROLES } from '../utils/auth';
 
@@ -44,12 +43,16 @@ const validationSchema = Yup.object().shape({
 });
 
 export const CreateUserPage = ({ history }) => {
-    const [createUser] = useMutation(CREATE_USER);
+    const { refetch: createUser } = useFetch({
+        method: 'POST',
+        url: '/user',
+        manual: true
+    });
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
-            const result = await createUser({ variables });
-            toast.success(result.data.createUser.message);
+            const result = await createUser(data);
+            toast.success(result.messages);
             history.push('/user');
         } catch (error) {
             console.error(error);

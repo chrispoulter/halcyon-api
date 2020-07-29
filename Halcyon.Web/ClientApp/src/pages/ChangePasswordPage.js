@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
-import { CHANGE_PASSWORD } from '../graphql';
-import { TextInput, Button } from '../components';
+import { TextInput, Button, useFetch } from '../components';
 
 const initialValues = {
     currentPassword: '',
@@ -27,12 +25,16 @@ const validationSchema = Yup.object().shape({
 });
 
 export const ChangePasswordPage = ({ history }) => {
-    const [changePassword] = useMutation(CHANGE_PASSWORD);
+    const { refetch: changePassword } = useFetch({
+        method: 'PUT',
+        url: '/manage/changepassword',
+        manual: true
+    });
 
-    const onSubmit = async variables => {
+    const onSubmit = async data => {
         try {
-            const result = await changePassword({ variables });
-            toast.success(result.data.changePassword.message);
+            const result = await changePassword(data);
+            toast.success(result.messages);
             history.push('/my-account');
         } catch (error) {
             console.error(error);

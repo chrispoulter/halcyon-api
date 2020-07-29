@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
 import { Formik, Form } from 'formik';
 import {
     Container,
@@ -17,8 +16,7 @@ import {
     Card,
     Badge
 } from 'reactstrap';
-import { SEARCH_USERS } from '../graphql';
-import { Spinner, Pager } from '../components';
+import { Spinner, Pager, useFetch } from '../components';
 
 const sortOptions = [
     { label: 'Name A-Z', value: 'NAME_ASC' },
@@ -35,8 +33,10 @@ export const UserPage = () => {
         cursor: undefined
     });
 
-    const { loading, data } = useQuery(SEARCH_USERS, {
-        variables: state
+    const { loading, data } = useFetch({
+        method: 'GET',
+        url: '/user',
+        params: state
     });
 
     if (loading) {
@@ -46,11 +46,9 @@ export const UserPage = () => {
     const onSort = value =>
         setState({ ...state, cursor: undefined, sort: value });
 
-    const onPreviousPage = () =>
-        setState({ ...state, cursor: data.searchUsers.before });
+    const onPreviousPage = () => setState({ ...state, cursor: data.before });
 
-    const onNextPage = () =>
-        setState({ ...state, cursor: data.searchUsers.after });
+    const onNextPage = () => setState({ ...state, cursor: data.after });
 
     const onSubmit = values =>
         setState({ ...state, cursor: undefined, search: values.search });
@@ -124,7 +122,7 @@ export const UserPage = () => {
                 </Alert>
             ) : (
                 <>
-                    {data.searchUsers.items?.map(user => (
+                    {data.items?.map(user => (
                         <Card
                             key={user.id}
                             to={`/user/${user.id}`}
@@ -159,8 +157,8 @@ export const UserPage = () => {
                     ))}
 
                     <Pager
-                        hasNextPage={!!data.searchUsers.after}
-                        hasPreviousPage={!!data.searchUsers.before}
+                        hasNextPage={!!data.after}
+                        hasPreviousPage={!!data.before}
                         onNextPage={onNextPage}
                         onPreviousPage={onPreviousPage}
                     />
