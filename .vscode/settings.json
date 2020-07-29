@@ -1,10 +1,10 @@
 {
     "files.exclude": {
         "**/.vs": true,
-        "**/node_modules": true,
-        "**/build": true,
+        "**/bin": true,
         "**/obj": true,
-        "**/bin": true
+        "**/node_modules": true,
+        "**/build": true
     },
     "eslint.workingDirectories": [
         "./Halcyon.Web/ClientApp"

@@ -1,16 +1,17 @@
-# Halcyon Api
+# Halcyon
 
-A .NET core api project template.
+A web application template.
 
-[https://halcyon-api.chrispoulter.com](https://halcyon-api.chrispoulter.com)
+[https://halcyon.chrispoulter.com](https://halcyon.chrispoulter.com)
 
 **Technologies used:**
 
 -   .NET Core
     [https://github.com/dotnet/core](https://github.com/dotnet/core)
-
 -   Entity Framework Core
     [https://github.com/dotnet/efcore](https://github.com/dotnet/efcore)
+-   React
+    [https://reactjs.org](https://reactjs.org)
 
 #### Custom Settings
 

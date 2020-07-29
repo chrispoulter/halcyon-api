@@ -1,0 +1,14 @@
+@import './styles/_bootstrap';
+@import './styles/toastify';
+
+body {
+    padding-top: 5rem;
+}
+
+.spinner {
+    padding: 10rem;
+}
+
+.card:hover {
+    text-decoration: none;
+}

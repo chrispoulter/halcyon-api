@@ -1,0 +1,3 @@
+﻿User-agent: *
+Disallow: /account/resetpassword
+Sitemap: https://halcyon.chrispoulter.com/sitemap.xml
