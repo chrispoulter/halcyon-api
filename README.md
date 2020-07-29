@@ -14,7 +14,7 @@ A .NET core api project template.
 
 #### Custom Settings
 
-Create `appsettings.development.json` file in web project directory.
+Create `appsettings.Development.json` file in web project directory.
 
 ```
 {
@@ -29,7 +29,7 @@ Create `appsettings.development.json` file in web project directory.
         "NoReplyAddress": "noreply@chrispoulter.com"
     },
     "Jwt": {
-        "SecurityKey": "change-me",
+        "SecurityKey": "change-me-1234567890",
         "Issuer": "HalcyonApi",
         "Audience": "HalcyonClient",
         "ExpiresIn": 3600
