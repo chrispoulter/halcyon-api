@@ -33,13 +33,15 @@ export const UpdateProfilePage = ({ history }) => {
         return <Spinner />;
     }
 
-    if (!data?.getProfile) {
+    if (!data) {
         return (
             <Alert color="info" className="container p-3 mb-3">
                 Profile could not be found.
             </Alert>
         );
     }
+
+    console.log('data', data);
 
     const onSubmit = async data => {
         try {

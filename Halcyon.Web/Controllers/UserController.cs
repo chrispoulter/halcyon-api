@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = Roles.UserAdministrator)]
     public class UserController : BaseController
     {

@@ -19,18 +19,18 @@ import {
 import { Spinner, Pager, useFetch } from '../components';
 
 const sortOptions = [
-    { label: 'Name A-Z', value: 'NAME_ASC' },
-    { label: 'Name Z-A', value: 'NAME_DESC' },
-    { label: 'Email Address A-Z', value: 'EMAIL_ADDRESS_ASC' },
-    { label: 'Email Address Z-A', value: 'EMAIL_ADDRESS_DESC' }
+    { label: 'Name A-Z', value: 'NameAsc' },
+    { label: 'Name Z-A', value: 'NameDesc' },
+    { label: 'Email Address A-Z', value: 'EmailAddressAsc' },
+    { label: 'Email Address Z-A', value: 'EmailAddressDesc' }
 ];
 
 export const UserPage = () => {
     const [state, setState] = useState({
+        page: 1,
         size: 10,
         search: '',
-        sort: sortOptions[0].value,
-        cursor: undefined
+        sort: sortOptions[0].value
     });
 
     const { loading, data } = useFetch({
@@ -44,14 +44,14 @@ export const UserPage = () => {
     }
 
     const onSort = value =>
-        setState({ ...state, cursor: undefined, sort: value });
+        setState({ ...state, page: 1, sort: value });
 
-    const onPreviousPage = () => setState({ ...state, cursor: data.before });
+    const onPreviousPage = () => setState({ ...state, page: state.page - 1 });
 
-    const onNextPage = () => setState({ ...state, cursor: data.after });
+    const onNextPage = () => setState({ ...state, page: state.page + 1 });
 
     const onSubmit = values =>
-        setState({ ...state, cursor: undefined, search: values.search });
+        setState({ ...state, page: 1, search: values.search });
 
     return (
         <Container>
@@ -116,13 +116,13 @@ export const UserPage = () => {
                 )}
             </Formik>
 
-            {!data?.searchUsers.items.length ? (
+            {!data?.items.length ? (
                 <Alert color="info" className="container p-3 mb-3">
                     No users could be found.
                 </Alert>
             ) : (
                 <>
-                    {data.items?.map(user => (
+                    {data.items.map(user => (
                         <Card
                             key={user.id}
                             to={`/user/${user.id}`}

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class SeedController : BaseController
     {
         private readonly HalcyonDbContext _context;
