@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
 import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
 
 const validationSchema = Yup.object().shape({
@@ -41,15 +40,10 @@ export const UpdateProfilePage = ({ history }) => {
         );
     }
 
-    console.log('data', data);
-
     const onSubmit = async data => {
-        try {
-            const result = await updateProfile(data);
-            toast.success(result.messages);
+        const result = await updateProfile(data);
+        if (result.ok) {
             history.push('/my-account');
-        } catch (error) {
-            console.error(error);
         }
     };
 

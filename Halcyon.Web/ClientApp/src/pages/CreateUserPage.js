@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
 import {
     TextInput,
     DateInput,
@@ -50,12 +49,9 @@ export const CreateUserPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            const result = await createUser(data);
-            toast.success(result.messages);
+        const result = await createUser(data);
+        if (result.ok) {
             history.push('/user');
-        } catch (error) {
-            console.error(error);
         }
     };
 

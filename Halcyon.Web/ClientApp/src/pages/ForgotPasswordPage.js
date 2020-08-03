@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
 
 const initialValues = {
@@ -21,12 +20,9 @@ export const ForgotPasswordPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            const result = await forgotPassword(data);
-            toast.success(result.messages);
+        const result = await forgotPassword(data);
+        if (result.ok) {
             history.push('/login');
-        } catch (error) {
-            console.error(error);
         }
     };
 

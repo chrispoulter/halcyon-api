@@ -3,7 +3,6 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
-import { toast } from 'react-toastify';
 import { Button, Spinner, AuthContext, useFetch } from '../components';
 
 export const MyAccountPage = ({ history }) => {
@@ -43,13 +42,10 @@ export const MyAccountPage = ({ history }) => {
             return;
         }
 
-        try {
-            const result = await deleteAccount();
-            toast.success(result.messages);
+        const result = await deleteAccount();
+        if (result.ok) {
             removeToken();
             history.push('/');
-        } catch (error) {
-            console.error(error);
         }
     };
 

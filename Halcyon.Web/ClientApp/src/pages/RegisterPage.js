@@ -55,18 +55,16 @@ export const RegisterPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            await register(data);
+        await register(data);
 
-            const result = await generateToken({
-                grantType: 'PASSWORD',
-                ...data
-            });
+        const result = await generateToken({
+            grantType: 'PASSWORD',
+            ...data
+        });
 
+        if (result.ok) {
             setToken(result.data.accessToken);
             history.push('/');
-        } catch (error) {
-            console.error(error);
         }
     };
 

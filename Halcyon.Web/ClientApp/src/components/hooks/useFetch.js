@@ -34,14 +34,10 @@ export const useFetch = ({ url, manual, ...options }) => {
             body: body && JSON.stringify(body)
         });
 
-        console.log('response', response);
-
         let json;
         try {
-            json = await response.json()
-        } catch {
-
-        }
+            json = await response.json();
+        } catch {}
 
         var messages = json?.messages || [];
 
@@ -72,11 +68,7 @@ export const useFetch = ({ url, manual, ...options }) => {
         setData(json?.data);
         setLoading(false);
 
-        if (!response.ok) {
-            throw response;
-        }
-
-        return json;
+        return { ok: response.ok, ...json};
     };
 
     return { loading, data, refetch };

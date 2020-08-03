@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
 
 const initialValues = {
@@ -31,16 +30,13 @@ export const ResetPasswordPage = ({ match, history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            const result = await resetPassword({
-                token: match.params.token,
-                ...data
-            });
+        const result = await resetPassword({
+            token: match.params.token,
+            ...data
+        });
 
-            toast.success(result.messages);
+        if (result.ok) {
             history.push('/login');
-        } catch (error) {
-            console.error(error);
         }
     };
 

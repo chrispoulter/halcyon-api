@@ -32,17 +32,14 @@ export const LoginPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            const result = await generateToken({
-                grantType: 'PASSWORD',
-                ...data
-            });
+        const result = await generateToken({
+            grantType: 'PASSWORD',
+            ...data
+        });
 
+        if (result.ok) {
             setToken(result.data.accessToken, data.rememberMe);
-
             history.push('/');
-        } catch (error) {
-            console.error(error);
         }
     };
 

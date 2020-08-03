@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
 
 const initialValues = {
@@ -32,12 +31,9 @@ export const ChangePasswordPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        try {
-            const result = await changePassword(data);
-            toast.success(result.messages);
+        const result = await changePassword(data);
+        if (result.ok) {
             history.push('/my-account');
-        } catch (error) {
-            console.error(error);
         }
     };
 

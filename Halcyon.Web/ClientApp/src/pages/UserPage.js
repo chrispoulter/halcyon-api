@@ -43,8 +43,7 @@ export const UserPage = () => {
         return <Spinner />;
     }
 
-    const onSort = value =>
-        setState({ ...state, page: 1, sort: value });
+    const onSort = value => setState({ ...state, page: 1, sort: value });
 
     const onPreviousPage = () => setState({ ...state, page: state.page - 1 });
 
@@ -116,7 +115,7 @@ export const UserPage = () => {
                 )}
             </Formik>
 
-            {!(data?.items.length) ? (
+            {!data?.items.length ? (
                 <Alert color="info" className="container p-3 mb-3">
                     No users could be found.
                 </Alert>

@@ -4,7 +4,6 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
-import { toast } from 'react-toastify';
 import {
     Spinner,
     TextInput,
@@ -69,12 +68,9 @@ export const UpdateUserPage = ({ history, match }) => {
     }
 
     const onSubmit = async data => {
-        try {
-            const result = await updateUser({ id: match.params.id, ...data });
-            toast.success(result.messages);
+        const result = await updateUser({ id: match.params.id, ...data });
+        if (result.ok) {
             history.push('/user');
-        } catch (error) {
-            console.error(error);
         }
     };
 
@@ -97,12 +93,9 @@ export const UpdateUserPage = ({ history, match }) => {
             return;
         }
 
-        try {
-            const result = await lockUser();
-            toast.success(result.messages);
+        const result = await lockUser();
+        if (result.ok) {
             await refetch();
-        } catch (error) {
-            console.error(error);
         }
     };
 
@@ -125,11 +118,9 @@ export const UpdateUserPage = ({ history, match }) => {
             return;
         }
 
-        try {
-            const result = await unlockUser();
-            toast.success(result.messages);
-        } catch (error) {
-            console.error(error);
+        const result = await unlockUser();
+        if (result.ok) {
+            await refetch();
         }
     };
 
@@ -152,12 +143,9 @@ export const UpdateUserPage = ({ history, match }) => {
             return;
         }
 
-        try {
-            const result = await deleteUser();
-            toast.success(result.messages);
+        const result = await deleteUser();
+        if (result.ok) {
             history.push('/user');
-        } catch (error) {
-            console.error(error);
         }
     };
 
