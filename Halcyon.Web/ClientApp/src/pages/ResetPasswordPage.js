@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
 export const ResetPasswordPage = ({ match, history }) => {
     const { refetch: resetPassword } = useFetch({
         method: 'PUT',
-        url: '/manage/resetpassword',
+        url: '/account/resetpassword',
         manual: true
     });
 

@@ -81,7 +81,7 @@ namespace Halcyon.Web.Controllers
 
                 message.To.Add(user.EmailAddress);
                 message.Data.Add("SiteUrl", $"{Request.Scheme}://{Request.Host}");
-                message.Data.Add($"PasswordResetUrl", $"{Request.Scheme}://{Request.Host}/resetpassword/{user.PasswordResetToken}");
+                message.Data.Add($"PasswordResetUrl", $"{Request.Scheme}://{Request.Host}/reset-password/{user.PasswordResetToken}");
 
                 await _emailService.SendEmailAsync(message);
             }
