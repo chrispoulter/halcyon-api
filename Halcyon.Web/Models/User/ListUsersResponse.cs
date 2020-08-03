@@ -6,10 +6,10 @@ namespace Halcyon.Web.Models.User
     {
         public ListUsersResponse()
         {
-            Items = new List<UserResponse>();
+            Items = new List<GetUserResponse>();
         }
 
-        public List<UserResponse> Items { get; set; }
+        public List<GetUserResponse> Items { get; set; }
 
         public int Page { get; set; }
 

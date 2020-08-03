@@ -82,7 +82,7 @@ namespace Halcyon.Web.Controllers
             user.Password = _hashService.GenerateHash(_seedSettings.Password);
             user.FirstName = "System";
             user.LastName = "Administrator";
-            user.DateOfBirth = new DateTime(1970, 1, 1);
+            user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();
 
             user.UserRoles.Clear();
             

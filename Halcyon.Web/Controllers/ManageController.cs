@@ -41,7 +41,7 @@ namespace Halcyon.Web.Controllers
                 EmailAddress = user.EmailAddress,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth
+                DateOfBirth = user.DateOfBirth.ToUniversalTime()
             };
 
             return Ok(result);
@@ -70,10 +70,10 @@ namespace Halcyon.Web.Controllers
                 }
             }
 
-            user.EmailAddress = user.EmailAddress;
-            user.FirstName = user.FirstName;
-            user.LastName = user.LastName;
-            user.DateOfBirth = user.DateOfBirth;
+            user.EmailAddress = model.EmailAddress;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.DateOfBirth = model.DateOfBirth.ToUniversalTime();
 
             await _context.SaveChangesAsync();
 

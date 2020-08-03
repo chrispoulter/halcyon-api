@@ -67,13 +67,15 @@ namespace Halcyon.Web.Controllers
             query = query.Take(size);
 
             var users = await query
-                .Select(u => new UserResponse
+                .Select(user => new GetUserResponse
                 {
-                    Id = u.Id,
-                    EmailAddress = u.EmailAddress,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    IsLockedOut = u.IsLockedOut
+                    Id = user.Id,
+                    EmailAddress = user.EmailAddress,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
+                    IsLockedOut = user.IsLockedOut,
+                    Roles = user.UserRoles.Select(ur => ur.RoleId).ToList()
                 })
                 .ToListAsync();
 
@@ -106,7 +108,7 @@ namespace Halcyon.Web.Controllers
                 EmailAddress = user.EmailAddress,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth,
+                DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                 IsLockedOut = user.IsLockedOut,
                 Roles = user.UserRoles.Select(ur => ur.RoleId).ToList()
             };
@@ -131,7 +133,7 @@ namespace Halcyon.Web.Controllers
                 Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth
+                DateOfBirth = model.DateOfBirth.ToUniversalTime()
             };
 
             user.UserRoles.Clear();
@@ -176,10 +178,10 @@ namespace Halcyon.Web.Controllers
                 }
             }
 
-            user.EmailAddress = user.EmailAddress;
-            user.FirstName = user.FirstName;
-            user.LastName = user.LastName;
-            user.DateOfBirth = user.DateOfBirth;
+            user.EmailAddress = model.EmailAddress;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.DateOfBirth = model.DateOfBirth.ToUniversalTime();
 
             user.UserRoles.Clear();
 

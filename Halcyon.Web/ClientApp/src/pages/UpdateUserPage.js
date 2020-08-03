@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export const UpdateUserPage = ({ history, match }) => {
-    const { loading, data } = useFetch({
+    const { refetch, loading, data } = useFetch({
         method: 'GET',
         url: `/user/${match.params.id}`
     });
@@ -100,6 +100,7 @@ export const UpdateUserPage = ({ history, match }) => {
         try {
             const result = await lockUser();
             toast.success(result.messages);
+            await refetch();
         } catch (error) {
             console.error(error);
         }

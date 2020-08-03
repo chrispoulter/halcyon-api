@@ -116,7 +116,7 @@ export const UserPage = () => {
                 )}
             </Formik>
 
-            {!data?.items.length ? (
+            {!(data?.items.length) ? (
                 <Alert color="info" className="container p-3 mb-3">
                     No users could be found.
                 </Alert>
@@ -143,7 +143,7 @@ export const UserPage = () => {
                                         Locked
                                     </Badge>
                                 )}
-                                {user.roles.map(role => (
+                                {user.roles?.map(role => (
                                     <Badge
                                         key={role}
                                         color="primary"
