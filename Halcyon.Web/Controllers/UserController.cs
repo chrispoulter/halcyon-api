@@ -79,12 +79,13 @@ namespace Halcyon.Web.Controllers
                 })
                 .ToListAsync();
 
+            var pageCount = (count + size - 1) / size;
+
             var result = new ListUsersResponse
             {
                 Items = users,
-                Page = page,
-                Size = size,
-                Total = count
+                HasNextPage = page < pageCount,
+                HasPreviousPage = page > 1
             };
 
             return Ok(result);

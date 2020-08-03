@@ -11,10 +11,8 @@ namespace Halcyon.Web.Models.User
 
         public List<GetUserResponse> Items { get; set; }
 
-        public int Page { get; set; }
+        public bool HasNextPage { get; set; }
 
-        public int Size { get; set; }
-
-        public int Total { get; set; }
+        public bool HasPreviousPage { get; set; }
     }
 }

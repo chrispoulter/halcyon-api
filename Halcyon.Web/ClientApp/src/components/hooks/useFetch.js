@@ -23,7 +23,7 @@ export const useFetch = request => {
         }
 
         refetch();
-    }, [request.url, request.params, request.manual]);
+    }, [request.url, request.params]);
 
     const refetch = async body => {
         setLoading(true);

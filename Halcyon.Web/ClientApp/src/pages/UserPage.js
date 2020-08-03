@@ -43,7 +43,7 @@ export const UserPage = () => {
         return <Spinner />;
     }
 
-    const onSort = value => setState({ ...state, page: 1, sort: value });
+    const onSort = value => setState({ ...state, sort: value });
 
     const onPreviousPage = () => setState({ ...state, page: state.page - 1 });
 
@@ -156,8 +156,8 @@ export const UserPage = () => {
                     ))}
 
                     <Pager
-                        hasNextPage={!!data.after}
-                        hasPreviousPage={!!data.before}
+                        hasNextPage={data.hasNextPage}
+                        hasPreviousPage={data.hasPreviousPage}
                         onNextPage={onNextPage}
                         onPreviousPage={onPreviousPage}
                     />
