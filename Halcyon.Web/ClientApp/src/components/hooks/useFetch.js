@@ -40,7 +40,7 @@ export const useFetch = request => {
         let json;
         try {
             json = await response.json();
-        } catch {}
+        } catch { }
 
         const { ok, status } = response;
         const messages = json?.messages || [];
@@ -57,6 +57,9 @@ export const useFetch = request => {
 
             case 403:
                 messages.forEach(toast.warn);
+                break;
+
+            case 404:
                 break;
 
             case 200:

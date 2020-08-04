@@ -42,9 +42,8 @@ namespace Halcyon.Web.Services.Jwt
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddSeconds(_jwtSettings.ExpiresIn),
+                expires: DateTime.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
-
 
             return new JwtResult 
             { 
