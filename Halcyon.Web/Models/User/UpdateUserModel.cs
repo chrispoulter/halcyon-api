@@ -8,7 +8,7 @@ namespace Halcyon.Web.Models.User
     {
         public UpdateUserModel()
         {
-            Roles = new List<int>();
+            Roles = new List<string>();
         }
 
         [Required]
@@ -27,6 +27,6 @@ namespace Halcyon.Web.Models.User
         [Required]
         public DateTime DateOfBirth { get; set; }
 
-        public List<int> Roles { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

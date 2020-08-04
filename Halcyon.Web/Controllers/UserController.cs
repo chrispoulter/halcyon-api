@@ -75,7 +75,9 @@ namespace Halcyon.Web.Controllers
                     LastName = user.LastName,
                     DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
-                    Roles = user.UserRoles.Select(ur => ur.RoleId).ToList()
+                    Roles = user.UserRoles
+                        .Select(ur => ur.Role.Name)
+                        .ToList()
                 })
                 .ToListAsync();
 
@@ -96,6 +98,7 @@ namespace Halcyon.Web.Controllers
         {
             var user = await _context.Users
                 .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -111,7 +114,9 @@ namespace Halcyon.Web.Controllers
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                 IsLockedOut = user.IsLockedOut,
-                Roles = user.UserRoles.Select(ur => ur.RoleId).ToList()
+                Roles = user.UserRoles
+                    .Select(ur => ur.Role.Name)
+                    .ToList()
             };
 
             return Ok(result);
@@ -139,9 +144,13 @@ namespace Halcyon.Web.Controllers
 
             user.UserRoles.Clear();
 
-            foreach (var roleId in model.Roles)
+            var roles = await _context.Roles
+                .Where(r => model.Roles.Contains(r.Name))
+                .ToListAsync();
+
+            foreach (var role in roles)
             {
-                user.UserRoles.Add(new UserRole { RoleId = roleId });
+                user.UserRoles.Add(new UserRole { RoleId = role.Id });
             }
 
             _context.Users.Add(user);
@@ -186,9 +195,13 @@ namespace Halcyon.Web.Controllers
 
             user.UserRoles.Clear();
 
-            foreach (var roleId in model.Roles)
+            var roles = await _context.Roles
+                .Where(r => model.Roles.Contains(r.Name))
+                .ToListAsync();
+
+            foreach (var role in roles)
             {
-                user.UserRoles.Add(new UserRole { RoleId = roleId });
+                user.UserRoles.Add(new UserRole { RoleId = role.Id });
             }
 
             await _context.SaveChangesAsync();

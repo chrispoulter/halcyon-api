@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -32,9 +33,11 @@ namespace Halcyon.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HalcyonDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("HalcyonDatabase"),
-                    builder => builder.EnableRetryOnFailure()));
+                options
+                    .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+                    .UseSqlServer(
+                        Configuration.GetConnectionString("HalcyonDatabase"),
+                        builder => builder.EnableRetryOnFailure()));
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
