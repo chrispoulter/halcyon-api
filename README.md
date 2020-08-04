@@ -6,12 +6,12 @@ A web application template.
 
 **Technologies used:**
 
--   .NET Core
-    [https://github.com/dotnet/core](https://github.com/dotnet/core)
--   Entity Framework Core
-    [https://github.com/dotnet/efcore](https://github.com/dotnet/efcore)
 -   React
     [https://reactjs.org](https://reactjs.org)
+-   .NET Core
+    [https://github.com/dotnet/core](https://github.com/dotnet/core)
+-   SQL Server
+    [https://www.microsoft.com/en-gb/sql-server/sql-server-2019](https://www.microsoft.com/en-gb/sql-server/sql-server-2019)
 
 #### Custom Settings
 
