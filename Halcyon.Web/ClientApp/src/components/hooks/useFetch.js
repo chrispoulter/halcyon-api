@@ -40,7 +40,7 @@ export const useFetch = request => {
         let json;
         try {
             json = await response.json();
-        } catch { }
+        } catch {}
 
         const { ok, status } = response;
         const messages = json?.messages || [];

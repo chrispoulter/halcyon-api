@@ -1,0 +1,28 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build:
+        name: deploy
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@main
+
+            - uses: actions/setup-dotnet@v1
+              with:
+                  dotnet-version: '3.1.x'
+            - run: |
+                  dotnet restore
+                  dotnet build -c Release
+                  dotnet publish -c Release
+
+            - uses: azure/webapps-deploy@v1
+              with:
+                  app-name: halcyon-web
+                  publish-profile: ${{ secrets.AZURE_PUBLISHPROFILE }}
+                  package: ./bin/Release/netcoreapp3.1/publish
