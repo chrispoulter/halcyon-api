@@ -8,6 +8,8 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
+        env:
+            EXTEND_ESLINT: true
 
         steps:
             - uses: actions/checkout@main
