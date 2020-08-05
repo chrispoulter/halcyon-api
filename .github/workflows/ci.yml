@@ -23,11 +23,11 @@ jobs:
               run: |
                   dotnet restore
                   dotnet build -c Release
-                  dotnet publish -c Release
+                  dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
 
             - name: Deploy
               uses: azure/webapps-deploy@v1
               with:
                   app-name: halcyon-web
                   publish-profile: ${{ secrets.AZURE_PUBLISHPROFILE }}
-                  package: ${{ env.DOTNET_ROOT }}/bin/Release/netcoreapp3.1/publish
+                  package: ${{ env.DOTNET_ROOT }}/myapp
