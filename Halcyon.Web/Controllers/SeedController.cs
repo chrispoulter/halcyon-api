@@ -21,7 +21,7 @@ namespace Halcyon.Web.Controllers
         private readonly SeedSettings _seedSettings;
 
         public SeedController(
-            HalcyonDbContext context, 
+            HalcyonDbContext context,
             IPasswordService hashService,
             IOptions<SeedSettings> seedSettings)
         {
@@ -86,9 +86,9 @@ namespace Halcyon.Web.Controllers
             user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();
 
             user.UserRoles.Clear();
-            
+
             foreach (var role in roles)
-            { 
+            {
                 user.UserRoles.Add(new UserRole { RoleId = role.Id });
             }
 

@@ -14,8 +14,8 @@ namespace Halcyon.Web.Controllers
             return StatusCode((int)status, new ApiResponse
             {
                 Data = data,
-                Messages = messages.Length > 0 
-                    ? messages 
+                Messages = messages.Length > 0
+                    ? messages
                     : null
             });
         }

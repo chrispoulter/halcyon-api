@@ -20,8 +20,8 @@ namespace Halcyon.Web.Controllers
         private readonly IJwtService _jwtService;
 
         public TokenController(
-            HalcyonDbContext context, 
-            IPasswordService hashService, 
+            HalcyonDbContext context,
+            IPasswordService hashService,
             IJwtService jwtService)
         {
             _context = context;

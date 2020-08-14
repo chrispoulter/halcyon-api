@@ -93,7 +93,7 @@ namespace Halcyon.Web.Controllers
             }
 
             var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
-            if(!verified)
+            if (!verified)
             {
                 return Generate(HttpStatusCode.BadRequest, "Incorrect password.");
             }
