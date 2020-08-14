@@ -21,13 +21,6 @@ namespace Halcyon.Web.Controllers
         }
 
         public ObjectResult Generate(HttpStatusCode status, params string[] messages)
-        {
-            return StatusCode((int)status, new ApiResponse
-            {
-                Messages = messages.Length > 0
-                    ? messages
-                    : null
-            });
-        }
+            => Generate<object>(status, null, messages);
     }
 }
