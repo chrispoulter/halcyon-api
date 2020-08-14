@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -32,7 +33,7 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             var result = new GetProfileResponse
@@ -44,7 +45,7 @@ namespace Halcyon.Web.Controllers
                 DateOfBirth = user.DateOfBirth.ToUniversalTime()
             };
 
-            return Ok(result);
+            return Generate(HttpStatusCode.OK, result);
         }
 
         [HttpPut]
@@ -55,7 +56,7 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
 
@@ -66,7 +67,7 @@ namespace Halcyon.Web.Controllers
 
                 if (existing != null)
                 {
-                    return BadRequest($"User name \"{model.EmailAddress}\" is already taken.");
+                    return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
                 }
             }
 
@@ -77,7 +78,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Your profile has been updated.");
+            return Generate(HttpStatusCode.OK, "Your profile has been updated.");
         }
 
         [HttpPut("changepassword")]
@@ -88,13 +89,13 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
             if(!verified)
             {
-                return BadRequest("Incorrect password.");
+                return Generate(HttpStatusCode.BadRequest, "Incorrect password.");
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -102,7 +103,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Your password has been changed.");
+            return Generate(HttpStatusCode.OK, "Your password has been changed.");
         }
 
         [HttpDelete]
@@ -113,14 +114,14 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
 
-            return Ok("Your account has been deleted.");
+            return Generate(HttpStatusCode.OK, "Your account has been deleted.");
         }
     }
 }

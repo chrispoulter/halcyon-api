@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -43,7 +44,7 @@ namespace Halcyon.Web.Controllers
                 UserId = systemUser.Id
             };
 
-            return Ok(result, "User successfully created.");
+            return Generate(HttpStatusCode.OK, result, "User successfully created.");
         }
 
         private async Task<Role> AddRoleAsync(string name)

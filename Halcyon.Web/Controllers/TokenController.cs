@@ -1,9 +1,10 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models.Token;
-using Halcyon.Web.Services.Password;
 using Halcyon.Web.Services.Jwt;
+using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -38,23 +39,23 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return BadRequest("The credentials provided were invalid.");
+                return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
             }
 
             var verified = _hashService.VerifyHash(model.Password, user.Password);
             if (!verified)
             {
-                return BadRequest("The credentials provided were invalid.");
+                return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
             }
 
             if (user.IsLockedOut)
             {
-                return BadRequest("This account has been locked out, please try again later.");
+                return Generate(HttpStatusCode.BadRequest, "This account has been locked out, please try again later.");
             }
 
             var result = _jwtService.GenerateToken(user);
 
-            return Ok(result);
+            return Generate(HttpStatusCode.OK, result);
         }
     }
 }

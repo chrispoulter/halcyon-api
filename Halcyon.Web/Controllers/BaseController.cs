@@ -1,5 +1,6 @@
 ﻿using Halcyon.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
@@ -7,10 +8,10 @@ namespace Halcyon.Web.Controllers
     {
         public int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
 
-        public OkObjectResult Ok<TResult>(TResult data, params string[] messages)
+        public ObjectResult Generate<TResult>(HttpStatusCode status, TResult data, params string[] messages)
             where TResult : class
         {
-            return base.Ok(new ApiResponse
+            return StatusCode((int)status, new ApiResponse
             {
                 Data = data,
                 Messages = messages.Length > 0 
@@ -19,29 +20,9 @@ namespace Halcyon.Web.Controllers
             });
         }
 
-        public OkObjectResult Ok(params string[] messages) 
+        public ObjectResult Generate(HttpStatusCode status, params string[] messages)
         {
-            return base.Ok(new ApiResponse
-            {
-                Messages = messages.Length > 0
-                    ? messages
-                    : null
-            });
-        }
-
-        public NotFoundObjectResult NotFound(params string[] messages)
-        {
-            return base.NotFound(new ApiResponse
-            {
-                Messages = messages.Length > 0
-                    ? messages
-                    : null
-            });
-        }
-
-        public BadRequestObjectResult BadRequest(params string[] messages)
-        {
-            return base.BadRequest(new ApiResponse
+            return StatusCode((int)status, new ApiResponse
             {
                 Messages = messages.Length > 0
                     ? messages

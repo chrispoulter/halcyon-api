@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -90,7 +91,7 @@ namespace Halcyon.Web.Controllers
                 HasPreviousPage = page > 1
             };
 
-            return Ok(result);
+            return Generate(HttpStatusCode.OK, result);
         }
 
         [HttpGet("{id}")]
@@ -103,7 +104,7 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             var result = new GetUserResponse
@@ -119,7 +120,7 @@ namespace Halcyon.Web.Controllers
                     .ToList()
             };
 
-            return Ok(result);
+            return Generate(HttpStatusCode.OK, result);
         }
 
         [HttpPost]
@@ -130,7 +131,7 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return BadRequest($"User name \"{model.EmailAddress}\" is already taken.");
+                return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
             }
 
             var user = new User
@@ -162,7 +163,7 @@ namespace Halcyon.Web.Controllers
                 UserId = user.Id
             };
 
-            return Ok(result, "User successfully created.");
+            return Generate(HttpStatusCode.OK, result, "User successfully created.");
         }
 
         [HttpPut("{id}")]
@@ -174,7 +175,7 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             if (!model.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
@@ -184,7 +185,7 @@ namespace Halcyon.Web.Controllers
 
                 if (existing != null)
                 {
-                    return BadRequest($"User name \"{model.EmailAddress}\" is already taken.");
+                    return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
                 }
             }
 
@@ -206,7 +207,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("User successfully updated.");
+            return Generate(HttpStatusCode.OK, "User successfully updated.");
         }
 
         [HttpPut("{id}/lock")]
@@ -217,19 +218,19 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             if (user.Id == CurrentUserId)
             {
-                return BadRequest("Cannot lock currently logged in user.");
+                return Generate(HttpStatusCode.BadRequest, "Cannot lock currently logged in user.");
             }
 
             user.IsLockedOut = true;
 
             await _context.SaveChangesAsync();
 
-            return Ok("User successfully locked.");
+            return Generate(HttpStatusCode.OK, "User successfully locked.");
         }
 
         [HttpPut("{id}/unlock")]
@@ -240,14 +241,14 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             user.IsLockedOut = false;
 
             await _context.SaveChangesAsync();
 
-            return Ok("User successfully unlocked.");
+            return Generate(HttpStatusCode.OK, "User successfully unlocked.");
         }
 
         [HttpDelete("{id}")]
@@ -258,19 +259,19 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
             if (user.Id == CurrentUserId)
             {
-                return BadRequest("Cannot delete currently logged in user.");
+                return Generate(HttpStatusCode.BadRequest, "Cannot delete currently logged in user.");
             }
 
             _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
 
-            return Ok("User successfully deleted.");
+            return Generate(HttpStatusCode.OK, "User successfully deleted.");
         }
     }
 }

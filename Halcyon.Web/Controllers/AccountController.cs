@@ -6,6 +6,7 @@ using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -38,7 +39,7 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return BadRequest($"User name \"{model.EmailAddress}\" is already taken.");
+                return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
             }
 
             var user = new User
@@ -59,7 +60,7 @@ namespace Halcyon.Web.Controllers
                 UserId = user.Id
             };
 
-            return Ok(result, "User successfully registered.");
+            return Generate(HttpStatusCode.OK, result, "User successfully registered.");
         }
 
         [HttpPut("forgotpassword")]
@@ -86,7 +87,7 @@ namespace Halcyon.Web.Controllers
                 await _emailService.SendEmailAsync(message);
             }
 
-            return Ok("Instructions as to how to reset your password have been sent to you via email.");
+            return Generate(HttpStatusCode.OK, "Instructions as to how to reset your password have been sent to you via email.");
         }
 
         [HttpPut("resetpassword")]
@@ -100,7 +101,7 @@ namespace Halcyon.Web.Controllers
                 || user.IsLockedOut
                 || !model.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
             {
-                return BadRequest("Invalid token.");
+                return Generate(HttpStatusCode.BadRequest, "Invalid token.");
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -108,7 +109,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Your password has been reset.");
+            return Generate(HttpStatusCode.OK, "Your password has been reset.");
         }
     }
 }
