@@ -48,7 +48,7 @@ namespace Halcyon.Web.Controllers
                 Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth.ToUniversalTime()
+                DateOfBirth = model.DateOfBirth.Value.ToUniversalTime()
             };
 
             _context.Users.Add(user);

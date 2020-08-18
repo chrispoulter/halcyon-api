@@ -1,4 +1,5 @@
 using Halcyon.Web.Data;
+using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Jwt;
@@ -58,26 +59,29 @@ namespace Halcyon.Web
                     };
                 });
 
-            services.AddControllersWithViews()
-                .AddJsonOptions(options =>
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(typeof(ExceptionFilter));
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            })
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
                 {
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                })
-                .ConfigureApiBehaviorOptions(options =>
-                {
-                    options.InvalidModelStateResponseFactory = context =>
+                    var result = new ApiResponse
                     {
-                        var result = new ApiResponse
-                        {
-                            Messages = context.ModelState.Values
-                              .SelectMany(error => error.Errors)
-                              .Select(error => error.ErrorMessage)
-                        };
-
-                        return new BadRequestObjectResult(result);
+                        Messages = context.ModelState.Values
+                            .SelectMany(error => error.Errors)
+                            .Select(error => error.ErrorMessage)
                     };
-                });
+
+                    return new BadRequestObjectResult(result);
+                };
+            });
 
             services.AddSpaStaticFiles(configuration =>
             {

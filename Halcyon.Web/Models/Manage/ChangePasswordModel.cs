@@ -1,12 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Manage
 {
     public class ChangePasswordModel
     {
+        [DisplayName("Current Password")]
         [Required]
         public string CurrentPassword { get; set; }
 
+        [DisplayName("New Password")]
         [Required]
         [MinLength(8)]
         [MaxLength(50)]
