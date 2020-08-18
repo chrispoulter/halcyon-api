@@ -31,18 +31,23 @@ export const useFetch = request => {
         const params = new URLSearchParams(request.params || {});
         const url = `${config.API_URL}${request.url}?${params}`;
 
-        const response = await fetch(url, {
-            method: request.method,
-            headers,
-            body: body && JSON.stringify(body)
-        });
+        let response;
+        try {
+            response = await fetch(url, {
+                method: request.method,
+                headers,
+                body: body && JSON.stringify(body)
+            });
+        } catch {}
+
+        const ok = response?.ok;
+        const status = response?.status;
 
         let json;
         try {
             json = await response.json();
         } catch {}
 
-        const { ok, status } = response;
         const messages = json?.messages || [];
         const data = json?.data;
 
