@@ -16,17 +16,17 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _hashService;
+        private readonly IPasswordService _passwordService;
 
         private readonly SeedSettings _seedSettings;
 
         public SeedController(
             HalcyonDbContext context,
-            IPasswordService hashService,
+            IPasswordService passwordService,
             IOptions<SeedSettings> seedSettings)
         {
             _context = context;
-            _hashService = hashService;
+            _passwordService = passwordService;
             _seedSettings = seedSettings.Value;
         }
 
@@ -80,7 +80,7 @@ namespace Halcyon.Web.Controllers
             }
 
             user.EmailAddress = _seedSettings.EmailAddress;
-            user.Password = _hashService.GenerateHash(_seedSettings.Password);
+            user.Password = _passwordService.GenerateHash(_seedSettings.Password);
             user.FirstName = "System";
             user.LastName = "Administrator";
             user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();

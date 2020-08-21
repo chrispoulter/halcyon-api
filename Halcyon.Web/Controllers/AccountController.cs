@@ -17,17 +17,17 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _hashService;
+        private readonly IPasswordService _passwordService;
 
         private readonly IEmailService _emailService;
 
         public AccountController(
             HalcyonDbContext context,
-            IPasswordService hashService,
+            IPasswordService passwordService,
             IEmailService emailService)
         {
             _context = context;
-            _hashService = hashService;
+            _passwordService = passwordService;
             _emailService = emailService;
         }
 
@@ -45,7 +45,7 @@ namespace Halcyon.Web.Controllers
             var user = new User
             {
                 EmailAddress = model.EmailAddress,
-                Password = _hashService.GenerateHash(model.Password),
+                Password = _passwordService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth.Value.ToUniversalTime()
@@ -104,7 +104,7 @@ namespace Halcyon.Web.Controllers
                 return Generate(HttpStatusCode.BadRequest, "Invalid token.");
             }
 
-            user.Password = _hashService.GenerateHash(model.NewPassword);
+            user.Password = _passwordService.GenerateHash(model.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();

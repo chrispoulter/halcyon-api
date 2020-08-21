@@ -15,17 +15,17 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _hashService;
+        private readonly IPasswordService _passwordService;
 
         private readonly IJwtService _jwtService;
 
         public TokenController(
             HalcyonDbContext context,
-            IPasswordService hashService,
+            IPasswordService passwordService,
             IJwtService jwtService)
         {
             _context = context;
-            _hashService = hashService;
+            _passwordService = passwordService;
             _jwtService = jwtService;
         }
 
@@ -42,7 +42,7 @@ namespace Halcyon.Web.Controllers
                 return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
             }
 
-            var verified = _hashService.VerifyHash(model.Password, user.Password);
+            var verified = _passwordService.VerifyHash(model.Password, user.Password);
             if (!verified)
             {
                 return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");

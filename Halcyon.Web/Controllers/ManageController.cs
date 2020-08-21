@@ -17,12 +17,12 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _hashService;
+        private readonly IPasswordService _passwordService;
 
-        public ManageController(HalcyonDbContext context, IPasswordService hashService)
+        public ManageController(HalcyonDbContext context, IPasswordService passwordService)
         {
             _context = context;
-            _hashService = hashService;
+            _passwordService = passwordService;
         }
 
         [HttpGet]
@@ -92,13 +92,13 @@ namespace Halcyon.Web.Controllers
                 return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
-            var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
+            var verified = _passwordService.VerifyHash(model.CurrentPassword, user.Password);
             if (!verified)
             {
                 return Generate(HttpStatusCode.BadRequest, "Incorrect password.");
             }
 
-            user.Password = _hashService.GenerateHash(model.NewPassword);
+            user.Password = _passwordService.GenerateHash(model.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();
