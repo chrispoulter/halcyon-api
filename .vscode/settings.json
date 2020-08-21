@@ -6,6 +6,7 @@
         "**/node_modules": true,
         "**/build": true
     },
+    "terminal.integrated.cwd": "./Halcyon.Web",
     "eslint.workingDirectories": [
         "./Halcyon.Web/ClientApp"
     ]
