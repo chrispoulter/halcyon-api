@@ -13,6 +13,7 @@ namespace Halcyon.Web.Controllers
 {
     [ApiController]
     [Produces("application/json")]
+    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [Route("api/[controller]")]
     [Authorize]
     public class ManageController : BaseController
@@ -119,7 +120,6 @@ namespace Halcyon.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteProfile()
         {
             var user = await _context.Users

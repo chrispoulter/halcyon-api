@@ -14,6 +14,8 @@ namespace Halcyon.Web.Controllers
 {
     [ApiController]
     [Produces("application/json")]
+    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
     [Route("api/[controller]")]
     [Authorize(Roles = Roles.UserAdministrator)]
     public class UserController : BaseController
@@ -30,6 +32,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<ListUsersResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ListUsers([FromQuery] ListUsersModel model)
         {
             var page = Math.Max(model.Page ?? 1, 1);
@@ -249,7 +252,6 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UnlockUser(int id)
         {
             var user = await _context.Users

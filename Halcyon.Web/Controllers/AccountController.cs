@@ -69,6 +69,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("forgotpassword")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
             var user = await _context.Users
