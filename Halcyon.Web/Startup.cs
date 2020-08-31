@@ -149,8 +149,8 @@ namespace Halcyon.Web
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Halcyon API v1");
-                c.DocumentTitle = "Halcyon API v1";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                c.DocumentTitle = "Halcyon API";
                 c.RoutePrefix = "api";
             });
 
