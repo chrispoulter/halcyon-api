@@ -18,12 +18,6 @@ namespace Halcyon.Web.Models.User
         [MaxLength(255)]
         public string EmailAddress { get; set; }
 
-        [DisplayName("Password")]
-        [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
-        public string Password { get; set; }
-
         [DisplayName("First Name")]
         [Required]
         [MaxLength(50)]
