@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Halcyon.Web.Filters
 {
-    public class ExceptionFilter : ExceptionFilterAttribute
+    public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
         public override void OnException(ExceptionContext context)
         {

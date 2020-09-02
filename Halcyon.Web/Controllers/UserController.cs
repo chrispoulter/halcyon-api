@@ -1,8 +1,8 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,7 +17,7 @@ namespace Halcyon.Web.Controllers
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
     [Route("api/[controller]")]
-    [Authorize(Roles = Roles.UserAdministrator)]
+    [AuthorizeRole(Roles.SystemAdministrator, Roles.UserAdministrator)]
     public class UserController : BaseController
     {
         private readonly HalcyonDbContext _context;
@@ -47,24 +47,13 @@ namespace Halcyon.Web.Controllers
 
             var count = await query.CountAsync();
 
-            switch (model.Sort)
+            query = model.Sort switch
             {
-                case UserSort.EmailAddressDesc:
-                    query = query.OrderByDescending(r => r.EmailAddress);
-                    break;
-
-                case UserSort.EmailAddressAsc:
-                    query = query.OrderBy(r => r.EmailAddress);
-                    break;
-
-                case UserSort.NameDesc:
-                    query = query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName);
-                    break;
-
-                default:
-                    query = query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName);
-                    break;
-            }
+                UserSort.EmailAddressDesc => query.OrderByDescending(r => r.EmailAddress),
+                UserSort.EmailAddressAsc => query.OrderBy(r => r.EmailAddress),
+                UserSort.NameDesc => query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName),
+                _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName),
+            };
 
             if (page > 1)
             {

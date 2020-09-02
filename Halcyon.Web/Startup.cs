@@ -62,7 +62,7 @@ namespace Halcyon.Web
 
             services.AddControllersWithViews(options =>
             {
-                options.Filters.Add(typeof(ExceptionFilter));
+                options.Filters.Add(typeof(ApiExceptionFilterAttribute));
             })
             .AddJsonOptions(options =>
             {

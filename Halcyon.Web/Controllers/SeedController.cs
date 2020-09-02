@@ -38,9 +38,10 @@ namespace Halcyon.Web.Controllers
         {
             await _context.Database.MigrateAsync();
 
-            var systemRole = await AddRoleAsync(Roles.SystemAdministrator);
-            var userRole = await AddRoleAsync(Roles.UserAdministrator);
-            var systemUser = await AddSystemUserAsync(new[] { systemRole, userRole });
+            var systemAdminRole = await AddRoleAsync(Roles.SystemAdministrator);
+            await AddRoleAsync(Roles.UserAdministrator);
+
+            var systemUser = await AddSystemUserAsync(new[] { systemAdminRole });
 
             var result = new UserCreatedResponse
             {
