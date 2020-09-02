@@ -1,9 +1,13 @@
-﻿namespace Halcyon.Web.Data
-{
-    public class Roles
-    {
-        public const string SystemAdministrator = "System Administrator";
+﻿using System.ComponentModel.DataAnnotations;
 
-        public const string UserAdministrator = "User Administrator";
+namespace Halcyon.Web.Data
+{
+    public enum Roles
+    {
+        [Display(Name = "System Administrator")]
+        SystemAdministrator,
+
+        [Display(Name = "User Administrator")]
+        UserAdministrator
     }
 }

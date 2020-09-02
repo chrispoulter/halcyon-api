@@ -5,7 +5,10 @@ using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Extensions;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -38,20 +41,26 @@ namespace Halcyon.Web.Controllers
         {
             await _context.Database.MigrateAsync();
 
-            var systemAdminRole = await AddRoleAsync(Roles.SystemAdministrator);
-            await AddRoleAsync(Roles.UserAdministrator);
+            var roleIds = new List<int>();
 
-            var systemUser = await AddSystemUserAsync(new[] { systemAdminRole });
+            foreach (Roles role in Enum.GetValues(typeof(Roles)))
+            {
+                var name = role.GetAttributeOfType<DisplayAttribute>().Name;
+                var roleId = await AddRoleAsync(name);
+                roleIds.Add(roleId);
+            }
+
+            var userId = await AddSystemUserAsync(roleIds);
 
             var result = new UserCreatedResponse
             {
-                UserId = systemUser.Id
+                UserId = userId
             };
 
             return Generate(HttpStatusCode.OK, result, "User successfully created.");
         }
 
-        private async Task<Role> AddRoleAsync(string name)
+        private async Task<int> AddRoleAsync(string name)
         {
             var role = await _context.Roles
                 .FirstOrDefaultAsync(u => u.Name == name);
@@ -68,10 +77,10 @@ namespace Halcyon.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return role;
+            return role.Id;
         }
 
-        private async Task<User> AddSystemUserAsync(Role[] roles)
+        private async Task<int> AddSystemUserAsync(List<int> roleIds)
         {
             var user = await _context.Users
                 .Include(u => u.UserRoles)
@@ -91,14 +100,14 @@ namespace Halcyon.Web.Controllers
 
             user.UserRoles.Clear();
 
-            foreach (var role in roles)
+            foreach (var roleId in roleIds)
             {
-                user.UserRoles.Add(new UserRole { RoleId = role.Id });
+                user.UserRoles.Add(new UserRole { RoleId = roleId });
             }
 
             await _context.SaveChangesAsync();
 
-            return user;
+            return user.Id;
         }
     }
 }
