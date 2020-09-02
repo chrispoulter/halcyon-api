@@ -15,7 +15,7 @@ import {
     Container
 } from 'reactstrap';
 import { AuthContext } from '../providers/AuthProvider';
-import { isAuthorized, USER_ADMINISTRATOR } from '../../utils/auth';
+import { isAuthorized, IS_USER_ADMINISTRATOR } from '../../utils/auth';
 
 export const Header = () => {
     const history = useHistory();
@@ -30,7 +30,7 @@ export const Header = () => {
     }, [history]);
 
     const isAuthenticated = isAuthorized(currentUser);
-    const isUserAdmin = isAuthorized(currentUser, USER_ADMINISTRATOR);
+    const isUserAdmin = isAuthorized(currentUser, IS_USER_ADMINISTRATOR);
 
     const logout = () => {
         removeToken();

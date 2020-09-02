@@ -1,9 +1,10 @@
-export const AVAILABLE_ROLES = ['System Administrator', 'User Administrator'];
+const SYSTEM_ADMINISTRATOR = 'System Administrator';
 
-export const USER_ADMINISTRATOR = [
-    'System Administrator',
-    'User Administrator'
-];
+const USER_ADMINISTRATOR = 'User Administrator';
+
+export const AVAILABLE_ROLES = [SYSTEM_ADMINISTRATOR, USER_ADMINISTRATOR];
+
+export const IS_USER_ADMINISTRATOR = [SYSTEM_ADMINISTRATOR, USER_ADMINISTRATOR];
 
 export const isAuthorized = (user, requiredRoles) => {
     if (!user) {
