@@ -1,7 +1,7 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Manage;
-using Halcyon.Web.Services.Password;
+using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +20,12 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _passwordService;
+        private readonly IHashService _hashService;
 
-        public ManageController(HalcyonDbContext context, IPasswordService passwordService)
+        public ManageController(HalcyonDbContext context, IHashService hashService)
         {
             _context = context;
-            _passwordService = passwordService;
+            _hashService = hashService;
         }
 
         [HttpGet]
@@ -103,13 +103,13 @@ namespace Halcyon.Web.Controllers
                 return Generate(HttpStatusCode.NotFound, "User not found.");
             }
 
-            var verified = _passwordService.VerifyHash(model.CurrentPassword, user.Password);
+            var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
             if (!verified)
             {
                 return Generate(HttpStatusCode.BadRequest, "Incorrect password.");
             }
 
-            user.Password = _passwordService.GenerateHash(model.NewPassword);
+            user.Password = _hashService.GenerateHash(model.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();

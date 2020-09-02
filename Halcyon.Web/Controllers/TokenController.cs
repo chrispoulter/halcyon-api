@@ -1,8 +1,8 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Token;
+using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
-using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -17,17 +17,17 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _passwordService;
+        private readonly IHashService _hashService;
 
         private readonly IJwtService _jwtService;
 
         public TokenController(
             HalcyonDbContext context,
-            IPasswordService passwordService,
+            IHashService hashService,
             IJwtService jwtService)
         {
             _context = context;
-            _passwordService = passwordService;
+            _hashService = hashService;
             _jwtService = jwtService;
         }
 
@@ -46,7 +46,7 @@ namespace Halcyon.Web.Controllers
                 return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
             }
 
-            var verified = _passwordService.VerifyHash(model.Password, user.Password);
+            var verified = _hashService.VerifyHash(model.Password, user.Password);
             if (!verified)
             {
                 return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");

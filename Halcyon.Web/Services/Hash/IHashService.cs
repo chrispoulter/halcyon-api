@@ -1,6 +1,6 @@
-﻿namespace Halcyon.Web.Services.Password
+﻿namespace Halcyon.Web.Services.Hash
 {
-    public interface IPasswordService
+    public interface IHashService
     {
         string GenerateHash(string str);
 

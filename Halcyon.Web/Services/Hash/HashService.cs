@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Halcyon.Web.Services.Password
+namespace Halcyon.Web.Services.Hash
 {
-    public class PasswordService : IPasswordService
+    public class HashService : IHashService
     {
         private const int SaltSize = 16;
 

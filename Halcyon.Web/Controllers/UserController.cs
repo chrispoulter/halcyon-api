@@ -1,7 +1,7 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
-using Halcyon.Web.Services.Password;
+using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +22,12 @@ namespace Halcyon.Web.Controllers
     {
         private readonly HalcyonDbContext _context;
 
-        private readonly IPasswordService _passwordService;
+        private readonly IHashService _hashService;
 
-        public UserController(HalcyonDbContext context, IPasswordService passwordService)
+        public UserController(HalcyonDbContext context, IHashService hashService)
         {
             _context = context;
-            _passwordService = passwordService;
+            _hashService = hashService;
         }
 
         [HttpGet]
@@ -147,7 +147,7 @@ namespace Halcyon.Web.Controllers
             var user = new User
             {
                 EmailAddress = model.EmailAddress,
-                Password = _passwordService.GenerateHash(model.Password),
+                Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth.Value.ToUniversalTime()

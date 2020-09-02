@@ -2,8 +2,8 @@ using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
 using Halcyon.Web.Services.Email;
+using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
-using Halcyon.Web.Services.Password;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -128,7 +128,7 @@ namespace Halcyon.Web
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
 
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IHashService, HashService>();
             services.AddScoped<IJwtService, JwtService>();
         }
 
