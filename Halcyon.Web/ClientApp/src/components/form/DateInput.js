@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 import { FormGroup, Label, FormText, Input } from 'reactstrap';
 
-const months = moment.months();
-const currentYear = moment().year();
+const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
+
+const currentYear = new Date().getFullYear();
 
 export const DateInput = ({ field, form, label }) => {
     const { name, onChange, onBlur, value } = field;
@@ -18,10 +31,10 @@ export const DateInput = ({ field, form, label }) => {
     };
 
     if (value) {
-        const date = moment(value);
-        dateValue.year = date.year();
-        dateValue.month = date.month();
-        dateValue.date = date.date();
+        const date = new Date(value);
+        dateValue.year = date.getFullYear();
+        dateValue.month = date.getMonth();
+        dateValue.date = date.getDate();
     }
 
     const [state, setState] = useState(dateValue);
@@ -41,7 +54,9 @@ export const DateInput = ({ field, form, label }) => {
         const isDateSet =
             input.year > -1 && input.month > -1 && input.date > -1;
 
-        const value = isDateSet ? moment(input).toISOString() || '' : '';
+        const value = isDateSet
+            ? new Date(input.year, input.month, input.date).toISOString() || ''
+            : '';
 
         onChange({
             target: {
@@ -99,7 +114,7 @@ export const DateInput = ({ field, form, label }) => {
                     onBlur={handleBlur}
                 >
                     <option value={-1}>Year...</option>
-                    {Array.from({ length: 150 }).map((_, index) => (
+                    {Array.from({ length: 120 }).map((_, index) => (
                         <option key={index}>{currentYear - index}</option>
                     ))}
                 </Input>

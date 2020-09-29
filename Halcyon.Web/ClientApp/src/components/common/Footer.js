@@ -1,8 +1,7 @@
 import React from 'react';
-import moment from 'moment';
 import { Container } from 'reactstrap';
 
-const currentYear = moment().year();
+const currentYear = new Date().getFullYear();
 
 export const Footer = () => (
     <footer>

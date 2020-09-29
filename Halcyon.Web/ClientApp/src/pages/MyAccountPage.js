@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
@@ -90,7 +89,7 @@ export const MyAccountPage = ({ history }) => {
             <p>
                 <span className="text-muted">Date of Birth</span>
                 <br />
-                {moment(data.dateOfBirth).format('DD MMMM YYYY')}
+                {new Date(data.dateOfBirth).toLocaleDateString()}
             </p>
 
             <h3>Settings</h3>
