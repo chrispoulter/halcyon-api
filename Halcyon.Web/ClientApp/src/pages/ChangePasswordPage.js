@@ -31,7 +31,11 @@ export const ChangePasswordPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        const result = await changePassword(data);
+        const result = await changePassword({
+            currentPassword: data.currentPassword,
+            newPassword: data.newPassword
+        });
+
         if (result.ok) {
             history.push('/my-account');
         }

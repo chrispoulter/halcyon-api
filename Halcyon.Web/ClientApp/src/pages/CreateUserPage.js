@@ -49,7 +49,15 @@ export const CreateUserPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        const result = await createUser(data);
+        const result = await createUser({
+            emailAddress: data.emailAddress,
+            password: data.emailAddress,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dateOfBirth: data.dateOfBirth,
+            roles: data.roles
+        });
+
         if (result.ok) {
             history.push('/user');
         }

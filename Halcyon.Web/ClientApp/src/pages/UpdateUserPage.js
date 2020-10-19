@@ -68,7 +68,14 @@ export const UpdateUserPage = ({ history, match }) => {
     }
 
     const onSubmit = async data => {
-        const result = await updateUser({ id: match.params.id, ...data });
+        const result = await updateUser({
+            emailAddress: data.emailAddress,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dateOfBirth: data.dateOfBirth,
+            roles: data.roles
+        });
+
         if (result.ok) {
             history.push('/user');
         }

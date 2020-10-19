@@ -32,7 +32,8 @@ export const ResetPasswordPage = ({ match, history }) => {
     const onSubmit = async data => {
         const result = await resetPassword({
             token: match.params.token,
-            ...data
+            emailAddress: data.emailAddress,
+            newPassword: data.newPassword
         });
 
         if (result.ok) {

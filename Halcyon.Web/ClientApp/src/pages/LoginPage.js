@@ -34,7 +34,8 @@ export const LoginPage = ({ history }) => {
     const onSubmit = async data => {
         const result = await generateToken({
             grantType: 'PASSWORD',
-            ...data
+            emailAddress: data.emailAddress,
+            password: data.password
         });
 
         if (result.ok) {

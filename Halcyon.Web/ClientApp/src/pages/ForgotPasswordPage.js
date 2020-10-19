@@ -20,7 +20,10 @@ export const ForgotPasswordPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        const result = await forgotPassword(data);
+        const result = await forgotPassword({
+            emailAddress: data.emailAddress
+        });
+
         if (result.ok) {
             history.push('/login');
         }

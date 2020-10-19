@@ -41,7 +41,13 @@ export const UpdateProfilePage = ({ history }) => {
     }
 
     const onSubmit = async data => {
-        const result = await updateProfile(data);
+        const result = await updateProfile({
+            emailAddress: data.emailAddress,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dateOfBirth: data.dateOfBirth
+        });
+
         if (result.ok) {
             history.push('/my-account');
         }

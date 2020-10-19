@@ -55,11 +55,18 @@ export const RegisterPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        await register(data);
+        await register({
+            emailAddress: data.emailAddress,
+            password: data.password,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dateOfBirth: data.dateOfBirth
+        });
 
         const result = await generateToken({
             grantType: 'PASSWORD',
-            ...data
+            emailAddress: data.emailAddress,
+            password: data.password
         });
 
         if (result.ok) {
