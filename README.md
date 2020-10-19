@@ -2,8 +2,6 @@
 
 A web application template.
 
-[https://halcyon-dotnet.chrispoulter.com](https://halcyon-dotnet.chrispoulter.com)
-
 **Technologies used:**
 
 -   React
