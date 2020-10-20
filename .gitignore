@@ -2,6 +2,7 @@
 bin
 obj
 PublishProfiles
+ServiceDependencies*
 appsettings.Development.json
 *.user
 
