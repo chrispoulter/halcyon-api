@@ -1,45 +1,45 @@
 {
-  "name": "@halcyon/halcyon-dotnet-client",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "start": "react-scripts start",
-    "prebuild": "npm run lint",
-    "build": "react-scripts build",
-    "postbuild": "npm run workbox",
-    "workbox": "workbox injectManifest workbox-config.js",
-    "lint": "eslint src/**/*.{js,jsx}",
-    "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""
-  },
-  "dependencies": {
-    "bootstrap": "4.5.3",
-    "bootswatch": "4.5.3",
-    "formik": "2.2.1",
-    "jwt-decode": "3.0.0",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-router-dom": "5.2.0",
-    "react-toastify": "6.0.9",
-    "reactstrap": "8.6.0",
-    "reactstrap-confirm": "1.2.0",
-    "yup": "0.29.3"
-  },
-  "devDependencies": {
-    "node-sass": "4.14.1",
-    "prettier": "2.1.2",
-    "react-scripts": "4.0.0",
-    "workbox-cli": "5.1.4"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "@halcyon/halcyon-dotnet-client",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "react-scripts start",
+        "prebuild": "npm run lint",
+        "build": "react-scripts build",
+        "postbuild": "npm run workbox",
+        "workbox": "workbox injectManifest workbox-config.js",
+        "lint": "eslint src/**/*.{js,jsx}",
+        "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""
+    },
+    "dependencies": {
+        "bootstrap": "4.5.3",
+        "bootswatch": "4.5.3",
+        "formik": "2.2.6",
+        "jwt-decode": "3.1.2",
+        "react": "17.0.1",
+        "react-dom": "17.0.1",
+        "react-router-dom": "5.2.0",
+        "react-toastify": "6.2.0",
+        "reactstrap": "8.7.1",
+        "reactstrap-confirm": "1.2.0",
+        "yup": "0.32.8"
+    },
+    "devDependencies": {
+        "node-sass": "4.14.1",
+        "prettier": "2.2.1",
+        "react-scripts": "4.0.1",
+        "workbox-cli": "6.0.2"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
 }
