@@ -13,7 +13,7 @@ A web application template.
 
 #### Custom Settings
 
-Create `appsettings.Development.json` file in web project directory.
+Create a `appsettings.Development.json` file in the web project directory.
 
 ```
 {
