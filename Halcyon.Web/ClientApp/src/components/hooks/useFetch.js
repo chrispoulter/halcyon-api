@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../providers';
-import config from '../../utils/config';
+import { config } from '../../utils/config';
 
 const headers = new Headers();
 headers.set('Content-Type', 'application/json');
