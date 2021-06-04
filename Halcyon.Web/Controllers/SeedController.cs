@@ -1,15 +1,13 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -44,12 +42,7 @@ namespace Halcyon.Web.Controllers
 
             foreach (Roles role in Enum.GetValues(typeof(Roles)))
             {
-                var name = role.GetType()
-                   .GetMember(role.ToString())
-                   .First()
-                   .GetCustomAttribute<DisplayAttribute>()
-                   .Name;
-
+                var name = role.GetDiplayName();
                 var roleId = await AddRoleAsync(name);
                 roleIds.Add(roleId);
             }
