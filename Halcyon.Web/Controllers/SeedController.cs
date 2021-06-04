@@ -1,15 +1,15 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
@@ -36,7 +36,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<UserCreatedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SeedData()
         {
             await _context.Database.MigrateAsync();
@@ -45,7 +44,12 @@ namespace Halcyon.Web.Controllers
 
             foreach (Roles role in Enum.GetValues(typeof(Roles)))
             {
-                var name = role.GetAttributeOfType<DisplayAttribute>().Name;
+                var name = role.GetType()
+                   .GetMember(role.ToString())
+                   .First()
+                   .GetCustomAttribute<DisplayAttribute>()
+                   .Name;
+
                 var roleId = await AddRoleAsync(name);
                 roleIds.Add(roleId);
             }

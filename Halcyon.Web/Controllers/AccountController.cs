@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.Account;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Email;
@@ -13,7 +12,6 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("api/[controller]")]
     public class AccountController : BaseController
     {
@@ -34,8 +32,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ApiResponse<UserCreatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             var existing = await _context.Users
@@ -68,8 +64,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("forgotpassword")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
             var user = await _context.Users
@@ -97,8 +91,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("resetpassword")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             var user = await _context.Users

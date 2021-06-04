@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.Token;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
@@ -11,7 +10,6 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("api/[controller]")]
     public class TokenController : BaseController
     {
@@ -32,8 +30,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<JwtResult>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenModel model)
         {
             var user = await _context.Users

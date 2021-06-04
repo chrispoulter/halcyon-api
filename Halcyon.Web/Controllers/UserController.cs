@@ -1,6 +1,5 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,6 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
     [Route("api/[controller]")]
     [AuthorizeRole(Roles.SystemAdministrator, Roles.UserAdministrator)]
     public class UserController : BaseController
@@ -31,8 +27,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<ListUsersResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ListUsers([FromQuery] ListUsersModel model)
         {
             var page = Math.Max(model.Page ?? 1, 1);
@@ -90,8 +84,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<GetUserResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
@@ -121,8 +113,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserModel model)
         {
             var existing = await _context.Users
@@ -166,9 +156,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
         {
             var user = await _context.Users
@@ -213,9 +200,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}/lock")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> LockUser(int id)
         {
             var user = await _context.Users
@@ -239,8 +223,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}/unlock")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UnlockUser(int id)
         {
             var user = await _context.Users
@@ -259,9 +241,6 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users
