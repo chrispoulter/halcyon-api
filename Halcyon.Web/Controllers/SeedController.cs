@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Utils;
@@ -34,6 +35,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse<UserCreatedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SeedData()
         {
             await _context.Database.MigrateAsync();

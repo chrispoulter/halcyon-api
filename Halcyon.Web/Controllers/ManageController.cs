@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Models;
 using Halcyon.Web.Models.Manage;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,8 @@ using System.Threading.Tasks;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [Route("api/[controller]")]
     [Authorize]
     public class ManageController : BaseController
@@ -26,6 +29,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse<GetProfileResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetProfile()
         {
             var user = await _context.Users
@@ -49,6 +54,9 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileModel model)
         {
             var user = await _context.Users
@@ -82,6 +90,9 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("changepassword")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
             var user = await _context.Users
@@ -107,6 +118,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpDelete]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteProfile()
         {
             var user = await _context.Users
