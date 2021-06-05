@@ -9,7 +9,7 @@ A web application template.
 -   .NET Core
     [https://github.com/dotnet/core](https://github.com/dotnet/core)
 -   SQL Server
-    [https://www.microsoft.com/en-gb/sql-server/sql-server-2019](https://www.microsoft.com/en-gb/sql-server/sql-server-2019)
+    [https://www.microsoft.com/sql-server](https://www.microsoft.com/sql-server)
 
 #### Custom Settings
 
