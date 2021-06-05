@@ -15,8 +15,8 @@ namespace Halcyon.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Halcyon.Web.Data.Role", b =>
@@ -106,6 +106,15 @@ namespace Halcyon.Web.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Halcyon.Web.Data.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

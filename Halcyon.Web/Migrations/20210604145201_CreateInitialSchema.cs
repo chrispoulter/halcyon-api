@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Halcyon.Web.Migrations
 {
@@ -11,9 +11,9 @@ namespace Halcyon.Web.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,15 +24,15 @@ namespace Halcyon.Web.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmailAddress = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false),
-                    PasswordResetToken = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    IsLockedOut = table.Column<bool>(nullable: false)
+                    EmailAddress = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsLockedOut = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,8 +43,8 @@ namespace Halcyon.Web.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

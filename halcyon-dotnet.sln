@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30320.27
+VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Halcyon.Web", "Halcyon.Web\Halcyon.Web.csproj", "{52F192B9-969C-4C05-BE03-CE5B93E553FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Halcyon.Web", "Halcyon.Web\Halcyon.Web.csproj", "{24E40346-23C1-48C0-AAA7-FD31C2C7C24B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4778AECF-4D42-4EB9-BA1A-0A9201617C2A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{744C3499-2BC3-40A4-A99C-928A9EAE7EFC}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		.github\workflows\ci.yml = .github\workflows\ci.yml
@@ -18,15 +18,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52F192B9-969C-4C05-BE03-CE5B93E553FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E40346-23C1-48C0-AAA7-FD31C2C7C24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E40346-23C1-48C0-AAA7-FD31C2C7C24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E40346-23C1-48C0-AAA7-FD31C2C7C24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E40346-23C1-48C0-AAA7-FD31C2C7C24B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FAC4B4A3-454C-4860-A715-DAC08D35B1E3}
+		SolutionGuid = {53466067-2AE5-4CBB-A9B3-5457028C480F}
 	EndGlobalSection
 EndGlobal

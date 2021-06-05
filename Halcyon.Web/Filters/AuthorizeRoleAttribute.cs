@@ -1,7 +1,6 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Extensions;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Halcyon.Web.Filters
@@ -10,7 +9,7 @@ namespace Halcyon.Web.Filters
     {
         public AuthorizeRoleAttribute(params Roles[] roles)
         {
-            Roles = string.Join(",", roles.Select(r => r.GetAttributeOfType<DisplayAttribute>().Name));
+            Roles = string.Join(",", roles.Select(r => r.GetDiplayName()));
         }
     }
 }
