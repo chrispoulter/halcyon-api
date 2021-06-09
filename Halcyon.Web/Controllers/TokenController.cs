@@ -43,18 +43,27 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
+                return Generate(
+                    HttpStatusCode.BadRequest,
+                    InternalStatusCode.CREDENTIALS_INVALID,
+                    "The credentials provided were invalid.");
             }
 
             var verified = _hashService.VerifyHash(model.Password, user.Password);
             if (!verified)
             {
-                return Generate(HttpStatusCode.BadRequest, "The credentials provided were invalid.");
+                return Generate(
+                    HttpStatusCode.BadRequest,
+                    InternalStatusCode.CREDENTIALS_INVALID,
+                    "The credentials provided were invalid.");
             }
 
             if (user.IsLockedOut)
             {
-                return Generate(HttpStatusCode.BadRequest, "This account has been locked out, please try again later.");
+                return Generate(
+                    HttpStatusCode.BadRequest,
+                    InternalStatusCode.USER_LOCKED_OUT,
+                    "This account has been locked out, please try again later.");
             }
 
             var result = _jwtService.GenerateToken(user);

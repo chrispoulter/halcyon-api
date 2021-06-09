@@ -56,7 +56,11 @@ namespace Halcyon.Web.Controllers
                 UserId = userId
             };
 
-            return Generate(HttpStatusCode.OK, result, "User successfully created.");
+            return Generate(
+                HttpStatusCode.OK,
+                InternalStatusCode.USER_CREATED,
+                result,
+                "User successfully created.");
         }
 
         private async Task<int> AddRoleAsync(string name)

@@ -8,11 +8,16 @@ namespace Halcyon.Web.Controllers
     {
         protected int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
 
-        protected ObjectResult Generate<T>(HttpStatusCode status, T data, params string[] messages)
+        protected ObjectResult Generate<T>(
+            HttpStatusCode status,
+            InternalStatusCode? code,
+            T data,
+            params string[] messages)
             where T : class
         {
             return StatusCode((int)status, new ApiResponse<T>
             {
+                Code = code,
                 Data = data,
                 Messages = messages.Length > 0
                     ? messages
@@ -20,7 +25,17 @@ namespace Halcyon.Web.Controllers
             });
         }
 
-        protected ObjectResult Generate(HttpStatusCode status, params string[] messages)
-            => Generate<object>(status, null, messages);
+        protected ObjectResult Generate<T>(
+            HttpStatusCode status,
+            T data,
+            params string[] messages)
+            where T : class
+            => Generate<object>(status, null, data, messages);
+
+        protected ObjectResult Generate(
+            HttpStatusCode status,
+            InternalStatusCode code,
+            params string[] messages)
+            => Generate<object>(status, code, null, messages);
     }
 }

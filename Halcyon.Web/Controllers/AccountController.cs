@@ -43,7 +43,10 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
+                return Generate(
+                    HttpStatusCode.BadRequest,
+                    InternalStatusCode.DUPLICATE_USER,
+                    $"User name \"{model.EmailAddress}\" is already taken.");
             }
 
             var user = new User
@@ -64,7 +67,11 @@ namespace Halcyon.Web.Controllers
                 UserId = user.Id
             };
 
-            return Generate(HttpStatusCode.OK, result, "User successfully registered.");
+            return Generate(
+                HttpStatusCode.OK,
+                InternalStatusCode.USER_REGISTERED,
+                result,
+                "User successfully registered.");
         }
 
         [HttpPut("forgotpassword")]
@@ -93,7 +100,10 @@ namespace Halcyon.Web.Controllers
                 await _emailService.SendEmailAsync(message);
             }
 
-            return Generate(HttpStatusCode.OK, "Instructions as to how to reset your password have been sent to you via email.");
+            return Generate(
+                HttpStatusCode.OK,
+                InternalStatusCode.FORGOT_PASSWORD,
+                "Instructions as to how to reset your password have been sent to you via email.");
         }
 
         [HttpPut("resetpassword")]
@@ -109,7 +119,10 @@ namespace Halcyon.Web.Controllers
                 || user.IsLockedOut
                 || !model.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
             {
-                return Generate(HttpStatusCode.BadRequest, "Invalid token.");
+                return Generate(
+                    HttpStatusCode.BadRequest,
+                    InternalStatusCode.INVALID_TOKEN,
+                    "Invalid token.");
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -117,7 +130,10 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Generate(HttpStatusCode.OK, "Your password has been reset.");
+            return Generate(
+                HttpStatusCode.OK,
+                InternalStatusCode.PASSWORD_RESET,
+                "Your password has been reset.");
         }
     }
 }
