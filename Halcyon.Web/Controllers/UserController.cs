@@ -124,7 +124,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserModel model)
         {
@@ -163,9 +163,9 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserCreatedResponse
+            var result = new UserActionResponse
             {
-                UserId = user.Id
+                Id = user.Id
             };
 
             return Generate(
@@ -176,7 +176,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
@@ -225,14 +225,20 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
+            var result = new UserActionResponse
+            {
+                Id = user.Id
+            };
+
             return Generate(
                 HttpStatusCode.OK,
                 InternalStatusCode.USER_UPDATED,
+                result,
                 "User successfully updated.");
         }
 
         [HttpPut("{id}/lock")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> LockUser(int id)
@@ -260,14 +266,20 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
+            var result = new UserActionResponse
+            {
+                Id = user.Id
+            };
+
             return Generate(
                 HttpStatusCode.OK,
                 InternalStatusCode.USER_LOCKED,
+                result,
                 "User successfully locked.");
         }
 
         [HttpPut("{id}/unlock")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UnlockUser(int id)
         {
@@ -286,14 +298,20 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
+            var result = new UserActionResponse
+            {
+                Id = user.Id
+            };
+
             return Generate(
                 HttpStatusCode.OK,
                 InternalStatusCode.USER_UNLOCKED,
+                result,
                 "User successfully unlocked.");
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteUser(int id)
@@ -321,9 +339,15 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
+            var result = new UserActionResponse
+            {
+                Id = user.Id
+            };
+
             return Generate(
                 HttpStatusCode.OK,
                 InternalStatusCode.USER_DELETED,
+                result,
                 "User successfully deleted.");
         }
     }
