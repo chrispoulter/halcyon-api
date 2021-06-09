@@ -90,7 +90,7 @@ namespace Halcyon.Web.Controllers
 
                 var message = new EmailMessage
                 {
-                    Template = EmailTemplate.ForgotPassword
+                    Template = EmailTemplate.FORGOT_PASSWORD
                 };
 
                 message.To.Add(user.EmailAddress);

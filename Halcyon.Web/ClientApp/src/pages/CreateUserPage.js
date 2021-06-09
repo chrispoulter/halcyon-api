@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
+import { toast } from 'react-toastify';
 import {
     TextInput,
     DateInput,
@@ -10,71 +13,91 @@ import {
     Button,
     useFetch
 } from '../components';
-import { AVAILABLE_ROLES } from '../utils/auth';
-
-const initialValues = {
-    emailAddress: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    dateOfBirth: '',
-    roles: []
-};
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string()
-        .label('Email Address')
-        .max(254)
-        .email()
-        .required(),
-    password: Yup.string().label('Password').min(8).max(50).required(),
-    confirmPassword: Yup.string()
-        .label('Confirm Password')
-        .required()
-        .oneOf(
-            [Yup.ref('password')],
-            d => `The "${d.label}" field does not match.`
-        ),
-    firstName: Yup.string().label('First Name').max(50).required(),
-    lastName: Yup.string().label('Last Name').max(50).required(),
-    dateOfBirth: Yup.string().label('Date of Birth').required()
-});
+import { ALL_ROLES } from '../utils/auth';
+import { trackEvent } from '../utils/logger';
 
 export const CreateUserPage = ({ history }) => {
+    const { t } = useTranslation();
+
     const { refetch: createUser } = useFetch({
         method: 'POST',
         url: '/user',
         manual: true
     });
 
-    const onSubmit = async data => {
+    const onSubmit = async variables => {
         const result = await createUser({
-            emailAddress: data.emailAddress,
-            password: data.emailAddress,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dateOfBirth: data.dateOfBirth,
-            roles: data.roles
+            emailAddress: variables.emailAddress,
+            password: variables.emailAddress,
+            firstName: variables.firstName,
+            lastName: variables.lastName,
+            dateOfBirth: variables.dateOfBirth,
+            roles: variables.roles
         });
 
         if (result.ok) {
+            toast.success(t(`api.codes.${result.code}`));
+
+            trackEvent('user_created', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };
 
     return (
         <Container>
+            <Helmet>
+                <title>{t('pages.createUser.meta.title')}</title>
+            </Helmet>
+
             <h1>
-                User
+                {t('pages.createUser.title')}
                 <br />
-                <small className="text-muted">Create</small>
+                <small className="text-muted">
+                    {t('pages.createUser.subtitle')}
+                </small>
             </h1>
             <hr />
 
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
+                initialValues={{
+                    emailAddress: '',
+                    password: '',
+                    confirmPassword: '',
+                    firstName: '',
+                    lastName: '',
+                    dateOfBirth: '',
+                    roles: []
+                }}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.createUser.form.emailAddress'))
+                        .max(254)
+                        .email()
+                        .required(),
+                    password: Yup.string()
+                        .label(t('pages.createUser.form.password'))
+                        .min(8)
+                        .max(50)
+                        .required(),
+                    confirmPassword: Yup.string()
+                        .label(t('pages.createUser.form.confirmPassword'))
+                        .required()
+                        .oneOf([Yup.ref('password')]),
+                    firstName: Yup.string()
+                        .label(t('pages.createUser.form.firstName'))
+                        .max(50)
+                        .required(),
+                    lastName: Yup.string()
+                        .label(t('pages.createUser.form.lastName'))
+                        .max(50)
+                        .required(),
+                    dateOfBirth: Yup.string()
+                        .label(t('pages.createUser.form.dateOfBirth'))
+                        .required()
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -82,7 +105,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.createUser.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -92,7 +115,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="password"
                             type="password"
-                            label="Password"
+                            label={t('pages.createUser.form.password')}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -102,7 +125,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="confirmPassword"
                             type="password"
-                            label="Confirm Password"
+                            label={t('pages.createUser.form.confirmPassword')}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -112,7 +135,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="firstName"
                             type="text"
-                            label="First Name"
+                            label={t('pages.createUser.form.firstName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -121,7 +144,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="lastName"
                             type="text"
-                            label="Last Name"
+                            label={t('pages.createUser.form.lastName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -130,28 +153,31 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="dateOfBirth"
                             type="date"
-                            label="Date Of Birth"
+                            label={t('pages.createUser.form.dateOfBirth')}
                             required
                             component={DateInput}
                         />
 
                         <Field
                             name="roles"
-                            label="Roles"
-                            options={AVAILABLE_ROLES}
+                            label={t('pages.createUser.form.roles')}
+                            options={ALL_ROLES.map(role => ({
+                                value: role,
+                                label: t(`api.userRoles.${role}`)
+                            }))}
                             component={CheckboxGroupInput}
                         />
 
                         <FormGroup className="text-right">
                             <Button to="/user" className="mr-1" tag={Link}>
-                                Cancel
+                                {t('pages.createUser.cancelButton')}
                             </Button>
                             <Button
                                 type="submit"
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                Submit
+                                {t('pages.createUser.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>

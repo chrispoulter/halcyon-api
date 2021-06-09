@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import { AuthContext } from '../providers/AuthProvider';
-import { PublicRoute } from './PublicRoute';
-import { AccessDenied } from './AccessDenied';
+import { AccessDeniedPage } from '../../pages';
 import { isAuthorized } from '../../utils/auth';
 
 export const PrivateRoute = ({
@@ -17,8 +16,8 @@ export const PrivateRoute = ({
     }
 
     if (!isAuthorized(currentUser, requiredRoles)) {
-        return <PublicRoute title="Access Denied" component={AccessDenied} />;
+        return <Route component={AccessDeniedPage} />;
     }
 
-    return <PublicRoute component={PrivateComponent} {...rest} />;
+    return <Route component={PrivateComponent} {...rest} />;
 };

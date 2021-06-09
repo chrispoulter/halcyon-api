@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../providers';
 import { config } from '../../utils/config';
 
@@ -7,6 +9,8 @@ const headers = new Headers();
 headers.set('Content-Type', 'application/json');
 
 export const useFetch = request => {
+    const { t } = useTranslation();
+
     const { accessToken, removeToken } = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);
@@ -15,6 +19,7 @@ export const useFetch = request => {
 
     if (accessToken) {
         headers.set('Authorization', `Bearer ${accessToken}`);
+        headers.set('x-transaction-id', uuidv4());
     }
 
     useEffect(() => {
@@ -48,12 +53,12 @@ export const useFetch = request => {
             json = await response.json();
         } catch {}
 
-        const messages = json?.messages || [];
         const data = json?.data;
+        const code = json?.code;
 
         switch (status) {
             case 400:
-                messages.forEach(toast.error);
+                toast.error(t(`api.codes.${code}`, body));
                 break;
 
             case 401:
@@ -61,19 +66,22 @@ export const useFetch = request => {
                 break;
 
             case 403:
-                messages.forEach(toast.warn);
+                toast.warn(t(`api.codes.${code}`, body));
                 break;
 
             case 404:
-                break;
-
             case 200:
-                messages.forEach(toast.success);
                 break;
 
             default:
                 toast.error(
-                    'An unknown error has occurred whilst communicating with the server.'
+                    t(
+                        [
+                            `api.codes.${code}`,
+                            'api.codes.INTERNAL_SERVER_ERROR'
+                        ],
+                        body
+                    )
                 );
                 break;
         }
@@ -81,7 +89,7 @@ export const useFetch = request => {
         setData(data);
         setLoading(false);
 
-        return { ok, status, messages, data };
+        return { ok, status, code, data };
     };
 
     return { loading, data, refetch };

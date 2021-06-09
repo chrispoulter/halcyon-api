@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Collapse,
     Navbar,
@@ -15,9 +16,12 @@ import {
     Container
 } from 'reactstrap';
 import { AuthContext } from '../providers/AuthProvider';
-import { isAuthorized, IS_USER_ADMINISTRATOR } from '../../utils/auth';
+import { isAuthorized, USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
+import { trackEvent } from '../../utils/logger';
 
 export const Header = () => {
+    const { t } = useTranslation();
+
     const history = useHistory();
 
     const { currentUser, removeToken } = useContext(AuthContext);
@@ -30,10 +34,16 @@ export const Header = () => {
     }, [history]);
 
     const isAuthenticated = isAuthorized(currentUser);
-    const isUserAdmin = isAuthorized(currentUser, IS_USER_ADMINISTRATOR);
+    const isUserAdministrator = isAuthorized(
+        currentUser,
+        USER_ADMINISTRATOR_ROLES
+    );
 
     const logout = () => {
         removeToken();
+
+        trackEvent('logout');
+
         history.push('/');
     };
 
@@ -44,15 +54,15 @@ export const Header = () => {
             <Navbar color="dark" dark expand="md" fixed="top">
                 <Container>
                     <NavbarBrand to="/" tag={Link}>
-                        Halcyon
+                        {t('components.header.brand')}
                     </NavbarBrand>
                     <NavbarToggler onClick={toggle} />
                     <Collapse isOpen={isOpen} navbar>
                         <Nav navbar>
-                            {isUserAdmin && (
+                            {isUserAdministrator && (
                                 <NavItem>
                                     <NavLink to="/user" tag={Link}>
-                                        Users
+                                        {t('components.header.nav.users')}
                                     </NavLink>
                                 </NavItem>
                             )}
@@ -70,10 +80,12 @@ export const Header = () => {
                                             to="/my-account"
                                             tag={Link}
                                         >
-                                            My Account
+                                            {t(
+                                                'components.header.nav.myAccount'
+                                            )}
                                         </DropdownItem>
                                         <DropdownItem onClick={logout}>
-                                            Logout
+                                            {t('components.header.nav.logout')}
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
@@ -81,12 +93,14 @@ export const Header = () => {
                                 <>
                                     <NavItem>
                                         <NavLink to="/login" tag={Link}>
-                                            Login
+                                            {t('components.header.nav.login')}
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
                                         <NavLink to="/register" tag={Link}>
-                                            Register
+                                            {t(
+                                                'components.header.nav.register'
+                                            )}
                                         </NavLink>
                                     </NavItem>
                                 </>

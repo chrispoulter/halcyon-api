@@ -39,3 +39,10 @@ Create a `appsettings.Development.json` file in the web project directory.
     }
 }
 ```
+
+Create a `.env` file in the web project `ClientApp` directory.
+
+```
+REACT_APP_SENTRY_DSN=
+REACT_APP_GA_MEASUREMENTID=
+```

@@ -1,42 +1,53 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
+import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
-
-const initialValues = {
-    emailAddress: ''
-};
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string().label('Email Address').email().required()
-});
+import { trackEvent } from '../utils/logger';
 
 export const ForgotPasswordPage = ({ history }) => {
+    const { t } = useTranslation();
+
     const { refetch: forgotPassword } = useFetch({
         method: 'PUT',
         url: '/account/forgotpassword',
         manual: true
     });
 
-    const onSubmit = async data => {
+    const onSubmit = async variables => {
         const result = await forgotPassword({
-            emailAddress: data.emailAddress
+            emailAddress: variables.emailAddress
         });
 
         if (result.ok) {
+            toast.success(t(`api.codes.${result.code}`));
+            trackEvent('password_reminder');
             history.push('/login');
         }
     };
 
     return (
         <Container>
-            <h1>Forgotten Password</h1>
+            <Helmet>
+                <title>{t('pages.forgotPassword.meta.title')}</title>
+            </Helmet>
+
+            <h1>{t('pages.forgotPassword.title')}</h1>
             <hr />
 
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
+                initialValues={{
+                    emailAddress: ''
+                }}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.forgotPassword.form.emailAddress'))
+                        .email()
+                        .required()
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -44,7 +55,7 @@ export const ForgotPasswordPage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.forgotPassword.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -57,7 +68,7 @@ export const ForgotPasswordPage = ({ history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                Submit
+                                {t('pages.forgotPassword.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>

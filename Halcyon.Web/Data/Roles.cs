@@ -5,9 +5,9 @@ namespace Halcyon.Web.Data
     public enum Roles
     {
         [Display(Name = "System Administrator")]
-        SystemAdministrator,
+        SYSTEM_ADMINISTRATOR,
 
         [Display(Name = "User Administrator")]
-        UserAdministrator
+        USER_ADMINISTRATOR
     }
 }

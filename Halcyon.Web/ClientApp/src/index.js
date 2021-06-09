@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './i18n';
 import * as serviceWorker from './serviceWorker';
 import { App } from './App';
+import { initialize } from './utils/logger';
 import './styles/index.scss';
+
+initialize();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

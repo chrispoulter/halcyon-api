@@ -1,54 +1,66 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
+import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
-
-const initialValues = {
-    emailAddress: '',
-    newPassword: '',
-    confirmNewPassword: ''
-};
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string().label('Email Address').email().required(),
-    newPassword: Yup.string().label('New Password').min(8).max(50).required(),
-    confirmNewPassword: Yup.string()
-        .label('Confirm New Password')
-        .required()
-        .oneOf(
-            [Yup.ref('newPassword')],
-            d => `The "${d.label}" field does not match.`
-        )
-});
+import { trackEvent } from '../utils/logger';
 
 export const ResetPasswordPage = ({ match, history }) => {
+    const { t } = useTranslation();
+
     const { refetch: resetPassword } = useFetch({
         method: 'PUT',
         url: '/account/resetpassword',
         manual: true
     });
 
-    const onSubmit = async data => {
+    const onSubmit = async variables => {
         const result = await resetPassword({
             token: match.params.token,
-            emailAddress: data.emailAddress,
-            newPassword: data.newPassword
+            emailAddress: variables.emailAddress,
+            newPassword: variables.newPassword
         });
 
         if (result.ok) {
+            toast.success(t(`api.codes.${result.code}`));
+            trackEvent('password_reset');
             history.push('/login');
         }
     };
 
     return (
         <Container>
-            <h1>Reset Password</h1>
+            <Helmet>
+                <title>{t('pages.resetPassword.meta.title')}</title>
+            </Helmet>
+
+            <h1>{t('pages.resetPassword.title')}</h1>
             <hr />
 
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
+                initialValues={{
+                    emailAddress: '',
+                    newPassword: '',
+                    confirmNewPassword: ''
+                }}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.resetPassword.form.emailAddress'))
+                        .email()
+                        .required(),
+                    newPassword: Yup.string()
+                        .label(t('pages.resetPassword.form.newPassword'))
+                        .min(8)
+                        .max(50)
+                        .required(),
+                    confirmNewPassword: Yup.string()
+                        .label(t('pages.resetPassword.form.confirmNewPassword'))
+                        .required()
+                        .oneOf([Yup.ref('newPassword')])
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -56,7 +68,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.resetPassword.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -65,7 +77,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="newPassword"
                             type="password"
-                            label="New Password"
+                            label={t('pages.resetPassword.form.newPassword')}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -74,7 +86,9 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="confirmNewPassword"
                             type="password"
-                            label="Confirm New Password"
+                            label={t(
+                                'pages.resetPassword.form.confirmNewPassword'
+                            )}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -87,7 +101,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                Submit
+                                {t('pages.resetPassword.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>

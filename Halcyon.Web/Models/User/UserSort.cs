@@ -2,9 +2,9 @@
 {
     public enum UserSort
     {
-        EmailAddressAsc,
-        EmailAddressDesc,
-        NameAsc,
-        NameDesc
+        EMAIL_ADDRESS_ASC,
+        EMAIL_ADDRESS_DESC,
+        NAME_ASC,
+        NAME_DESC
     }
 }

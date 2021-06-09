@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
@@ -10,19 +12,11 @@ import {
     AuthContext,
     useFetch
 } from '../components';
-
-const initialValues = {
-    emailAddress: '',
-    password: '',
-    rememberMe: true
-};
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string().label('Email Address').email().required(),
-    password: Yup.string().label('Password').required()
-});
+import { trackEvent } from '../utils/logger';
 
 export const LoginPage = ({ history }) => {
+    const { t } = useTranslation();
+
     const { setToken } = useContext(AuthContext);
 
     const { refetch: generateToken } = useFetch({
@@ -31,27 +25,45 @@ export const LoginPage = ({ history }) => {
         manual: true
     });
 
-    const onSubmit = async data => {
+    const onSubmit = async variables => {
         const result = await generateToken({
             grantType: 'PASSWORD',
-            emailAddress: data.emailAddress,
-            password: data.password
+            emailAddress: variables.emailAddress,
+            password: variables.password
         });
 
         if (result.ok) {
-            setToken(result.data.accessToken, data.rememberMe);
+            setToken(result.data.accessToken, variables.rememberMe);
+
+            trackEvent('login');
             history.push('/');
         }
     };
 
     return (
         <Container>
-            <h1>Login</h1>
+            <Helmet>
+                <title>{t('pages.login.meta.title')}</title>
+            </Helmet>
+
+            <h1>{t('pages.login.title')}</h1>
             <hr />
 
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
+                initialValues={{
+                    emailAddress: '',
+                    password: '',
+                    rememberMe: true
+                }}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.login.form.emailAddress'))
+                        .email()
+                        .required(),
+                    password: Yup.string()
+                        .label(t('pages.login.form.password'))
+                        .required()
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -59,7 +71,7 @@ export const LoginPage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.login.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -69,7 +81,7 @@ export const LoginPage = ({ history }) => {
                         <Field
                             name="password"
                             type="password"
-                            label="Password"
+                            label={t('pages.login.form.password')}
                             required
                             maxLength={50}
                             autoComplete="current-password"
@@ -78,7 +90,7 @@ export const LoginPage = ({ history }) => {
 
                         <Field
                             name="rememberMe"
-                            label="Remember my password on this computer"
+                            label={t('pages.login.form.rememberMe')}
                             component={CheckboxInput}
                         />
 
@@ -88,7 +100,7 @@ export const LoginPage = ({ history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                Submit
+                                {t('pages.login.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>
@@ -96,11 +108,14 @@ export const LoginPage = ({ history }) => {
             </Formik>
 
             <p>
-                Not already a member? <Link to="/register">Register now</Link>
+                {t('pages.login.registerPrompt')}{' '}
+                <Link to="/register">{t('pages.login.registerLink')}</Link>
             </p>
             <p>
-                Forgotten your password?{' '}
-                <Link to="/forgot-password">Request reset</Link>
+                {t('pages.login.forgotPasswordPrompt')}{' '}
+                <Link to="/forgot-password">
+                    {t('pages.login.forgotPasswordLink')}
+                </Link>
             </p>
         </Container>
     );

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
+import { toast } from 'react-toastify';
 import {
     Spinner,
     TextInput,
@@ -12,20 +15,12 @@ import {
     Button,
     useFetch
 } from '../components';
-import { AVAILABLE_ROLES } from '../utils/auth';
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string()
-        .label('Email Address')
-        .max(254)
-        .email()
-        .required(),
-    firstName: Yup.string().label('First Name').max(50).required(),
-    lastName: Yup.string().label('Last Name').max(50).required(),
-    dateOfBirth: Yup.string().label('Date of Birth').required()
-});
+import { ALL_ROLES } from '../utils/auth';
+import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
+    const { t } = useTranslation();
+
     const { refetch, loading, data } = useFetch({
         method: 'GET',
         url: `/user/${match.params.id}`
@@ -62,37 +57,46 @@ export const UpdateUserPage = ({ history, match }) => {
     if (!data) {
         return (
             <Alert color="info" className="container p-3 mb-3">
-                User could not be found.
+                {t('pages.updateUser.userNotFound')}
             </Alert>
         );
     }
 
-    const onSubmit = async data => {
+    const onSubmit = async variables => {
         const result = await updateUser({
-            emailAddress: data.emailAddress,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dateOfBirth: data.dateOfBirth,
-            roles: data.roles
+            emailAddress: variables.emailAddress,
+            firstName: variables.firstName,
+            lastName: variables.lastName,
+            dateOfBirth: variables.dateOfBirth,
+            roles: variables.roles
         });
 
         if (result.ok) {
+            toast.success(t(`api.codes.${result.code}`));
+
+            trackEvent('user_updated', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };
 
     const onLockUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'lock-user-modal'
+        });
+
         const confirmed = await confirm({
-            title: 'Confirm',
+            title: t('pages.updateUser.lockModal.title'),
             message: (
-                <>
-                    Are you sure you want to lock{' '}
-                    <strong>
-                        {data.firstName} {data.lastName}
-                    </strong>
-                    ?
-                </>
+                <Trans
+                    i18nKey="pages.updateUser.lockModal.message"
+                    values={data}
+                />
             ),
+            confirmText: t('pages.updateUser.lockModal.confirm'),
+            cancelText: t('pages.updateUser.lockModal.cancel'),
             cancelColor: 'secondary'
         });
 
@@ -103,21 +107,30 @@ export const UpdateUserPage = ({ history, match }) => {
         const result = await lockUser();
         if (result.ok) {
             await refetch();
+
+            toast.success(t(`api.codes.${result.code}`));
+
+            trackEvent('user_locked', {
+                entityId: result.data.id
+            });
         }
     };
 
     const onUnlockUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'unlock-user-modal'
+        });
+
         const confirmed = await confirm({
-            title: 'Confirm',
+            title: t('pages.updateUser.unlockModal.title'),
             message: (
-                <>
-                    Are you sure you want to unlock{' '}
-                    <strong>
-                        {data.firstName} {data.lastName}
-                    </strong>
-                    ?
-                </>
+                <Trans
+                    i18nKey="pages.updateUser.unlockModal.message"
+                    values={data}
+                />
             ),
+            confirmText: t('pages.updateUser.unlockModal.confirm'),
+            cancelText: t('pages.updateUser.unlockModal.cancel'),
             cancelColor: 'secondary'
         });
 
@@ -127,22 +140,29 @@ export const UpdateUserPage = ({ history, match }) => {
 
         const result = await unlockUser();
         if (result.ok) {
-            await refetch();
+            toast.success(t(`api.codes.${result.code}`));
+
+            trackEvent('user_unlocked', {
+                entityId: result.data.id
+            });
         }
     };
 
     const onDeleteUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'delete-user-modal'
+        });
+
         const confirmed = await confirm({
-            title: 'Confirm',
+            title: t('pages.updateUser.deleteModal.title'),
             message: (
-                <>
-                    Are you sure you want to delete{' '}
-                    <strong>
-                        {data.firstName} {data.lastName}
-                    </strong>
-                    ?
-                </>
+                <Trans
+                    i18nKey="pages.updateUser.deleteModal.message"
+                    values={data}
+                />
             ),
+            confirmText: t('pages.updateUser.deleteModal.confirm'),
+            cancelText: t('pages.updateUser.deleteModal.cancel'),
             cancelColor: 'secondary'
         });
 
@@ -152,23 +172,52 @@ export const UpdateUserPage = ({ history, match }) => {
 
         const result = await deleteUser();
         if (result.ok) {
+            toast.success(t(`api.codes.${result.code}`));
+
+            trackEvent('user_deleted', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };
 
     return (
         <Container>
+            <Helmet>
+                <title>{t('pages.updateUser.meta.title')}</title>
+            </Helmet>
+
             <h1>
-                User
+                {t('pages.updateUser.title')}
                 <br />
-                <small className="text-muted">Update</small>
+                <small className="text-muted">
+                    {t('pages.updateUser.subtitle')}
+                </small>
             </h1>
             <hr />
 
             <Formik
                 enableReinitialize={true}
                 initialValues={data}
-                validationSchema={validationSchema}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.updateUser.form.emailAddress'))
+                        .max(254)
+                        .email()
+                        .required(),
+                    firstName: Yup.string()
+                        .label(t('pages.updateUser.form.firstName'))
+                        .max(50)
+                        .required(),
+                    lastName: Yup.string()
+                        .label(t('pages.updateUser.form.lastName'))
+                        .max(50)
+                        .required(),
+                    dateOfBirth: Yup.string()
+                        .label(t('pages.updateUser.form.dateOfBirth'))
+                        .required()
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -176,7 +225,7 @@ export const UpdateUserPage = ({ history, match }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.updateUser.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -186,7 +235,7 @@ export const UpdateUserPage = ({ history, match }) => {
                         <Field
                             name="firstName"
                             type="text"
-                            label="First Name"
+                            label={t('pages.updateUser.form.firstName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -195,7 +244,7 @@ export const UpdateUserPage = ({ history, match }) => {
                         <Field
                             name="lastName"
                             type="text"
-                            label="Last Name"
+                            label={t('pages.updateUser.form.lastName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -204,21 +253,24 @@ export const UpdateUserPage = ({ history, match }) => {
                         <Field
                             name="dateOfBirth"
                             type="date"
-                            label="Date Of Birth"
+                            label={t('pages.updateUser.form.dateOfBirth')}
                             required
                             component={DateInput}
                         />
 
                         <Field
                             name="roles"
-                            label="Roles"
-                            options={AVAILABLE_ROLES}
+                            label={t('pages.updateUser.form.roles')}
+                            options={ALL_ROLES.map(role => ({
+                                value: role,
+                                label: t(`api.userRoles.${role}`)
+                            }))}
                             component={CheckboxGroupInput}
                         />
 
                         <FormGroup className="text-right">
                             <Button to="/user" className="mr-1" tag={Link}>
-                                Cancel
+                                {t('pages.updateUser.cancelButton')}
                             </Button>
                             {data.isLockedOut ? (
                                 <Button
@@ -230,7 +282,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                     }
                                     onClick={onUnlockUser}
                                 >
-                                    Unlock
+                                    {t('pages.updateUser.unlockButton')}
                                 </Button>
                             ) : (
                                 <Button
@@ -244,7 +296,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                     }
                                     onClick={onLockUser}
                                 >
-                                    Lock
+                                    {t('pages.updateUser.lockButton')}
                                 </Button>
                             )}
                             <Button
@@ -256,7 +308,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                 }
                                 onClick={onDeleteUser}
                             >
-                                Delete
+                                {t('pages.updateUser.deleteButton')}
                             </Button>
                             <Button
                                 type="submit"
@@ -266,7 +318,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                     isLocking || isUnlocking || isDeleting
                                 }
                             >
-                                Submit
+                                {t('pages.updateUser.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>

@@ -17,7 +17,7 @@ namespace Halcyon.Web.Controllers
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
     [Route("api/[controller]")]
-    [AuthorizeRole(Roles.SystemAdministrator, Roles.UserAdministrator)]
+    [AuthorizeRole(Roles.SYSTEM_ADMINISTRATOR, Roles.USER_ADMINISTRATOR)]
     public class UserController : BaseController
     {
         private readonly HalcyonDbContext _context;
@@ -49,9 +49,9 @@ namespace Halcyon.Web.Controllers
 
             query = model.Sort switch
             {
-                UserSort.EmailAddressDesc => query.OrderByDescending(r => r.EmailAddress),
-                UserSort.EmailAddressAsc => query.OrderBy(r => r.EmailAddress),
-                UserSort.NameDesc => query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName),
+                UserSort.EMAIL_ADDRESS_DESC => query.OrderByDescending(r => r.EmailAddress),
+                UserSort.EMAIL_ADDRESS_ASC => query.OrderBy(r => r.EmailAddress),
+                UserSort.NAME_DESC => query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName),
                 _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName),
             };
 

@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
@@ -10,36 +12,11 @@ import {
     AuthContext,
     useFetch
 } from '../components';
-
-const initialValues = {
-    emailAddress: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    dateOfBirth: ''
-};
-
-const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string()
-        .label('Email Address')
-        .max(254)
-        .email()
-        .required(),
-    password: Yup.string().label('Password').min(8).max(50).required(),
-    confirmPassword: Yup.string()
-        .label('Confirm Password')
-        .required()
-        .oneOf(
-            [Yup.ref('password')],
-            d => `The "${d.label}" field does not match.`
-        ),
-    firstName: Yup.string().label('First Name').max(50).required(),
-    lastName: Yup.string().label('Last Name').max(50).required(),
-    dateOfBirth: Yup.string().label('Date of Birth').required()
-});
+import { trackEvent } from '../utils/logger';
 
 export const RegisterPage = ({ history }) => {
+    const { t } = useTranslation();
+
     const { setToken } = useContext(AuthContext);
 
     const { refetch: register } = useFetch({
@@ -54,35 +31,78 @@ export const RegisterPage = ({ history }) => {
         manual: true
     });
 
-    const onSubmit = async data => {
-        await register({
-            emailAddress: data.emailAddress,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dateOfBirth: data.dateOfBirth
-        });
-
-        const result = await generateToken({
-            grantType: 'PASSWORD',
-            emailAddress: data.emailAddress,
-            password: data.password
+    const onSubmit = async variables => {
+        let result = await register({
+            emailAddress: variables.emailAddress,
+            password: variables.password,
+            firstName: variables.firstName,
+            lastName: variables.lastName,
+            dateOfBirth: variables.dateOfBirth
         });
 
         if (result.ok) {
-            setToken(result.data.accessToken);
-            history.push('/');
+            trackEvent('sign_up', {
+                entityId: result.data.id
+            });
+
+            result = await generateToken({
+                grantType: 'PASSWORD',
+                emailAddress: variables.emailAddress,
+                password: variables.password
+            });
+
+            if (result.ok) {
+                setToken(result.data.accessToken);
+                history.push('/');
+            }
         }
     };
 
     return (
         <Container>
-            <h1>Register</h1>
+            <Helmet>
+                <title>{t('pages.register.meta.title')}</title>
+            </Helmet>
+
+            <h1>{t('pages.register.title')}</h1>
             <hr />
 
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
+                initialValues={{
+                    emailAddress: '',
+                    password: '',
+                    confirmPassword: '',
+                    firstName: '',
+                    lastName: '',
+                    dateOfBirth: ''
+                }}
+                validationSchema={Yup.object().shape({
+                    emailAddress: Yup.string()
+                        .label(t('pages.register.form.emailAddress'))
+                        .max(254)
+                        .email()
+                        .required(),
+                    password: Yup.string()
+                        .label(t('pages.register.form.password'))
+                        .min(8)
+                        .max(50)
+                        .required(),
+                    confirmPassword: Yup.string()
+                        .label(t('pages.register.form.confirmPassword'))
+                        .required()
+                        .oneOf([Yup.ref('password')]),
+                    firstName: Yup.string()
+                        .label(t('pages.register.form.firstName'))
+                        .max(50)
+                        .required(),
+                    lastName: Yup.string()
+                        .label(t('pages.register.form.lastName'))
+                        .max(50)
+                        .required(),
+                    dateOfBirth: Yup.string()
+                        .label(t('pages.register.form.dateOfBirth'))
+                        .required()
+                })}
                 onSubmit={onSubmit}
             >
                 {({ isSubmitting }) => (
@@ -90,7 +110,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label="Email Address"
+                            label={t('pages.register.form.emailAddress')}
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -100,7 +120,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="password"
                             type="password"
-                            label="Password"
+                            label={t('pages.register.form.password')}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -110,7 +130,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="confirmPassword"
                             type="password"
-                            label="Confirm Password"
+                            label={t('pages.register.form.confirmPassword')}
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -120,7 +140,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="firstName"
                             type="text"
-                            label="First Name"
+                            label={t('pages.register.form.firstName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -129,7 +149,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="lastName"
                             type="text"
-                            label="Last Name"
+                            label={t('pages.register.form.lastName')}
                             required
                             maxLength={50}
                             component={TextInput}
@@ -138,7 +158,7 @@ export const RegisterPage = ({ history }) => {
                         <Field
                             name="dateOfBirth"
                             type="date"
-                            label="Date Of Birth"
+                            label={t('pages.register.form.dateOfBirth')}
                             required
                             component={DateInput}
                         />
@@ -149,7 +169,7 @@ export const RegisterPage = ({ history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                Submit
+                                {t('pages.register.submitButton')}
                             </Button>
                         </FormGroup>
                     </Form>
@@ -157,7 +177,8 @@ export const RegisterPage = ({ history }) => {
             </Formik>
 
             <p>
-                Already have an account? <Link to="/login">Log in now</Link>
+                {t('pages.register.loginPrompt')}{' '}
+                <Link to="/login">{t('pages.register.loginLink')}</Link>
             </p>
         </Container>
     );

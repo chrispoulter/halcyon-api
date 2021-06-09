@@ -1,5 +1,7 @@
 export * from './HomePage';
 export * from './NotFoundPage';
+export * from './ErrorPage';
+export * from './AccessDeniedPage';
 export * from './LoginPage';
 export * from './RegisterPage';
 export * from './ForgotPasswordPage';
