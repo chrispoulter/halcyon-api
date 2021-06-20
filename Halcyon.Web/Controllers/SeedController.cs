@@ -34,7 +34,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SeedData()
         {
             await _context.Database.MigrateAsync();
@@ -49,16 +49,12 @@ namespace Halcyon.Web.Controllers
 
             var userId = await AddSystemUserAsync(roleIds);
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = userId
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_CREATED,
-                result,
-                "User successfully created.");
+                Code = InternalStatusCode.USER_CREATED,
+                Message = "User successfully created.",
+                Data = { Id = userId }
+            });
         }
 
         private async Task<int> AddRoleAsync(string name)

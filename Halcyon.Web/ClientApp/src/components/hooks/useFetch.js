@@ -89,7 +89,7 @@ export const useFetch = request => {
         setData(data);
         setLoading(false);
 
-        return { ok, status, code, data };
+        return { ok, code, data };
     };
 
     return { loading, data, refetch };

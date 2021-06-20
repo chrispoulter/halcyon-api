@@ -79,14 +79,15 @@ namespace Halcyon.Web.Controllers
 
             var pageCount = (count + size - 1) / size;
 
-            var result = new ListUsersResponse
+            return Ok(new ApiResponse<ListUsersResponse>
             {
-                Items = users,
-                HasNextPage = page < pageCount,
-                HasPreviousPage = page > 1
-            };
-
-            return Generate(HttpStatusCode.OK, result);
+                Data =
+                {
+                    Items = users,
+                    HasNextPage = page < pageCount,
+                    HasPreviousPage = page > 1
+                }
+            });
         }
 
         [HttpGet("{id}")]
@@ -101,30 +102,32 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(
-                    HttpStatusCode.NotFound,
-                    InternalStatusCode.USER_NOT_FOUND,
-                    "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
-            var result = new GetUserResponse
+            return Ok(new ApiResponse<GetUserResponse>
             {
-                Id = user.Id,
-                EmailAddress = user.EmailAddress,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.ToUniversalTime(),
-                IsLockedOut = user.IsLockedOut,
-                Roles = user.UserRoles
-                    .Select(ur => ur.Role.Name)
-                    .ToList()
-            };
-
-            return Generate(HttpStatusCode.OK, result);
+                Data =
+                {
+                    Id = user.Id,
+                    EmailAddress = user.EmailAddress,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
+                    IsLockedOut = user.IsLockedOut,
+                    Roles = user.UserRoles
+                        .Select(ur => ur.Role.Name)
+                        .ToList()
+                }
+            });
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserModel model)
         {
@@ -133,10 +136,11 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return Generate(
-                    HttpStatusCode.BadRequest,
-                    InternalStatusCode.DUPLICATE_USER,
-                    $"User name \"{model.EmailAddress}\" is already taken.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.DUPLICATE_USER,
+                    Message = $"User name \"{model.EmailAddress}\" is already taken."
+                });
             }
 
             var user = new User
@@ -163,20 +167,16 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_CREATED,
-                result,
-                "User successfully created.");
+                Code = InternalStatusCode.USER_CREATED,
+                Message = "User successfully created.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
@@ -187,10 +187,11 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(
-                    HttpStatusCode.NotFound,
-                    InternalStatusCode.USER_NOT_FOUND,
-                    "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             if (!model.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
@@ -200,10 +201,11 @@ namespace Halcyon.Web.Controllers
 
                 if (existing != null)
                 {
-                    return Generate(
-                        HttpStatusCode.BadRequest,
-                        InternalStatusCode.DUPLICATE_USER,
-                        $"User name \"{model.EmailAddress}\" is already taken.");
+                    return BadRequest(new ApiResponse
+                    {
+                        Code = InternalStatusCode.DUPLICATE_USER,
+                        Message = $"User name \"{model.EmailAddress}\" is already taken."
+                    });
                 }
             }
 
@@ -225,20 +227,16 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_UPDATED,
-                result,
-                "User successfully updated.");
+                Code = InternalStatusCode.USER_UPDATED,
+                Message = "User successfully updated.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpPut("{id}/lock")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> LockUser(int id)
@@ -248,38 +246,36 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(
-                    HttpStatusCode.NotFound,
-                    InternalStatusCode.USER_NOT_FOUND,
-                    "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             if (user.Id == CurrentUserId)
             {
-                return Generate(
-                    HttpStatusCode.BadRequest,
-                    InternalStatusCode.LOCK_CURRENT_USER,
-                    "Cannot lock currently logged in user.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.LOCK_CURRENT_USER,
+                    Message = "Cannot lock currently logged in user."
+                });
             }
 
             user.IsLockedOut = true;
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_LOCKED,
-                result,
-                "User successfully locked.");
+                Code = InternalStatusCode.USER_LOCKED,
+                Message = "User successfully locked.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpPut("{id}/unlock")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UnlockUser(int id)
         {
@@ -288,30 +284,27 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(
-                    HttpStatusCode.NotFound,
-                    InternalStatusCode.USER_NOT_FOUND,
-                    "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             user.IsLockedOut = false;
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_UNLOCKED,
-                result,
-                "User successfully unlocked.");
+                Code = InternalStatusCode.USER_UNLOCKED,
+                Message = "User successfully unlocked.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteUser(int id)
@@ -321,34 +314,32 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                return Generate(
-                    HttpStatusCode.NotFound,
-                    InternalStatusCode.USER_NOT_FOUND,
-                    "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             if (user.Id == CurrentUserId)
             {
-                return Generate(
-                    HttpStatusCode.BadRequest,
-                    InternalStatusCode.DELETE_CURRENT_USER,
-                    "Cannot delete currently logged in user.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.DELETE_CURRENT_USER,
+                    Message = "Cannot delete currently logged in user."
+                });
             }
 
             _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_DELETED,
-                result,
-                "User successfully deleted.");
+                Code = InternalStatusCode.USER_DELETED,
+                Message = "User successfully deleted.",
+                Data = { Id = user.Id }
+            });
         }
     }
 }

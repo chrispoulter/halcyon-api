@@ -34,7 +34,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -43,10 +43,11 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return Generate(
-                    HttpStatusCode.BadRequest,
-                    InternalStatusCode.DUPLICATE_USER,
-                    $"User name \"{model.EmailAddress}\" is already taken.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.DUPLICATE_USER,
+                    Message = $"User name \"{model.EmailAddress}\" is already taken."
+                });
             }
 
             var user = new User
@@ -62,16 +63,12 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.USER_REGISTERED,
-                result,
-                "User successfully registered.");
+                Code = InternalStatusCode.USER_REGISTERED,
+                Message = "User successfully registered.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpPut("forgotpassword")]
@@ -100,14 +97,15 @@ namespace Halcyon.Web.Controllers
                 await _emailService.SendEmailAsync(message);
             }
 
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.FORGOT_PASSWORD,
-                "Instructions as to how to reset your password have been sent to you via email.");
+            return Ok(new ApiResponse
+            {
+                Code = InternalStatusCode.FORGOT_PASSWORD,
+                Message = "Instructions as to how to reset your password have been sent to you via email."
+            });
         }
 
         [HttpPut("resetpassword")]
-        [ProducesResponseType(typeof(ApiResponse<UserActionResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
@@ -119,10 +117,11 @@ namespace Halcyon.Web.Controllers
                 || user.IsLockedOut
                 || !model.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
             {
-                return Generate(
-                    HttpStatusCode.BadRequest,
-                    InternalStatusCode.INVALID_TOKEN,
-                    "Invalid token.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.INVALID_TOKEN,
+                    Message = "Invalid token."
+                });
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -130,16 +129,12 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserActionResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                Id = user.Id
-            };
-
-            return Generate(
-                HttpStatusCode.OK,
-                InternalStatusCode.PASSWORD_RESET,
-                result,
-                "Your password has been reset.");
+                Code = InternalStatusCode.PASSWORD_RESET,
+                Message = "Your password has been reset.",
+                Data = { Id = user.Id }
+            });
         }
     }
 }
