@@ -1,12 +1,11 @@
-const SYSTEM_ADMINISTRATOR = 'SYSTEM_ADMINISTRATOR';
-
-const USER_ADMINISTRATOR = 'USER_ADMINISTRATOR';
-
-export const ALL_ROLES = [SYSTEM_ADMINISTRATOR, USER_ADMINISTRATOR];
+export const ALL_ROLES = [
+    { label: 'System Administrator', value: 'SYSTEM_ADMINISTRATOR' },
+    { label: 'User Administrator', value: 'USER_ADMINISTRATOR' }
+];
 
 export const USER_ADMINISTRATOR_ROLES = [
-    SYSTEM_ADMINISTRATOR,
-    USER_ADMINISTRATOR
+    'SYSTEM_ADMINISTRATOR',
+    'USER_ADMINISTRATOR'
 ];
 
 export const isAuthorized = (user, requiredRoles) => {
