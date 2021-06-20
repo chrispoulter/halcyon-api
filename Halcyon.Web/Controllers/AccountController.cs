@@ -67,10 +67,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_REGISTERED,
                 Message = "User successfully registered.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
 
@@ -136,10 +133,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.PASSWORD_RESET,
                 Message = "Your password has been reset.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
     }

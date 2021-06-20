@@ -81,7 +81,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<ListUsersResponse>
             {
-                Data = new ListUsersResponse
+                Data =
                 {
                     Items = users,
                     HasNextPage = page < pageCount,
@@ -111,7 +111,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<GetUserResponse>
             {
-                Data = new GetUserResponse
+                Data =
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
@@ -171,10 +171,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_CREATED,
                 Message = "User successfully created.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
 
@@ -234,10 +231,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_UPDATED,
                 Message = "User successfully updated.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
 
@@ -276,10 +270,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_LOCKED,
                 Message = "User successfully locked.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
 
@@ -308,10 +299,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_UNLOCKED,
                 Message = "User successfully unlocked.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
 
@@ -350,10 +338,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_DELETED,
                 Message = "User successfully deleted.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = user.Id
-                }
+                Data = { Id = user.Id }
             });
         }
     }

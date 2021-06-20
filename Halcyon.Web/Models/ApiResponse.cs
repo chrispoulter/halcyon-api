@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Halcyon.Web.Models
+﻿namespace Halcyon.Web.Models
 {
     public class ApiResponse<T> : ApiResponse
+        where T : new()
     {
-        public T Data { get; set; }
+        public T Data { get; set; } = new T();
     }
 
     public class ApiResponse

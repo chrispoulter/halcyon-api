@@ -53,10 +53,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = InternalStatusCode.USER_CREATED,
                 Message = "User successfully created.",
-                Data = new UserUpdatedResponse
-                {
-                    Id = userId
-                }
+                Data = { Id = userId }
             });
         }
 
