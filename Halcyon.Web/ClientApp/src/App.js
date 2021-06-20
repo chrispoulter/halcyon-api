@@ -23,7 +23,7 @@ import {
     CreateUserPage,
     UpdateUserPage
 } from './pages';
-import { IS_USER_ADMINISTRATOR } from './utils/auth';
+import { USER_ADMINISTRATOR_ROLES } from './utils/auth';
 
 export const App = () => (
     <AuthProvider>
@@ -77,21 +77,21 @@ export const App = () => (
                     <PrivateRoute
                         title="Users"
                         path="/user"
-                        requiredRoles={IS_USER_ADMINISTRATOR}
+                        requiredRoles={USER_ADMINISTRATOR_ROLES}
                         component={UserPage}
                         exact
                     />
                     <PrivateRoute
                         title="Create User"
                         path="/user/create"
-                        requiredRoles={IS_USER_ADMINISTRATOR}
+                        requiredRoles={USER_ADMINISTRATOR_ROLES}
                         component={CreateUserPage}
                         exact
                     />
                     <PrivateRoute
                         title="Update User"
                         path="/user/:id"
-                        requiredRoles={IS_USER_ADMINISTRATOR}
+                        requiredRoles={USER_ADMINISTRATOR_ROLES}
                         component={UpdateUserPage}
                         exact
                     />

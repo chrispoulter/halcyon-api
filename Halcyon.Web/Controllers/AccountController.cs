@@ -34,7 +34,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ApiResponse<UserCreatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -43,7 +43,11 @@ namespace Halcyon.Web.Controllers
 
             if (existing != null)
             {
-                return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.DUPLICATE_USER,
+                    Message = $"User name \"{model.EmailAddress}\" is already taken."
+                });
             }
 
             var user = new User
@@ -59,12 +63,15 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new UserCreatedResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                UserId = user.Id
-            };
-
-            return Generate(HttpStatusCode.OK, result, "User successfully registered.");
+                Code = InternalStatusCode.USER_REGISTERED,
+                Message = "User successfully registered.",
+                Data = new UserUpdatedResponse
+                {
+                    Id = user.Id
+                }
+            });
         }
 
         [HttpPut("forgotpassword")]
@@ -83,7 +90,7 @@ namespace Halcyon.Web.Controllers
 
                 var message = new EmailMessage
                 {
-                    Template = EmailTemplate.ForgotPassword
+                    Template = EmailTemplate.FORGOT_PASSWORD
                 };
 
                 message.To.Add(user.EmailAddress);
@@ -93,11 +100,15 @@ namespace Halcyon.Web.Controllers
                 await _emailService.SendEmailAsync(message);
             }
 
-            return Generate(HttpStatusCode.OK, "Instructions as to how to reset your password have been sent to you via email.");
+            return Ok(new ApiResponse
+            {
+                Code = InternalStatusCode.FORGOT_PASSWORD,
+                Message = "Instructions as to how to reset your password have been sent to you via email."
+            });
         }
 
         [HttpPut("resetpassword")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
@@ -109,7 +120,11 @@ namespace Halcyon.Web.Controllers
                 || user.IsLockedOut
                 || !model.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
             {
-                return Generate(HttpStatusCode.BadRequest, "Invalid token.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.INVALID_TOKEN,
+                    Message = "Invalid token."
+                });
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -117,7 +132,15 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Generate(HttpStatusCode.OK, "Your password has been reset.");
+            return Ok(new ApiResponse<UserUpdatedResponse>
+            {
+                Code = InternalStatusCode.PASSWORD_RESET,
+                Message = "Your password has been reset.",
+                Data = new UserUpdatedResponse
+                {
+                    Id = user.Id
+                }
+            });
         }
     }
 }

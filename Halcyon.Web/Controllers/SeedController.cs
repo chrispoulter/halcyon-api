@@ -2,7 +2,6 @@
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
-using Halcyon.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -35,7 +34,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<UserCreatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SeedData()
         {
             await _context.Database.MigrateAsync();
@@ -44,19 +43,21 @@ namespace Halcyon.Web.Controllers
 
             foreach (Roles role in Enum.GetValues(typeof(Roles)))
             {
-                var name = role.GetDiplayName();
-                var roleId = await AddRoleAsync(name);
+                var roleId = await AddRoleAsync(role.ToString());
                 roleIds.Add(roleId);
             }
 
             var userId = await AddSystemUserAsync(roleIds);
 
-            var result = new UserCreatedResponse
+            return Ok(new ApiResponse<UserUpdatedResponse>
             {
-                UserId = userId
-            };
-
-            return Generate(HttpStatusCode.OK, result, "User successfully created.");
+                Code = InternalStatusCode.USER_CREATED,
+                Message = "User successfully created.",
+                Data = new UserUpdatedResponse
+                {
+                    Id = userId
+                }
+            });
         }
 
         private async Task<int> AddRoleAsync(string name)

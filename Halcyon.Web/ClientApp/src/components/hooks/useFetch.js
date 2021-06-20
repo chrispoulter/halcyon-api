@@ -48,12 +48,12 @@ export const useFetch = request => {
             json = await response.json();
         } catch {}
 
-        const messages = json?.messages || [];
+        const message = json?.message;
         const data = json?.data;
 
         switch (status) {
             case 400:
-                messages.forEach(toast.error);
+                toast.error(message);
                 break;
 
             case 401:
@@ -61,14 +61,14 @@ export const useFetch = request => {
                 break;
 
             case 403:
-                messages.forEach(toast.warn);
+                toast.warn(message);
                 break;
 
             case 404:
                 break;
 
             case 200:
-                messages.forEach(toast.success);
+                toast.success(message);
                 break;
 
             default:
@@ -81,7 +81,7 @@ export const useFetch = request => {
         setData(data);
         setLoading(false);
 
-        return { ok, status, messages, data };
+        return { ok, data };
     };
 
     return { loading, data, refetch };

@@ -9,6 +9,8 @@ namespace Halcyon.Web.Models
 
     public class ApiResponse
     {
-        public IEnumerable<string> Messages { get; set; }
+        public InternalStatusCode? Code { get; set; }
+
+        public string Message { get; set; }
     }
 }

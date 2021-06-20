@@ -38,6 +38,8 @@ export const LoginPage = ({ history }) => {
             password: data.password
         });
 
+        console.log('result', result);
+
         if (result.ok) {
             setToken(result.data.accessToken, data.rememberMe);
             history.push('/');

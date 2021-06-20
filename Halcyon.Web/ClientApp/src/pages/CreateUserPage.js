@@ -10,7 +10,7 @@ import {
     Button,
     useFetch
 } from '../components';
-import { AVAILABLE_ROLES } from '../utils/auth';
+import { ALL_ROLES } from '../utils/auth';
 
 const initialValues = {
     emailAddress: '',
@@ -138,7 +138,7 @@ export const CreateUserPage = ({ history }) => {
                         <Field
                             name="roles"
                             label="Roles"
-                            options={AVAILABLE_ROLES}
+                            options={ALL_ROLES}
                             component={CheckboxGroupInput}
                         />
 
