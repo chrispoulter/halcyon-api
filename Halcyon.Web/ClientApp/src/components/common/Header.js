@@ -16,6 +16,7 @@ import {
 } from 'reactstrap';
 import { AuthContext } from '../providers/AuthProvider';
 import { isAuthorized, IS_USER_ADMINISTRATOR } from '../../utils/auth';
+import { trackEvent } from '../../utils/logger';
 
 export const Header = () => {
     const history = useHistory();
@@ -34,6 +35,7 @@ export const Header = () => {
 
     const logout = () => {
         removeToken();
+        trackEvent('logout');
         history.push('/');
     };
 

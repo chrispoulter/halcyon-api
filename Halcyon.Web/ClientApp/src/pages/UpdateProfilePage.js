@@ -4,6 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, Alert, FormGroup } from 'reactstrap';
 import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
+import { trackEvent } from '../utils/logger';
 
 const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
@@ -49,6 +50,7 @@ export const UpdateProfilePage = ({ history }) => {
         });
 
         if (result.ok) {
+            trackEvent('profile_updated');
             history.push('/my-account');
         }
     };

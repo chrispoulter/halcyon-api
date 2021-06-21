@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Container, FormGroup } from 'reactstrap';
 import { TextInput, Button, useFetch } from '../components';
+import { trackEvent } from '../utils/logger';
 
 const initialValues = {
     emailAddress: '',
@@ -37,6 +38,7 @@ export const ResetPasswordPage = ({ match, history }) => {
         });
 
         if (result.ok) {
+            trackEvent('password_reset');
             history.push('/login');
         }
     };

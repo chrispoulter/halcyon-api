@@ -10,6 +10,7 @@ import {
     AuthContext,
     useFetch
 } from '../components';
+import { trackEvent } from '../utils/logger';
 
 const initialValues = {
     emailAddress: '',
@@ -55,7 +56,7 @@ export const RegisterPage = ({ history }) => {
     });
 
     const onSubmit = async data => {
-        await register({
+        let result = await register({
             emailAddress: data.emailAddress,
             password: data.password,
             firstName: data.firstName,
@@ -63,7 +64,15 @@ export const RegisterPage = ({ history }) => {
             dateOfBirth: data.dateOfBirth
         });
 
-        const result = await generateToken({
+        if (!result.ok) {
+            return;
+        }
+
+        trackEvent('sign_up', {
+            entityId: result.data.id
+        });
+
+        result = await generateToken({
             grantType: 'PASSWORD',
             emailAddress: data.emailAddress,
             password: data.password
@@ -71,6 +80,7 @@ export const RegisterPage = ({ history }) => {
 
         if (result.ok) {
             setToken(result.data.accessToken);
+            trackEvent('login');
             history.push('/');
         }
     };

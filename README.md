@@ -4,12 +4,12 @@ A web application template.
 
 **Technologies used:**
 
--   React
-    [https://reactjs.org](https://reactjs.org)
--   .NET Core
-    [https://github.com/dotnet/core](https://github.com/dotnet/core)
--   SQL Server
-    [https://www.microsoft.com/sql-server](https://www.microsoft.com/sql-server)
+- React
+  [https://reactjs.org](https://reactjs.org)
+- .NET Core
+  [https://github.com/dotnet/core](https://github.com/dotnet/core)
+- SQL Server
+  [https://www.microsoft.com/sql-server](https://www.microsoft.com/sql-server)
 
 #### Custom Settings
 
@@ -41,4 +41,10 @@ Create a `appsettings.Development.json` file in the web project directory.
         "ConnectionString": ""
     }
 }
+```
+
+Create a `.env` file in the web project `ClientApp` directory.
+
+```
+REACT_APP_GA_MEASUREMENTID=
 ```

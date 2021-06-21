@@ -11,6 +11,7 @@ import {
     useFetch
 } from '../components';
 import { AVAILABLE_ROLES } from '../utils/auth';
+import { trackEvent } from '../utils/logger';
 
 const initialValues = {
     emailAddress: '',
@@ -59,6 +60,10 @@ export const CreateUserPage = ({ history }) => {
         });
 
         if (result.ok) {
+            trackEvent('user_created', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };

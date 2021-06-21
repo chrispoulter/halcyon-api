@@ -10,6 +10,7 @@ import {
     AuthContext,
     useFetch
 } from '../components';
+import { trackEvent } from '../utils/logger';
 
 const initialValues = {
     emailAddress: '',
@@ -40,6 +41,7 @@ export const LoginPage = ({ history }) => {
 
         if (result.ok) {
             setToken(result.data.accessToken, data.rememberMe);
+            trackEvent('login');
             history.push('/');
         }
     };

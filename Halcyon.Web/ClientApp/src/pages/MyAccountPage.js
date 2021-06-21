@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
 import { Button, Spinner, AuthContext, useFetch } from '../components';
+import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useContext(AuthContext);
@@ -31,6 +32,10 @@ export const MyAccountPage = ({ history }) => {
     }
 
     const onDeleteAccount = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'delete-account-modal'
+        });
+
         const confirmed = await confirm({
             title: 'Confirm',
             message: 'Are you sure you want to delete your account?',
@@ -43,6 +48,10 @@ export const MyAccountPage = ({ history }) => {
 
         const result = await deleteAccount();
         if (result.ok) {
+            trackEvent('account_deleted', {
+                entityId: result.data.id
+            });
+
             removeToken();
             history.push('/');
         }

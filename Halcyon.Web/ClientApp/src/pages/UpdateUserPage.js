@@ -13,6 +13,7 @@ import {
     useFetch
 } from '../components';
 import { AVAILABLE_ROLES } from '../utils/auth';
+import { trackEvent } from '../utils/logger';
 
 const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
@@ -77,11 +78,19 @@ export const UpdateUserPage = ({ history, match }) => {
         });
 
         if (result.ok) {
+            trackEvent('user_updated', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };
 
     const onLockUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'lock-user-modal'
+        });
+
         const confirmed = await confirm({
             title: 'Confirm',
             message: (
@@ -102,11 +111,19 @@ export const UpdateUserPage = ({ history, match }) => {
 
         const result = await lockUser();
         if (result.ok) {
+            trackEvent('user_locked', {
+                entityId: result.data.id
+            });
+
             await refetch();
         }
     };
 
     const onUnlockUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'unlock-user-modal'
+        });
+
         const confirmed = await confirm({
             title: 'Confirm',
             message: (
@@ -127,11 +144,19 @@ export const UpdateUserPage = ({ history, match }) => {
 
         const result = await unlockUser();
         if (result.ok) {
+            trackEvent('user_unlocked', {
+                entityId: result.data.id
+            });
+
             await refetch();
         }
     };
 
     const onDeleteUser = async () => {
+        trackEvent('screen_view', {
+            screen_name: 'delete-user-modal'
+        });
+
         const confirmed = await confirm({
             title: 'Confirm',
             message: (
@@ -152,6 +177,10 @@ export const UpdateUserPage = ({ history, match }) => {
 
         const result = await deleteUser();
         if (result.ok) {
+            trackEvent('user_deleted', {
+                entityId: result.data.id
+            });
+
             history.push('/user');
         }
     };
