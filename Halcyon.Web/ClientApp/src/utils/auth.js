@@ -3,7 +3,7 @@ export const ROLES = {
     USER_ADMINISTRATOR: 'User Administrator'
 };
 
-export const USER_ADMINISTRATOR_ROLES = [
+export const IS_USER_ADMINISTRATOR = [
     'SYSTEM_ADMINISTRATOR',
     'USER_ADMINISTRATOR'
 ];
