@@ -17,6 +17,7 @@ import {
     Badge
 } from 'reactstrap';
 import { Spinner, Pager, useFetch } from '../components';
+import { ROLES } from '../utils/auth';
 
 const sortOptions = [
     { label: 'Name A-Z', value: 'NAME_ASC' },
@@ -148,7 +149,7 @@ export const UserPage = () => {
                                         color="primary"
                                         className="mr-1"
                                     >
-                                        {role}
+                                        {ROLES[role]}
                                     </Badge>
                                 ))}
                             </div>

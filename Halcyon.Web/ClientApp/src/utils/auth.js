@@ -1,12 +1,17 @@
-export const ALL_ROLES = [
-    { label: 'System Administrator', value: 'SYSTEM_ADMINISTRATOR' },
-    { label: 'User Administrator', value: 'USER_ADMINISTRATOR' }
-];
+export const ROLES = {
+    SYSTEM_ADMINISTRATOR: 'System Administrator',
+    USER_ADMINISTRATOR: 'User Administrator'
+};
 
 export const USER_ADMINISTRATOR_ROLES = [
     'SYSTEM_ADMINISTRATOR',
     'USER_ADMINISTRATOR'
 ];
+
+export const ALL_ROLES = Object.entries(ROLES).map(([value, label]) => ({
+    label,
+    value
+}));
 
 export const isAuthorized = (user, requiredRoles) => {
     if (!user) {
