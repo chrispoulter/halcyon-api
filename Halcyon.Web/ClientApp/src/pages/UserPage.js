@@ -17,12 +17,13 @@ import {
     Badge
 } from 'reactstrap';
 import { Spinner, Pager, useFetch } from '../components';
+import { ROLES } from '../utils/auth';
 
 const sortOptions = [
-    { label: 'Name A-Z', value: 'NameAsc' },
-    { label: 'Name Z-A', value: 'NameDesc' },
-    { label: 'Email Address A-Z', value: 'EmailAddressAsc' },
-    { label: 'Email Address Z-A', value: 'EmailAddressDesc' }
+    { label: 'Name A-Z', value: 'NAME_ASC' },
+    { label: 'Name Z-A', value: 'NAME_DESC' },
+    { label: 'Email Address A-Z', value: 'EMAIL_ADDRESS_ASC' },
+    { label: 'Email Address Z-A', value: 'EMAIL_ADDRESS_DESC' }
 ];
 
 export const UserPage = () => {
@@ -148,7 +149,7 @@ export const UserPage = () => {
                                         color="primary"
                                         className="mr-1"
                                     >
-                                        {role}
+                                        {ROLES[role]}
                                     </Badge>
                                 ))}
                             </div>

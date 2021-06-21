@@ -13,7 +13,8 @@ namespace Halcyon.Web.Filters
 
             var result = new ApiResponse
             {
-                Messages = new[] { context.Exception.Message }
+                Code = InternalStatusCode.INTERNAL_SERVER_ERROR,
+                Message = context.Exception.Message
             };
 
             context.Result = new JsonResult(result);

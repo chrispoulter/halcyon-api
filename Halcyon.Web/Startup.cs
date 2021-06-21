@@ -73,14 +73,13 @@ namespace Halcyon.Web
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
-                    var result = new ApiResponse
+                    return new BadRequestObjectResult(new ApiResponse
                     {
-                        Messages = context.ModelState.Values
+                        Message = context.ModelState.Values
                             .SelectMany(error => error.Errors)
                             .Select(error => error.ErrorMessage)
-                    };
-
-                    return new BadRequestObjectResult(result);
+                            .FirstOrDefault()
+                    });
                 };
             });
 

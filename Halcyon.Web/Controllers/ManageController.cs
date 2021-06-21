@@ -1,6 +1,7 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Manage;
+using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,23 +39,28 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return Generate(HttpStatusCode.NotFound, "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
-            var result = new GetProfileResponse
+            return Ok(new ApiResponse<GetProfileResponse>
             {
-                Id = user.Id,
-                EmailAddress = user.EmailAddress,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.ToUniversalTime()
-            };
-
-            return Generate(HttpStatusCode.OK, result);
+                Data =
+                {
+                    Id = user.Id,
+                    EmailAddress = user.EmailAddress,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    DateOfBirth = user.DateOfBirth.ToUniversalTime()
+                }
+            });
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileModel model)
@@ -64,7 +70,11 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return Generate(HttpStatusCode.NotFound, "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
 
@@ -75,7 +85,11 @@ namespace Halcyon.Web.Controllers
 
                 if (existing != null)
                 {
-                    return Generate(HttpStatusCode.BadRequest, $"User name \"{model.EmailAddress}\" is already taken.");
+                    return BadRequest(new ApiResponse
+                    {
+                        Code = InternalStatusCode.DUPLICATE_USER,
+                        Message = $"User name \"{model.EmailAddress}\" is already taken."
+                    });
                 }
             }
 
@@ -86,11 +100,16 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Generate(HttpStatusCode.OK, "Your profile has been updated.");
+            return Ok(new ApiResponse<UserUpdatedResponse>
+            {
+                Code = InternalStatusCode.PROFILE_UPDATED,
+                Message = "Your profile has been updated.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpPut("changepassword")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
@@ -100,13 +119,21 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return Generate(HttpStatusCode.NotFound, "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
             if (!verified)
             {
-                return Generate(HttpStatusCode.BadRequest, "Incorrect password.");
+                return BadRequest(new ApiResponse
+                {
+                    Code = InternalStatusCode.INCORRECT_PASSWORD,
+                    Message = "Incorrect password."
+                });
             }
 
             user.Password = _hashService.GenerateHash(model.NewPassword);
@@ -114,11 +141,16 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Generate(HttpStatusCode.OK, "Your password has been changed.");
+            return Ok(new ApiResponse<UserUpdatedResponse>
+            {
+                Code = InternalStatusCode.PASSWORD_CHANGED,
+                Message = "Your password has been changed.",
+                Data = { Id = user.Id }
+            });
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteProfile()
         {
@@ -127,14 +159,23 @@ namespace Halcyon.Web.Controllers
 
             if (user == null || user.IsLockedOut)
             {
-                return Generate(HttpStatusCode.NotFound, "User not found.");
+                return NotFound(new ApiResponse
+                {
+                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Message = "User not found."
+                });
             }
 
             _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
 
-            return Generate(HttpStatusCode.OK, "Your account has been deleted.");
+            return Ok(new ApiResponse<UserUpdatedResponse>
+            {
+                Code = InternalStatusCode.ACCOUNT_DELETED,
+                Message = "Your account has been deleted.",
+                Data = { Id = user.Id }
+            });
         }
     }
 }
