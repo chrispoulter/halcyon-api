@@ -12,7 +12,7 @@ import {
     Button,
     useFetch
 } from '../components';
-import { ALL_ROLES } from '../utils/auth';
+import { AVAILABLE_ROLES } from '../utils/auth';
 
 const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
@@ -212,7 +212,7 @@ export const UpdateUserPage = ({ history, match }) => {
                         <Field
                             name="roles"
                             label="Roles"
-                            options={ALL_ROLES}
+                            options={AVAILABLE_ROLES}
                             component={CheckboxGroupInput}
                         />
 

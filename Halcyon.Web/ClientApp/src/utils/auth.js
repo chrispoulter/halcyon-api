@@ -8,7 +8,7 @@ export const IS_USER_ADMINISTRATOR = [
     'USER_ADMINISTRATOR'
 ];
 
-export const ALL_ROLES = Object.entries(ROLES).map(([value, label]) => ({
+export const AVAILABLE_ROLES = Object.entries(ROLES).map(([value, label]) => ({
     label,
     value
 }));
