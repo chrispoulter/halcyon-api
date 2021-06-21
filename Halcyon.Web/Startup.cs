@@ -129,6 +129,8 @@ namespace Halcyon.Web
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<IJwtService, JwtService>();
+
+            services.AddApplicationInsightsTelemetry();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

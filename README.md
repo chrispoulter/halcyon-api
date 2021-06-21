@@ -36,6 +36,9 @@ Create a `appsettings.Development.json` file in the web project directory.
     "Seed": {
         "EmailAddress": "",
         "Password": ""
+    },
+    "ApplicationInsights": {
+        "ConnectionString": ""
     }
 }
 ```
