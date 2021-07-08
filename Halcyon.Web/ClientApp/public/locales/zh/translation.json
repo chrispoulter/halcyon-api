@@ -61,6 +61,16 @@
                 "register": "寄存器"
             }
         },
+        "errorBoundary": {
+            "meta": {
+                "title": "错误"
+            },
+            "jumbotron": {
+                "title": "错误",
+                "lead": "抱歉，出了一些问题。请稍后再试。",
+                "homeButton": "家"
+            }
+        },
         "pager": {
             "next": "下一个",
             "previous": "以前"
@@ -104,16 +114,6 @@
             "jumbotron": {
                 "title": "网页未找到",
                 "lead": "抱歉，找不到您要查找的页面。",
-                "homeButton": "家"
-            }
-        },
-        "error": {
-            "meta": {
-                "title": "错误"
-            },
-            "jumbotron": {
-                "title": "错误",
-                "lead": "抱歉，出了一些问题。请稍后再试。",
                 "homeButton": "家"
             }
         },

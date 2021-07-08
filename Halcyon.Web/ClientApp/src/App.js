@@ -1,19 +1,18 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ToastContainer, Slide } from 'react-toastify';
-import { ErrorBoundary } from '@sentry/react';
 import {
     AuthProvider,
     Header,
     Footer,
     PrivateRoute,
     Spinner,
-    Meta
+    Meta,
+    ErrorBoundary
 } from './components';
 import {
     HomePage,
     NotFoundPage,
-    ErrorPage,
     LoginPage,
     RegisterPage,
     ForgotPasswordPage,
@@ -33,7 +32,7 @@ export const App = () => (
             <AuthProvider>
                 <Meta />
                 <Header />
-                <ErrorBoundary fallback={<ErrorPage />}>
+                <ErrorBoundary>
                     <Switch>
                         <Route path="/" component={HomePage} exact />
                         <Route
