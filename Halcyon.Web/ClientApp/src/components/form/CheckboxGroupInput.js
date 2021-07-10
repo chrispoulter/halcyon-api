@@ -39,24 +39,20 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
         <FormGroup>
             <Label>{label}</Label>
             <ul>
-                {options.map(option => (
-                    <li key={`${name}.${option.value}`}>
+                {Object.entries(options).map(([value, label]) => (
+                    <li key={`${name}.${value}`}>
                         <Input
-                            id={`${name}.${option.value}`}
-                            name={`${name}.${option.value}`}
+                            id={`${name}.${value}`}
+                            name={`${name}.${value}`}
                             type="checkbox"
-                            checked={
-                                !!values.find(item => item === option.value)
-                            }
+                            checked={!!values.find(item => item === value)}
                             invalid={!!touch && !!error}
                             onChange={event =>
-                                handleChange(option.value, event.target.checked)
+                                handleChange(value, event.target.checked)
                             }
                             onBlur={handleBlur}
                         />
-                        <Label for={`${name}.${option.value}`}>
-                            {option.label}
-                        </Label>
+                        <Label for={`${name}.${value}`}>{label}</Label>
                     </li>
                 ))}
             </ul>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -10,8 +9,6 @@ import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateProfilePage = ({ history }) => {
-    const { t } = useTranslation();
-
     const { loading, data } = useFetch({
         method: 'GET',
         url: '/manage'
@@ -30,7 +27,7 @@ export const UpdateProfilePage = ({ history }) => {
     if (!data) {
         return (
             <Alert color="info" className="container p-3 mb-3">
-                {t('pages.updateProfile.profileNotFound')}
+                Profile could not be found.
             </Alert>
         );
     }
@@ -44,7 +41,7 @@ export const UpdateProfilePage = ({ history }) => {
         });
 
         if (result.ok) {
-            toast.success(t(`api.codes.${result.code}`));
+            toast.success(result.message);
             trackEvent('profile_updated');
             history.push('/my-account');
         }
@@ -53,10 +50,10 @@ export const UpdateProfilePage = ({ history }) => {
     return (
         <Container>
             <Helmet>
-                <title>{t('pages.updateProfile.meta.title')}</title>
+                <title>Update Profile</title>
             </Helmet>
 
-            <h1>{t('pages.updateProfile.title')}</h1>
+            <h1>Update Profile</h1>
             <hr />
 
             <Formik
@@ -64,21 +61,19 @@ export const UpdateProfilePage = ({ history }) => {
                 initialValues={data}
                 validationSchema={Yup.object().shape({
                     emailAddress: Yup.string()
-                        .label(t('pages.updateProfile.form.emailAddress'))
+                        .label('Email Address')
                         .max(254)
                         .email()
                         .required(),
                     firstName: Yup.string()
-                        .label(t('pages.updateProfile.form.firstName'))
+                        .label('First Name')
                         .max(50)
                         .required(),
                     lastName: Yup.string()
-                        .label(t('pages.updateProfile.form.lastName'))
+                        .label('Last Name')
                         .max(50)
                         .required(),
-                    dateOfBirth: Yup.string()
-                        .label(t('pages.updateProfile.form.dateOfBirth'))
-                        .required()
+                    dateOfBirth: Yup.string().label('Date Of Birth').required()
                 })}
                 onSubmit={onSubmit}
             >
@@ -87,7 +82,7 @@ export const UpdateProfilePage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label={t('pages.updateProfile.form.emailAddress')}
+                            label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -97,7 +92,7 @@ export const UpdateProfilePage = ({ history }) => {
                         <Field
                             name="firstName"
                             type="text"
-                            label={t('pages.updateProfile.form.firstName')}
+                            label="First Name"
                             required
                             maxLength={50}
                             component={TextInput}
@@ -106,7 +101,7 @@ export const UpdateProfilePage = ({ history }) => {
                         <Field
                             name="lastName"
                             type="text"
-                            label={t('pages.updateProfile.form.lastName')}
+                            label="Last Name"
                             required
                             maxLength={50}
                             component={TextInput}
@@ -115,7 +110,7 @@ export const UpdateProfilePage = ({ history }) => {
                         <Field
                             name="dateOfBirth"
                             type="date"
-                            label={t('pages.updateProfile.form.dateOfBirth')}
+                            label="Date Of Birth"
                             required
                             component={DateInput}
                         />
@@ -126,14 +121,14 @@ export const UpdateProfilePage = ({ history }) => {
                                 className="mr-1"
                                 tag={Link}
                             >
-                                {t('pages.updateProfile.cancelButton')}
+                                Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                {t('pages.updateProfile.submitButton')}
+                                Submit
                             </Button>
                         </FormGroup>
                     </Form>

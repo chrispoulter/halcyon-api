@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import {
     Collapse,
     Navbar,
@@ -20,8 +19,6 @@ import { isAuthorized, USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
 import { trackEvent } from '../../utils/logger';
 
 export const Header = () => {
-    const { t } = useTranslation();
-
     const history = useHistory();
 
     const { currentUser, removeToken } = useContext(AuthContext);
@@ -54,7 +51,7 @@ export const Header = () => {
             <Navbar color="dark" dark expand="md" fixed="top">
                 <Container>
                     <NavbarBrand to="/" tag={Link}>
-                        {t('components.header.brand')}
+                        Halcyon
                     </NavbarBrand>
                     <NavbarToggler onClick={toggle} />
                     <Collapse isOpen={isOpen} navbar>
@@ -62,7 +59,7 @@ export const Header = () => {
                             {isUserAdministrator && (
                                 <NavItem>
                                     <NavLink to="/user" tag={Link}>
-                                        {t('components.header.nav.users')}
+                                        Users
                                     </NavLink>
                                 </NavItem>
                             )}
@@ -80,12 +77,10 @@ export const Header = () => {
                                             to="/my-account"
                                             tag={Link}
                                         >
-                                            {t(
-                                                'components.header.nav.myAccount'
-                                            )}
+                                            My Account
                                         </DropdownItem>
                                         <DropdownItem onClick={logout}>
-                                            {t('components.header.nav.logout')}
+                                            Logout
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
@@ -93,14 +88,12 @@ export const Header = () => {
                                 <>
                                     <NavItem>
                                         <NavLink to="/login" tag={Link}>
-                                            {t('components.header.nav.login')}
+                                            Login
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
                                         <NavLink to="/register" tag={Link}>
-                                            {t(
-                                                'components.header.nav.register'
-                                            )}
+                                            Register
                                         </NavLink>
                                     </NavItem>
                                 </>

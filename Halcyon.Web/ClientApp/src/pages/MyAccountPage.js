@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
@@ -9,8 +8,6 @@ import { Button, Spinner, AuthContext, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
-    const { t, i18n } = useTranslation();
-
     const { removeToken } = useContext(AuthContext);
 
     const { loading, data } = useFetch({
@@ -31,7 +28,7 @@ export const MyAccountPage = ({ history }) => {
     if (!data) {
         return (
             <Alert color="info" className="container p-3 mb-3">
-                {t('pages.myAccount.profileNotFound')}
+                Profile could not be found.
             </Alert>
         );
     }
@@ -42,10 +39,10 @@ export const MyAccountPage = ({ history }) => {
         });
 
         const confirmed = await confirm({
-            title: t('pages.myAccount.deleteModal.title'),
-            message: t('pages.myAccount.deleteModal.message'),
-            confirmText: t('pages.myAccount.deleteModal.confirm'),
-            cancelText: t('pages.myAccount.deleteModal.cancel'),
+            title: 'Confirm',
+            message: 'Are you sure you want to delete your account?',
+            confirmText: 'Ok',
+            cancelText: 'Cancel',
             cancelColor: 'secondary'
         });
 
@@ -56,7 +53,7 @@ export const MyAccountPage = ({ history }) => {
         const result = await deleteAccount();
 
         if (result.ok) {
-            toast.success(t(`api.codes.${result.code}`));
+            toast.success(result.message);
 
             trackEvent('account_deleted', {
                 entityId: result.data.id
@@ -70,75 +67,68 @@ export const MyAccountPage = ({ history }) => {
     return (
         <Container>
             <Helmet>
-                <title>{t('pages.myAccount.meta.title')}</title>
+                <title>My Account</title>
             </Helmet>
 
-            <h1>{t('pages.myAccount.title')}</h1>
+            <h1>My Account</h1>
             <hr />
 
             <div className="d-flex justify-content-between">
-                <h3>{t('pages.myAccount.profileSection.title')}</h3>
+                <h3>Profile</h3>
                 <Button
                     to="/update-profile"
                     color="primary"
                     className="align-self-start"
                     tag={Link}
                 >
-                    {t('pages.myAccount.profileSection.updateButton')}
+                    Update
                 </Button>
             </div>
             <hr />
 
             <p>
-                <span className="text-muted">
-                    {t('pages.myAccount.profileSection.emailAddress')}
-                </span>
+                <span className="text-muted">Email Address</span>
                 <br />
                 {data.emailAddress}
             </p>
 
             <p>
-                <span className="text-muted">
-                    {t('pages.myAccount.profileSection.password')}
-                </span>
+                <span className="text-muted">Password</span>
                 <br />
                 ********
                 <br />
-                <Link to="/change-password">
-                    {t('pages.myAccount.profileSection.changePasswordLink')}
-                </Link>
+                <Link to="/change-password">Change your password...</Link>
             </p>
 
             <p>
-                <span className="text-muted">
-                    {t('pages.myAccount.profileSection.name')}
-                </span>
+                <span className="text-muted">Name</span>
                 <br />
                 {data.firstName} {data.lastName}
             </p>
 
             <p>
-                <span className="text-muted">
-                    {t('pages.myAccount.profileSection.dateOfBirth')}
-                </span>
+                <span className="text-muted">Date Of Birth</span>
                 <br />
-                {new Date(data.dateOfBirth).toLocaleDateString(i18n.language, {
+                {new Date(data.dateOfBirth).toLocaleDateString('en', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric'
                 })}
             </p>
 
-            <h3>{t('pages.myAccount.settingsSection.title')}</h3>
+            <h3>Settings</h3>
             <hr />
-            <p>{t('pages.myAccount.settingsSection.deletePrompt')}</p>
+            <p>
+                Once you delete your account all of your data and settings will
+                be removed. Please be certain.
+            </p>
             <p>
                 <Button
                     color="danger"
                     loading={isDeleting}
                     onClick={onDeleteAccount}
                 >
-                    {t('pages.myAccount.settingsSection.deleteButton')}
+                    Delete Account
                 </Button>
             </p>
         </Container>

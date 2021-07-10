@@ -79,7 +79,6 @@ export const App = () => (
                             exact
                         />
                         <PrivateRoute
-                            meta="pages.updateUser.meta"
                             path="/user/:id"
                             requiredRoles={USER_ADMINISTRATOR_ROLES}
                             component={UpdateUserPage}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Formik, Form } from 'formik';
 import {
@@ -19,22 +18,21 @@ import {
     Badge
 } from 'reactstrap';
 import { Spinner, Pager, useFetch } from '../components';
+import { ALL_ROLES } from '../utils/auth';
 
-const sortOptions = [
-    'NAME_ASC',
-    'NAME_DESC',
-    'EMAIL_ADDRESS_ASC',
-    'EMAIL_ADDRESS_DESC'
-];
+const SORT_OPTIONS = {
+    NAME_ASC: 'Name A-Z',
+    NAME_DESC: 'Name Z-A',
+    EMAIL_ADDRESS_ASC: 'Email Address A-Z',
+    EMAIL_ADDRESS_DESC: 'Email Address Z-A'
+};
 
 export const UserPage = () => {
-    const { t } = useTranslation();
-
     const [state, setState] = useState({
         page: 1,
         size: 10,
         search: '',
-        sort: sortOptions[0]
+        sort: 'NAME_ASC'
     });
 
     const { loading, data } = useFetch({
@@ -59,18 +57,18 @@ export const UserPage = () => {
     return (
         <Container>
             <Helmet>
-                <title>{t('pages.user.meta.title')}</title>
+                <title>Users</title>
             </Helmet>
 
             <div className="d-flex justify-content-between mb-3">
-                <h1>{t('pages.user.title')}</h1>
+                <h1>Users</h1>
                 <Button
                     to="/user/create"
                     color="primary"
                     className="align-self-start"
                     tag={Link}
                 >
-                    {t('pages.user.createNewButton')}
+                    Create New
                 </Button>
             </div>
             <hr />
@@ -86,37 +84,35 @@ export const UserPage = () => {
                                 <Input
                                     name="search"
                                     type="text"
-                                    placeholder={t(
-                                        'pages.user.form.searchPlaceholder'
-                                    )}
+                                    placeholder="Search..."
                                     value={values.search}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
                                 <InputGroupAddon addonType="append">
                                     <Button type="submit" color="secondary">
-                                        {t('pages.user.form.searchButton')}
+                                        Search
                                     </Button>
                                     <UncontrolledDropdown>
                                         <DropdownToggle caret color="secondary">
-                                            {t('pages.user.form.sortByButton')}{' '}
+                                            Sort By{' '}
                                         </DropdownToggle>
                                         <DropdownMenu right>
-                                            {sortOptions.map(option => (
-                                                <DropdownItem
-                                                    key={option}
-                                                    active={
-                                                        option === state.sort
-                                                    }
-                                                    onClick={() =>
-                                                        onSort(option)
-                                                    }
-                                                >
-                                                    {t(
-                                                        `api.userSortExpressions.${option}`
-                                                    )}
-                                                </DropdownItem>
-                                            ))}
+                                            {Object.entries(SORT_OPTIONS).map(
+                                                ([value, label]) => (
+                                                    <DropdownItem
+                                                        key={value}
+                                                        active={
+                                                            value === state.sort
+                                                        }
+                                                        onClick={() =>
+                                                            onSort(value)
+                                                        }
+                                                    >
+                                                        {label}
+                                                    </DropdownItem>
+                                                )
+                                            )}
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 </InputGroupAddon>
@@ -128,7 +124,7 @@ export const UserPage = () => {
 
             {!data?.items.length ? (
                 <Alert color="info" className="container p-3 mb-3">
-                    {t('pages.user.usersNotFound')}
+                    No users could be found.
                 </Alert>
             ) : (
                 <>
@@ -150,7 +146,7 @@ export const UserPage = () => {
                             <div>
                                 {user.isLockedOut && (
                                     <Badge color="danger" className="mr-1">
-                                        {t('pages.user.lockedBadge')}
+                                        Locked
                                     </Badge>
                                 )}
                                 {user.roles?.map(role => (
@@ -159,7 +155,7 @@ export const UserPage = () => {
                                         color="primary"
                                         className="mr-1"
                                     >
-                                        {t(`api.userRoles.${role}`)}
+                                        {ALL_ROLES[role]}
                                     </Badge>
                                 ))}
                             </div>

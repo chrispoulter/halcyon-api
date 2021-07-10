@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -9,8 +8,6 @@ import { TextInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const ResetPasswordPage = ({ match, history }) => {
-    const { t } = useTranslation();
-
     const { refetch: resetPassword } = useFetch({
         method: 'PUT',
         url: '/account/resetpassword',
@@ -25,7 +22,7 @@ export const ResetPasswordPage = ({ match, history }) => {
         });
 
         if (result.ok) {
-            toast.success(t(`api.codes.${result.code}`));
+            toast.success(result.message);
             trackEvent('password_reset');
             history.push('/login');
         }
@@ -34,10 +31,10 @@ export const ResetPasswordPage = ({ match, history }) => {
     return (
         <Container>
             <Helmet>
-                <title>{t('pages.resetPassword.meta.title')}</title>
+                <title>Reset Password</title>
             </Helmet>
 
-            <h1>{t('pages.resetPassword.title')}</h1>
+            <h1>Reset Password</h1>
             <hr />
 
             <Formik
@@ -48,16 +45,16 @@ export const ResetPasswordPage = ({ match, history }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     emailAddress: Yup.string()
-                        .label(t('pages.resetPassword.form.emailAddress'))
+                        .label('Email Address')
                         .email()
                         .required(),
                     newPassword: Yup.string()
-                        .label(t('pages.resetPassword.form.newPassword'))
+                        .label('New Password')
                         .min(8)
                         .max(50)
                         .required(),
                     confirmNewPassword: Yup.string()
-                        .label(t('pages.resetPassword.form.confirmNewPassword'))
+                        .label('Confirm New Password')
                         .required()
                         .oneOf([Yup.ref('newPassword')])
                 })}
@@ -68,7 +65,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label={t('pages.resetPassword.form.emailAddress')}
+                            label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -77,7 +74,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="newPassword"
                             type="password"
-                            label={t('pages.resetPassword.form.newPassword')}
+                            label="New Password"
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -86,9 +83,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                         <Field
                             name="confirmNewPassword"
                             type="password"
-                            label={t(
-                                'pages.resetPassword.form.confirmNewPassword'
-                            )}
+                            label="Confirm New Password"
                             required
                             maxLength={50}
                             autoComplete="new-password"
@@ -101,7 +96,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                {t('pages.resetPassword.submitButton')}
+                                Submit
                             </Button>
                         </FormGroup>
                     </Form>

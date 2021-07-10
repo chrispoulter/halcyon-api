@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../providers';
 import { config } from '../../utils/config';
 
@@ -9,8 +7,6 @@ const headers = new Headers();
 headers.set('Content-Type', 'application/json');
 
 export const useFetch = request => {
-    const { t } = useTranslation();
-
     const { accessToken, removeToken } = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);
@@ -19,7 +15,6 @@ export const useFetch = request => {
 
     if (accessToken) {
         headers.set('Authorization', `Bearer ${accessToken}`);
-        headers.set('x-transaction-id', uuidv4());
     }
 
     useEffect(() => {
@@ -54,11 +49,11 @@ export const useFetch = request => {
         } catch {}
 
         const data = json?.data;
-        const code = json?.code;
+        const message = json?.message;
 
         switch (status) {
             case 400:
-                toast.error(t(`api.codes.${code}`, body));
+                toast.error(message);
                 break;
 
             case 401:
@@ -66,7 +61,7 @@ export const useFetch = request => {
                 break;
 
             case 403:
-                toast.warn(t(`api.codes.${code}`, body));
+                toast.warn(message);
                 break;
 
             case 404:
@@ -75,13 +70,8 @@ export const useFetch = request => {
 
             default:
                 toast.error(
-                    t(
-                        [
-                            `api.codes.${code}`,
-                            'api.codes.INTERNAL_SERVER_ERROR'
-                        ],
-                        body
-                    )
+                    message ||
+                        'An unknown error has occurred whilst communicating with the server.'
                 );
                 break;
         }
@@ -89,7 +79,7 @@ export const useFetch = request => {
         setData(data);
         setLoading(false);
 
-        return { ok, code, data };
+        return { ok, message, data };
     };
 
     return { loading, data, refetch };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -9,8 +8,6 @@ import { TextInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const ForgotPasswordPage = ({ history }) => {
-    const { t } = useTranslation();
-
     const { refetch: forgotPassword } = useFetch({
         method: 'PUT',
         url: '/account/forgotpassword',
@@ -23,7 +20,7 @@ export const ForgotPasswordPage = ({ history }) => {
         });
 
         if (result.ok) {
-            toast.success(t(`api.codes.${result.code}`));
+            toast.success(result.message);
             trackEvent('password_reminder');
             history.push('/login');
         }
@@ -32,10 +29,10 @@ export const ForgotPasswordPage = ({ history }) => {
     return (
         <Container>
             <Helmet>
-                <title>{t('pages.forgotPassword.meta.title')}</title>
+                <title>Forgot Password</title>
             </Helmet>
 
-            <h1>{t('pages.forgotPassword.title')}</h1>
+            <h1>Forgot Password</h1>
             <hr />
 
             <Formik
@@ -44,7 +41,7 @@ export const ForgotPasswordPage = ({ history }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     emailAddress: Yup.string()
-                        .label(t('pages.forgotPassword.form.emailAddress'))
+                        .label('Email Address')
                         .email()
                         .required()
                 })}
@@ -55,7 +52,7 @@ export const ForgotPasswordPage = ({ history }) => {
                         <Field
                             name="emailAddress"
                             type="email"
-                            label={t('pages.forgotPassword.form.emailAddress')}
+                            label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
@@ -68,7 +65,7 @@ export const ForgotPasswordPage = ({ history }) => {
                                 color="primary"
                                 loading={isSubmitting}
                             >
-                                {t('pages.forgotPassword.submitButton')}
+                                Submit
                             </Button>
                         </FormGroup>
                     </Form>

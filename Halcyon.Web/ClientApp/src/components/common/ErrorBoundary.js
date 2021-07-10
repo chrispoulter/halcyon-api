@@ -1,10 +1,9 @@
 import React from 'react';
-import { withTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Container, Jumbotron } from 'reactstrap';
 import { captureError } from '../../utils/logger';
 
-export class ErrorBoundaryComponent extends React.Component {
+export class ErrorBoundary extends React.Component {
     state = { hasError: false };
 
     static getDerivedStateFromError() {
@@ -20,28 +19,22 @@ export class ErrorBoundaryComponent extends React.Component {
             return this.props.children;
         }
 
-        const { t } = this.props;
-
         return (
             <>
                 <Helmet>
-                    <title>{t('components.errorBoundary.meta.title')}</title>
+                    <title>Error</title>
                 </Helmet>
 
                 <Jumbotron>
                     <Container>
-                        <h1 className="display-3">
-                            {t('components.errorBoundary.jumbotron.title')}
-                        </h1>
+                        <h1 className="display-3">Error</h1>
                         <hr />
                         <p className="lead">
-                            {t('components.errorBoundary.jumbotron.lead')}yarn
+                            Sorry, something went wrong. Please try again later.
                         </p>
                         <p className="text-right">
                             <a href="/" className="btn btn-lg btn-primary">
-                                {t(
-                                    'components.errorBoundary.jumbotron.homeButton'
-                                )}
+                                Home
                             </a>
                         </p>
                     </Container>
@@ -50,5 +43,3 @@ export class ErrorBoundaryComponent extends React.Component {
         );
     }
 }
-
-export const ErrorBoundary = withTranslation()(ErrorBoundaryComponent);

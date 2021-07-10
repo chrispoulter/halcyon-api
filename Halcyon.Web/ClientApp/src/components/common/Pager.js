@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 export const Pager = ({
@@ -8,8 +7,6 @@ export const Pager = ({
     onNextPage,
     onPreviousPage
 }) => {
-    const { t } = useTranslation();
-
     if (!hasNextPage && !hasPreviousPage) {
         return null;
     }
@@ -19,15 +16,13 @@ export const Pager = ({
             {hasPreviousPage && (
                 <PaginationItem>
                     <PaginationLink onClick={onPreviousPage}>
-                        {t('components.pager.previous')}
+                        Previous
                     </PaginationLink>
                 </PaginationItem>
             )}
             {hasNextPage && (
                 <PaginationItem>
-                    <PaginationLink onClick={onNextPage}>
-                        {t('components.pager.next')}
-                    </PaginationLink>
+                    <PaginationLink onClick={onNextPage}>Next</PaginationLink>
                 </PaginationItem>
             )}
         </Pagination>
