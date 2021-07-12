@@ -32,10 +32,10 @@ jobs:
             - run: echo "REACT_APP_STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
             - run: echo "REACT_APP_VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
 
-            - run: yarn --cwd Halcyon.Web/ClientApp  version --new-version ${{ env.VERSION }} --no-git-tag-version
+            - run: yarn --cwd Halcyon.Web/ClientApp  version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
 
             - run: dotnet restore
-            - run: dotnet build -c Release -p:Version=${{ env.GITVERSION_SEMVER }}
+            - run: dotnet build -c Release -p:Version=${{ env.REACT_APP_VERSION }}
             - run: dotnet publish -c Release -o ${{ secrets.AZURE_PUBLISHPROFILE }}/myapp
 
             - name: Deploy
