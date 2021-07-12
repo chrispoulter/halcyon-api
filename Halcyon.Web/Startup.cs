@@ -124,6 +124,8 @@ namespace Halcyon.Web
                 });
             });
 
+            services.AddHealthChecks();
+
             services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
@@ -178,6 +180,8 @@ namespace Halcyon.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

@@ -6,7 +6,6 @@
         "start": "react-scripts start",
         "prebuild": "npm run lint",
         "build": "react-scripts build",
-        "postbuild": "npm run workbox",
         "workbox": "workbox injectManifest workbox-config.js",
         "lint": "eslint src/**/*.{js,jsx}",
         "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""

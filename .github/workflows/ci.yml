@@ -11,19 +11,32 @@ jobs:
         env:
             EXTEND_ESLINT: true
 
+            REACT_APP_GA_MEASUREMENTID: ${{ secrets.GA_MEASUREMENTID }}
         steps:
-            - uses: actions/checkout@main
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
 
-            - name: Setup .NET Core
-              uses: actions/setup-dotnet@v1
+            - uses: actions/setup-dotnet@v1
               with:
                   dotnet-version: 5.0.x
 
-            - name: Build and Publish
-              run: |
-                  dotnet restore
-                  dotnet build -c Release
-                  dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
+            - uses: gittools/actions/gitversion/setup@v0.9.7
+              with:
+                  versionSpec: 5.x
+
+            - uses: gittools/actions/gitversion/execute@v0.9.7
+              with:
+                  useConfigFile: true
+
+            - run: echo "REACT_APP_STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
+            - run: echo "REACT_APP_VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
+
+            - run: yarn --cwd Halcyon.Web/ClientApp  version --new-version ${{ env.VERSION }} --no-git-tag-version
+
+            - run: dotnet restore
+            - run: dotnet build -c Release -p:Version=${{ env.GITVERSION_SEMVER }}
+            - run: dotnet publish -c Release -o ${{ secrets.AZURE_PUBLISHPROFILE }}/myapp
 
             - name: Deploy
               uses: azure/webapps-deploy@v1
