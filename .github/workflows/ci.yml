@@ -35,11 +35,9 @@ jobs:
             - run: yarn --cwd Halcyon.Web/ClientApp  version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
 
             - run: dotnet restore
-            - run: dotnet build -c Release -p:Version=${{ env.REACT_APP_VERSION }}
-            - run: dotnet publish -c Release -o ${{ secrets.AZURE_PUBLISHPROFILE }}/myapp
+            - run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp -p:Version=${{ env.REACT_APP_VERSION }}
 
-            - name: Deploy
-              uses: azure/webapps-deploy@v1
+            - uses: azure/webapps-deploy@v1
               with:
                   app-name: halcyon-web
                   publish-profile: ${{ secrets.AZURE_PUBLISHPROFILE }}

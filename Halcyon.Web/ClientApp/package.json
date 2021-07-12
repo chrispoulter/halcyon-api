@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "start": "react-scripts start",
-        "prebuild": "npm run lint",
         "build": "react-scripts build",
         "workbox": "workbox injectManifest workbox-config.js",
         "lint": "eslint src/**/*.{js,jsx}",
