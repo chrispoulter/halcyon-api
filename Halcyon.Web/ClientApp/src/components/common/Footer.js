@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from 'reactstrap';
+import { config } from '../../utils/config';
 
 const currentYear = new Date().getFullYear();
 
@@ -13,6 +14,7 @@ export const Footer = () => (
                     <a href="https://www.chrispoulter.com">Chris Poulter</a>{' '}
                     {currentYear}
                 </p>
+                <p>v{config.VERSION}</p>
             </div>
         </Container>
     </footer>
