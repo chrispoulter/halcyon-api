@@ -35,8 +35,8 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
-          echo "STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
+          echo "REACT_APP_VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
+          echo "REACT_APP_STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
 
       - name: Build
         run: |
@@ -47,6 +47,6 @@ jobs:
       - name: Deploy
         uses: azure/webapps-deploy@v1
         with:
-          app-name: halcyon-web-${{ env.STAGE }}
+          app-name: halcyon-web-${{ env.REACT_APP_STAGE }}
           publish-profile: ${{ secrets.AZURE_PUBLISHPROFILE }}
           package: ${{ env.DOTNET_ROOT }}/halcyon-web
