@@ -44,9 +44,45 @@ jobs:
           yarn --cwd Halcyon.Web/ClientApp version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
           dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/halcyon-web -p:Version=${{ env.REACT_APP_VERSION }}
 
-      - name: Deploy
-        uses: azure/webapps-deploy@v1
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          app-name: halcyon-web-${{ env.REACT_APP_STAGE }}
-          publish-profile: ${{ secrets.AZURE_PUBLISHPROFILE }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Resource Group
+        run: |
+          az group create \
+            --name "halcyon-${{ env.REACT_APP_STAGE }}" \
+            --location "${{ secrets.AZURE_LOCATION }}"
+
+      - name: Deploy ARM deploy
+        uses: azure/arm-deploy@v1
+        with:
+          resourceGroupName: halcyon-${{ env.REACT_APP_STAGE }}
+          template: ./azuredeploy.json
+          parameters: stage="${{ env.REACT_APP_STAGE }}"
+            sqlUserName="${{ secrets.SQL_USERNAME }}"
+            sqlPassword="${{ secrets.SQL_PASSWORD }}"
+            emailSmtpServer="${{ secrets.EMAIL_SMTPSERVER }}"
+            emailSmtpPort="${{ secrets.EMAIL_SMTPPORT }}"
+            emailSmtpUserName="${{ secrets.EMAIL_SMTPUSERNAME }}"
+            emailSmtpPassword="${{ secrets.EMAIL_SMTPPASSWORD }}"
+            emailNoReplyAddress="${{ secrets.EMAIL_NOREPLYADDRESS }}"
+            jwtSecurityKey="${{ secrets.JWT_SECURITYKEY }}"
+            jwtIssuer="${{ secrets.JWT_ISSUER }}"
+            jwtAudience="${{ secrets.JWT_AUDIENCE }}"
+            jwtExpiresIn="${{ secrets.JWT_EXPIRESIN }}"
+            seedEmailAddress="${{ secrets.SEED_EMAILADDRESS }}"
+            seedPassword="${{ secrets.SEED_PASSWORD }}"
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: halcyon-${{ env.REACT_APP_STAGE }}-web
           package: ${{ env.DOTNET_ROOT }}/halcyon-web
+
+      - name: Azure Logout
+        run: |
+          az logout
+          az cache purge
+          az account clear

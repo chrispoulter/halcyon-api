@@ -1,0 +1,195 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "stage": {
+            "type": "string",
+            "defaultValue": "main"
+        },
+        "sqlUserName": {
+            "type": "string",
+            "defaultValue": "halcyon"
+        },
+        "sqlPassword": {
+            "type": "secureString"
+        },
+        "emailSmtpServer": {
+            "type": "string",
+            "defaultValue": "smtp.mailgun.org"
+        },
+        "emailSmtpPort": {
+            "type": "string",
+            "defaultValue": "587"
+        },
+        "emailSmtpUserName": {
+            "type": "secureString"
+        },
+        "emailSmtpPassword": {
+            "type": "secureString"
+        },
+        "emailNoReplyAddress": {
+            "type": "string",
+            "defaultValue": "noreply@chrispoulter.com"
+        },
+        "jwtSecurityKey": {
+            "type": "secureString",
+            "defaultValue": "change-me-1234567890"
+        },
+        "jwtIssuer": {
+            "type": "string",
+            "defaultValue": "HalcyonApi"
+        },
+        "jwtAudience": {
+            "type": "string",
+            "defaultValue": "HalcyonClient"
+        },
+        "jwtExpiresIn": {
+            "type": "string",
+            "defaultValue": "3600"
+        },
+        "seedEmailAddress": {
+            "type": "secureString"
+        },
+        "seedPassword": {
+            "type": "secureString"
+        }
+    },
+    "variables": {
+        "prefix": "[concat('halcyon-', parameters('stage'))]"
+    },
+    "resources": [
+        {
+            "name": "[concat(variables('prefix'), '-sql')]",
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[parameters('sqlUserName')]",
+                "administratorLoginPassword": "[parameters('sqlPassword')]"
+            },
+            "resources": [
+                {
+                    "type": "firewallRules",
+                    "apiVersion": "2014-04-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', concat(variables('prefix'), '-sql'))]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "[concat(variables('prefix'), '-sql/', variables('prefix'), '-db')]",
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', concat(variables('prefix'), '-sql'))]"
+            ],
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "edition": "Basic",
+                "maxSizeBytes": "1073741824",
+                "requestedServiceObjectiveName": "Basic"
+            }
+        },
+        {
+            "name": "[concat(variables('prefix'), '-plan')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "B1",
+                "tier": "Basic",
+                "size": "B1",
+                "family": "B",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[concat(variables('prefix'), '-insights')]",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "rest",
+                "IngestionMode": "ApplicationInsights",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "name": "[concat(variables('prefix'), '-web')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', concat(variables('prefix'), '-plan'))]",
+                "[resourceId('microsoft.insights/components', concat(variables('prefix'), '-insights'))]"
+            ],
+            "kind": "app,linux",
+            "properties": {
+                "name": "[concat(variables('prefix'), '-web')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat(variables('prefix'), '-plan'))]",
+                "siteConfig": {
+                    "linuxFxVersion": "DOTNETCORE|5.0"
+                }
+            }
+        },
+        {
+            "name": "[concat(variables('prefix'), '-web/connectionstrings')]",
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2020-12-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', concat(variables('prefix'), '-web'))]"
+            ],
+            "properties": {
+                "HalcyonDatabase": {
+                    "type": "SQLServer",
+                    "value": "[concat('Data Source=tcp:', variables('prefix'), '-sql.database.windows.net,1433;Initial Catalog=', variables('prefix'), '-db;User Id=', parameters('sqlUserName'), '@', variables('prefix'), '-sql;Password=', parameters('sqlPassword'))]"
+                }
+            }
+        },
+        {
+            "name": "[concat(variables('prefix'), '-web/appsettings')]",
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2020-12-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', concat(variables('prefix'), '-web'))]"
+            ],
+            "properties": {
+                "ApplicationInsights__ConnectionString": "[reference(resourceId('microsoft.insights/components', concat(variables('prefix'), '-insights'))).ConnectionString]",
+                "Email__SmtpServer": "[parameters('emailSmtpServer')]",
+                "Email__SmtpPort": "[parameters('emailSmtpPort')]",
+                "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",
+                "Email__SmtpPassword": "[parameters('emailSmtpPassword')]",
+                "Email__NoReplyAddress": "[parameters('emailNoReplyAddress')]",
+                "Jwt__SecurityKey": "[parameters('jwtSecurityKey')]",
+                "Jwt__Issuer": "[parameters('jwtIssuer')]",
+                "Jwt__Audience": "[parameters('jwtAudience')]",
+                "Jwt__ExpiresIn": "[parameters('jwtExpiresIn')]",
+                "Seed__EmailAddress": "[parameters('seedEmailAddress')]",
+                "Seed__Password": "[parameters('seedPassword')]"
+            }
+        }
+    ]
+}
