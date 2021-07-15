@@ -55,7 +55,7 @@ jobs:
             --name "halcyon-${{ env.REACT_APP_STAGE }}" \
             --location "${{ secrets.AZURE_LOCATION }}"
 
-      - name: Deploy ARM deploy
+      - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
         with:
           resourceGroupName: halcyon-${{ env.REACT_APP_STAGE }}
