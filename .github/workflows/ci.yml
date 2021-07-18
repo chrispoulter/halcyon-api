@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - "**"
+    paths-ignore:
+      - "README.md"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      EXTEND_ESLINT: true
-
-      REACT_APP_GA_MEASUREMENTID: ${{ secrets.GA_MEASUREMENTID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,6 +37,9 @@ jobs:
           echo "REACT_APP_STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
 
       - name: Build
+        env:
+          EXTEND_ESLINT: true
+          REACT_APP_GA_MEASUREMENTID: ${{ secrets.GA_MEASUREMENTID }}
         run: |
           dotnet restore
           yarn --cwd Halcyon.Web/ClientApp version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
