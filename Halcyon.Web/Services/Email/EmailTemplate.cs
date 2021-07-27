@@ -2,6 +2,6 @@
 {
     public enum EmailTemplate
     {
-        FORGOT_PASSWORD
+        RESET_PASSWORD
     }
 }

@@ -1,12 +1,15 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Account;
+using Halcyon.Web.Models.Events;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Email;
+using Halcyon.Web.Services.Events;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -21,16 +24,16 @@ namespace Halcyon.Web.Controllers
 
         private readonly IHashService _hashService;
 
-        private readonly IEmailService _emailService;
+        private readonly IEventService _eventService;
 
         public AccountController(
             HalcyonDbContext context,
             IHashService hashService,
-            IEmailService emailService)
+            IEventService eventService)
         {
             _context = context;
             _hashService = hashService;
-            _emailService = emailService;
+            _eventService = eventService;
         }
 
         [HttpPost("register")]
@@ -85,16 +88,18 @@ namespace Halcyon.Web.Controllers
 
                 await _context.SaveChangesAsync();
 
-                var message = new EmailMessage
+                var @event = new SendEmailEvent
                 {
-                    Template = EmailTemplate.FORGOT_PASSWORD
+                    EmailAddress = user.EmailAddress,
+                    Template = EmailTemplate.RESET_PASSWORD,
+                    Context = new Dictionary<string, string>
+                    {
+                        { "SiteUrl", $"{Request.Scheme}://{Request.Host}" },
+                        { "PasswordResetUrl", $"{Request.Scheme}://{Request.Host}/reset-password/{user.PasswordResetToken}" }
+                    }
                 };
 
-                message.To.Add(user.EmailAddress);
-                message.Data.Add("SiteUrl", $"{Request.Scheme}://{Request.Host}");
-                message.Data.Add($"PasswordResetUrl", $"{Request.Scheme}://{Request.Host}/reset-password/{user.PasswordResetToken}");
-
-                await _emailService.SendEmailAsync(message);
+                await _eventService.PublishEventAsync(@event);
             }
 
             return Ok(new ApiResponse
