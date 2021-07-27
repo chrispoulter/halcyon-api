@@ -58,7 +58,7 @@
         "prefix": "[concat('halcyon-', parameters('stage'))]",
         "sql": "[concat(variables('prefix'), '-sql')]",
         "db": "[concat(variables('prefix'), '-db')]",
-        "storage": "[concat(replace(variables('prefix'),'-', ''), 'storage')]",
+        "storage": "[concat('halcyon', uniqueString(resourceGroup().id))]",
         "insights": "[concat(variables('prefix'), '-insights')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
         "web": "[concat(variables('prefix'), '-web')]"
