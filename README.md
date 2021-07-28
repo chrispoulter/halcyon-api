@@ -20,6 +20,11 @@ Create a `appsettings.Development.json` file in the web project directory.
     "ConnectionStrings": {
         "HalcyonDatabase": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Halcyon;Integrated Security=True;MultipleActiveResultSets=True"
     },
+    "Event": {
+        "StorageConnectionString": "UseDevelopmentStorage=true",
+        "PollingInterval": 10,
+        "BatchSize": 20
+    },
     "Email": {
         "SmtpServer": "smtp.mailgun.org",
         "SmtpPort": 587,

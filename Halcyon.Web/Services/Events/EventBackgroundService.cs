@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,29 +32,33 @@ namespace Halcyon.Web.Services.Events
                 {
                     var queueName = typeof(T).Name.ToLower();
 
-                    _logger.LogInformation("Event Background Service Executing: {date}", DateTime.UtcNow);
+                    _logger.LogInformation("Event Background Service Executing");
 
                     var queue = new QueueClient(_eventSettings.StorageConnectionString, queueName);
                     
                     await queue.CreateIfNotExistsAsync(cancellationToken: stoppingToken);
 
-                    var messages = await queue.ReceiveMessagesAsync(stoppingToken);
+                    var messages = await queue.ReceiveMessagesAsync(
+                        cancellationToken: stoppingToken, 
+                        maxMessages: _eventSettings.BatchSize);
 
-                    foreach (var message in messages.Value)
+                    var tasks = messages.Value.Select(async message =>
                     {
                         _logger.LogInformation(
-                            "Event Background Service Message Received: {queue} {message}",
-                            queueName, 
-                            message.MessageText);
+                                "Event Background Service Message Received: {event} {message}",
+                                typeof(T).Name,
+                                message.MessageText);
 
                         var data = JsonSerializer.Deserialize<T>(message.MessageText);
 
                         await HandleEventAsync(data);
-
+                        
                         await queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, stoppingToken);
-                    }
+                    });
+                    
+                    await Task.WhenAll(tasks);
 
-                    await Task.Delay(10 * 1000, stoppingToken);
+                    await Task.Delay(_eventSettings.PollingInterval * 1000, stoppingToken);
                 }
                 catch (OperationCanceledException)
                 {
