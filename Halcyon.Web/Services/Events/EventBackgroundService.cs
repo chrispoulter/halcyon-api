@@ -28,45 +28,51 @@ namespace Halcyon.Web.Services.Events
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                _logger.LogInformation("Event Background Service Executing");
+
+                var queueName = typeof(T).Name.ToLower();
+                var queue = new QueueClient(_eventSettings.StorageConnectionString, queueName);
+
                 try
                 {
-                    var queueName = typeof(T).Name.ToLower();
-
-                    _logger.LogInformation("Event Background Service Executing");
-
-                    var queue = new QueueClient(_eventSettings.StorageConnectionString, queueName);
-                    
                     await queue.CreateIfNotExistsAsync(cancellationToken: stoppingToken);
 
                     var messages = await queue.ReceiveMessagesAsync(
-                        cancellationToken: stoppingToken, 
+                        cancellationToken: stoppingToken,
                         maxMessages: _eventSettings.BatchSize);
 
-                    var tasks = messages.Value.Select(async message =>
-                    {
-                        _logger.LogInformation(
-                                "Event Background Service Message Received: {event} {message}",
-                                typeof(T).Name,
-                                message.MessageText);
+                    var tasks = messages.Value
+                        .Select(async message =>
+                        {
+                            _logger.LogInformation(
+                                    "Event Background Service Message Received: {event} {message}",
+                                    typeof(T).Name,
+                                    message.MessageText);
 
-                        var data = JsonSerializer.Deserialize<T>(message.MessageText);
+                            try
+                            {
+                                var data = JsonSerializer.Deserialize<T>(message.MessageText);
+                                await HandleEventAsync(data);
+                            }
+                            catch (Exception error)
+                            {
+                                _logger.LogError(error, "Event Background Service Message Failed");
+                            }
+                            finally
+                            {
+                                await queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, stoppingToken);
+                            }
+                        });
 
-                        await HandleEventAsync(data);
-                        
-                        await queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, stoppingToken);
-                    });
-                    
                     await Task.WhenAll(tasks);
-
-                    await Task.Delay(_eventSettings.PollingInterval * 1000, stoppingToken);
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
                 }
                 catch (Exception error)
                 {
                     _logger.LogError(error, "Event Background Service Failed");
+                }
+                finally
+                { 
+                    await Task.Delay(_eventSettings.PollingInterval * 1000, stoppingToken);
                 }
             }
         }
