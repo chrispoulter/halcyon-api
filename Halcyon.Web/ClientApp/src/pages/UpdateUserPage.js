@@ -90,7 +90,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to lock{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
@@ -127,7 +127,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to unlock{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
@@ -162,7 +162,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 <>
                     Are you sure you want to delete{' '}
                     <strong>
-                        {data.getUserById.firstName} {data.getUserById.lastName}
+                        {data.firstName} {data.lastName}
                     </strong>
                     ?
                 </>
