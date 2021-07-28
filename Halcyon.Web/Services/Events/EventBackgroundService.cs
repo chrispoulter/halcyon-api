@@ -70,10 +70,8 @@ namespace Halcyon.Web.Services.Events
                 {
                     _logger.LogError(error, "Event Background Service Failed");
                 }
-                finally
-                { 
-                    await Task.Delay(_eventSettings.PollingInterval * 1000, stoppingToken);
-                }
+
+                await Task.Delay(_eventSettings.PollingInterval * 1000, stoppingToken);
             }
         }
 
