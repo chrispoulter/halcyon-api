@@ -133,12 +133,12 @@ namespace Halcyon.Web
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
 
-            services.AddScoped<IEventService, EventService>();
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<IJwtService, JwtService>();
 
-            services.AddHostedService<SendEmailBackgroundService>();
+            services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddHostedService<SendEmailBackgroundService>();
 
             services.AddApplicationInsightsTelemetry();
             services.AddSingleton<ITelemetryInitializer, ApiUserTelemetryInitializer>();

@@ -1,37 +1,42 @@
 ﻿using Halcyon.Web.Models.Events;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Events;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Halcyon.Web.BackgroundServices
 {
-    public class SendEmailBackgroundService : EventBackgroundService<SendEmailEvent>
+    public class SendEmailBackgroundService : BackgroundService
     {
+        private readonly IEventService _eventService;
+
         private readonly IEmailService _emailService;
 
         public SendEmailBackgroundService(
-            IEmailService emailService,
-            IOptions<EventSettings> eventSettings,
-            ILogger<EventHandler> logger) 
-            : base(eventSettings, logger)
+            IEventService eventService,
+            IEmailService emailService)
         {
+            _eventService = eventService;
             _emailService = emailService;
         }
 
-        public override async Task HandleEventAsync(SendEmailEvent data)
+        protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            var message = new EmailMessage
+            async Task handler(SendEmailEvent data)
             {
-                Template = data.Template,
-                Data = data.Context
-            };
+                var message = new EmailMessage
+                {
+                    Template = data.Template,
+                    Data = data.Context
+                };
 
-            message.To.Add(data.EmailAddress);
+                message.To.Add(data.EmailAddress);
 
-            await _emailService.SendEmailAsync(message);
+                await _emailService.SendEmailAsync(message);
+            }
+
+            return _eventService.HandleEventAsync<SendEmailEvent>(handler, cancellationToken);
         }
     }
 }
