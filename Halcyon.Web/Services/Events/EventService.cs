@@ -46,6 +46,7 @@ namespace Halcyon.Web.Services.Events
             {
                 _logger.LogInformation("Handle Event {event}", typeof(T).Name);
 
+                var delay = true;
                 var queueName = typeof(T).Name.ToLower();
                 var queue = new QueueClient(_eventSettings.StorageConnectionString, queueName);
 
@@ -57,7 +58,7 @@ namespace Halcyon.Web.Services.Events
                         cancellationToken: cancellationToken,
                         maxMessages: _eventSettings.BatchSize);
 
-                    await Task.WhenAll(messages
+                    var tasks = messages
                         .Value
                         .Select(async message =>
                         {
@@ -66,24 +67,29 @@ namespace Halcyon.Web.Services.Events
                             try
                             {
                                 var data = JsonSerializer.Deserialize<T>(message.MessageText);
-                                await  messageHandler(data);
+                                await messageHandler(data);
                             }
                             catch (Exception error)
                             {
                                 _logger.LogError(error, "Message Handler Failed");
                             }
-                            finally
-                            {
-                                await queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, cancellationToken);
-                            }
-                        }));
+
+                            await queue.DeleteMessageAsync(message.MessageId, message.PopReceipt, cancellationToken);
+                        });
+
+                    delay = !tasks.Any();
+
+                    await Task.WhenAll(tasks);
                 }
                 catch (Exception error)
                 {
                     _logger.LogError(error, "Handle Event Failed");
                 }
 
-                await Task.Delay(_eventSettings.PollingInterval * 1000, cancellationToken);
+                if (delay)
+                {
+                    await Task.Delay(_eventSettings.PollingInterval * 1000, cancellationToken);
+                }
             }
         }
     }
