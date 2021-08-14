@@ -2,7 +2,7 @@
 
 namespace Halcyon.Web.Controllers
 {
-    public class BaseController : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         protected int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
     }

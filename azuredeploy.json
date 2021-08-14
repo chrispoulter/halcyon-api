@@ -55,11 +55,17 @@
         }
     },
     "variables": {
-        "prefix": "[concat('halcyon-', parameters('stage'))]"
+        "prefix": "[concat('halcyon-', parameters('stage'))]",
+        "sql": "[concat(variables('prefix'), '-sql')]",
+        "db": "[concat(variables('prefix'), '-db')]",
+        "storage": "[concat('halcyon', uniqueString(resourceGroup().id))]",
+        "insights": "[concat(variables('prefix'), '-insights')]",
+        "plan": "[concat(variables('prefix'), '-plan')]",
+        "web": "[concat(variables('prefix'), '-web')]"
     },
     "resources": [
         {
-            "name": "[concat(variables('prefix'), '-sql')]",
+            "name": "[variables('sql')]",
             "type": "Microsoft.Sql/servers",
             "apiVersion": "2014-04-01",
             "location": "[resourceGroup().location]",
@@ -72,7 +78,7 @@
                     "type": "firewallRules",
                     "apiVersion": "2014-04-01",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', concat(variables('prefix'), '-sql'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('sql'))]"
                     ],
                     "location": "[resourceGroup().location]",
                     "name": "AllowAllWindowsAzureIps",
@@ -84,12 +90,12 @@
             ]
         },
         {
-            "name": "[concat(variables('prefix'), '-sql/', variables('prefix'), '-db')]",
+            "name": "[concat(variables('sql'), '/', variables('db'))]",
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2014-04-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', concat(variables('prefix'), '-sql'))]"
+                "[resourceId('Microsoft.Sql/servers', variables('sql'))]"
             ],
             "properties": {
                 "collation": "SQL_Latin1_General_CP1_CI_AS",
@@ -99,7 +105,33 @@
             }
         },
         {
-            "name": "[concat(variables('prefix'), '-plan')]",
+            "name": "[variables('storage')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[variables('insights')]",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "rest",
+                "IngestionMode": "ApplicationInsights",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "name": "[variables('plan')]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
@@ -123,61 +155,48 @@
             }
         },
         {
-            "type": "microsoft.insights/components",
-            "apiVersion": "2020-02-02",
-            "name": "[concat(variables('prefix'), '-insights')]",
-            "location": "[resourceGroup().location]",
-            "kind": "web",
-            "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "Request_Source": "rest",
-                "IngestionMode": "ApplicationInsights",
-                "publicNetworkAccessForIngestion": "Enabled",
-                "publicNetworkAccessForQuery": "Enabled"
-            }
-        },
-        {
-            "name": "[concat(variables('prefix'), '-web')]",
+            "name": "[variables('web')]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', concat(variables('prefix'), '-plan'))]",
-                "[resourceId('microsoft.insights/components', concat(variables('prefix'), '-insights'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storage'))]",
+                "[resourceId('microsoft.insights/components', variables('insights'))]"
             ],
             "kind": "app,linux",
             "properties": {
-                "name": "[concat(variables('prefix'), '-web')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat(variables('prefix'), '-plan'))]",
+                "name": "[variables('web')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]",
                 "siteConfig": {
                     "linuxFxVersion": "DOTNETCORE|5.0"
                 }
             }
         },
         {
-            "name": "[concat(variables('prefix'), '-web/connectionstrings')]",
+            "name": "[concat(variables('web'), '/connectionstrings')]",
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2020-12-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', concat(variables('prefix'), '-web'))]"
+                "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
                 "HalcyonDatabase": {
                     "type": "SQLServer",
-                    "value": "[concat('Data Source=tcp:', variables('prefix'), '-sql.database.windows.net,1433;Initial Catalog=', variables('prefix'), '-db;User Id=', parameters('sqlUserName'), '@', variables('prefix'), '-sql;Password=', parameters('sqlPassword'))]"
+                    "value": "[concat('Data Source=tcp:', variables('sql'), '.database.windows.net,1433;Initial Catalog=', variables('db'), ';User Id=', parameters('sqlUserName'), '@', variables('sql'), ';Password=', parameters('sqlPassword'))]"
                 }
             }
         },
         {
-            "name": "[concat(variables('prefix'), '-web/appsettings')]",
+            "name": "[concat(variables('web'), '/appsettings')]",
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2020-12-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', concat(variables('prefix'), '-web'))]"
+                "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
-                "ApplicationInsights__ConnectionString": "[reference(resourceId('microsoft.insights/components', concat(variables('prefix'), '-insights'))).ConnectionString]",
+                "ApplicationInsights__ConnectionString": "[reference(resourceId('microsoft.insights/components', variables('insights'))).ConnectionString]",
+                "Event__StorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage')), '2018-07-01').keys[0].value, ';EndpointSuffix=core.windows.net')]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",
