@@ -62,7 +62,6 @@
         "insights": "[concat(variables('prefix'), '-insights')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
         "web": "[concat(variables('prefix'), '-web')]"
-
     },
     "resources": [
         {
