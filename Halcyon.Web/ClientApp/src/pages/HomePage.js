@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Jumbotron, Row, Col, Button } from 'reactstrap';
 
 export const HomePage = () => (
     <>
-        <Jumbotron>
-            <Container>
+        <section className="bg-light pt-5 pb-5 mb-3">
+            <div className="container pt-5 pb-5">
                 <h1 className="display-3">Welcome!</h1>
                 <hr />
                 <p className="lead">
@@ -16,53 +15,59 @@ export const HomePage = () => (
                     eleifend, nunc dui porta orci, quis semper odio felis ut
                     quam.
                 </p>
-                <p className="text-right">
-                    <Button to="/register" color="primary" size="lg" tag={Link}>
+                <p className="text-end">
+                    <Link to="/register" className="btn btn-primary btn-lg">
                         Get Started
-                    </Button>
+                    </Link>
                 </p>
-            </Container>
-        </Jumbotron>
+            </div>
+        </section>
 
-        <Container>
-            <Row className="justify-content-md-center">
-                <Col lg={4}>
-                    <h2>Fusce condimentum</h2>
-                    <hr />
-                    <p>
-                        In vel tincidunt elit, id pretium massa. Nullam rhoncus
-                        orci nisl. Pellentesque in mi et eros porttitor sagittis
-                        quis at justo. Sed ac faucibus enim, at tempus enim.
-                        Nunc gravida accumsan diam ut maximus. Ut sed tellus
-                        odio. N am semper blandit pretium. Suspendisse vitae
-                        elit turpis.
-                    </p>
-                </Col>
-                <Col lg={4}>
-                    <h2>Fusce condimentum</h2>
-                    <hr />
-                    <p>
-                        In vel tincidunt elit, id pretium massa. Nullam rhoncus
-                        orci nisl. Pellentesque in mi et eros porttitor sagittis
-                        quis at justo. Sed ac faucibus enim, at tempus enim.
-                        Nunc gravida accumsan diam ut maximus. Ut sed tellus
-                        odio. N am semper blandit pretium. Suspendisse vitae
-                        elit turpis.
-                    </p>
-                </Col>
-                <Col lg={4}>
-                    <h2>Fusce condimentum</h2>
-                    <hr />
-                    <p>
-                        In vel tincidunt elit, id pretium massa. Nullam rhoncus
-                        orci nisl. Pellentesque in mi et eros porttitor sagittis
-                        quis at justo. Sed ac faucibus enim, at tempus enim.
-                        Nunc gravida accumsan diam ut maximus. Ut sed tellus
-                        odio. N am semper blandit pretium. Suspendisse vitae
-                        elit turpis.
-                    </p>
-                </Col>
-            </Row>
-        </Container>
+        <section className="container mb-3">
+            <div className="row gx-5">
+                <div className="col-lg">
+                    <div className="mb-3">
+                        <h3>Fusce condimentum</h3>
+                        <hr />
+                        <p>
+                            In vel tincidunt elit, id pretium massa. Nullam
+                            rhoncus orci nisl. Pellentesque in mi et eros
+                            porttitor sagittis quis at justo. Sed ac faucibus
+                            enim, at tempus enim. Nunc gravida accumsan diam ut
+                            maximus. Ut sed tellus odio. N am semper blandit
+                            pretium. Suspendisse vitae elit turpis.
+                        </p>
+                    </div>
+                </div>
+                <div className="col-lg">
+                    <div className="mb-3">
+                        <h3>Fusce condimentum</h3>
+                        <hr />
+                        <p>
+                            In vel tincidunt elit, id pretium massa. Nullam
+                            rhoncus orci nisl. Pellentesque in mi et eros
+                            porttitor sagittis quis at justo. Sed ac faucibus
+                            enim, at tempus enim. Nunc gravida accumsan diam ut
+                            maximus. Ut sed tellus odio. N am semper blandit
+                            pretium. Suspendisse vitae elit turpis.
+                        </p>
+                    </div>
+                </div>
+                <div className="col-lg">
+                    <div className="mb-3">
+                        <h3>Fusce condimentum</h3>
+                        <hr />
+                        <p>
+                            In vel tincidunt elit, id pretium massa. Nullam
+                            rhoncus orci nisl. Pellentesque in mi et eros
+                            porttitor sagittis quis at justo. Sed ac faucibus
+                            enim, at tempus enim. Nunc gravida accumsan diam ut
+                            maximus. Ut sed tellus odio. N am semper blandit
+                            pretium. Suspendisse vitae elit turpis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </>
 );

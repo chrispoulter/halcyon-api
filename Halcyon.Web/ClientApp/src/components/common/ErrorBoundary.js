@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Container, Jumbotron } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import { captureError } from '../../utils/logger';
 
 export class ErrorBoundary extends React.Component {
@@ -25,20 +25,20 @@ export class ErrorBoundary extends React.Component {
                     <title>Error</title>
                 </Helmet>
 
-                <Jumbotron>
-                    <Container>
+                <section className="bg-light pt-5 pb-5 mb-3">
+                    <div className="container pt-5 pb-5">
                         <h1 className="display-3">Error</h1>
                         <hr />
                         <p className="lead">
                             Sorry, something went wrong. Please try again later.
                         </p>
-                        <p className="text-right">
-                            <a href="/" className="btn btn-lg btn-primary">
+                        <p className="text-end">
+                            <Link to="/" className="btn btn-primary btn-lg">
                                 Home
-                            </a>
+                            </Link>
                         </p>
-                    </Container>
-                </Jumbotron>
+                    </div>
+                </section>
             </>
         );
     }

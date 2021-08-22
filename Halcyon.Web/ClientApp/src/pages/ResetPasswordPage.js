@@ -2,7 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
@@ -29,7 +28,7 @@ export const ResetPasswordPage = ({ match, history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Reset Password</title>
             </Helmet>
@@ -90,18 +89,18 @@ export const ResetPasswordPage = ({ match, history }) => {
                             component={TextInput}
                         />
 
-                        <FormGroup className="text-right">
+                        <div className="mb-3 text-end">
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
-        </Container>
+        </div>
     );
 };

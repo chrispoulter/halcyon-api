@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, Alert, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
@@ -26,9 +25,9 @@ export const UpdateProfilePage = ({ history }) => {
 
     if (!data) {
         return (
-            <Alert color="info" className="container p-3 mb-3">
+            <div className="container alert alert-info p-3 mb-3">
                 Profile could not be found.
-            </Alert>
+            </div>
         );
     }
 
@@ -48,7 +47,7 @@ export const UpdateProfilePage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Update Profile</title>
             </Helmet>
@@ -115,25 +114,24 @@ export const UpdateProfilePage = ({ history }) => {
                             component={DateInput}
                         />
 
-                        <FormGroup className="text-right">
-                            <Button
+                        <div className="mb-3 text-end">
+                            <Link
                                 to="/my-account"
-                                className="mr-1"
-                                tag={Link}
+                                className="btn btn-secondary me-1"
                             >
                                 Cancel
-                            </Button>
+                            </Link>
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
-        </Container>
+        </div>
     );
 };

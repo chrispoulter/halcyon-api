@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
 import {
     TextInput,
@@ -44,7 +43,7 @@ export const CreateUserPage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Create User</title>
             </Helmet>
@@ -158,21 +157,21 @@ export const CreateUserPage = ({ history }) => {
                             component={CheckboxGroupInput}
                         />
 
-                        <FormGroup className="text-right">
-                            <Button to="/user" className="mr-1" tag={Link}>
+                        <div className="mb-3 text-end">
+                            <Link to="/user" className="btn btn-secondary me-1">
                                 Cancel
-                            </Button>
+                            </Link>
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
-        </Container>
+        </div>
     );
 };

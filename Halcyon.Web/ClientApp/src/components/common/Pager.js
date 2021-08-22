@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 export const Pager = ({
     hasNextPage,
@@ -12,19 +12,21 @@ export const Pager = ({
     }
 
     return (
-        <Pagination className="d-flex justify-content-center">
+        <ul className="pagination justify-content-center">
             {hasPreviousPage && (
-                <PaginationItem>
-                    <PaginationLink onClick={onPreviousPage}>
+                <li className="page-item">
+                    <Link className="page-link" onClick={onPreviousPage}>
                         Previous
-                    </PaginationLink>
-                </PaginationItem>
+                    </Link>
+                </li>
             )}
             {hasNextPage && (
-                <PaginationItem>
-                    <PaginationLink onClick={onNextPage}>Next</PaginationLink>
-                </PaginationItem>
+                <li className="page-item">
+                    <Link className="page-link" onClick={onNextPage}>
+                        Next
+                    </Link>
+                </li>
             )}
-        </Pagination>
+        </ul>
     );
 };

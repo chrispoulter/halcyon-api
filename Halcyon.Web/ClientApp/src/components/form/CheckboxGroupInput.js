@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormGroup, Label, FormText, Input } from 'reactstrap';
 
 export const CheckboxGroupInput = ({ field, form, label, options }) => {
     const { name, onChange, onBlur, value } = field;
@@ -36,27 +35,38 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
         });
 
     return (
-        <FormGroup>
-            <Label>{label}</Label>
-            <ul>
+        <div className="mb-3">
+            <label className="form-label">{label}</label>
+            <ul className="list-unstyled">
                 {Object.entries(options).map(([value, label]) => (
                     <li key={`${name}.${value}`}>
-                        <Input
-                            id={`${name}.${value}`}
-                            name={`${name}.${value}`}
-                            type="checkbox"
-                            checked={!!values.find(item => item === value)}
-                            invalid={!!touch && !!error}
-                            onChange={event =>
-                                handleChange(value, event.target.checked)
-                            }
-                            onBlur={handleBlur}
-                        />
-                        <Label for={`${name}.${value}`}>{label}</Label>
+                        <div className="form-check">
+                            <input
+                                id={`${name}.${value}`}
+                                name={`${name}.${value}`}
+                                type="checkbox"
+                                checked={!!values.find(item => item === value)}
+                                className={
+                                    !!touch && !!error
+                                        ? 'form-check-input is-invalid'
+                                        : 'form-check-input'
+                                }
+                                onChange={event =>
+                                    handleChange(value, event.target.checked)
+                                }
+                                onBlur={handleBlur}
+                            />
+                            <label
+                                htmlFor={`${name}.${value}`}
+                                className="form-check-label"
+                            >
+                                {label}
+                            </label>
+                        </div>
                     </li>
                 ))}
             </ul>
-            {touch && error && <FormText color="danger">{errors}</FormText>}
-        </FormGroup>
+            {touch && error && <div className="invalid-feedback">{error}</div>}
+        </div>
     );
 };

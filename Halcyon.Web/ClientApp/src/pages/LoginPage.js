@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, FormGroup } from 'reactstrap';
 import {
     TextInput,
     CheckboxInput,
@@ -38,7 +37,7 @@ export const LoginPage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Login</title>
             </Helmet>
@@ -89,15 +88,15 @@ export const LoginPage = ({ history }) => {
                             component={CheckboxInput}
                         />
 
-                        <FormGroup className="text-right">
+                        <div className="mb-3 text-end">
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
@@ -109,6 +108,6 @@ export const LoginPage = ({ history }) => {
                 Forgotten your password?{' '}
                 <Link to="/forgot-password">Request reset</Link>
             </p>
-        </Container>
+        </div>
     );
 };

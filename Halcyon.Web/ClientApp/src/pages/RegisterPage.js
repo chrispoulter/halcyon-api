@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, FormGroup } from 'reactstrap';
 import {
     TextInput,
     DateInput,
@@ -56,7 +55,7 @@ export const RegisterPage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Register</title>
             </Helmet>
@@ -158,15 +157,15 @@ export const RegisterPage = ({ history }) => {
                             component={DateInput}
                         />
 
-                        <FormGroup className="text-right">
+                        <div className="mb-3 text-end">
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
@@ -174,6 +173,6 @@ export const RegisterPage = ({ history }) => {
             <p>
                 Already have an account? <Link to="/login">Log in now</Link>
             </p>
-        </Container>
+        </div>
     );
 };

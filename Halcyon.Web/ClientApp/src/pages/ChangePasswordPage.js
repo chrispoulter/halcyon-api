@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, FormGroup } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { TextInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
@@ -29,7 +28,7 @@ export const ChangePasswordPage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Change Password</title>
             </Helmet>
@@ -89,22 +88,21 @@ export const ChangePasswordPage = ({ history }) => {
                             component={TextInput}
                         />
 
-                        <FormGroup className="text-right">
-                            <Button
+                        <div className="mb-3 text-end">
+                            <Link
                                 to="/my-account"
-                                className="mr-1"
-                                tag={Link}
+                                className="btn btn-secondary me-1"
                             >
                                 Cancel
-                            </Button>
+                            </Link>
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
@@ -113,6 +111,6 @@ export const ChangePasswordPage = ({ history }) => {
                 Forgotten your password?{' '}
                 <Link to="/forgot-password">Request reset</Link>
             </p>
-        </Container>
+        </div>
     );
 };

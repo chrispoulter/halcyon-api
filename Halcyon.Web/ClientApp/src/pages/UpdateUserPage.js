@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, Alert, FormGroup } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
 import {
@@ -53,9 +52,9 @@ export const UpdateUserPage = ({ history, match }) => {
 
     if (!data) {
         return (
-            <Alert color="info" className="container p-3 mb-3">
+            <div className="container alert alert-info p-3 mb-3">
                 User could not be found.
-            </Alert>
+            </div>
         );
     }
 
@@ -189,7 +188,7 @@ export const UpdateUserPage = ({ history, match }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>Update User</title>
             </Helmet>
@@ -267,14 +266,13 @@ export const UpdateUserPage = ({ history, match }) => {
                             component={CheckboxGroupInput}
                         />
 
-                        <FormGroup className="text-right">
-                            <Button to="/user" className="mr-1" tag={Link}>
+                        <div className="mb-3 text-end">
+                            <Link to="/user" className="btn btn-secondary me-1">
                                 Cancel
-                            </Button>
+                            </Link>
                             {data.isLockedOut ? (
                                 <Button
-                                    color="warning"
-                                    className="mr-1"
+                                    className="btn btn-warning me-1"
                                     loading={isUnlocking}
                                     disabled={
                                         isLocking || isDeleting || isSubmitting
@@ -285,8 +283,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             ) : (
                                 <Button
-                                    color="warning"
-                                    className="mr-1"
+                                    className="btn btn-warning me-1"
                                     loading={isLocking}
                                     disabled={
                                         isUnlocking ||
@@ -299,8 +296,7 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             )}
                             <Button
-                                color="danger"
-                                className="mr-1"
+                                className="btn btn-danger me-1"
                                 loading={isDeleting}
                                 disabled={
                                     isLocking || isUnlocking || isSubmitting
@@ -311,7 +307,7 @@ export const UpdateUserPage = ({ history, match }) => {
                             </Button>
                             <Button
                                 type="submit"
-                                color="primary"
+                                className="btn btn-primary"
                                 loading={isSubmitting}
                                 disabled={
                                     isLocking || isUnlocking || isDeleting
@@ -319,10 +315,10 @@ export const UpdateUserPage = ({ history, match }) => {
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>
-        </Container>
+        </div>
     );
 };

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Container, Alert } from 'reactstrap';
 import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
 import { Button, Spinner, AuthContext, useFetch } from '../components';
@@ -27,9 +26,9 @@ export const MyAccountPage = ({ history }) => {
 
     if (!data) {
         return (
-            <Alert color="info" className="container p-3 mb-3">
+            <div className="container alert alert-info p-3 mb-3">
                 Profile could not be found.
-            </Alert>
+            </div>
         );
     }
 
@@ -65,7 +64,7 @@ export const MyAccountPage = ({ history }) => {
     };
 
     return (
-        <Container>
+        <div className="container">
             <Helmet>
                 <title>My Account</title>
             </Helmet>
@@ -75,14 +74,12 @@ export const MyAccountPage = ({ history }) => {
 
             <div className="d-flex justify-content-between">
                 <h3>Profile</h3>
-                <Button
+                <Link
                     to="/update-profile"
-                    color="primary"
-                    className="align-self-start"
-                    tag={Link}
+                    className="btn btn-primary align-self-start"
                 >
                     Update
-                </Button>
+                </Link>
             </div>
             <hr />
 
@@ -124,13 +121,13 @@ export const MyAccountPage = ({ history }) => {
             </p>
             <p>
                 <Button
-                    color="danger"
+                    className="btn btn-danger"
                     loading={isDeleting}
                     onClick={onDeleteAccount}
                 >
                     Delete Account
                 </Button>
             </p>
-        </Container>
+        </div>
     );
 };

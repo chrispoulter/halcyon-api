@@ -1,19 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Container
-} from 'reactstrap';
+
 import { AuthContext } from '../providers/AuthProvider';
 import { isAuthorized, USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
 import { trackEvent } from '../../utils/logger';
@@ -47,61 +34,95 @@ export const Header = () => {
     const toggle = () => setIsOpen(!isOpen);
 
     return (
-        <header>
-            <Navbar color="dark" dark expand="md" fixed="top">
-                <Container>
-                    <NavbarBrand to="/" tag={Link}>
+        <header className="bg-dark mb-3">
+            <div className="container">
+                <nav className="navbar navbar-dark navbar-expand-lg">
+                    <Link to="/" className="navbar-brand">
                         Halcyon
-                    </NavbarBrand>
-                    <NavbarToggler onClick={toggle} />
-                    <Collapse isOpen={isOpen} navbar>
-                        <Nav navbar>
-                            {isUserAdministrator && (
-                                <NavItem>
-                                    <NavLink to="/user" tag={Link}>
+                    </Link>
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div
+                        id="navbarNavAltMarkup"
+                        className="collapse navbar-collapse"
+                    >
+                        {isUserAdministrator && (
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <Link to="/user" className="nav-link">
                                         Users
-                                    </NavLink>
-                                </NavItem>
-                            )}
-                        </Nav>
+                                    </Link>
+                                </li>
+                            </ul>
+                        )}
 
-                        <Nav navbar className="ml-auto">
+                        <ul className="navbar-nav ms-auto">
                             {isAuthenticated ? (
-                                <UncontrolledDropdown nav inNavbar>
-                                    <DropdownToggle nav caret>
+                                <li className="nav-item dropdown">
+                                    <Link
+                                        id="navbarDropdownMenuLink"
+                                        role="button"
+                                        to="/"
+                                        className="nav-link dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
                                         {currentUser.given_name}{' '}
                                         {currentUser.family_name}{' '}
-                                    </DropdownToggle>
-                                    <DropdownMenu right>
-                                        <DropdownItem
-                                            to="/my-account"
-                                            tag={Link}
-                                        >
-                                            My Account
-                                        </DropdownItem>
-                                        <DropdownItem onClick={logout}>
-                                            Logout
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
+                                    </Link>
+                                    <ul
+                                        className="dropdown-menu"
+                                        aria-labelledby="navbarDropdownMenuLink"
+                                    >
+                                        <li>
+                                            <Link
+                                                to="/my-account"
+                                                className="dropdown-item"
+                                            >
+                                                My Account
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link
+                                                to="/"
+                                                className="dropdown-item"
+                                                onClick={logout}
+                                            >
+                                                Log Out
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </li>
                             ) : (
                                 <>
-                                    <NavItem>
-                                        <NavLink to="/login" tag={Link}>
+                                    <li className="nav-item">
+                                        <Link to="/login" className="nav-link">
                                             Login
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink to="/register" tag={Link}>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/register"
+                                            className="nav-link"
+                                        >
                                             Register
-                                        </NavLink>
-                                    </NavItem>
+                                        </Link>
+                                    </li>
                                 </>
                             )}
-                        </Nav>
-                    </Collapse>
-                </Container>
-            </Navbar>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </header>
     );
 };

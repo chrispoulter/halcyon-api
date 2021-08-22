@@ -1,5 +1,4 @@
 import React from 'react';
-import { Input, FormGroup, Label, FormText } from 'reactstrap';
 
 export const TextInput = ({ field, form, label, ...rest }) => {
     const { name } = field;
@@ -8,15 +7,21 @@ export const TextInput = ({ field, form, label, ...rest }) => {
     const touch = touched[name];
 
     return (
-        <FormGroup>
-            <Label for={name}>{label}</Label>
-            <Input
+        <div className="mb-3">
+            <label htmlFor={name} className="form-label">
+                {label}
+            </label>
+            <input
                 id={name}
-                invalid={!!touch && !!error}
+                className={
+                    !!touch && !!error
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                }
                 {...field}
                 {...rest}
             />
-            {touch && error && <FormText color="danger">{error}</FormText>}
-        </FormGroup>
+            {touch && error && <div className="invalid-feedback">{error}</div>}
+        </div>
     );
 };
