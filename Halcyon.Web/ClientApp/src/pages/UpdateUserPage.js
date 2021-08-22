@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import {
     Spinner,
     TextInput,
@@ -53,11 +55,7 @@ export const UpdateUserPage = ({ history, match }) => {
     }
 
     if (!data) {
-        return (
-            <div className="container alert alert-info">
-                User could not be found.
-            </div>
-        );
+        return <Alert variant="info">User could not be found.</Alert>;
     }
 
     const onSubmit = async variables => {
@@ -190,7 +188,7 @@ export const UpdateUserPage = ({ history, match }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Update User</title>
             </Helmet>
@@ -269,12 +267,18 @@ export const UpdateUserPage = ({ history, match }) => {
                         />
 
                         <div className="mb-3 text-end">
-                            <Link to="/user" className="btn btn-secondary me-1">
+                            <Button
+                                to="/user"
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
+                            >
                                 Cancel
-                            </Link>
+                            </Button>
                             {data.isLockedOut ? (
                                 <Button
-                                    className="btn btn-warning me-1"
+                                    variant="warning"
+                                    className="me-1"
                                     loading={isUnlocking}
                                     disabled={
                                         isLocking || isDeleting || isSubmitting
@@ -285,7 +289,8 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             ) : (
                                 <Button
-                                    className="btn btn-warning me-1"
+                                    variant="warning"
+                                    className="me-1"
                                     loading={isLocking}
                                     disabled={
                                         isUnlocking ||
@@ -298,7 +303,8 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             )}
                             <Button
-                                className="btn btn-danger me-1"
+                                variant="danger"
+                                className="me-1"
                                 loading={isDeleting}
                                 disabled={
                                     isLocking || isUnlocking || isSubmitting
@@ -309,7 +315,7 @@ export const UpdateUserPage = ({ history, match }) => {
                             </Button>
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="primary"
                                 loading={isSubmitting}
                                 disabled={
                                     isLocking || isUnlocking || isDeleting
@@ -321,6 +327,6 @@ export const UpdateUserPage = ({ history, match }) => {
                     </Form>
                 )}
             </Formik>
-        </div>
+        </Container>
     );
 };

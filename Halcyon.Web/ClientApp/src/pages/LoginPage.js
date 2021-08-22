@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import Container from 'react-bootstrap/Container';
 import {
     TextInput,
     CheckboxInput,
@@ -37,7 +38,7 @@ export const LoginPage = ({ history }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Login</title>
             </Helmet>
@@ -91,7 +92,7 @@ export const LoginPage = ({ history }) => {
                         <div className="mb-3 text-end">
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="primary"
                                 loading={isSubmitting}
                             >
                                 Submit
@@ -108,6 +109,6 @@ export const LoginPage = ({ history }) => {
                 Forgotten your password?{' '}
                 <Link to="/forgot-password">Request reset</Link>
             </p>
-        </div>
+        </Container>
     );
 };

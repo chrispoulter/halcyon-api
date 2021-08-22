@@ -1,15 +1,17 @@
 import React from 'react';
+import BaseButton from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 export const Button = ({ loading, disabled, children, ...rest }) => (
-    <button type="button" disabled={loading || disabled} {...rest}>
+    <BaseButton disabled={loading || disabled} {...rest}>
         {loading ? (
             <>
-                <span className="spinner-grow spinner-grow-sm"></span>
-                <span className="spinner-grow spinner-grow-sm"></span>
-                <span className="spinner-grow spinner-grow-sm"></span>
+                <Spinner animation="grow" size="sm" />
+                <Spinner animation="grow" size="sm" />
+                <Spinner animation="grow" size="sm" />
             </>
         ) : (
             children
         )}
-    </button>
+    </BaseButton>
 );

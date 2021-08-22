@@ -5,3 +5,4 @@ export * from './Pager';
 export * from './PrivateRoute';
 export * from './Spinner';
 export * from './ErrorBoundary';
+export * from './Hero';

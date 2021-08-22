@@ -1,4 +1,5 @@
 import React from 'react';
+import Form from 'react-bootstrap/Form';
 
 export const CheckboxGroupInput = ({ field, form, label, options }) => {
     const { name, onChange, onBlur, value } = field;
@@ -35,40 +36,27 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
         });
 
     return (
-        <div className="mb-3">
-            <label className="form-label">{label}</label>
-            <ul className="list-unstyled">
-                {Object.entries(options).map(([value, label]) => (
-                    <li key={`${name}.${value}`}>
-                        <div className="form-check">
-                            <input
-                                id={`${name}.${value}`}
-                                name={`${name}.${value}`}
-                                type="checkbox"
-                                checked={!!values.find(item => item === value)}
-                                className={
-                                    !!touch && !!error
-                                        ? 'form-check-input is-invalid'
-                                        : 'form-check-input'
-                                }
-                                onChange={event =>
-                                    handleChange(value, event.target.checked)
-                                }
-                                onBlur={handleBlur}
-                            />
-                            <label
-                                htmlFor={`${name}.${value}`}
-                                className="form-check-label"
-                            >
-                                {label}
-                            </label>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-            {touch && error && (
-                <div className="invalid-feedback d-block">{error}</div>
-            )}
-        </div>
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            {Object.entries(options).map(([value, label]) => (
+                <Form.Check
+                    key={`${name}.${value}`}
+                    id={`${name}.${value}`}
+                    name={`${name}.${value}`}
+                    type="checkbox"
+                    label={label}
+                    checked={!!values.find(item => item === value)}
+                    isInvalid={!!touch && !!error}
+                    onChange={event =>
+                        handleChange(value, event.target.checked)
+                    }
+                    onBlur={handleBlur}
+                    {...field}
+                />
+            ))}
+            <Form.Control.Feedback type="invalid">
+                {error}
+            </Form.Control.Feedback>
+        </Form.Group>
     );
 };

@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
@@ -24,11 +26,7 @@ export const UpdateProfilePage = ({ history }) => {
     }
 
     if (!data) {
-        return (
-            <div className="container alert alert-info">
-                Profile could not be found.
-            </div>
-        );
+        return <Alert variant="info">Profile could not be found.</Alert>;
     }
 
     const onSubmit = async variables => {
@@ -47,7 +45,7 @@ export const UpdateProfilePage = ({ history }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Update Profile</title>
             </Helmet>
@@ -115,15 +113,17 @@ export const UpdateProfilePage = ({ history }) => {
                         />
 
                         <div className="mb-3 text-end">
-                            <Link
+                            <Button
                                 to="/my-account"
-                                className="btn btn-secondary me-1"
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
                             >
                                 Cancel
-                            </Link>
+                            </Button>
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="primary"
                                 loading={isSubmitting}
                             >
                                 Submit
@@ -132,6 +132,6 @@ export const UpdateProfilePage = ({ history }) => {
                     </Form>
                 )}
             </Formik>
-        </div>
+        </Container>
     );
 };

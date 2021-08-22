@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Pagination from 'react-bootstrap/Pagination';
 
 export const Pager = ({
     hasNextPage,
@@ -12,21 +13,17 @@ export const Pager = ({
     }
 
     return (
-        <ul className="pagination justify-content-center">
+        <Pagination className="justify-content-center">
             {hasPreviousPage && (
-                <li className="page-item">
-                    <Link className="page-link" onClick={onPreviousPage}>
-                        Previous
-                    </Link>
-                </li>
+                <Pagination.Item as={Link} onClick={onPreviousPage}>
+                    Previous
+                </Pagination.Item>
             )}
             {hasNextPage && (
-                <li className="page-item">
-                    <Link className="page-link" onClick={onNextPage}>
-                        Next
-                    </Link>
-                </li>
+                <Pagination.Item as={Link} onClick={onNextPage}>
+                    Next
+                </Pagination.Item>
             )}
-        </ul>
+        </Pagination>
     );
 };

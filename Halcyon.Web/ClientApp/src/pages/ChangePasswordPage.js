@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
 import { TextInput, Button, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
@@ -28,7 +29,7 @@ export const ChangePasswordPage = ({ history }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Change Password</title>
             </Helmet>
@@ -89,15 +90,17 @@ export const ChangePasswordPage = ({ history }) => {
                         />
 
                         <div className="mb-3 text-end">
-                            <Link
+                            <Button
                                 to="/my-account"
-                                className="btn btn-secondary me-1"
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
                             >
                                 Cancel
-                            </Link>
+                            </Button>
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="primary"
                                 loading={isSubmitting}
                             >
                                 Submit
@@ -111,6 +114,6 @@ export const ChangePasswordPage = ({ history }) => {
                 Forgotten your password?{' '}
                 <Link to="/forgot-password">Request reset</Link>
             </p>
-        </div>
+        </Container>
     );
 };

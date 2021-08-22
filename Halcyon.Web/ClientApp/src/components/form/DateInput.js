@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Form from 'react-bootstrap/Form';
 
 const currentYear = new Date().getFullYear();
 
@@ -73,32 +74,26 @@ export const DateInput = ({ field, form, label }) => {
         });
 
     return (
-        <div className="mb-3">
-            <label className="form-label">{label}</label>
+        <Form.Group controlId={`${name}.date`} className="mb-3">
+            <Form.Label>{label}</Form.Label>
             <div className="d-flex">
-                <select
-                    id={name}
+                <Form.Select
+                    id={`${name}.date`}
                     value={state.date}
-                    className={
-                        !!touch && !!error
-                            ? 'form-select me-1 is-invalid'
-                            : 'form-select me-1'
-                    }
+                    isInvalid={!!touch && !!error}
                     onChange={event => handleDay(event.target.value)}
                     onBlur={handleBlur}
+                    className="me-1"
                 >
                     <option value={-1}>Day...</option>
                     {Array.from({ length: 31 }).map((_, index) => (
                         <option key={index}>{index + 1}</option>
                     ))}
-                </select>
-                <select
+                </Form.Select>
+                <Form.Select
+                    id={`${name}.month`}
                     value={state.month}
-                    className={
-                        !!touch && !!error
-                            ? 'form-select me-1 is-invalid'
-                            : 'form-select me-1'
-                    }
+                    isInvalid={!!touch && !!error}
                     onChange={event => handleMonth(event.target.value)}
                     onBlur={handleBlur}
                 >
@@ -108,26 +103,24 @@ export const DateInput = ({ field, form, label }) => {
                             {monthNames[index]}
                         </option>
                     ))}
-                </select>
-                <select
+                </Form.Select>
+                <Form.Select
+                    id={`${name}.year`}
                     value={state.year}
-                    className={
-                        !!touch && !!error
-                            ? 'form-select is-invalid me-1'
-                            : 'form-select me-1'
-                    }
+                    isInvalid={!!touch && !!error}
                     onChange={event => handleYear(event.target.value)}
                     onBlur={handleBlur}
+                    className="me-1"
                 >
-                    <option value={-1}>Year</option>
+                    <option value={-1}>Year...</option>
                     {Array.from({ length: 120 }).map((_, index) => (
                         <option key={index}>{currentYear - index}</option>
                     ))}
-                </select>
+                </Form.Select>
             </div>
             {touch && error && (
                 <div className="invalid-feedback d-block">{error}</div>
             )}
-        </div>
+        </Form.Group>
     );
 };

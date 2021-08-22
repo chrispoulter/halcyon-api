@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import {
     Button,
     Spinner,
@@ -32,11 +34,7 @@ export const MyAccountPage = ({ history }) => {
     }
 
     if (!data) {
-        return (
-            <div className="container alert alert-info">
-                Profile could not be found.
-            </div>
-        );
+        return <Alert variant="info">Profile could not be found.</Alert>;
     }
 
     const onDeleteAccount = async () => {
@@ -71,7 +69,7 @@ export const MyAccountPage = ({ history }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>My Account</title>
             </Helmet>
@@ -81,9 +79,9 @@ export const MyAccountPage = ({ history }) => {
 
             <div className="d-flex justify-content-between">
                 <h3>Profile</h3>
-                <Link to="/update-profile" className="btn btn-primary">
+                <Button to="/update-profile" as={Link} variant="primary">
                     Update
-                </Link>
+                </Button>
             </div>
             <hr />
 
@@ -125,13 +123,13 @@ export const MyAccountPage = ({ history }) => {
             </p>
             <p>
                 <Button
-                    className="btn btn-danger"
+                    variant="danger"
                     loading={isDeleting}
                     onClick={onDeleteAccount}
                 >
                     Delete Account
                 </Button>
             </p>
-        </div>
+        </Container>
     );
 };

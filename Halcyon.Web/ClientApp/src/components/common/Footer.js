@@ -1,10 +1,11 @@
 import React from 'react';
+import Container from 'react-bootstrap/Container';
 import { config } from '../../utils/config';
 
 const currentYear = new Date().getFullYear();
 
 export const Footer = () => (
-    <footer className="container">
+    <Container>
         <hr />
         <div className="d-flex justify-content-between">
             <p className="text-muted">
@@ -13,5 +14,5 @@ export const Footer = () => (
             </p>
             <p className="text-muted">v{config.VERSION}</p>
         </div>
-    </footer>
+    </Container>
 );

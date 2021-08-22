@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form } from 'formik';
-import { Spinner, Pager, useFetch } from '../components';
+import Container from 'react-bootstrap/Container';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Alert from 'react-bootstrap/Alert';
+import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
+import { Button, Spinner, Pager, useFetch } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 
 const SORT_OPTIONS = {
@@ -40,19 +48,21 @@ export const UserPage = () => {
         setState({ ...state, page: 1, search: values.search });
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Users</title>
             </Helmet>
 
             <div className="d-flex justify-content-between mb-3">
                 <h1>Users</h1>
-                <Link
+                <Button
                     to="/user/create"
-                    className="btn btn-primary align-self-start"
+                    as={Link}
+                    variant="primary"
+                    className="align-self-start"
                 >
                     Create New
-                </Link>
+                </Button>
             </div>
             <hr />
 
@@ -62,86 +72,72 @@ export const UserPage = () => {
             >
                 {({ handleChange, handleBlur, values }) => (
                     <Form>
-                        <div className="input-group mb-3">
-                            <input
+                        <InputGroup className="mb-3">
+                            <FormControl
                                 name="search"
                                 type="text"
-                                className="form-control"
                                 placeholder="Search..."
                                 value={values.search}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                             />
-                            <button type="submit" className="btn btn-secondary">
+                            <Button type="submit" variant="secondary">
                                 Search
-                            </button>
-                            <button
-                                className="btn btn-outline-secondary dropdown-toggle"
-                                type="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                Sort By
-                            </button>
-                            <ul className="dropdown-menu dropdown-menu-end">
+                            </Button>
+                            <DropdownButton title="Sort By" variant="secondary">
                                 {Object.entries(SORT_OPTIONS).map(
                                     ([value, label]) => (
-                                        <Link
+                                        <Dropdown.Item
                                             key={value}
-                                            className={
-                                                value === state.sort
-                                                    ? 'dropdown-item active'
-                                                    : 'dropdown-item'
-                                            }
+                                            active={value === state.sort}
                                             onClick={() => onSort(value)}
                                         >
                                             {label}
-                                        </Link>
+                                        </Dropdown.Item>
                                     )
                                 )}
-                            </ul>
-                        </div>
+                            </DropdownButton>
+                        </InputGroup>
                     </Form>
                 )}
             </Formik>
 
             {!data?.items.length ? (
-                <div className="container alert alert-info">
-                    No users could be found.
-                </div>
+                <Alert variant="info">No users could be found.</Alert>
             ) : (
                 <>
                     {data.items.map(user => (
-                        <Link
+                        <Card
                             key={user.id}
                             to={`/user/${user.id}`}
-                            className="card mb-2"
+                            as={Link}
+                            body
+                            className="mb-2"
                         >
-                            <div className="card-body">
-                                <h5>
-                                    {user.firstName} {user.lastName}
-                                    <br />
-                                    <small className="text-muted">
-                                        {user.emailAddress}
-                                    </small>
-                                </h5>
-                                <div>
-                                    {user.isLockedOut && (
-                                        <div className="badge bg-danger me-1">
-                                            Locked
-                                        </div>
-                                    )}
-                                    {user.roles?.map(role => (
-                                        <div
-                                            key={role}
-                                            className="badge bg-primary me-1"
-                                        >
-                                            {ALL_ROLES[role]}
-                                        </div>
-                                    ))}
-                                </div>
+                            <h5>
+                                {user.firstName} {user.lastName}
+                                <br />
+                                <small className="text-muted">
+                                    {user.emailAddress}
+                                </small>
+                            </h5>
+                            <div>
+                                {user.isLockedOut && (
+                                    <Badge bg="danger" className="me-1">
+                                        Locked
+                                    </Badge>
+                                )}
+                                {user.roles?.map(role => (
+                                    <Badge
+                                        key={role}
+                                        bg="primary"
+                                        className="me-1"
+                                    >
+                                        {ALL_ROLES[role]}
+                                    </Badge>
+                                ))}
                             </div>
-                        </Link>
+                        </Card>
                     ))}
 
                     <Pager
@@ -152,6 +148,6 @@ export const UserPage = () => {
                     />
                 </>
             )}
-        </div>
+        </Container>
     );
 };

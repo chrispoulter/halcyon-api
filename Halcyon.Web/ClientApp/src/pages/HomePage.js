@@ -1,31 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { Hero, Button } from '../components';
 
 export const HomePage = () => (
     <>
-        <section className="bg-light pt-5 pb-5 mb-3">
-            <div className="container pt-5 pb-5">
-                <h1 className="display-3">Welcome!</h1>
-                <hr />
-                <p className="lead">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Etiam semper diam at erat pulvinar, at pulvinar felis
-                    blandit. Vestibulum volutpat tellus diam, consequat gravida
-                    libero rhoncus ut. Morbi maximus, leo sit amet vehicula
-                    eleifend, nunc dui porta orci, quis semper odio felis ut
-                    quam.
-                </p>
-                <p className="text-end">
-                    <Link to="/register" className="btn btn-primary btn-lg">
-                        Get Started
-                    </Link>
-                </p>
-            </div>
-        </section>
+        <Hero>
+            <h1 className="display-3">Welcome!</h1>
+            <hr />
+            <p className="lead">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+                semper diam at erat pulvinar, at pulvinar felis blandit.
+                Vestibulum volutpat tellus diam, consequat gravida libero
+                rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc
+                dui porta orci, quis semper odio felis ut quam.
+            </p>
+            <p className="text-end">
+                <Button to="/register" as={Link} variant="primary" size="lg">
+                    Get Started
+                </Button>
+            </p>
+        </Hero>
 
-        <section className="container mb-3">
-            <div className="row gx-5">
-                <div className="col-lg">
+        <Container className="mb-3">
+            <Row className="gx-5">
+                <Col lg>
                     <div className="mb-3">
                         <h3>Fusce condimentum</h3>
                         <hr />
@@ -38,8 +39,8 @@ export const HomePage = () => (
                             pretium. Suspendisse vitae elit turpis.
                         </p>
                     </div>
-                </div>
-                <div className="col-lg">
+                </Col>
+                <Col lg>
                     <div className="mb-3">
                         <h3>Fusce condimentum</h3>
                         <hr />
@@ -52,8 +53,8 @@ export const HomePage = () => (
                             pretium. Suspendisse vitae elit turpis.
                         </p>
                     </div>
-                </div>
-                <div className="col-lg">
+                </Col>
+                <Col lg>
                     <div className="mb-3">
                         <h3>Fusce condimentum</h3>
                         <hr />
@@ -66,8 +67,8 @@ export const HomePage = () => (
                             pretium. Suspendisse vitae elit turpis.
                         </p>
                     </div>
-                </div>
-            </div>
-        </section>
+                </Col>
+            </Row>
+        </Container>
     </>
 );

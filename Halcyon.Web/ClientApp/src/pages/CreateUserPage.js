@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
 import {
     TextInput,
     DateInput,
@@ -43,7 +44,7 @@ export const CreateUserPage = ({ history }) => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Helmet>
                 <title>Create User</title>
             </Helmet>
@@ -158,12 +159,17 @@ export const CreateUserPage = ({ history }) => {
                         />
 
                         <div className="mb-3 text-end">
-                            <Link to="/user" className="btn btn-secondary me-1">
+                            <Button
+                                to="/user"
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
+                            >
                                 Cancel
-                            </Link>
+                            </Button>
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="primary"
                                 loading={isSubmitting}
                             >
                                 Submit
@@ -172,6 +178,6 @@ export const CreateUserPage = ({ history }) => {
                     </Form>
                 )}
             </Formik>
-        </div>
+        </Container>
     );
 };
