@@ -52,7 +52,7 @@ export const UpdateUserPage = ({ history, match }) => {
 
     if (!data) {
         return (
-            <div className="container alert alert-info p-3 mb-3">
+            <div className="container alert alert-info">
                 User could not be found.
             </div>
         );

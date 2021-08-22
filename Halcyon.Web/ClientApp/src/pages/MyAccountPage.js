@@ -26,7 +26,7 @@ export const MyAccountPage = ({ history }) => {
 
     if (!data) {
         return (
-            <div className="container alert alert-info p-3 mb-3">
+            <div className="container alert alert-info">
                 Profile could not be found.
             </div>
         );

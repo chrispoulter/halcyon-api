@@ -103,7 +103,7 @@ export const UserPage = () => {
             </Formik>
 
             {!data?.items.length ? (
-                <div className="container alert alert-info p-3 mb-3">
+                <div className="container alert alert-info">
                     No users could be found.
                 </div>
             ) : (
