@@ -125,7 +125,9 @@ export const DateInput = ({ field, form, label }) => {
                     ))}
                 </select>
             </div>
-            {touch && error && <div className="invalid-feedback d-block">{error}</div>}
+            {touch && error && (
+                <div className="invalid-feedback d-block">{error}</div>
+            )}
         </div>
     );
 };

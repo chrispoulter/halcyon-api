@@ -21,7 +21,9 @@ export const TextInput = ({ field, form, label, ...rest }) => {
                 {...field}
                 {...rest}
             />
-            {touch && error && <div className="invalid-feedback d-block">{error}</div>}
+            {touch && error && (
+                <div className="invalid-feedback d-block">{error}</div>
+            )}
         </div>
     );
 };

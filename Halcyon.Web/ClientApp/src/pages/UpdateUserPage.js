@@ -18,7 +18,7 @@ import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
     const { confirm } = useModal();
-    
+
     const { refetch, loading, data } = useFetch({
         method: 'GET',
         url: `/user/${match.params.id}`

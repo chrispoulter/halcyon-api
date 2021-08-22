@@ -2,7 +2,13 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-import { Button, Spinner, AuthContext, useFetch, useModal } from '../components';
+import {
+    Button,
+    Spinner,
+    AuthContext,
+    useFetch,
+    useModal
+} from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
@@ -75,10 +81,7 @@ export const MyAccountPage = ({ history }) => {
 
             <div className="d-flex justify-content-between">
                 <h3>Profile</h3>
-                <Link
-                    to="/update-profile"
-                    className="btn btn-primary align-self-start"
-                >
+                <Link to="/update-profile" className="btn btn-primary">
                     Update
                 </Link>
             </div>
