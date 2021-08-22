@@ -96,6 +96,7 @@ export const DateInput = ({ field, form, label }) => {
                     isInvalid={!!touch && !!error}
                     onChange={event => handleMonth(event.target.value)}
                     onBlur={handleBlur}
+                    className="me-1"
                 >
                     <option value={-1}>Month...</option>
                     {Array.from({ length: 12 }).map((_, index) => (
@@ -110,7 +111,6 @@ export const DateInput = ({ field, form, label }) => {
                     isInvalid={!!touch && !!error}
                     onChange={event => handleYear(event.target.value)}
                     onBlur={handleBlur}
-                    className="me-1"
                 >
                     <option value={-1}>Year...</option>
                     {Array.from({ length: 120 }).map((_, index) => (
