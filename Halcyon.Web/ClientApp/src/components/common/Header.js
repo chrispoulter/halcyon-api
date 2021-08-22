@@ -69,18 +69,18 @@ export const Header = () => {
                             {isAuthenticated ? (
                                 <li className="nav-item dropdown">
                                     <Link
-                                        id="navbarDropdownMenuLink"
+                                        // id="navbarDropdownMenuLink"
                                         role="button"
                                         to="/"
-                                        className="nav-link dropdown-toggle"
-                                        data-bs-toggle="dropdown"
+                                        className="nav-link dropdown-toggle show"
+                                        // data-bs-toggle="dropdown"
                                         aria-expanded="false"
                                     >
                                         {currentUser.given_name}{' '}
                                         {currentUser.family_name}{' '}
                                     </Link>
                                     <ul
-                                        className="dropdown-menu"
+                                        className="dropdown-menu show"
                                         aria-labelledby="navbarDropdownMenuLink"
                                     >
                                         <li>

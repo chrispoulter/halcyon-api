@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
 import {
     Spinner,
@@ -11,12 +10,15 @@ import {
     DateInput,
     CheckboxGroupInput,
     Button,
-    useFetch
+    useFetch,
+    useModal
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
+    const { confirm } = useModal();
+    
     const { refetch, loading, data } = useFetch({
         method: 'GET',
         url: `/user/${match.params.id}`

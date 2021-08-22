@@ -88,8 +88,11 @@ export const UserPage = () => {
                                     ([value, label]) => (
                                         <Link
                                             key={value}
-                                            className="dropdown-item"
-                                            active={value === state.sort}
+                                            className={
+                                                value === state.sort
+                                                    ? 'dropdown-item active'
+                                                    : 'dropdown-item'
+                                            }
                                             onClick={() => onSort(value)}
                                         >
                                             {label}

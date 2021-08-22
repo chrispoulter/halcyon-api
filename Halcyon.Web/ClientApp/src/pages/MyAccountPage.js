@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import confirm from 'reactstrap-confirm';
 import { toast } from 'react-toastify';
-import { Button, Spinner, AuthContext, useFetch } from '../components';
+import { Button, Spinner, AuthContext, useFetch, useModal } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useContext(AuthContext);
+
+    const { confirm } = useModal();
 
     const { loading, data } = useFetch({
         method: 'GET',
