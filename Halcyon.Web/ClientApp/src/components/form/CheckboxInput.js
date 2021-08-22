@@ -24,7 +24,7 @@ export const CheckboxInput = ({ field, form, label }) => {
                     {label}
                 </label>
             </div>
-            {touch && error && <div className="invalid-feedback">{error}</div>}
+            {touch && error && <div className="invalid-feedback d-block">{error}</div>}
         </div>
     );
 };

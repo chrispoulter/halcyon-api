@@ -66,7 +66,7 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
                     </li>
                 ))}
             </ul>
-            {touch && error && <div className="invalid-feedback">{error}</div>}
+            {touch && error && <div className="invalid-feedback d-block">{error}</div>}
         </div>
     );
 };
