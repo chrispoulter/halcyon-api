@@ -84,7 +84,11 @@ export const UserPage = () => {
                             <Button type="submit" variant="secondary">
                                 Search
                             </Button>
-                            <DropdownButton title="Sort By" variant="secondary">
+                            <DropdownButton
+                                title="Sort By"
+                                variant="secondary"
+                                align="end"
+                            >
                                 {Object.entries(SORT_OPTIONS).map(
                                     ([value, label]) => (
                                         <Dropdown.Item
