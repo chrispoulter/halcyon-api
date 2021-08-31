@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router';
-import { AuthContext } from '../providers/AuthProvider';
+import { useAuth } from '../providers';
 import { AccessDeniedPage } from '../../pages';
 import { isAuthorized } from '../../utils/auth';
 
@@ -9,7 +9,7 @@ export const PrivateRoute = ({
     requiredRoles,
     ...rest
 }) => {
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser } = useAuth();
 
     if (!isAuthorized(currentUser)) {
         return <Redirect to="/login" />;

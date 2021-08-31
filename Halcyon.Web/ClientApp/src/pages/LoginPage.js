@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
@@ -8,13 +8,13 @@ import {
     TextInput,
     CheckboxInput,
     Button,
-    AuthContext,
+    useAuth,
     useFetch
 } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const LoginPage = ({ history }) => {
-    const { setToken } = useContext(AuthContext);
+    const { setToken } = useAuth();
 
     const { refetch: generateToken } = useFetch({
         method: 'POST',

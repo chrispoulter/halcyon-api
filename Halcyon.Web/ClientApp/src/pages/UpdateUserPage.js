@@ -19,7 +19,7 @@ import { ALL_ROLES } from '../utils/auth';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
-    const { confirm } = useModal();
+    const { showModal } = useModal();
 
     const { refetch, loading, data } = useFetch({
         method: 'GET',
@@ -78,14 +78,10 @@ export const UpdateUserPage = ({ history, match }) => {
         }
     };
 
-    const onLockUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'lock-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onLockUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to lock{' '}
                     <strong>
@@ -94,35 +90,28 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'lock-user-modal'
+                }),
+            onOk: async () => {
+                const result = await lockUser();
+                if (result.ok) {
+                    await refetch();
+
+                    toast.success(result.message);
+
+                    trackEvent('user_locked', {
+                        entityId: result.data.id
+                    });
+                }
+            }
         });
 
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await lockUser();
-        if (result.ok) {
-            await refetch();
-
-            toast.success(result.message);
-
-            trackEvent('user_locked', {
-                entityId: result.data.id
-            });
-        }
-    };
-
-    const onUnlockUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'unlock-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onUnlockUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to unlock{' '}
                     <strong>
@@ -131,33 +120,26 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'unlock-user-modal'
+                }),
+            onOk: async () => {
+                const result = await unlockUser();
+                if (result.ok) {
+                    toast.success(result.message);
+
+                    trackEvent('user_unlocked', {
+                        entityId: result.data.id
+                    });
+                }
+            }
         });
 
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await unlockUser();
-        if (result.ok) {
-            toast.success(result.message);
-
-            trackEvent('user_unlocked', {
-                entityId: result.data.id
-            });
-        }
-    };
-
-    const onDeleteUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'delete-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onDeleteUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to delete{' '}
                     <strong>
@@ -166,26 +148,23 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'delete-user-modal'
+                }),
+            onOk: async () => {
+                const result = await deleteUser();
+                if (result.ok) {
+                    toast.success(result.message);
+
+                    trackEvent('user_deleted', {
+                        entityId: result.data.id
+                    });
+
+                    history.push('/user');
+                }
+            }
         });
-
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await deleteUser();
-        if (result.ok) {
-            toast.success(result.message);
-
-            trackEvent('user_deleted', {
-                entityId: result.data.id
-            });
-
-            history.push('/user');
-        }
-    };
 
     return (
         <Container>

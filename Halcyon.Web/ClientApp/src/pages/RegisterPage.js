@@ -1,20 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import {
-    TextInput,
-    DateInput,
-    Button,
-    AuthContext,
-    useFetch
-} from '../components';
+import { TextInput, DateInput, Button, useAuth, useFetch } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const RegisterPage = ({ history }) => {
-    const { setToken } = useContext(AuthContext);
+    const { setToken } = useAuth();
 
     const { refetch: register } = useFetch({
         method: 'POST',

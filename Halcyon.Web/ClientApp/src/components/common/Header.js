@@ -1,17 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
-import { AuthContext } from '../providers/AuthProvider';
+import { useAuth } from '../providers';
 import { isAuthorized, USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
 import { trackEvent } from '../../utils/logger';
 
 export const Header = () => {
     const history = useHistory();
 
-    const { currentUser, removeToken } = useContext(AuthContext);
+    const { currentUser, removeToken } = useAuth();
 
     const isAuthenticated = isAuthorized(currentUser);
 

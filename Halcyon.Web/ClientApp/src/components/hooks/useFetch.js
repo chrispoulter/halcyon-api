@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../providers';
+import { useAuth } from '../providers';
 import { config } from '../../utils/config';
 
 const headers = new Headers();
 headers.set('Content-Type', 'application/json');
 
 export const useFetch = request => {
-    const { accessToken, removeToken } = useContext(AuthContext);
+    const { accessToken, removeToken } = useAuth();
 
     const [loading, setLoading] = useState(false);
 

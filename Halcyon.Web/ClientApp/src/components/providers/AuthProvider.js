@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import jwtDecode from 'jwt-decode';
 import { getItem, setItem, removeItem } from '../../utils/storage';
 import { setUser } from '../../utils/logger';
-
-export const AuthContext = React.createContext({});
 
 const getInitialState = () => {
     const accessToken = getItem('accessToken');
@@ -23,6 +21,10 @@ const getInitialState = () => {
         currentUser
     };
 };
+
+export const AuthContext = React.createContext({});
+
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const initialState = getInitialState();
