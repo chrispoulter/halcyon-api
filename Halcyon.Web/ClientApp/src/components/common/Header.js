@@ -38,8 +38,8 @@ export const Header = () => {
                 <Navbar.Brand to="/" as={Link}>
                     Halcyon
                 </Navbar.Brand>
-                <Navbar.Toggle />
-                <Navbar.Collapse>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         {isUserAdministrator && (
                             <Nav.Link to="/user" as={Link}>
@@ -50,6 +50,7 @@ export const Header = () => {
                     <Nav>
                         {isAuthenticated ? (
                             <NavDropdown
+                                id="collasible-nav-authenticated"
                                 title={`${currentUser.given_name} ${currentUser.family_name} `}
                             >
                                 <NavDropdown.Item to="/my-account" as={Link}>

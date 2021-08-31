@@ -40,6 +40,7 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
             <Form.Label>{label}</Form.Label>
             {Object.entries(options).map(([value, label]) => (
                 <Form.Check
+                    {...field}
                     key={`${name}.${value}`}
                     id={`${name}.${value}`}
                     name={`${name}.${value}`}
@@ -51,7 +52,6 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
                         handleChange(value, event.target.checked)
                     }
                     onBlur={handleBlur}
-                    {...field}
                 />
             ))}
             <Form.Control.Feedback type="invalid">

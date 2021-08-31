@@ -10,12 +10,12 @@ export const CheckboxInput = ({ field, form, label }) => {
     return (
         <Form.Group controlId={name} className="mb-3">
             <Form.Check
+                {...field}
                 id={name}
                 type="checkbox"
                 label={label}
                 checked={value}
                 isInvalid={!!touch && !!error}
-                {...field}
             />
             <Form.Control.Feedback type="invalid">
                 {error}
