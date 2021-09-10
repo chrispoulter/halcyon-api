@@ -116,7 +116,7 @@ export const UserPage = () => {
                             to={`/user/${user.id}`}
                             as={Link}
                             body
-                            className="mb-2"
+                            className="text-decoration-none mb-2"
                         >
                             <h5>
                                 {user.firstName} {user.lastName}
