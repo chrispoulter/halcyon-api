@@ -35,14 +35,11 @@ export const ModalProvider = ({ children }) => {
     return (
         <ModalContext.Provider value={{ showModal }}>
             {children}
-
             <Modal show={!!state.title} onHide={hideModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>{state.title}</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>{state.body}</Modal.Body>
-
                 <Modal.Footer>
                     <Button variant="secondary" onClick={hideModal}>
                         Cancel
