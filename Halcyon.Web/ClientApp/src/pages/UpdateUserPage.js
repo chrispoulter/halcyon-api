@@ -127,6 +127,8 @@ export const UpdateUserPage = ({ history, match }) => {
             onOk: async () => {
                 const result = await unlockUser();
                 if (result.ok) {
+                    await refetch();
+
                     toast.success(result.message);
 
                     trackEvent('user_unlocked', {
