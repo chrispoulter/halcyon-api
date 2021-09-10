@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useAuth } from '../providers';
+import { useAuth, useToast } from '../providers';
 import { config } from '../../utils/config';
 
 const headers = new Headers();
@@ -8,6 +7,8 @@ headers.set('Content-Type', 'application/json');
 
 export const useFetch = request => {
     const { accessToken, removeToken } = useAuth();
+
+    const toast = useToast();
 
     const [loading, setLoading] = useState(false);
 

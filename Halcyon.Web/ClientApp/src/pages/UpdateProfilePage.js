@@ -3,13 +3,21 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
+import {
+    Spinner,
+    TextInput,
+    DateInput,
+    Button,
+    useFetch,
+    useToast
+} from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateProfilePage = ({ history }) => {
+    const toast = useToast();
+
     const { loading, data } = useFetch({
         method: 'GET',
         url: '/manage'
@@ -26,7 +34,11 @@ export const UpdateProfilePage = ({ history }) => {
     }
 
     if (!data) {
-        return <Alert variant="info">Profile could not be found.</Alert>;
+        return (
+            <Container>
+                <Alert variant="info">Profile could not be found.</Alert>
+            </Container>
+        );
     }
 
     const onSubmit = async variables => {

@@ -33,7 +33,7 @@ export const ModalProvider = ({ children }) => {
     };
 
     return (
-        <ModalContext.Provider value={{ showModal, hideModal }}>
+        <ModalContext.Provider value={{ showModal }}>
             {children}
 
             <Modal show={!!state.title} onHide={hideModal}>

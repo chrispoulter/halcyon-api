@@ -1,16 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { toast } from 'react-toastify';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import { Button, Spinner, useFetch, useModal, useAuth } from '../components';
+import {
+    Button,
+    Spinner,
+    useFetch,
+    useModal,
+    useAuth,
+    useToast
+} from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useAuth();
 
     const { showModal } = useModal();
+
+    const toast = useToast();
 
     const { loading, data } = useFetch({
         method: 'GET',
@@ -28,7 +36,11 @@ export const MyAccountPage = ({ history }) => {
     }
 
     if (!data) {
-        return <Alert variant="info">Profile could not be found.</Alert>;
+        return (
+            <Container>
+                <Alert variant="info">Profile could not be found.</Alert>
+            </Container>
+        );
     }
 
     const onDeleteAccount = () =>

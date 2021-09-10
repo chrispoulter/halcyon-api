@@ -3,19 +3,21 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import Container from 'react-bootstrap/Container';
 import {
     TextInput,
     DateInput,
     CheckboxGroupInput,
     Button,
-    useFetch
+    useFetch,
+    useToast
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 import { trackEvent } from '../utils/logger';
 
 export const CreateUserPage = ({ history }) => {
+    const toast = useToast();
+
     const { refetch: createUser } = useFetch({
         method: 'POST',
         url: '/user',

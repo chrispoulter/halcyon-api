@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import Container from 'react-bootstrap/Container';
-import { TextInput, Button, useFetch } from '../components';
+import { TextInput, Button, useFetch, useToast } from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const ChangePasswordPage = ({ history }) => {
+    const toast = useToast();
+
     const { refetch: changePassword } = useFetch({
         method: 'PUT',
         url: '/manage/changepassword',

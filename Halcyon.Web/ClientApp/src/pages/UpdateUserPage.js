@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import {
@@ -13,13 +12,16 @@ import {
     CheckboxGroupInput,
     Button,
     useFetch,
-    useModal
+    useModal,
+    useToast
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
     const { showModal } = useModal();
+
+    const toast = useToast();
 
     const { refetch, loading, data } = useFetch({
         method: 'GET',
@@ -55,7 +57,11 @@ export const UpdateUserPage = ({ history, match }) => {
     }
 
     if (!data) {
-        return <Alert variant="info">User could not be found.</Alert>;
+        return (
+            <Container>
+                <Alert variant="info">User could not be found.</Alert>
+            </Container>
+        );
     }
 
     const onSubmit = async variables => {
