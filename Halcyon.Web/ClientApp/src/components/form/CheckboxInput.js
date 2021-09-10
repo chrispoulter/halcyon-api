@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, FormGroup, FormText, Label } from 'reactstrap';
+import Form from 'react-bootstrap/Form';
 
 export const CheckboxInput = ({ field, form, label }) => {
     const { name, value } = field;
@@ -8,16 +8,18 @@ export const CheckboxInput = ({ field, form, label }) => {
     const touch = touched[name];
 
     return (
-        <FormGroup check>
-            <Input
+        <Form.Group controlId={name} className="mb-3">
+            <Form.Check
+                {...field}
                 id={name}
                 type="checkbox"
-                invalid={!!touch && !!error}
+                label={label}
                 checked={value}
-                {...field}
+                isInvalid={!!touch && !!error}
             />
-            <Label for={name}>{label}</Label>
-            {touch && error && <FormText color="danger">{error}</FormText>}
-        </FormGroup>
+            <Form.Control.Feedback type="invalid">
+                {error}
+            </Form.Control.Feedback>
+        </Form.Group>
     );
 };

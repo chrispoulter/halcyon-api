@@ -3,12 +3,21 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, Alert, FormGroup } from 'reactstrap';
-import { toast } from 'react-toastify';
-import { Spinner, TextInput, DateInput, Button, useFetch } from '../components';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
+import {
+    Spinner,
+    TextInput,
+    DateInput,
+    Button,
+    useFetch,
+    useToast
+} from '../components';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateProfilePage = ({ history }) => {
+    const toast = useToast();
+
     const { loading, data } = useFetch({
         method: 'GET',
         url: '/manage'
@@ -26,9 +35,9 @@ export const UpdateProfilePage = ({ history }) => {
 
     if (!data) {
         return (
-            <Alert color="info" className="container p-3 mb-3">
-                Profile could not be found.
-            </Alert>
+            <Container>
+                <Alert variant="info">Profile could not be found.</Alert>
+            </Container>
         );
     }
 
@@ -115,22 +124,23 @@ export const UpdateProfilePage = ({ history }) => {
                             component={DateInput}
                         />
 
-                        <FormGroup className="text-right">
+                        <div className="mb-3 text-end">
                             <Button
                                 to="/my-account"
-                                className="mr-1"
-                                tag={Link}
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
-                                color="primary"
+                                variant="primary"
                                 loading={isSubmitting}
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>

@@ -3,21 +3,26 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Container, Alert, FormGroup } from 'reactstrap';
-import confirm from 'reactstrap-confirm';
-import { toast } from 'react-toastify';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import {
     Spinner,
     TextInput,
     DateInput,
     CheckboxGroupInput,
     Button,
-    useFetch
+    useFetch,
+    useModal,
+    useToast
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
+    const { showModal } = useModal();
+
+    const toast = useToast();
+
     const { refetch, loading, data } = useFetch({
         method: 'GET',
         url: `/user/${match.params.id}`
@@ -53,9 +58,9 @@ export const UpdateUserPage = ({ history, match }) => {
 
     if (!data) {
         return (
-            <Alert color="info" className="container p-3 mb-3">
-                User could not be found.
-            </Alert>
+            <Container>
+                <Alert variant="info">User could not be found.</Alert>
+            </Container>
         );
     }
 
@@ -79,14 +84,10 @@ export const UpdateUserPage = ({ history, match }) => {
         }
     };
 
-    const onLockUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'lock-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onLockUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to lock{' '}
                     <strong>
@@ -95,35 +96,28 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'lock-user-modal'
+                }),
+            onOk: async () => {
+                const result = await lockUser();
+                if (result.ok) {
+                    await refetch();
+
+                    toast.success(result.message);
+
+                    trackEvent('user_locked', {
+                        entityId: result.data.id
+                    });
+                }
+            }
         });
 
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await lockUser();
-        if (result.ok) {
-            await refetch();
-
-            toast.success(result.message);
-
-            trackEvent('user_locked', {
-                entityId: result.data.id
-            });
-        }
-    };
-
-    const onUnlockUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'unlock-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onUnlockUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to unlock{' '}
                     <strong>
@@ -132,33 +126,28 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'unlock-user-modal'
+                }),
+            onOk: async () => {
+                const result = await unlockUser();
+                if (result.ok) {
+                    await refetch();
+
+                    toast.success(result.message);
+
+                    trackEvent('user_unlocked', {
+                        entityId: result.data.id
+                    });
+                }
+            }
         });
 
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await unlockUser();
-        if (result.ok) {
-            toast.success(result.message);
-
-            trackEvent('user_unlocked', {
-                entityId: result.data.id
-            });
-        }
-    };
-
-    const onDeleteUser = async () => {
-        trackEvent('screen_view', {
-            screen_name: 'delete-user-modal'
-        });
-
-        const confirmed = await confirm({
+    const onDeleteUser = () =>
+        showModal({
             title: 'Confirm',
-            message: (
+            body: (
                 <>
                     Are you sure you want to delete{' '}
                     <strong>
@@ -167,26 +156,23 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            confirmText: 'Ok',
-            cancelText: 'Cancel',
-            cancelColor: 'secondary'
+            onOpen: () =>
+                trackEvent('screen_view', {
+                    screen_name: 'delete-user-modal'
+                }),
+            onOk: async () => {
+                const result = await deleteUser();
+                if (result.ok) {
+                    toast.success(result.message);
+
+                    trackEvent('user_deleted', {
+                        entityId: result.data.id
+                    });
+
+                    history.push('/user');
+                }
+            }
         });
-
-        if (!confirmed) {
-            return;
-        }
-
-        const result = await deleteUser();
-        if (result.ok) {
-            toast.success(result.message);
-
-            trackEvent('user_deleted', {
-                entityId: result.data.id
-            });
-
-            history.push('/user');
-        }
-    };
 
     return (
         <Container>
@@ -267,14 +253,19 @@ export const UpdateUserPage = ({ history, match }) => {
                             component={CheckboxGroupInput}
                         />
 
-                        <FormGroup className="text-right">
-                            <Button to="/user" className="mr-1" tag={Link}>
+                        <div className="mb-3 text-end">
+                            <Button
+                                to="/user"
+                                as={Link}
+                                variant="secondary"
+                                className="me-1"
+                            >
                                 Cancel
                             </Button>
                             {data.isLockedOut ? (
                                 <Button
-                                    color="warning"
-                                    className="mr-1"
+                                    variant="warning"
+                                    className="me-1"
                                     loading={isUnlocking}
                                     disabled={
                                         isLocking || isDeleting || isSubmitting
@@ -285,8 +276,8 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             ) : (
                                 <Button
-                                    color="warning"
-                                    className="mr-1"
+                                    variant="warning"
+                                    className="me-1"
                                     loading={isLocking}
                                     disabled={
                                         isUnlocking ||
@@ -299,8 +290,8 @@ export const UpdateUserPage = ({ history, match }) => {
                                 </Button>
                             )}
                             <Button
-                                color="danger"
-                                className="mr-1"
+                                variant="danger"
+                                className="me-1"
                                 loading={isDeleting}
                                 disabled={
                                     isLocking || isUnlocking || isSubmitting
@@ -311,7 +302,7 @@ export const UpdateUserPage = ({ history, match }) => {
                             </Button>
                             <Button
                                 type="submit"
-                                color="primary"
+                                variant="primary"
                                 loading={isSubmitting}
                                 disabled={
                                     isLocking || isUnlocking || isDeleting
@@ -319,7 +310,7 @@ export const UpdateUserPage = ({ history, match }) => {
                             >
                                 Submit
                             </Button>
-                        </FormGroup>
+                        </div>
                     </Form>
                 )}
             </Formik>

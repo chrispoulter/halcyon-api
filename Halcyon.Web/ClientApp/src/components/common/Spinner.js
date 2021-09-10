@@ -1,10 +1,12 @@
 import React from 'react';
-import { Container, Spinner as BaseSpinner } from 'reactstrap';
+import BaseSpinner from 'react-bootstrap/Spinner';
 
 export const Spinner = () => (
-    <Container className="spinner text-center text-nowrap">
-        <BaseSpinner type="grow" color="light" />
-        <BaseSpinner type="grow" color="light" />
-        <BaseSpinner type="grow" color="light" />
-    </Container>
+    <div className="p-5">
+        <div className="d-flex justify-content-center p-5">
+            <BaseSpinner animation="grow" variant="secondary" />
+            <BaseSpinner animation="grow" variant="secondary" />
+            <BaseSpinner animation="grow" variant="secondary" />
+        </div>
+    </div>
 );

@@ -2,22 +2,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form } from 'formik';
-import {
-    Container,
-    Button,
-    FormGroup,
-    InputGroup,
-    Input,
-    InputGroupAddon,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Alert,
-    Card,
-    Badge
-} from 'reactstrap';
-import { Spinner, Pager, useFetch } from '../components';
+import Container from 'react-bootstrap/Container';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Alert from 'react-bootstrap/Alert';
+import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
+import { Button, Spinner, Pager, useFetch } from '../components';
 import { ALL_ROLES } from '../utils/auth';
 
 const SORT_OPTIONS = {
@@ -64,9 +57,9 @@ export const UserPage = () => {
                 <h1>Users</h1>
                 <Button
                     to="/user/create"
-                    color="primary"
+                    as={Link}
+                    variant="primary"
                     className="align-self-start"
-                    tag={Link}
                 >
                     Create New
                 </Button>
@@ -79,62 +72,51 @@ export const UserPage = () => {
             >
                 {({ handleChange, handleBlur, values }) => (
                     <Form>
-                        <FormGroup>
-                            <InputGroup>
-                                <Input
-                                    name="search"
-                                    type="text"
-                                    placeholder="Search..."
-                                    value={values.search}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                                <InputGroupAddon addonType="append">
-                                    <Button type="submit" color="secondary">
-                                        Search
-                                    </Button>
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle caret color="secondary">
-                                            Sort By{' '}
-                                        </DropdownToggle>
-                                        <DropdownMenu right>
-                                            {Object.entries(SORT_OPTIONS).map(
-                                                ([value, label]) => (
-                                                    <DropdownItem
-                                                        key={value}
-                                                        active={
-                                                            value === state.sort
-                                                        }
-                                                        onClick={() =>
-                                                            onSort(value)
-                                                        }
-                                                    >
-                                                        {label}
-                                                    </DropdownItem>
-                                                )
-                                            )}
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </InputGroupAddon>
-                            </InputGroup>
-                        </FormGroup>
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                name="search"
+                                type="text"
+                                placeholder="Search..."
+                                value={values.search}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
+                            <Button type="submit" variant="secondary">
+                                Search
+                            </Button>
+                            <DropdownButton
+                                title="Sort By"
+                                variant="secondary"
+                                align="end"
+                            >
+                                {Object.entries(SORT_OPTIONS).map(
+                                    ([value, label]) => (
+                                        <Dropdown.Item
+                                            key={value}
+                                            active={value === state.sort}
+                                            onClick={() => onSort(value)}
+                                        >
+                                            {label}
+                                        </Dropdown.Item>
+                                    )
+                                )}
+                            </DropdownButton>
+                        </InputGroup>
                     </Form>
                 )}
             </Formik>
 
             {!data?.items.length ? (
-                <Alert color="info" className="container p-3 mb-3">
-                    No users could be found.
-                </Alert>
+                <Alert variant="info">No users could be found.</Alert>
             ) : (
                 <>
                     {data.items.map(user => (
                         <Card
                             key={user.id}
                             to={`/user/${user.id}`}
-                            className="mb-2"
+                            as={Link}
                             body
-                            tag={Link}
+                            className="text-decoration-none mb-2"
                         >
                             <h5>
                                 {user.firstName} {user.lastName}
@@ -145,15 +127,15 @@ export const UserPage = () => {
                             </h5>
                             <div>
                                 {user.isLockedOut && (
-                                    <Badge color="danger" className="mr-1">
+                                    <Badge bg="danger" className="me-1">
                                         Locked
                                     </Badge>
                                 )}
                                 {user.roles?.map(role => (
                                     <Badge
                                         key={role}
-                                        color="primary"
-                                        className="mr-1"
+                                        bg="primary"
+                                        className="me-1"
                                     >
                                         {ALL_ROLES[role]}
                                     </Badge>

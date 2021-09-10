@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, Label, FormText, Input } from 'reactstrap';
+import Form from 'react-bootstrap/Form';
 
 export const CheckboxGroupInput = ({ field, form, label, options }) => {
     const { name, onChange, onBlur, value } = field;
@@ -36,27 +36,27 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
         });
 
     return (
-        <FormGroup>
-            <Label>{label}</Label>
-            <ul>
-                {Object.entries(options).map(([value, label]) => (
-                    <li key={`${name}.${value}`}>
-                        <Input
-                            id={`${name}.${value}`}
-                            name={`${name}.${value}`}
-                            type="checkbox"
-                            checked={!!values.find(item => item === value)}
-                            invalid={!!touch && !!error}
-                            onChange={event =>
-                                handleChange(value, event.target.checked)
-                            }
-                            onBlur={handleBlur}
-                        />
-                        <Label for={`${name}.${value}`}>{label}</Label>
-                    </li>
-                ))}
-            </ul>
-            {touch && error && <FormText color="danger">{errors}</FormText>}
-        </FormGroup>
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            {Object.entries(options).map(([value, label]) => (
+                <Form.Check
+                    {...field}
+                    key={`${name}.${value}`}
+                    id={`${name}.${value}`}
+                    name={`${name}.${value}`}
+                    type="checkbox"
+                    label={label}
+                    checked={!!values.find(item => item === value)}
+                    isInvalid={!!touch && !!error}
+                    onChange={event =>
+                        handleChange(value, event.target.checked)
+                    }
+                    onBlur={handleBlur}
+                />
+            ))}
+            <Form.Control.Feedback type="invalid">
+                {error}
+            </Form.Control.Feedback>
+        </Form.Group>
     );
 };
