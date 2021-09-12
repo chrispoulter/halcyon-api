@@ -21,6 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
@@ -121,7 +122,7 @@ namespace Halcyon.Web
                                 Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
             });
