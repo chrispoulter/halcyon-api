@@ -28,6 +28,8 @@ namespace Halcyon.Web.BackgroundServices
                 Data = data.Context
             };
 
+            message.To.Add(data.EmailAddress);
+
             await _emailService.SendEmailAsync(message);
         }
     }
