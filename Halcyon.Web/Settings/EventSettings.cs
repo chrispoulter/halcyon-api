@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Web.Services.Events
+﻿namespace Halcyon.Web.Settings
 {
     public class EventSettings
     {

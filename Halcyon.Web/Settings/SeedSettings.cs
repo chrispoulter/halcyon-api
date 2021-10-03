@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Web.Data
+﻿namespace Halcyon.Web.Settings
 {
     public class SeedSettings
     {

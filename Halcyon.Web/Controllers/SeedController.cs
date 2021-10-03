@@ -2,6 +2,7 @@
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
+using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

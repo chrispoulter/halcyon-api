@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Queues;
+using Halcyon.Web.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;

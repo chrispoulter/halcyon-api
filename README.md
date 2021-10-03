@@ -20,10 +20,8 @@ Create a `appsettings.Development.json` file in the web project directory.
     "ConnectionStrings": {
         "HalcyonDatabase": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Halcyon;Integrated Security=True;MultipleActiveResultSets=True"
     },
-    "Event": {
-        "StorageConnectionString": "UseDevelopmentStorage=true",
-        "PollingInterval": 10,
-        "BatchSize": 20
+    "ApplicationInsights": {
+        "ConnectionString": ""
     },
     "Email": {
         "SmtpServer": "smtp.mailgun.org",
@@ -31,6 +29,11 @@ Create a `appsettings.Development.json` file in the web project directory.
         "SmtpUserName": "",
         "SmtpPassword": "",
         "NoReplyAddress": "noreply@chrispoulter.com"
+    },
+    "Event": {
+        "StorageConnectionString": "UseDevelopmentStorage=true",
+        "PollingInterval": 10,
+        "BatchSize": 20
     },
     "Jwt": {
         "SecurityKey": "change-me-1234567890",
@@ -41,9 +44,6 @@ Create a `appsettings.Development.json` file in the web project directory.
     "Seed": {
         "EmailAddress": "",
         "Password": ""
-    },
-    "ApplicationInsights": {
-        "ConnectionString": ""
     }
 }
 ```

@@ -1,11 +1,12 @@
 ﻿using Halcyon.Web.Models.Events;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Events;
+using Halcyon.Web.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Halcyon.Web.BackgroundServices
+namespace Halcyon.Web.Services.Background
 {
     public class SendEmailBackgroundService : EventBackgroundService<SendEmailEvent>
     {

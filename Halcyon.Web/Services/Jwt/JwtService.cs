@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;

@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Web.Services.Email
+﻿namespace Halcyon.Web.Settings
 {
     public class EmailSettings
     {
