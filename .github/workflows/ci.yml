@@ -41,7 +41,7 @@ jobs:
       - name: Build
         env:
           EXTEND_ESLINT: true
-          REACT_APP_GA_MEASUREMENTID: ${{ secrets.GA_MEASUREMENTID }}
+          REACT_APP_GA_MEASUREMENT_ID: ${{ secrets.GA_MEASUREMENT_ID }}
         run: |
           dotnet restore
           yarn --cwd Halcyon.Web/ClientApp version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
@@ -66,16 +66,16 @@ jobs:
           parameters: stage="${{ env.REACT_APP_STAGE }}"
             sqlUserName="${{ secrets.SQL_USERNAME }}"
             sqlPassword="${{ secrets.SQL_PASSWORD }}"
-            emailSmtpServer="${{ secrets.EMAIL_SMTPSERVER }}"
-            emailSmtpPort="${{ secrets.EMAIL_SMTPPORT }}"
-            emailSmtpUserName="${{ secrets.EMAIL_SMTPUSERNAME }}"
-            emailSmtpPassword="${{ secrets.EMAIL_SMTPPASSWORD }}"
-            emailNoReplyAddress="${{ secrets.EMAIL_NOREPLYADDRESS }}"
-            jwtSecurityKey="${{ secrets.JWT_SECURITYKEY }}"
+            emailSmtpServer="${{ secrets.EMAIL_SMTP_SERVER }}"
+            emailSmtpPort="${{ secrets.EMAIL_SMTP_PORT }}"
+            emailSmtpUserName="${{ secrets.EMAIL_SMTP_USERNAME }}"
+            emailSmtpPassword="${{ secrets.EMAIL_SMTP_PASSWORD }}"
+            emailNoReplyAddress="${{ secrets.EMAIL_NO_REPLY_ADDRESS }}"
+            jwtSecurityKey="${{ secrets.JWT_SECURITY_KEY }}"
             jwtIssuer="${{ secrets.JWT_ISSUER }}"
             jwtAudience="${{ secrets.JWT_AUDIENCE }}"
-            jwtExpiresIn="${{ secrets.JWT_EXPIRESIN }}"
-            seedEmailAddress="${{ secrets.SEED_EMAILADDRESS }}"
+            jwtExpiresIn="${{ secrets.JWT_EXPIRES_IN }}"
+            seedEmailAddress="${{ secrets.SEED_EMAIL_ADDRESS }}"
             seedPassword="${{ secrets.SEED_PASSWORD }}"
 
       - name: Deploy

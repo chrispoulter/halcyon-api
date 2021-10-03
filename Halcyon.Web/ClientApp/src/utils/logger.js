@@ -3,12 +3,12 @@ import { config } from '../utils/config';
 let initialized = false;
 
 export const initialize = () => {
-    if (!config.GA_MEASUREMENTID) {
+    if (!config.GA_MEASUREMENT_ID) {
         return;
     }
 
     const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${config.GA_MEASUREMENTID}`;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${config.GA_MEASUREMENT_ID}`;
     script.id = 'googleAnalytics';
     script.crossorigin = 'anonymous';
     document.body.appendChild(script);
@@ -18,7 +18,7 @@ export const initialize = () => {
         window.dataLayer.push(arguments);
     };
     window.gtag('js', new Date());
-    window.gtag('config', config.GA_MEASUREMENTID);
+    window.gtag('config', config.GA_MEASUREMENT_ID);
 
     initialized = true;
 };
