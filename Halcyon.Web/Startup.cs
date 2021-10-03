@@ -171,15 +171,13 @@ namespace Halcyon.Web
             var provider = new FileExtensionContentTypeProvider();
             provider.Mappings[".webmanifest"] = "application/manifest+json";
 
-            app.UseStaticFiles(new StaticFileOptions
+            var staticFileOptions = new StaticFileOptions
             {
                 ContentTypeProvider = provider
-            });
+            };
 
-            app.UseSpaStaticFiles(new StaticFileOptions
-            {
-                ContentTypeProvider = provider
-            });
+            app.UseStaticFiles(staticFileOptions);
+            app.UseSpaStaticFiles(staticFileOptions);
 
             app.UseRouting();
             app.UseAuthentication();
