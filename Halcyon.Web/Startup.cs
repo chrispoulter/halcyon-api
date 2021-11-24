@@ -1,9 +1,7 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
-using Halcyon.Web.Services.Background;
 using Halcyon.Web.Services.Email;
-using Halcyon.Web.Services.Events;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Insights;
 using Halcyon.Web.Services.Jwt;
@@ -131,16 +129,12 @@ namespace Halcyon.Web
             services.AddHealthChecks();
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
-            services.Configure<EventSettings>(Configuration.GetSection("Event"));
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
 
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<IJwtService, JwtService>();
-
-            services.AddSingleton<IEventService, EventService>();
-            services.AddSingleton<IEmailService, EmailService>();
-            services.AddHostedService<SendEmailBackgroundService>();
 
             services.AddApplicationInsightsTelemetry();
             services.AddSingleton<ITelemetryInitializer, ApiUserTelemetryInitializer>();

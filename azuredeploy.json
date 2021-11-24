@@ -58,7 +58,6 @@
         "prefix": "[concat('halcyon-', parameters('stage'))]",
         "sql": "[concat(variables('prefix'), '-sql')]",
         "db": "[concat(variables('prefix'), '-db')]",
-        "storage": "[concat('halcyon', uniqueString(resourceGroup().id))]",
         "insights": "[concat(variables('prefix'), '-insights')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
         "web": "[concat(variables('prefix'), '-web')]"
@@ -102,17 +101,6 @@
                 "edition": "Basic",
                 "maxSizeBytes": "1073741824",
                 "requestedServiceObjectiveName": "Basic"
-            }
-        },
-        {
-            "name": "[variables('storage')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "location": "[resourceGroup().location]",
-            "kind": "StorageV2",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
             }
         },
         {
@@ -161,7 +149,6 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storage'))]",
                 "[resourceId('microsoft.insights/components', variables('insights'))]"
             ],
             "kind": "app,linux",
@@ -196,7 +183,6 @@
             ],
             "properties": {
                 "ApplicationInsights__ConnectionString": "[reference(resourceId('microsoft.insights/components', variables('insights'))).ConnectionString]",
-                "Event__StorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage')), '2018-07-01').keys[0].value, ';EndpointSuffix=core.windows.net')]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",

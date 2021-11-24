@@ -30,11 +30,6 @@ Create a `appsettings.Development.json` file in the web project directory.
         "SmtpPassword": "",
         "NoReplyAddress": "noreply@chrispoulter.com"
     },
-    "Event": {
-        "StorageConnectionString": "UseDevelopmentStorage=true",
-        "PollingInterval": 10,
-        "BatchSize": 20
-    },
     "Jwt": {
         "SecurityKey": "change-me-1234567890",
         "Issuer": "HalcyonApi",

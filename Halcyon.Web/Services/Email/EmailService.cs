@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +16,12 @@ namespace Halcyon.Web.Services.Email
     {
         private readonly EmailSettings _emailSettings;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        private readonly ILogger<EmailService> _logger;
+
+        public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
         {
             _emailSettings = emailSettings.Value;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(EmailMessage message)
@@ -45,15 +49,22 @@ namespace Halcyon.Web.Services.Email
                 mailMessage.To.Add(new MailAddress(emailAddress));
             }
 
-            using var client = new SmtpClient
+            try
             {
-                Host = _emailSettings.SmtpServer,
-                Port = _emailSettings.SmtpPort,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword)
-            };
+                using var client = new SmtpClient
+                {
+                    Host = _emailSettings.SmtpServer,
+                    Port = _emailSettings.SmtpPort,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword)
+                };
 
-            await client.SendMailAsync(mailMessage);
+                await client.SendMailAsync(mailMessage);
+            }
+            catch (SmtpException error)
+            {
+                _logger.LogError(error, "Email Send Failed");
+            }
         }
 
         public string ReadResource(string resource)
