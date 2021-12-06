@@ -67,7 +67,7 @@ export const RegisterPage = ({ history }) => {
                     lastName: '',
                     dateOfBirth: ''
                 }}
-                validationSchema={Yup.object().shape({
+                validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')
                         .max(254)

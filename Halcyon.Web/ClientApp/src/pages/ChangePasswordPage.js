@@ -44,7 +44,7 @@ export const ChangePasswordPage = ({ history }) => {
                     newPassword: '',
                     confirmNewPassword: ''
                 }}
-                validationSchema={Yup.object().shape({
+                validationSchema={Yup.object({
                     currentPassword: Yup.string()
                         .label('Current Password')
                         .required(),

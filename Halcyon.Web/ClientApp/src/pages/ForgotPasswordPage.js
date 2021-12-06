@@ -40,7 +40,7 @@ export const ForgotPasswordPage = ({ history }) => {
                 initialValues={{
                     emailAddress: ''
                 }}
-                validationSchema={Yup.object().shape({
+                validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')
                         .email()

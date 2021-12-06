@@ -44,7 +44,7 @@ export const ResetPasswordPage = ({ match, history }) => {
                     newPassword: '',
                     confirmNewPassword: ''
                 }}
-                validationSchema={Yup.object().shape({
+                validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')
                         .email()

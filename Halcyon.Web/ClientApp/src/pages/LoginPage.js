@@ -52,7 +52,7 @@ export const LoginPage = ({ history }) => {
                     password: '',
                     rememberMe: true
                 }}
-                validationSchema={Yup.object().shape({
+                validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')
                         .email()
