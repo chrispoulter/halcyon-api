@@ -5,7 +5,6 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, DateInput, Button, useAuth, useFetch } from '../components';
-import { trackEvent } from '../utils/logger';
 
 export const RegisterPage = ({ history }) => {
     const { setToken } = useAuth();
@@ -32,10 +31,6 @@ export const RegisterPage = ({ history }) => {
         });
 
         if (result.ok) {
-            trackEvent('sign_up', {
-                entityId: result.data.id
-            });
-
             result = await generateToken({
                 grantType: 'PASSWORD',
                 emailAddress: variables.emailAddress,

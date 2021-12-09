@@ -11,7 +11,6 @@ import {
     useAuth,
     useFetch
 } from '../components';
-import { trackEvent } from '../utils/logger';
 
 export const LoginPage = ({ history }) => {
     const { setToken } = useAuth();
@@ -31,8 +30,6 @@ export const LoginPage = ({ history }) => {
 
         if (result.ok) {
             setToken(result.data.accessToken, variables.rememberMe);
-
-            trackEvent('login');
             history.push('/');
         }
     };

@@ -16,7 +16,6 @@ import {
     useToast
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
-import { trackEvent } from '../utils/logger';
 
 export const UpdateUserPage = ({ history, match }) => {
     const { showModal } = useModal();
@@ -75,11 +74,6 @@ export const UpdateUserPage = ({ history, match }) => {
 
         if (result.ok) {
             toast.success(result.message);
-
-            trackEvent('user_updated', {
-                entityId: result.data.id
-            });
-
             history.push('/user');
         }
     };
@@ -96,20 +90,11 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            onOpen: () =>
-                trackEvent('screen_view', {
-                    screen_name: 'lock-user-modal'
-                }),
             onOk: async () => {
                 const result = await lockUser();
                 if (result.ok) {
                     await refetch();
-
                     toast.success(result.message);
-
-                    trackEvent('user_locked', {
-                        entityId: result.data.id
-                    });
                 }
             }
         });
@@ -126,20 +111,11 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            onOpen: () =>
-                trackEvent('screen_view', {
-                    screen_name: 'unlock-user-modal'
-                }),
             onOk: async () => {
                 const result = await unlockUser();
                 if (result.ok) {
                     await refetch();
-
                     toast.success(result.message);
-
-                    trackEvent('user_unlocked', {
-                        entityId: result.data.id
-                    });
                 }
             }
         });
@@ -156,19 +132,10 @@ export const UpdateUserPage = ({ history, match }) => {
                     ?
                 </>
             ),
-            onOpen: () =>
-                trackEvent('screen_view', {
-                    screen_name: 'delete-user-modal'
-                }),
             onOk: async () => {
                 const result = await deleteUser();
                 if (result.ok) {
                     toast.success(result.message);
-
-                    trackEvent('user_deleted', {
-                        entityId: result.data.id
-                    });
-
                     history.push('/user');
                 }
             }

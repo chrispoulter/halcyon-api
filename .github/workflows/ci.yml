@@ -41,7 +41,6 @@ jobs:
       - name: Build
         env:
           EXTEND_ESLINT: true
-          REACT_APP_GA_MEASUREMENT_ID: ${{ secrets.GA_MEASUREMENT_ID }}
         run: |
           dotnet restore
           yarn --cwd Halcyon.Web/ClientApp version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version

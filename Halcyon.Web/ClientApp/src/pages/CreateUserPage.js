@@ -13,7 +13,6 @@ import {
     useToast
 } from '../components';
 import { ALL_ROLES } from '../utils/auth';
-import { trackEvent } from '../utils/logger';
 
 export const CreateUserPage = ({ history }) => {
     const toast = useToast();
@@ -36,11 +35,6 @@ export const CreateUserPage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-
-            trackEvent('user_created', {
-                entityId: result.data.id
-            });
-
             history.push('/user');
         }
     };

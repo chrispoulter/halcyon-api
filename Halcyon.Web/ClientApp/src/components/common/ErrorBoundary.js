@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { Hero } from './Hero';
-import { captureError } from '../../utils/logger';
 
 export class ErrorBoundary extends React.Component {
     state = { hasError: false };
@@ -13,7 +12,7 @@ export class ErrorBoundary extends React.Component {
     }
 
     componentDidCatch(error, errorInfo) {
-        captureError(error, true, errorInfo);
+        console.error(error, errorInfo);
     }
 
     render() {

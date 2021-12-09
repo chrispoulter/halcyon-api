@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import jwtDecode from 'jwt-decode';
 import { getItem, setItem, removeItem } from '../../utils/storage';
-import { setUser } from '../../utils/logger';
 
 const getInitialState = () => {
     const accessToken = getItem('accessToken');
@@ -13,8 +12,6 @@ const getInitialState = () => {
     }
 
     const currentUser = jwtDecode(accessToken);
-
-    setUser(currentUser);
 
     return {
         accessToken,
@@ -36,8 +33,6 @@ export const AuthProvider = ({ children }) => {
 
         const currentUser = jwtDecode(accessToken);
 
-        setUser(currentUser);
-
         setState({
             accessToken,
             currentUser
@@ -46,8 +41,6 @@ export const AuthProvider = ({ children }) => {
 
     const removeToken = () => {
         removeItem('accessToken');
-
-        setUser(null);
 
         setState({
             accessToken: undefined,

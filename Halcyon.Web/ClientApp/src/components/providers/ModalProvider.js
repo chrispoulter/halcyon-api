@@ -15,15 +15,12 @@ export const useModal = () => useContext(ModalContext);
 export const ModalProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
 
-    const showModal = async ({ title, body, onOpen, onOk }) => {
-        await onOpen();
-
+    const showModal = async ({ title, body, onOk }) =>
         setState({
             title,
             body,
             onOk
         });
-    };
 
     const hideModal = () => setState(initialState);
 

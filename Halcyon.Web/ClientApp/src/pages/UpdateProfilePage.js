@@ -13,7 +13,6 @@ import {
     useFetch,
     useToast
 } from '../components';
-import { trackEvent } from '../utils/logger';
 
 export const UpdateProfilePage = ({ history }) => {
     const toast = useToast();
@@ -51,7 +50,6 @@ export const UpdateProfilePage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            trackEvent('profile_updated');
             history.push('/my-account');
         }
     };

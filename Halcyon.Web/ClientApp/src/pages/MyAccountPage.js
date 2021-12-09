@@ -11,7 +11,6 @@ import {
     useAuth,
     useToast
 } from '../components';
-import { trackEvent } from '../utils/logger';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useAuth();
@@ -47,20 +46,11 @@ export const MyAccountPage = ({ history }) => {
         showModal({
             title: 'Confirm',
             body: 'Are you sure you want to delete your account?',
-            onOpen: () =>
-                trackEvent('screen_view', {
-                    screen_name: 'delete-account-modal'
-                }),
             onOk: async () => {
                 const result = await deleteAccount();
 
                 if (result.ok) {
                     toast.success(result.message);
-
-                    trackEvent('account_deleted', {
-                        entityId: result.data.id
-                    });
-
                     removeToken();
                     history.push('/');
                 }

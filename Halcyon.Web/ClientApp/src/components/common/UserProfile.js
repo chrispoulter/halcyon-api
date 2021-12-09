@@ -4,7 +4,6 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useAuth } from '../providers';
 import { HasPermission } from './HasPermission';
-import { trackEvent } from '../../utils/logger';
 
 export const UserProfile = () => {
     const history = useHistory();
@@ -13,7 +12,6 @@ export const UserProfile = () => {
 
     const logout = () => {
         removeToken();
-        trackEvent('logout');
         history.push('/');
     };
 

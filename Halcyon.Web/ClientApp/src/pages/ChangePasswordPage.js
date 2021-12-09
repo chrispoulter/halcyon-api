@@ -5,7 +5,6 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, Button, useFetch, useToast } from '../components';
-import { trackEvent } from '../utils/logger';
 
 export const ChangePasswordPage = ({ history }) => {
     const toast = useToast();
@@ -24,7 +23,6 @@ export const ChangePasswordPage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            trackEvent('password_changed');
             history.push('/my-account');
         }
     };
