@@ -20,9 +20,6 @@ Create a `appsettings.Development.json` file in the web project directory.
     "ConnectionStrings": {
         "HalcyonDatabase": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Halcyon;Integrated Security=True;MultipleActiveResultSets=True"
     },
-    "ApplicationInsights": {
-        "ConnectionString": ""
-    },
     "Email": {
         "SmtpServer": "smtp.mailgun.org",
         "SmtpPort": 587,

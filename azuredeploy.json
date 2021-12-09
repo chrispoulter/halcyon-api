@@ -58,7 +58,6 @@
         "prefix": "[concat('halcyon-', parameters('stage'))]",
         "sql": "[concat(variables('prefix'), '-sql')]",
         "db": "[concat(variables('prefix'), '-db')]",
-        "insights": "[concat(variables('prefix'), '-insights')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
         "web": "[concat(variables('prefix'), '-web')]"
     },
@@ -104,21 +103,6 @@
             }
         },
         {
-            "type": "microsoft.insights/components",
-            "apiVersion": "2020-02-02",
-            "name": "[variables('insights')]",
-            "location": "[resourceGroup().location]",
-            "kind": "web",
-            "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "Request_Source": "rest",
-                "IngestionMode": "ApplicationInsights",
-                "publicNetworkAccessForIngestion": "Enabled",
-                "publicNetworkAccessForQuery": "Enabled"
-            }
-        },
-        {
             "name": "[variables('plan')]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
@@ -148,8 +132,7 @@
             "apiVersion": "2018-11-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]",
-                "[resourceId('microsoft.insights/components', variables('insights'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]"
             ],
             "kind": "app,linux",
             "properties": {
@@ -182,7 +165,6 @@
                 "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
-                "ApplicationInsights__ConnectionString": "[reference(resourceId('microsoft.insights/components', variables('insights'))).ConnectionString]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",
