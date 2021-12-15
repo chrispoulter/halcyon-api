@@ -62,7 +62,8 @@ jobs:
         with:
           resourceGroupName: halcyon-${{ env.REACT_APP_STAGE }}
           template: ./azuredeploy.json
-          parameters: stage="${{ env.REACT_APP_STAGE }}"
+          parameters: version="${{ env.REACT_APP_VERSION }}"
+            stage="${{ env.REACT_APP_STAGE }}"
             sqlUserName="${{ secrets.SQL_USERNAME }}"
             sqlPassword="${{ secrets.SQL_PASSWORD }}"
             emailSmtpServer="${{ secrets.EMAIL_SMTP_SERVER }}"

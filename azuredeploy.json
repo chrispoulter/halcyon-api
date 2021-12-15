@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "version": {
+            "type": "string",
+            "defaultValue": "1.0.0"
+        },
         "stage": {
             "type": "string",
             "defaultValue": "main"
@@ -165,6 +169,8 @@
                 "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
+                "Version": "[parameters('version')]",
+                "Stage": "[parameters('stage')]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",
