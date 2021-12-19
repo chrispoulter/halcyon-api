@@ -8,20 +8,16 @@ import {
     TextInput,
     DateInput,
     CheckboxGroupInput,
-    Button,
-    useFetch,
-    useToast
+    Button
 } from '../components';
+import { useToast } from '../contexts';
+import { useCreateUser } from '../services';
 import { ALL_ROLES } from '../utils/auth';
 
 export const CreateUserPage = ({ history }) => {
     const toast = useToast();
 
-    const { refetch: createUser } = useFetch({
-        method: 'POST',
-        url: '/user',
-        manual: true
-    });
+    const { refetch: createUser } = useCreateUser();
 
     const onSubmit = async variables => {
         const result = await createUser({

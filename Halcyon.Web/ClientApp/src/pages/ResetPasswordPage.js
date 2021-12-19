@@ -3,16 +3,14 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import { TextInput, Button, useFetch, useToast } from '../components';
+import { TextInput, Button } from '../components';
+import { useToast } from '../contexts';
+import { useResetPassword } from '../services';
 
 export const ResetPasswordPage = ({ match, history }) => {
     const toast = useToast();
 
-    const { refetch: resetPassword } = useFetch({
-        method: 'PUT',
-        url: '/account/resetpassword',
-        manual: true
-    });
+    const { refetch: resetPassword } = useResetPassword();
 
     const onSubmit = async variables => {
         const result = await resetPassword({

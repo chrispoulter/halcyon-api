@@ -3,14 +3,9 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import {
-    Button,
-    Spinner,
-    useFetch,
-    useModal,
-    useAuth,
-    useToast
-} from '../components';
+import { Button, Spinner } from '../components';
+import { useModal, useAuth, useToast } from '../contexts';
+import { useGetProfile, useDeleteAccount } from '../services';
 
 export const MyAccountPage = ({ history }) => {
     const { removeToken } = useAuth();
@@ -19,16 +14,9 @@ export const MyAccountPage = ({ history }) => {
 
     const toast = useToast();
 
-    const { loading, data } = useFetch({
-        method: 'GET',
-        url: '/manage'
-    });
+    const { loading, data } = useGetProfile();
 
-    const { refetch: deleteAccount, loading: isDeleting } = useFetch({
-        method: 'DELETE',
-        url: '/manage',
-        manual: true
-    });
+    const { refetch: deleteAccount, loading: isDeleting } = useDeleteAccount();
 
     if (loading) {
         return <Spinner />;

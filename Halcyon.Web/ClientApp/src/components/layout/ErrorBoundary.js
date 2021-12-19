@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import { Hero } from './Hero';
+import { Hero } from '../common/Hero';
 
 export class ErrorBoundary extends React.Component {
     state = { hasError: false };

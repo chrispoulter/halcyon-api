@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router';
-import { useAuth } from '../providers';
+import { useAuth } from '../../contexts';
 import { AccessDeniedPage } from '../../pages';
 import { isAuthorized } from '../../utils/auth';
 

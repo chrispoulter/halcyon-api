@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useAuth, useToast } from '../providers';
-import { config } from '../../utils/config';
+import { useAuth, useToast } from '../contexts';
+import { config } from '../utils/config';
 
 const headers = new Headers();
 headers.set('Content-Type', 'application/json');

@@ -4,25 +4,17 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import {
-    TextInput,
-    CheckboxInput,
-    Button,
-    useAuth,
-    useFetch
-} from '../components';
+import { TextInput, CheckboxInput, Button } from '../components';
+import { useAuth } from '../contexts';
+import { useCreateToken } from '../services';
 
 export const LoginPage = ({ history }) => {
     const { setToken } = useAuth();
 
-    const { refetch: generateToken } = useFetch({
-        method: 'POST',
-        url: '/token',
-        manual: true
-    });
+    const { refetch: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
-        const result = await generateToken({
+        const result = await createToken({
             grantType: 'PASSWORD',
             emailAddress: variables.emailAddress,
             password: variables.password

@@ -10,11 +10,16 @@ import {
     TextInput,
     DateInput,
     CheckboxGroupInput,
-    Button,
-    useFetch,
-    useModal,
-    useToast
+    Button
 } from '../components';
+import { useModal, useToast } from '../contexts';
+import {
+    useGetUser,
+    useUpdateUser,
+    useLockUser,
+    useUnlockUser,
+    useDeleteUser
+} from '../services';
 import { ALL_ROLES } from '../utils/auth';
 
 export const UpdateUserPage = ({ history, match }) => {
@@ -22,34 +27,21 @@ export const UpdateUserPage = ({ history, match }) => {
 
     const toast = useToast();
 
-    const { refetch, loading, data } = useFetch({
-        method: 'GET',
-        url: `/user/${match.params.id}`
-    });
+    const { refetch, loading, data } = useGetUser(match.params.id);
 
-    const { refetch: updateUser } = useFetch({
-        method: 'PUT',
-        url: `/user/${match.params.id}`,
-        manual: true
-    });
+    const { refetch: updateUser } = useUpdateUser(match.params.id);
 
-    const { refetch: lockUser, loading: isLocking } = useFetch({
-        method: 'PUT',
-        url: `/user/${match.params.id}/lock`,
-        manual: true
-    });
+    const { refetch: lockUser, loading: isLocking } = useLockUser(
+        match.params.id
+    );
 
-    const { refetch: unlockUser, loading: isUnlocking } = useFetch({
-        method: 'PUT',
-        url: `/user/${match.params.id}/unlock`,
-        manual: true
-    });
+    const { refetch: unlockUser, loading: isUnlocking } = useUnlockUser(
+        match.params.id
+    );
 
-    const { refetch: deleteUser, loading: isDeleting } = useFetch({
-        method: 'DELETE',
-        url: `/user/${match.params.id}`,
-        manual: true
-    });
+    const { refetch: deleteUser, loading: isDeleting } = useDeleteUser(
+        match.params.id
+    );
 
     if (loading) {
         return <Spinner />;

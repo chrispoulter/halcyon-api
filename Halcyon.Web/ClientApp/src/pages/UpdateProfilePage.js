@@ -5,28 +5,16 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import {
-    Spinner,
-    TextInput,
-    DateInput,
-    Button,
-    useFetch,
-    useToast
-} from '../components';
+import { Spinner, TextInput, DateInput, Button } from '../components';
+import { useToast } from '../contexts';
+import { useGetProfile, useUpdateProfile } from '../services';
 
 export const UpdateProfilePage = ({ history }) => {
     const toast = useToast();
 
-    const { loading, data } = useFetch({
-        method: 'GET',
-        url: '/manage'
-    });
+    const { loading, data } = useGetProfile();
 
-    const { refetch: updateProfile } = useFetch({
-        method: 'PUT',
-        url: '/manage',
-        manual: true
-    });
+    const { refetch: updateProfile } = useUpdateProfile();
 
     if (loading) {
         return <Spinner />;

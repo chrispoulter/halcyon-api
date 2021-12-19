@@ -4,22 +4,16 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import { TextInput, DateInput, Button, useAuth, useFetch } from '../components';
+import { TextInput, DateInput, Button } from '../components';
+import { useAuth } from '../contexts';
+import { useRegister, useCreateToken } from '../services';
 
 export const RegisterPage = ({ history }) => {
     const { setToken } = useAuth();
 
-    const { refetch: register } = useFetch({
-        method: 'POST',
-        url: '/account/register',
-        manual: true
-    });
+    const { refetch: register } = useRegister();
 
-    const { refetch: generateToken } = useFetch({
-        method: 'POST',
-        url: '/token',
-        manual: true
-    });
+    const { refetch: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
         let result = await register({
@@ -31,7 +25,7 @@ export const RegisterPage = ({ history }) => {
         });
 
         if (result.ok) {
-            result = await generateToken({
+            result = await createToken({
                 grantType: 'PASSWORD',
                 emailAddress: variables.emailAddress,
                 password: variables.password

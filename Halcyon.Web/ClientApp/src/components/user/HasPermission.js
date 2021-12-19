@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../providers';
+import { useAuth } from '../../contexts';
 import { isAuthorized } from '../../utils/auth';
 
 export const HasPermission = ({ requiredRoles, fallback, children }) => {

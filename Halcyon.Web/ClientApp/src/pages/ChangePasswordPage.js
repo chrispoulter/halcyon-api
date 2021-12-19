@@ -4,16 +4,14 @@ import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import { TextInput, Button, useFetch, useToast } from '../components';
+import { TextInput, Button } from '../components';
+import { useToast } from '../contexts';
+import { useChangePassword } from '../services';
 
 export const ChangePasswordPage = ({ history }) => {
     const toast = useToast();
 
-    const { refetch: changePassword } = useFetch({
-        method: 'PUT',
-        url: '/manage/changepassword',
-        manual: true
-    });
+    const { refetch: changePassword } = useChangePassword();
 
     const onSubmit = async variables => {
         const result = await changePassword({

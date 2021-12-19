@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { HasPermission } from './HasPermission';
-import { UserProfile } from './UserProfile';
+import { HasPermission, UserProfile } from '../user';
 import { USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
 
 export const Header = () => (

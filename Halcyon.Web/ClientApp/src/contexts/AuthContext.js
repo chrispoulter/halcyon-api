@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import jwtDecode from 'jwt-decode';
-import { getItem, setItem, removeItem } from '../../utils/storage';
+import { getItem, setItem, removeItem } from '../utils/storage';
 
 const getInitialState = () => {
     const accessToken = getItem('accessToken');
