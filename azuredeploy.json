@@ -169,8 +169,8 @@
                 "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
-                "Version": "[parameters('version')]",
-                "Stage": "[parameters('stage')]",
+                "App__Version": "[parameters('version')]",
+                "App__Stage": "[parameters('stage')]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",

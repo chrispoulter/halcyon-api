@@ -7,22 +7,28 @@ using Halcyon.Web.Services.Jwt;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Halcyon.Web
 {
@@ -124,8 +130,10 @@ namespace Halcyon.Web
                 });
             });
 
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddDbContextCheck<HalcyonDbContext>("database");
 
+            services.Configure<AppSettings>(Configuration.GetSection("App"));
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
@@ -175,7 +183,10 @@ namespace Halcyon.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = WriteResponse
+                });
 
                 endpoints.MapControllerRoute(
                     name: "default",
@@ -191,6 +202,31 @@ namespace Halcyon.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private Task WriteResponse(HttpContext context, HealthReport healthReport)
+        {
+            context.Response.ContentType = "application/json; charset=utf-8";
+
+            using var memoryStream = new MemoryStream();
+            using (var jsonWriter = new Utf8JsonWriter(memoryStream))
+            {
+                jsonWriter.WriteStartObject();
+                jsonWriter.WriteString("status", healthReport.Status.ToString());
+                jsonWriter.WriteString("version", Configuration["App:Version"]);
+                jsonWriter.WriteString("stage", Configuration["App:Stage"]);
+
+                foreach (var entry in healthReport.Entries)
+                {
+                    jsonWriter.WriteStartObject(entry.Key);
+                    jsonWriter.WriteString("status", entry.Value.Status.ToString());
+                    jsonWriter.WriteEndObject();
+                }
+
+                jsonWriter.WriteEndObject();
+            }
+
+            return context.Response.WriteAsync(Encoding.UTF8.GetString(memoryStream.ToArray()));
         }
     }
 }
