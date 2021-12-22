@@ -2,13 +2,14 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "version": {
-            "type": "string",
-            "defaultValue": "1.0.0"
+         "registryUrl": {
+            "type": "string"
         },
-        "stage": {
-            "type": "string",
-            "defaultValue": "main"
+        "registryUserName": {
+            "type": "string"
+        },
+        "registryPassword": {
+            "type": "string"
         },
         "sqlUserName": {
             "type": "string",
@@ -59,7 +60,7 @@
         }
     },
     "variables": {
-        "prefix": "[concat('halcyon-', parameters('stage'))]",
+        "prefix": "[resourceGroup().name]",
         "sql": "[concat(variables('prefix'), '-sql')]",
         "db": "[concat(variables('prefix'), '-db')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
@@ -141,10 +142,18 @@
             "kind": "app,linux",
             "properties": {
                 "name": "[variables('web')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]",
-                "siteConfig": {
-                    "linuxFxVersion": "DOTNETCORE|5.0"
-                }
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('plan'))]"
+            }
+        },
+        {
+            "name": "[concat(variables('web'), '/web')]",
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2020-12-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('web'))]"
+            ],
+            "properties": {
+                "healthCheckPath": "/health"
             }
         },
         {
@@ -169,8 +178,10 @@
                 "[resourceId('Microsoft.Web/sites', variables('web'))]"
             ],
             "properties": {
-                "App__Version": "[parameters('version')]",
-                "App__Stage": "[parameters('stage')]",
+                "WEBSITES_PORT": "5000",
+                "DOCKER_REGISTRY_SERVER_URL": "[parameters('registryUrl')]",
+                "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('registryUsername')]",
+                "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('registryPassword')]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",

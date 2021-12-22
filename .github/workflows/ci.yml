@@ -1,13 +1,16 @@
 name: CI
 
 on:
-    push:
-        branches:
-            - '**'
-    pull_request:
-        branches:
-            - '**'
-    workflow_dispatch:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+env:
+  PREFIX: halcyon-dotnet
 
 jobs:
   build-and-deploy:
@@ -35,16 +38,20 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "REACT_APP_VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
-          echo "REACT_APP_STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
+          echo "VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
+          echo "STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
+
+      - name: Docker Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build
-        env:
-          EXTEND_ESLINT: true
         run: |
-          dotnet restore
-          yarn --cwd Halcyon.Web/ClientApp version --new-version ${{ env.REACT_APP_VERSION }} --no-git-tag-version
-          dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/halcyon-web -p:Version=${{ env.REACT_APP_VERSION }}
+          docker build . -f Halcyon.Web/Dockerfile -t ${{ secrets.REGISTRY_URL }}/${{ env.PREFIX }}:${{ env.VERSION }} --build-arg VERSION=${{ env.VERSION }} --build-arg STAGE=${{ env.STAGE }}
+          docker push ${{ secrets.REGISTRY_URL }}/${{ env.PREFIX }}:${{ env.VERSION }}
 
       - name: Azure Login
         uses: azure/login@v1
@@ -54,16 +61,17 @@ jobs:
       - name: Create Resource Group
         run: |
           az group create \
-            --name "halcyon-${{ env.REACT_APP_STAGE }}" \
+            --name "${{ env.PREFIX }}-${{ env.REACT_APP_STAGE }}" \
             --location "${{ secrets.AZURE_LOCATION }}"
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: halcyon-${{ env.REACT_APP_STAGE }}
+          resourceGroupName: ${{ env.PREFIX }}-${{ env.REACT_APP_STAGE }}
           template: ./azuredeploy.json
-          parameters: version="${{ env.REACT_APP_VERSION }}"
-            stage="${{ env.REACT_APP_STAGE }}"
+          parameters: registryUrl="${{ secrets.REGISTRY_URL }}"
+            registryUserName="${{ secrets.REGISTRY_USERNAME }}"
+            registryPassword="${{ secrets.REGISTRY_PASSWORD }}"
             sqlUserName="${{ secrets.SQL_USERNAME }}"
             sqlPassword="${{ secrets.SQL_PASSWORD }}"
             emailSmtpServer="${{ secrets.EMAIL_SMTP_SERVER }}"
@@ -81,8 +89,8 @@ jobs:
       - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
-          app-name: halcyon-${{ env.REACT_APP_STAGE }}-web
-          package: ${{ env.DOTNET_ROOT }}/halcyon-web
+          app-name: ${{ env.PREFIX }}-${{ env.STAGE }}-web
+          images: "${{ secrets.REGISTRY_URL }}/${{ env.PREFIX }}:${{ env.VERSION }}"
 
       - name: Azure Logout
         run: |
