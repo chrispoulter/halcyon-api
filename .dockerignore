@@ -1,2 +1,11 @@
+**/bin
+**/obj
 **/node_modules
+**/*.user
 **/appsettings.Development.json
+**/Dockerfile
+
+GitVersion.yml
+README.md
+azuredeploy.json
+halcyon-dotnet.sln
