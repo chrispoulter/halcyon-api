@@ -9,6 +9,8 @@ on:
       - "**"
   workflow_dispatch:
 
+concurrency: ci-${{ github.ref }}
+
 env:
   PREFIX: halcyon-dotnet
 
@@ -61,13 +63,13 @@ jobs:
       - name: Create Resource Group
         run: |
           az group create \
-            --name "${{ env.PREFIX }}-${{ env.REACT_APP_STAGE }}" \
+            --name "${{ env.PREFIX }}-${{ env.STAGE }}" \
             --location "${{ secrets.AZURE_LOCATION }}"
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: ${{ env.PREFIX }}-${{ env.REACT_APP_STAGE }}
+          resourceGroupName: ${{ env.PREFIX }}-${{ env.STAGE }}
           template: ./azuredeploy.json
           parameters: registryUrl="${{ secrets.REGISTRY_URL }}"
             registryUserName="${{ secrets.REGISTRY_USERNAME }}"
