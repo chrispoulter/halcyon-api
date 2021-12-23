@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-         "registryUrl": {
+        "registryUrl": {
             "type": "string"
         },
         "registryUserName": {
@@ -11,12 +11,25 @@
         "registryPassword": {
             "type": "string"
         },
-        "sqlUserName": {
-            "type": "string",
-            "defaultValue": "halcyon"
+        "dbHost": {
+            "type": "string"
         },
-        "sqlPassword": {
+        "dbPort": {
+            "type": "string",
+            "defaultValue": "5432"
+        },
+        "dbUser": {
+            "type": "string"
+        },
+        "dbPassword": {
             "type": "secureString"
+        },
+        "dbDatabase": {
+            "type": "string"
+        },
+        "dbSSL": {
+            "type": "string",
+            "defaultValue": "false"
         },
         "emailSmtpServer": {
             "type": "string",
@@ -61,52 +74,10 @@
     },
     "variables": {
         "prefix": "[resourceGroup().name]",
-        "sql": "[concat(variables('prefix'), '-sql')]",
-        "db": "[concat(variables('prefix'), '-db')]",
         "plan": "[concat(variables('prefix'), '-plan')]",
         "web": "[concat(variables('prefix'), '-web')]"
     },
     "resources": [
-        {
-            "name": "[variables('sql')]",
-            "type": "Microsoft.Sql/servers",
-            "apiVersion": "2014-04-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "administratorLogin": "[parameters('sqlUserName')]",
-                "administratorLoginPassword": "[parameters('sqlPassword')]"
-            },
-            "resources": [
-                {
-                    "type": "firewallRules",
-                    "apiVersion": "2014-04-01",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', variables('sql'))]"
-                    ],
-                    "location": "[resourceGroup().location]",
-                    "name": "AllowAllWindowsAzureIps",
-                    "properties": {
-                        "startIpAddress": "0.0.0.0",
-                        "endIpAddress": "0.0.0.0"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "[concat(variables('sql'), '/', variables('db'))]",
-            "type": "Microsoft.Sql/servers/databases",
-            "apiVersion": "2014-04-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', variables('sql'))]"
-            ],
-            "properties": {
-                "collation": "SQL_Latin1_General_CP1_CI_AS",
-                "edition": "Basic",
-                "maxSizeBytes": "1073741824",
-                "requestedServiceObjectiveName": "Basic"
-            }
-        },
         {
             "name": "[variables('plan')]",
             "type": "Microsoft.Web/serverfarms",
@@ -166,7 +137,7 @@
             "properties": {
                 "HalcyonDatabase": {
                     "type": "SQLServer",
-                    "value": "[concat('Data Source=tcp:', variables('sql'), '.database.windows.net,1433;Initial Catalog=', variables('db'), ';User Id=', parameters('sqlUserName'), '@', variables('sql'), ';Password=', parameters('sqlPassword'))]"
+                    "value": "[concat('Host=', parameters('dbHost'), ';Port=', parameters('dbPort'), ';Database=', parameters('dbDatabase'), ';Username=', parameters('dbUser') , ';Password=', parameters('dbPassword'))]"
                 }
             }
         },

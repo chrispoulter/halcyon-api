@@ -46,9 +46,10 @@ namespace Halcyon.Web
             services.AddDbContext<HalcyonDbContext>(options =>
                 options
                     .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
-                    .UseSqlServer(
+                    .UseNpgsql(
                         Configuration.GetConnectionString("HalcyonDatabase"),
-                        builder => builder.EnableRetryOnFailure()));
+                        builder => builder.EnableRetryOnFailure())
+                    .UseSnakeCaseNamingConvention());
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

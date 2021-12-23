@@ -8,8 +8,8 @@ A web application template.
   [https://reactjs.org](https://reactjs.org)
 - .NET Core
   [https://github.com/dotnet/core](https://github.com/dotnet/core)
-- SQL Server
-  [https://www.microsoft.com/sql-server](https://www.microsoft.com/sql-server)
+- PostgreSQL
+  [https://www.postgresql.org/](https://www.postgresql.org/)
 
 #### Custom Settings
 
@@ -18,7 +18,7 @@ Create a `appsettings.Development.json` file in the web project directory.
 ```
 {
     "ConnectionStrings": {
-        "HalcyonDatabase": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Halcyon;Integrated Security=True;MultipleActiveResultSets=True"
+        "HalcyonDatabase": "Host=localhost;Port=5432;Database=halcyon-dotnet;Username=postgres;Password=example"
     },
     "Email": {
         "SmtpServer": "smtp.mailgun.org",
