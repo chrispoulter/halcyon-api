@@ -1,22 +1,15 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
-using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 
-namespace Halcyon.Web.Controllers
+namespace Halcyon.Web.Services.Seed
 {
-    [ApiController]
-    [Produces("application/json")]
-    [Route("api/[controller]")]
-    public class SeedController : BaseController
+    public class SeedService : ISeedService
     {
         private readonly HalcyonDbContext _context;
 
@@ -24,7 +17,7 @@ namespace Halcyon.Web.Controllers
 
         private readonly SeedSettings _seedSettings;
 
-        public SeedController(
+        public SeedService(
             HalcyonDbContext context,
             IHashService hashService,
             IOptions<SeedSettings> seedSettings)
@@ -34,9 +27,12 @@ namespace Halcyon.Web.Controllers
             _seedSettings = seedSettings.Value;
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> SeedData()
+        public void SeedData()
+            => SeedDataAsync()
+            .GetAwaiter()
+            .GetResult();
+
+        public async Task SeedDataAsync()
         {
             await _context.Database.MigrateAsync();
 
@@ -48,14 +44,7 @@ namespace Halcyon.Web.Controllers
                 roleIds.Add(roleId);
             }
 
-            var userId = await AddSystemUserAsync(roleIds);
-
-            return Ok(new ApiResponse<UserUpdatedResponse>
-            {
-                Code = InternalStatusCode.USER_CREATED,
-                Message = "User successfully created.",
-                Data = { Id = userId }
-            });
+            await AddSystemUserAsync(roleIds);
         }
 
         private async Task<int> AddRoleAsync(string name)

@@ -4,6 +4,7 @@ using Halcyon.Web.Models;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
+using Halcyon.Web.Services.Seed;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -139,13 +140,16 @@ namespace Halcyon.Web
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.Configure<SeedSettings>(Configuration.GetSection("Seed"));
 
+            services.AddScoped<ISeedService, SeedService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<IJwtService, JwtService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISeedService seedService)
         {
+            seedService.SeedData();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
