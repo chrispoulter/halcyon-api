@@ -1,5 +1,5 @@
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 WORKDIR /app
 
 ARG VERSION=1.0.0
@@ -10,7 +10,7 @@ ENV App__Version=$STAGE
 
 ENV ASPNETCORE_URLS=http://+:5000
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
 COPY ["Halcyon.Web/Halcyon.Web.csproj", "Halcyon.Web/"]
 RUN dotnet restore "Halcyon.Web/Halcyon.Web.csproj"
