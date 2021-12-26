@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -7,21 +8,25 @@ import { TextInput, Button } from '../components';
 import { useToast } from '../contexts';
 import { useResetPassword } from '../services';
 
-export const ResetPasswordPage = ({ match, history }) => {
+export const ResetPasswordPage = () => {
+    const navigate = useNavigate();
+
+    const params = useParams();
+
     const toast = useToast();
 
     const { refetch: resetPassword } = useResetPassword();
 
     const onSubmit = async variables => {
         const result = await resetPassword({
-            token: match.params.token,
+            token: params.token,
             emailAddress: variables.emailAddress,
             newPassword: variables.newPassword
         });
 
         if (result.ok) {
             toast.success(result.message);
-            history.push('/login');
+            navigate('/login');
         }
     };
 

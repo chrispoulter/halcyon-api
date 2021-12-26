@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -8,7 +8,9 @@ import { TextInput, Button } from '../components';
 import { useToast } from '../contexts';
 import { useChangePassword } from '../services';
 
-export const ChangePasswordPage = ({ history }) => {
+export const ChangePasswordPage = () => {
+    const navigate = useNavigate();
+
     const toast = useToast();
 
     const { refetch: changePassword } = useChangePassword();
@@ -21,7 +23,7 @@ export const ChangePasswordPage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            history.push('/my-account');
+            navigate('/my-account');
         }
     };
 

@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Header, Footer, Spinner, Meta, ErrorBoundary } from './components';
 import { AuthProvider, ModalProvider, ToastProvider } from './contexts';
-import { Routes } from './Routes';
+import { Router } from './Router';
 
 export const App = () => (
     <Suspense fallback={<Spinner />}>
@@ -13,7 +13,7 @@ export const App = () => (
                         <Meta />
                         <Header />
                         <ErrorBoundary>
-                            <Routes />
+                            <Router />
                         </ErrorBoundary>
                         <Footer />
                     </ToastProvider>

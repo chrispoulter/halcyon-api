@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -8,7 +8,9 @@ import { TextInput, DateInput, Button } from '../components';
 import { useAuth } from '../contexts';
 import { useRegister, useCreateToken } from '../services';
 
-export const RegisterPage = ({ history }) => {
+export const RegisterPage = () => {
+    const navigate = useNavigate();
+
     const { setToken } = useAuth();
 
     const { refetch: register } = useRegister();
@@ -33,7 +35,7 @@ export const RegisterPage = ({ history }) => {
 
             if (result.ok) {
                 setToken(result.data.accessToken);
-                history.push('/');
+                navigate('/');
             }
         }
     };

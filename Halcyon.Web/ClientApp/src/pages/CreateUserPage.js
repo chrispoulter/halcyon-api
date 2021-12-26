@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -14,7 +14,9 @@ import { useToast } from '../contexts';
 import { useCreateUser } from '../services';
 import { ALL_ROLES } from '../utils/auth';
 
-export const CreateUserPage = ({ history }) => {
+export const CreateUserPage = () => {
+    const navigate = useNavigate();
+
     const toast = useToast();
 
     const { refetch: createUser } = useCreateUser();
@@ -31,7 +33,7 @@ export const CreateUserPage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            history.push('/user');
+            navigate('/user');
         }
     };
 

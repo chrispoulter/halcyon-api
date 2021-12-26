@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
@@ -7,7 +7,9 @@ import { Button, Spinner } from '../components';
 import { useModal, useAuth, useToast } from '../contexts';
 import { useGetProfile, useDeleteAccount } from '../services';
 
-export const MyAccountPage = ({ history }) => {
+export const MyAccountPage = () => {
+    const navigate = useNavigate();
+
     const { removeToken } = useAuth();
 
     const { showModal } = useModal();
@@ -40,7 +42,7 @@ export const MyAccountPage = ({ history }) => {
                 if (result.ok) {
                     toast.success(result.message);
                     removeToken();
-                    history.push('/');
+                    navigate('/');
                 }
             }
         });

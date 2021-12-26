@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -22,25 +22,27 @@ import {
 } from '../services';
 import { ALL_ROLES } from '../utils/auth';
 
-export const UpdateUserPage = ({ history, match }) => {
+export const UpdateUserPage = () => {
+    const navigate = useNavigate();
+
+    const params = useParams();
+
     const { showModal } = useModal();
 
     const toast = useToast();
 
-    const { refetch, loading, data } = useGetUser(match.params.id);
+    const { refetch, loading, data } = useGetUser(params.id);
 
-    const { refetch: updateUser } = useUpdateUser(match.params.id);
+    const { refetch: updateUser } = useUpdateUser(params.id);
 
-    const { refetch: lockUser, loading: isLocking } = useLockUser(
-        match.params.id
-    );
+    const { refetch: lockUser, loading: isLocking } = useLockUser(params.id);
 
     const { refetch: unlockUser, loading: isUnlocking } = useUnlockUser(
-        match.params.id
+        params.id
     );
 
     const { refetch: deleteUser, loading: isDeleting } = useDeleteUser(
-        match.params.id
+        params.id
     );
 
     if (loading) {
@@ -66,7 +68,7 @@ export const UpdateUserPage = ({ history, match }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            history.push('/user');
+            navigate('/user');
         }
     };
 
@@ -128,7 +130,7 @@ export const UpdateUserPage = ({ history, match }) => {
                 const result = await deleteUser();
                 if (result.ok) {
                     toast.success(result.message);
-                    history.push('/user');
+                    navigate('/user');
                 }
             }
         });

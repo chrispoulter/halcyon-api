@@ -1,18 +1,18 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useAuth } from '../../contexts';
 import { HasPermission } from './HasPermission';
 
 export const UserProfile = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const { currentUser, removeToken } = useAuth();
 
     const logout = () => {
         removeToken();
-        history.push('/');
+        navigate('/');
     };
 
     return (

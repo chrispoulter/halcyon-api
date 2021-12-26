@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -9,7 +9,9 @@ import { Spinner, TextInput, DateInput, Button } from '../components';
 import { useToast } from '../contexts';
 import { useGetProfile, useUpdateProfile } from '../services';
 
-export const UpdateProfilePage = ({ history }) => {
+export const UpdateProfilePage = () => {
+    const navigate = useNavigate();
+
     const toast = useToast();
 
     const { loading, data } = useGetProfile();
@@ -38,7 +40,7 @@ export const UpdateProfilePage = ({ history }) => {
 
         if (result.ok) {
             toast.success(result.message);
-            history.push('/my-account');
+            navigate('/my-account');
         }
     };
 

@@ -1,3 +1,3 @@
 export * from './HasPermission';
-export * from './PrivateRoute';
+export * from './RequireAuth';
 export * from './UserProfile';
