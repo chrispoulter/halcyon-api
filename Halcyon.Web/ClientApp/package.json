@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "start": "react-scripts start",
+        "prestart": "node aspnetcore-https && node aspnetcore-react",
+        "start": "rimraf ./build && react-scripts start",
         "build": "react-scripts build",
         "workbox": "workbox injectManifest workbox-config.js",
         "lint": "eslint src/**/*.{js,jsx}",
@@ -22,9 +23,11 @@
         "yup": "0.32.11"
     },
     "devDependencies": {
-        "node-sass": "7.0.0",
+        "http-proxy-middleware": "0.19.1",
+        "node-sass": "7.0.1",
         "prettier": "2.5.1",
         "react-scripts": "5.0.0",
+        "rimraf": "3.0.2",
         "workbox-cli": "6.4.2"
     },
     "browserslist": {

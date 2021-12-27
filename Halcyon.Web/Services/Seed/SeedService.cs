@@ -3,9 +3,6 @@ using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Halcyon.Web.Services.Seed
 {
@@ -26,11 +23,6 @@ namespace Halcyon.Web.Services.Seed
             _hashService = hashService;
             _seedSettings = seedSettings.Value;
         }
-
-        public void SeedData()
-            => SeedDataAsync()
-            .GetAwaiter()
-            .GetResult();
 
         public async Task SeedDataAsync()
         {
