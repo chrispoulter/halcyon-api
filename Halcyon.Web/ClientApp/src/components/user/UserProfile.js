@@ -20,10 +20,10 @@ export const UserProfile = () => {
             <HasPermission
                 fallback={
                     <>
-                        <Nav.Link to="/login" as={Link}>
+                        <Nav.Link eventKey="login" to="/login" as={Link}>
                             Login
                         </Nav.Link>
-                        <Nav.Link to="/register" as={Link}>
+                        <Nav.Link eventKey="register" to="/register" as={Link}>
                             Register
                         </Nav.Link>
                     </>
@@ -33,10 +33,16 @@ export const UserProfile = () => {
                     id="collasible-nav-authenticated"
                     title={`${currentUser?.given_name} ${currentUser?.family_name} `}
                 >
-                    <NavDropdown.Item to="/my-account" as={Link}>
+                    <NavDropdown.Item
+                        eventKey="my-account"
+                        to="/my-account"
+                        as={Link}
+                    >
                         My Account
                     </NavDropdown.Item>
-                    <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="logout" onClick={logout}>
+                        Logout
+                    </NavDropdown.Item>
                 </NavDropdown>
             </HasPermission>
         </Nav>
