@@ -31,12 +31,7 @@ export const UpdateProfilePage = () => {
     }
 
     const onSubmit = async variables => {
-        const result = await updateProfile({
-            emailAddress: variables.emailAddress,
-            firstName: variables.firstName,
-            lastName: variables.lastName,
-            dateOfBirth: variables.dateOfBirth
-        });
+        const result = await updateProfile(variables);
 
         if (result.ok) {
             toast.success(result.message);

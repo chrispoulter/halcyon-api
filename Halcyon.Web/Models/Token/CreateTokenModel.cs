@@ -5,10 +5,6 @@ namespace Halcyon.Web.Models.Token
 {
     public class CreateTokenModel
     {
-        [DisplayName("Grant Type")]
-        [Required]
-        public GrantType? GrantType { get; set; }
-
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]

@@ -16,11 +16,7 @@ export const LoginPage = () => {
     const { refetch: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
-        const result = await createToken({
-            grantType: 'PASSWORD',
-            emailAddress: variables.emailAddress,
-            password: variables.password
-        });
+        const result = await createToken(variables);
 
         if (result.ok) {
             setToken(result.data.accessToken, variables.rememberMe);

@@ -11,7 +11,7 @@ import { useResetPassword } from '../services';
 export const ResetPasswordPage = () => {
     const navigate = useNavigate();
 
-    const params = useParams();
+    const { token } = useParams();
 
     const toast = useToast();
 
@@ -19,9 +19,8 @@ export const ResetPasswordPage = () => {
 
     const onSubmit = async variables => {
         const result = await resetPassword({
-            token: params.token,
-            emailAddress: variables.emailAddress,
-            newPassword: variables.newPassword
+            token,
+            ...variables
         });
 
         if (result.ok) {

@@ -18,20 +18,10 @@ export const RegisterPage = () => {
     const { refetch: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
-        let result = await register({
-            emailAddress: variables.emailAddress,
-            password: variables.password,
-            firstName: variables.firstName,
-            lastName: variables.lastName,
-            dateOfBirth: variables.dateOfBirth
-        });
+        let result = await register(variables);
 
         if (result.ok) {
-            result = await createToken({
-                grantType: 'PASSWORD',
-                emailAddress: variables.emailAddress,
-                password: variables.password
-            });
+            result = await createToken(variables);
 
             if (result.ok) {
                 setToken(result.data.accessToken);

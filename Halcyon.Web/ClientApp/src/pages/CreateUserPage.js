@@ -22,14 +22,7 @@ export const CreateUserPage = () => {
     const { refetch: createUser } = useCreateUser();
 
     const onSubmit = async variables => {
-        const result = await createUser({
-            emailAddress: variables.emailAddress,
-            password: variables.password,
-            firstName: variables.firstName,
-            lastName: variables.lastName,
-            dateOfBirth: variables.dateOfBirth,
-            roles: variables.roles
-        });
+        const result = await createUser(variables);
 
         if (result.ok) {
             toast.success(result.message);

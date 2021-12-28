@@ -25,25 +25,21 @@ import { ALL_ROLES } from '../utils/auth';
 export const UpdateUserPage = () => {
     const navigate = useNavigate();
 
-    const params = useParams();
+    const { id } = useParams();
 
     const { showModal } = useModal();
 
     const toast = useToast();
 
-    const { refetch, loading, data } = useGetUser(params.id);
+    const { refetch, loading, data } = useGetUser(id);
 
-    const { refetch: updateUser } = useUpdateUser(params.id);
+    const { refetch: updateUser } = useUpdateUser(id);
 
-    const { refetch: lockUser, loading: isLocking } = useLockUser(params.id);
+    const { refetch: lockUser, loading: isLocking } = useLockUser(id);
 
-    const { refetch: unlockUser, loading: isUnlocking } = useUnlockUser(
-        params.id
-    );
+    const { refetch: unlockUser, loading: isUnlocking } = useUnlockUser(id);
 
-    const { refetch: deleteUser, loading: isDeleting } = useDeleteUser(
-        params.id
-    );
+    const { refetch: deleteUser, loading: isDeleting } = useDeleteUser(id);
 
     if (loading) {
         return <Spinner />;
@@ -58,13 +54,7 @@ export const UpdateUserPage = () => {
     }
 
     const onSubmit = async variables => {
-        const result = await updateUser({
-            emailAddress: variables.emailAddress,
-            firstName: variables.firstName,
-            lastName: variables.lastName,
-            dateOfBirth: variables.dateOfBirth,
-            roles: variables.roles
-        });
+        const result = await updateUser(variables);
 
         if (result.ok) {
             toast.success(result.message);

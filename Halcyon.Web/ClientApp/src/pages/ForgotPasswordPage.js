@@ -16,9 +16,7 @@ export const ForgotPasswordPage = () => {
     const { refetch: forgotPassword } = useForgotPassword();
 
     const onSubmit = async variables => {
-        const result = await forgotPassword({
-            emailAddress: variables.emailAddress
-        });
+        const result = await forgotPassword(variables);
 
         if (result.ok) {
             toast.success(result.message);

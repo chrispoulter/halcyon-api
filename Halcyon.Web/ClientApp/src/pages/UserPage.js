@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik, Form } from 'formik';
 import Container from 'react-bootstrap/Container';
@@ -22,27 +22,31 @@ const SORT_OPTIONS = {
 };
 
 export const UserPage = () => {
-    const [state, setState] = useState({
-        page: 1,
-        size: 10,
-        search: '',
-        sort: 'NAME_ASC'
-    });
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const { loading, data } = useSearchUsers(state);
+    const filter = {
+        page: parseInt(searchParams.get('page') || '1'),
+        size: parseInt(searchParams.get('size') || '10'),
+        search: searchParams.get('search') || '',
+        sort: searchParams.get('sort') || 'NAME_ASC'
+    };
+
+    const { loading, data } = useSearchUsers(filter);
 
     if (loading) {
         return <Spinner />;
     }
 
-    const onSort = value => setState({ ...state, sort: value });
+    const onSort = value => setSearchParams({ ...filter, sort: value });
 
-    const onPreviousPage = () => setState({ ...state, page: state.page - 1 });
+    const onPreviousPage = () =>
+        setSearchParams({ ...filter, page: filter.page - 1 });
 
-    const onNextPage = () => setState({ ...state, page: state.page + 1 });
+    const onNextPage = () =>
+        setSearchParams({ ...filter, page: filter.page + 1 });
 
     const onSubmit = values =>
-        setState({ ...state, page: 1, search: values.search });
+        setSearchParams({ ...filter, page: 1, search: values.search });
 
     return (
         <Container>
@@ -65,7 +69,7 @@ export const UserPage = () => {
 
             <Formik
                 onSubmit={onSubmit}
-                initialValues={{ search: state.search }}
+                initialValues={{ search: filter.search }}
             >
                 {({ handleChange, handleBlur, values }) => (
                     <Form>
@@ -90,7 +94,7 @@ export const UserPage = () => {
                                     ([value, label]) => (
                                         <Dropdown.Item
                                             key={value}
-                                            active={value === state.sort}
+                                            active={value === filter.sort}
                                             onClick={() => onSort(value)}
                                         >
                                             {label}

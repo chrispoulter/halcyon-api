@@ -6,6 +6,10 @@ const headers = new Headers();
 headers.set('Content-Type', 'application/json');
 
 export const useFetch = request => {
+    const searchParams = new URLSearchParams(request.params || {});
+
+    const url = `${config.API_URL}${request.url}?${searchParams}`;
+
     const { accessToken, removeToken } = useAuth();
 
     const toast = useToast();
@@ -24,13 +28,10 @@ export const useFetch = request => {
         }
 
         refetch();
-    }, [request.url, request.params]);
+    }, [url]);
 
     const refetch = async body => {
         setLoading(true);
-
-        const params = new URLSearchParams(request.params || {});
-        const url = `${config.API_URL}${request.url}?${params}`;
 
         let response;
         try {

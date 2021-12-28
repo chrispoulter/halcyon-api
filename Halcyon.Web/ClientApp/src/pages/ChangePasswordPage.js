@@ -16,10 +16,7 @@ export const ChangePasswordPage = () => {
     const { refetch: changePassword } = useChangePassword();
 
     const onSubmit = async variables => {
-        const result = await changePassword({
-            currentPassword: variables.currentPassword,
-            newPassword: variables.newPassword
-        });
+        const result = await changePassword(variables);
 
         if (result.ok) {
             toast.success(result.message);
