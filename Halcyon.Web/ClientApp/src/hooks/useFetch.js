@@ -5,10 +5,10 @@ import { config } from '../utils/config';
 const headers = new Headers();
 headers.set('Content-Type', 'application/json');
 
-export const useFetch = request => {
-    const searchParams = new URLSearchParams(request.params || {});
+export const useFetch = ({ url, method, params }) => {
+    const searchParams = new URLSearchParams(params || {});
 
-    const url = `${config.API_URL}${request.url}?${searchParams}`;
+    const apiUrl = `${config.API_URL}${url}?${searchParams}`;
 
     const { accessToken, removeToken } = useAuth();
 
@@ -23,20 +23,20 @@ export const useFetch = request => {
     }
 
     useEffect(() => {
-        if (request.manual) {
+        if (method !== 'GET') {
             return;
         }
 
-        refetch();
-    }, [url]);
+        request();
+    }, [apiUrl]);
 
-    const refetch = async body => {
+    const request = async body => {
         setLoading(true);
 
         let response;
         try {
-            response = await fetch(url, {
-                method: request.method,
+            response = await fetch(apiUrl, {
+                method,
                 headers,
                 body: body && JSON.stringify(body)
             });
@@ -84,5 +84,5 @@ export const useFetch = request => {
         return { ok, message, data };
     };
 
-    return { loading, data, refetch };
+    return { loading, data, request };
 };

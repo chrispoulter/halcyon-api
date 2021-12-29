@@ -13,7 +13,7 @@ export const ForgotPasswordPage = () => {
 
     const toast = useToast();
 
-    const { refetch: forgotPassword } = useForgotPassword();
+    const { request: forgotPassword } = useForgotPassword();
 
     const onSubmit = async variables => {
         const result = await forgotPassword(variables);

@@ -13,7 +13,7 @@ export const LoginPage = () => {
 
     const { setToken } = useAuth();
 
-    const { refetch: createToken } = useCreateToken();
+    const { request: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
         const result = await createToken(variables);

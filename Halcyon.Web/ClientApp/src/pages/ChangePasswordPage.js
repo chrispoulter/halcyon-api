@@ -13,7 +13,7 @@ export const ChangePasswordPage = () => {
 
     const toast = useToast();
 
-    const { refetch: changePassword } = useChangePassword();
+    const { request: changePassword } = useChangePassword();
 
     const onSubmit = async variables => {
         const result = await changePassword(variables);

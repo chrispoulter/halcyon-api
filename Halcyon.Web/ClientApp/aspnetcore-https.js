@@ -11,7 +11,7 @@ const baseFolder =
 const certificateArg = process.argv
     .map(arg => arg.match(/--name=(?<value>.+)/i))
     .filter(Boolean)[0];
-    
+
 const certificateName = certificateArg
     ? certificateArg.groups.value
     : process.env.npm_package_name;

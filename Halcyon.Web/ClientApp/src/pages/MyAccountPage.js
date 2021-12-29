@@ -18,7 +18,7 @@ export const MyAccountPage = () => {
 
     const { loading, data } = useGetProfile();
 
-    const { refetch: deleteAccount, loading: isDeleting } = useDeleteAccount();
+    const { request: deleteAccount, loading: isDeleting } = useDeleteAccount();
 
     if (loading) {
         return <Spinner />;

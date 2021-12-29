@@ -13,9 +13,9 @@ export const RegisterPage = () => {
 
     const { setToken } = useAuth();
 
-    const { refetch: register } = useRegister();
+    const { request: register } = useRegister();
 
-    const { refetch: createToken } = useCreateToken();
+    const { request: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
         let result = await register(variables);

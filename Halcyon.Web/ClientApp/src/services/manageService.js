@@ -9,20 +9,17 @@ export const useGetProfile = () =>
 export const useUpdateProfile = () =>
     useFetch({
         method: 'PUT',
-        url: '/manage',
-        manual: true
+        url: '/manage'
     });
 
 export const useChangePassword = () =>
     useFetch({
         method: 'PUT',
-        url: '/manage/changepassword',
-        manual: true
+        url: '/manage/changepassword'
     });
 
 export const useDeleteAccount = () =>
     useFetch({
         method: 'DELETE',
-        url: '/manage',
-        manual: true
+        url: '/manage'
     });

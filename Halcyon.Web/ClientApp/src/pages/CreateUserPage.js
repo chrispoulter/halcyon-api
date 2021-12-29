@@ -19,7 +19,7 @@ export const CreateUserPage = () => {
 
     const toast = useToast();
 
-    const { refetch: createUser } = useCreateUser();
+    const { request: createUser } = useCreateUser();
 
     const onSubmit = async variables => {
         const result = await createUser(variables);

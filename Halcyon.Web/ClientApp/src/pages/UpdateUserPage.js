@@ -31,15 +31,15 @@ export const UpdateUserPage = () => {
 
     const toast = useToast();
 
-    const { refetch, loading, data } = useGetUser(id);
+    const { request, loading, data } = useGetUser(id);
 
-    const { refetch: updateUser } = useUpdateUser(id);
+    const { request: updateUser } = useUpdateUser(id);
 
-    const { refetch: lockUser, loading: isLocking } = useLockUser(id);
+    const { request: lockUser, loading: isLocking } = useLockUser(id);
 
-    const { refetch: unlockUser, loading: isUnlocking } = useUnlockUser(id);
+    const { request: unlockUser, loading: isUnlocking } = useUnlockUser(id);
 
-    const { refetch: deleteUser, loading: isDeleting } = useDeleteUser(id);
+    const { request: deleteUser, loading: isDeleting } = useDeleteUser(id);
 
     if (loading) {
         return <Spinner />;
@@ -77,7 +77,7 @@ export const UpdateUserPage = () => {
             onOk: async () => {
                 const result = await lockUser();
                 if (result.ok) {
-                    await refetch();
+                    await request();
                     toast.success(result.message);
                 }
             }
@@ -98,7 +98,7 @@ export const UpdateUserPage = () => {
             onOk: async () => {
                 const result = await unlockUser();
                 if (result.ok) {
-                    await refetch();
+                    await request();
                     toast.success(result.message);
                 }
             }

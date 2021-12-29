@@ -15,7 +15,7 @@ export const ResetPasswordPage = () => {
 
     const toast = useToast();
 
-    const { refetch: resetPassword } = useResetPassword();
+    const { request: resetPassword } = useResetPassword();
 
     const onSubmit = async variables => {
         const result = await resetPassword({

@@ -46,7 +46,7 @@ SSL_KEY_FILE=${keyFilePath}`
         if (/SSL_CRT_FILE=.*/i.test(line)) {
             hasCert = true;
         }
-        
+
         if (/SSL_KEY_FILE=.*/i.test(line)) {
             hasCertKey = true;
         }

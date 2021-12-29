@@ -16,7 +16,7 @@ export const UpdateProfilePage = () => {
 
     const { loading, data } = useGetProfile();
 
-    const { refetch: updateProfile } = useUpdateProfile();
+    const { request: updateProfile } = useUpdateProfile();
 
     if (loading) {
         return <Spinner />;

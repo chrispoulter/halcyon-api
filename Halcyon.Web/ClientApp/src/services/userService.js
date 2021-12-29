@@ -10,8 +10,7 @@ export const useSearchUsers = params =>
 export const useCreateUser = () =>
     useFetch({
         method: 'POST',
-        url: '/user',
-        manual: true
+        url: '/user'
     });
 
 export const useGetUser = id =>
@@ -23,27 +22,23 @@ export const useGetUser = id =>
 export const useUpdateUser = id =>
     useFetch({
         method: 'PUT',
-        url: `/user/${id}`,
-        manual: true
+        url: `/user/${id}`
     });
 
 export const useLockUser = id =>
     useFetch({
         method: 'PUT',
-        url: `/user/${id}/lock`,
-        manual: true
+        url: `/user/${id}/lock`
     });
 
 export const useUnlockUser = id =>
     useFetch({
         method: 'PUT',
-        url: `/user/${id}/unlock`,
-        manual: true
+        url: `/user/${id}/unlock`
     });
 
 export const useDeleteUser = id =>
     useFetch({
         method: 'DELETE',
-        url: `/user/${id}`,
-        manual: true
+        url: `/user/${id}`
     });
