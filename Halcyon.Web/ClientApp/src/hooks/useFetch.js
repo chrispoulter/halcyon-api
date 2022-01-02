@@ -55,7 +55,9 @@ export const useFetch = ({ url, method, params }) => {
 
         switch (status) {
             case 400:
-                toast.error(message);
+                toast.error(
+                    message || 'Sorry, the current request is invalid.'
+                );
                 break;
 
             case 401:
@@ -63,7 +65,9 @@ export const useFetch = ({ url, method, params }) => {
                 break;
 
             case 403:
-                toast.warn(message);
+                toast.warn(
+                    message || 'Sorry, you do not have access to this resource.'
+                );
                 break;
 
             case 404:
