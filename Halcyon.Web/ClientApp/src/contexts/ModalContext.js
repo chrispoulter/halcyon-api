@@ -25,8 +25,8 @@ export const ModalProvider = ({ children }) => {
     const hideModal = () => setState(initialState);
 
     const onOk = async () => {
-        await state.onOk();
         setState(initialState);
+        await state.onOk();
     };
 
     return (
