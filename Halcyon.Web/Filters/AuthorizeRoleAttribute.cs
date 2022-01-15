@@ -1,6 +1,5 @@
 ﻿using Halcyon.Web.Data;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 
 namespace Halcyon.Web.Filters
 {

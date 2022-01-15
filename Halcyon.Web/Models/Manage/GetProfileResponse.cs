@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Halcyon.Web.Models.Manage
+﻿namespace Halcyon.Web.Models.Manage
 {
     public class GetProfileResponse
     {
