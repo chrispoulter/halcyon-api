@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Halcyon.Web.Services.Email
+﻿namespace Halcyon.Web.Services.Email
 {
     public interface IEmailService
     {

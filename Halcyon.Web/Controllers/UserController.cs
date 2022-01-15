@@ -5,10 +5,7 @@ using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Halcyon.Web.Data
+﻿namespace Halcyon.Web.Data
 {
     public enum Roles
     {

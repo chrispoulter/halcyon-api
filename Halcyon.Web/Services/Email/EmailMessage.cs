@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Halcyon.Web.Services.Email
+﻿namespace Halcyon.Web.Services.Email
 {
 
     public class EmailMessage

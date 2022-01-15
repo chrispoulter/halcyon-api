@@ -6,7 +6,6 @@ using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {

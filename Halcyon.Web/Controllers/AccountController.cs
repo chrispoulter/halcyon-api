@@ -6,9 +6,7 @@ using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Halcyon.Web.Controllers
 {

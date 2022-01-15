@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Halcyon.Web.Models.User
+﻿namespace Halcyon.Web.Models.User
 {
     public class ListUsersResponse
     {
