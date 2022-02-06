@@ -84,9 +84,6 @@
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('plan'))]"
-            ],
             "kind": "app,linux",
             "properties": {
                 "name": "[parameters('web')]",
