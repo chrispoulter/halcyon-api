@@ -44,7 +44,7 @@ jobs:
 
       - name: Build
         run: |
-          docker build . -t ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }} --build-arg VERSION=${{ env.VERSION }} --build-arg STAGE=${{ env.STAGE }}
+          docker build . -f Halcyon.Web/Dockerfile -t ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }} --build-arg VERSION=${{ env.VERSION }} --build-arg STAGE=${{ env.STAGE }}
           docker push ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }}
 
       - name: Azure Login
