@@ -16,10 +16,10 @@
         "formik": "2.2.9",
         "jwt-decode": "3.1.2",
         "react": "17.0.2",
-        "react-bootstrap": "2.0.4",
+        "react-bootstrap": "2.2.0",
         "react-dom": "17.0.2",
         "react-helmet": "6.1.0",
-        "react-router-dom": "6.2.1",
+        "react-router-dom": "6.2.2",
         "yup": "0.32.11"
     },
     "devDependencies": {
@@ -28,7 +28,7 @@
         "prettier": "2.5.1",
         "react-scripts": "5.0.0",
         "rimraf": "3.0.2",
-        "workbox-cli": "6.4.2"
+        "workbox-cli": "6.5.1"
     },
     "browserslist": {
         "production": [
