@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("HalcyonDatabase").Trim('"');
+var connectionString = builder.Configuration["ConnectionStrings:HalcyonDatabase"].Trim('"');
 
 builder.Services.AddDbContext<HalcyonDbContext>(options =>
     options

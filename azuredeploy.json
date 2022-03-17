@@ -102,20 +102,6 @@
             }
         },
         {
-            "name": "[concat(parameters('web'), '/connectionstrings')]",
-            "type": "Microsoft.Web/sites/config",
-            "apiVersion": "2020-12-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('web'))]"
-            ],
-            "properties": {
-                "HalcyonDatabase": {
-                    "type": "PostgreSQL",
-                    "value": "[concat('Host=', parameters('dbHost'), ';Port=', parameters('dbPort'), ';Database=', parameters('dbDatabase'), ';Username=', parameters('dbUser') , ';Password=', parameters('dbPassword'))]"
-                }
-            }
-        },
-        {
             "name": "[concat(parameters('web'), '/appsettings')]",
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2020-12-01",
@@ -127,6 +113,7 @@
                 "DOCKER_REGISTRY_SERVER_URL": "[parameters('registryUrl')]",
                 "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('registryUsername')]",
                 "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('registryPassword')]",
+                "ConnectionStrings__HalcyonDatabase": "[concat('Host=', parameters('dbHost'), ';Port=', parameters('dbPort'), ';Database=', parameters('dbDatabase'), ';Username=', parameters('dbUser') , ';Password=', parameters('dbPassword'))]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",
                 "Email__SmtpUserName": "[parameters('emailSmtpUserName')]",
