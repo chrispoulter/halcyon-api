@@ -110,7 +110,7 @@
             ],
             "properties": {
                 "HalcyonDatabase": {
-                    "type": "SQLServer",
+                    "type": "PostgreSQL",
                     "value": "[concat('Host=', parameters('dbHost'), ';Port=', parameters('dbPort'), ';Database=', parameters('dbDatabase'), ';Username=', parameters('dbUser') , ';Password=', parameters('dbPassword'))]"
                 }
             }

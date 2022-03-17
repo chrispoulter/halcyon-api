@@ -9,4 +9,4 @@ appsettings.Development.json
 node_modules
 build
 .eslintcache
-.env.Development.local
+.env*
