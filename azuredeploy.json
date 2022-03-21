@@ -21,8 +21,7 @@
             "type": "string"
         },
         "dbPort": {
-            "type": "string",
-            "defaultValue": "5432"
+            "type": "string"
         },
         "dbUser": {
             "type": "string"
@@ -34,16 +33,13 @@
             "type": "string"
         },
         "dbSSL": {
-            "type": "string",
-            "defaultValue": "false"
+            "type": "string"
         },
         "emailSmtpServer": {
-            "type": "string",
-            "defaultValue": "smtp.mailgun.org"
+            "type": "string"
         },
         "emailSmtpPort": {
-            "type": "string",
-            "defaultValue": "587"
+            "type": "string"
         },
         "emailSmtpUserName": {
             "type": "secureString"
@@ -52,24 +48,19 @@
             "type": "secureString"
         },
         "emailNoReplyAddress": {
-            "type": "string",
-            "defaultValue": "noreply@chrispoulter.com"
+            "type": "string"
         },
         "jwtSecurityKey": {
-            "type": "secureString",
-            "defaultValue": "change-me-1234567890"
+            "type": "secureString"
         },
         "jwtIssuer": {
-            "type": "string",
-            "defaultValue": "HalcyonApi"
+            "type": "string"
         },
         "jwtAudience": {
-            "type": "string",
-            "defaultValue": "HalcyonClient"
+            "type": "string"
         },
         "jwtExpiresIn": {
-            "type": "string",
-            "defaultValue": "3600"
+            "type": "string"
         },
         "seedEmailAddress": {
             "type": "secureString"

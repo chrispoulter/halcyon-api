@@ -11,6 +11,9 @@ on:
 
 concurrency: ci-${{ github.ref }}
 
+env:
+  IMAGE_ID: ${{ secrets.REGISTRY_URL }}/${{ github.repository_owner }}/halcyon-donet
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -30,22 +33,13 @@ jobs:
         with:
           useConfigFile: true
 
-      - name: Set Environment Variables
-        run: |
-          echo "VERSION=$(echo ${{ env.GITVERSION_SEMVER }})" >> $GITHUB_ENV
-          echo "STAGE=$(echo ${{ env.GITVERSION_ESCAPEDBRANCHNAME }})" >> $GITHUB_ENV
-
       - name: Docker Login
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.REGISTRY_URL }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
 
       - name: Build
         run: |
-          docker build . -f Halcyon.Web/Dockerfile -t ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }} --build-arg VERSION=${{ env.VERSION }} --build-arg STAGE=${{ env.STAGE }}
-          docker push ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }}
+          docker build . -t ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }} --build-arg VERSION=${{ env.GITVERSION_SEMVER }} --build-arg STAGE=${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
+          docker push ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }}
 
       - name: Azure Login
         uses: azure/login@v1
@@ -58,14 +52,15 @@ jobs:
           resourceGroupName: halcyon
           template: ./azuredeploy.json
           parameters: plan="halcyon-plan"
-            web="halcyon-dotnet-${{ env.STAGE }}-web"
+            web="halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web"
             registryUrl="${{ secrets.REGISTRY_URL }}"
             registryUserName="${{ secrets.REGISTRY_USERNAME }}"
             registryPassword="${{ secrets.REGISTRY_PASSWORD }}"
             dbHost="${{ secrets.DB_HOST }}"
+            dbPort="${{ secrets.DB_PORT }}"
             dbUser="${{ secrets.DB_USER }}"
             dbPassword="${{ secrets.DB_PASSWORD }}"
-            dbDatabase="halcyon-dotnet-${{ env.STAGE }}"
+            dbDatabase="halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}"
             dbSSL="${{ secrets.DB_SSL }}"
             emailSmtpServer="${{ secrets.EMAIL_SMTP_SERVER }}"
             emailSmtpPort="${{ secrets.EMAIL_SMTP_PORT }}"
@@ -82,8 +77,8 @@ jobs:
       - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
-          app-name: halcyon-dotnet-${{ env.STAGE }}-web
-          images: ${{ secrets.REGISTRY_URL }}/halcyon-dotnet:${{ env.VERSION }}
+          app-name: halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web
+          images: ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }}
 
       - name: Azure Logout
         run: |
