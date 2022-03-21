@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          docker build . -t ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }} --build-arg VERSION=${{ env.GITVERSION_SEMVER }} --build-arg STAGE=${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
+          docker build . -f Halcyon.Web/Dockerfile -t ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }} --build-arg VERSION=${{ env.GITVERSION_SEMVER }} --build-arg STAGE=${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
           docker push ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }}
 
       - name: Azure Login
