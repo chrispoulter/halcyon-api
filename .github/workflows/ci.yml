@@ -12,7 +12,7 @@ on:
 concurrency: ci-${{ github.ref }}
 
 env:
-  IMAGE_ID: ${{ secrets.REGISTRY_URL }}/${{ github.repository_owner }}/halcyon-donet
+  IMAGE_ID: ${{ secrets.REGISTRY_URL }}/${{ github.repository_owner }}/halcyon-dotnet
 
 jobs:
   build-and-deploy:
