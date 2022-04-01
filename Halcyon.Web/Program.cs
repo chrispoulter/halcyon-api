@@ -74,7 +74,6 @@ builder.Services.AddControllersWithViews(options =>
     };
 });
 
-builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddSwaggerGen(c =>
