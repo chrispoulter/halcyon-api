@@ -3,10 +3,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 WORKDIR /app
 
 ARG VERSION=1.0.0
-ENV App__Stage=$VERSION
+ENV App__Version=$VERSION
 
 ARG STAGE=local
-ENV App__Version=$STAGE
+ENV App__Stage=$STAGE
 
 ENV ASPNETCORE_URLS=http://+:5000
 

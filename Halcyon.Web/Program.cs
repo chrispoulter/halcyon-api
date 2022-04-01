@@ -79,9 +79,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc(builder.Configuration["App:Version"], new OpenApiInfo
     {
-        Version = "v1",
+        Version = builder.Configuration["App:Version"],
         Title = "Halcyon API",
         Description = "A web application template."
     });
@@ -143,7 +143,7 @@ app.UseSwagger();
 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    c.SwaggerEndpoint($"/swagger/{builder.Configuration["App:Version"]}/swagger.json", builder.Configuration["App:Version"]);
     c.DocumentTitle = "Halcyon API";
     c.RoutePrefix = "api";
 });
