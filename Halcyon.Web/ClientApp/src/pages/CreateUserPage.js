@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
@@ -10,22 +11,28 @@ import {
     CheckboxGroupInput,
     Button
 } from '../components';
-import { useToast } from '../contexts';
-import { useCreateUser } from '../services';
+import { showToast } from '../features';
+import { useCreateUserMutation } from '../redux';
 import { ALL_ROLES } from '../utils/auth';
 
 export const CreateUserPage = () => {
     const navigate = useNavigate();
 
-    const toast = useToast();
+    const dispatch = useDispatch();
 
-    const { request: createUser } = useCreateUser();
+    const [createUser] = useCreateUserMutation();
 
     const onSubmit = async variables => {
-        const result = await createUser(variables);
+        const { data: result } = await createUser(variables);
 
-        if (result.ok) {
-            toast.success(result.message);
+        if (result) {
+            dispatch(
+                showToast({
+                    variant: 'success',
+                    message: result.message
+                })
+            );
+
             navigate('/user');
         }
     };

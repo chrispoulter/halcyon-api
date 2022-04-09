@@ -1,11 +1,12 @@
 import React from 'react';
 import { Navigate } from 'react-router';
-import { useAuth } from '../../contexts';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../features';
 import { AccessDeniedPage } from '../../pages';
 import { isAuthorized } from '../../utils/auth';
 
 export const RequireAuth = ({ children, requiredRoles }) => {
-    const { currentUser } = useAuth();
+    const currentUser = useSelector(selectCurrentUser);
 
     if (!isAuthorized(currentUser)) {
         return <Navigate to="/login" />;

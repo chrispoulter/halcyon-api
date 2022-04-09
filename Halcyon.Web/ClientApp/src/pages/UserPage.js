@@ -11,7 +11,7 @@ import Alert from 'react-bootstrap/Alert';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import { Button, Spinner, Pager } from '../components';
-import { useSearchUsers } from '../services';
+import { useSearchUsersQuery } from '../redux';
 import { ALL_ROLES } from '../utils/auth';
 
 const SORT_OPTIONS = {
@@ -31,9 +31,9 @@ export const UserPage = () => {
         sort: searchParams.get('sort') || 'NAME_ASC'
     };
 
-    const { loading, data } = useSearchUsers(filter);
+    const { isFetching, data: users } = useSearchUsersQuery(filter);
 
-    if (loading) {
+    if (isFetching) {
         return <Spinner />;
     }
 
@@ -107,11 +107,11 @@ export const UserPage = () => {
                 )}
             </Formik>
 
-            {!data?.items.length ? (
+            {!users?.data?.items.length ? (
                 <Alert variant="info">No users could be found.</Alert>
             ) : (
                 <>
-                    {data.items.map(user => (
+                    {users.data.items.map(user => (
                         <Card
                             key={user.id}
                             to={`/user/${user.id}`}
@@ -146,8 +146,8 @@ export const UserPage = () => {
                     ))}
 
                     <Pager
-                        hasNextPage={data.hasNextPage}
-                        hasPreviousPage={data.hasPreviousPage}
+                        hasNextPage={users.data.hasNextPage}
+                        hasPreviousPage={users.data.hasPreviousPage}
                         onNextPage={onNextPage}
                         onPreviousPage={onPreviousPage}
                     />
