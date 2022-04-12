@@ -106,7 +106,7 @@ namespace Halcyon.Web.Controllers
             });
         }
 
-        [HttpPut("changepassword")]
+        [HttpPut("change-password")]
         [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]

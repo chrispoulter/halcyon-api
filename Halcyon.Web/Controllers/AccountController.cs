@@ -69,7 +69,7 @@ namespace Halcyon.Web.Controllers
             });
         }
 
-        [HttpPut("forgotpassword")]
+        [HttpPut("forgot-password")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
@@ -102,7 +102,7 @@ namespace Halcyon.Web.Controllers
             });
         }
 
-        [HttpPut("resetpassword")]
+        [HttpPut("reset-password")]
         [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)

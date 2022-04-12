@@ -26,14 +26,14 @@ export const halcyonApi = createApi({
         }),
         forgotPassword: builder.mutation({
             query: body => ({
-                url: '/account/forgotpassword',
+                url: '/account/forgot-password',
                 method: 'PUT',
                 body
             })
         }),
         resetPassword: builder.mutation({
             query: body => ({
-                url: '/account/resetpassword',
+                url: '/account/reset-password',
                 method: 'PUT',
                 body
             })
@@ -59,7 +59,7 @@ export const halcyonApi = createApi({
         }),
         changePassword: builder.mutation({
             query: body => ({
-                url: '/manage/changepassword',
+                url: '/manage/change-password',
                 method: 'PUT',
                 body
             }),
