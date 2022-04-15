@@ -70,10 +70,7 @@ export const halcyonApi = createApi({
                 url: '/manage',
                 method: 'DELETE'
             }),
-            invalidatesTags: result => [
-                { type: 'Users', id: 'PARTIAL-LIST' },
-                { type: 'Users', id: result?.data?.id }
-            ]
+            invalidatesTags: [{ type: 'Users', id: 'PARTIAL-LIST' }]
         }),
         searchUsers: builder.query({
             query: params => ({
