@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
@@ -13,14 +12,14 @@ import {
     CheckboxGroupInput,
     Button
 } from '../components';
-import { showToast, showModal } from '../features';
+import { useModal, useToast } from '../contexts';
 import {
-    useGetUserQuery,
-    useUpdateUserMutation,
-    useLockUserMutation,
-    useUnlockUserMutation,
-    useDeleteUserMutation
-} from '../redux';
+    useGetUser,
+    useUpdateUser,
+    useLockUser,
+    useUnlockUser,
+    useDeleteUser
+} from '../services';
 import { ALL_ROLES } from '../utils/auth';
 
 export const UpdateUserPage = () => {
@@ -28,23 +27,25 @@ export const UpdateUserPage = () => {
 
     const { id } = useParams();
 
-    const dispatch = useDispatch();
+    const { showModal } = useModal();
 
-    const { isFetching, refetch, data: user } = useGetUserQuery(id);
+    const toast = useToast();
 
-    const [updateUser] = useUpdateUserMutation();
+    const { request, loading, data } = useGetUser(id);
 
-    const [lockUser, { isLoading: isLocking }] = useLockUserMutation();
+    const { request: updateUser } = useUpdateUser(id);
 
-    const [unlockUser, { isLoading: isUnlocking }] = useUnlockUserMutation();
+    const { request: lockUser, loading: isLocking } = useLockUser(id);
 
-    const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+    const { request: unlockUser, loading: isUnlocking } = useUnlockUser(id);
 
-    if (isFetching) {
+    const { request: deleteUser, loading: isDeleting } = useDeleteUser(id);
+
+    if (loading) {
         return <Spinner />;
     }
 
-    if (!user?.data) {
+    if (!data) {
         return (
             <Container>
                 <Alert variant="info">User could not be found.</Alert>
@@ -53,109 +54,76 @@ export const UpdateUserPage = () => {
     }
 
     const onSubmit = async variables => {
-        const { data: result } = await updateUser({ id, body: variables });
+        const result = await updateUser(variables);
 
-        if (result) {
-            dispatch(
-                showToast({
-                    variant: 'success',
-                    message: result.message
-                })
-            );
-
+        if (result.ok) {
+            toast.success(result.message);
             navigate('/user');
         }
     };
 
     const onLockUser = () =>
-        dispatch(
-            showModal({
-                title: 'Confirm',
-                body: (
-                    <>
-                        Are you sure you want to lock{' '}
-                        <strong>
-                            {user.data.firstName} {user.data.lastName}
-                        </strong>
-                        ?
-                    </>
-                ),
-                onOk: async () => {
-                    const { data: result } = await lockUser(id);
-
-                    if (result) {
-                        dispatch(
-                            showToast({
-                                variant: 'success',
-                                message: result.message
-                            })
-                        );
-
-                        refetch();
-                    }
+        showModal({
+            title: 'Confirm',
+            body: (
+                <>
+                    Are you sure you want to lock{' '}
+                    <strong>
+                        {data.firstName} {data.lastName}
+                    </strong>
+                    ?
+                </>
+            ),
+            onOk: async () => {
+                const result = await lockUser();
+                if (result.ok) {
+                    await request();
+                    toast.success(result.message);
                 }
-            })
-        );
+            }
+        });
 
     const onUnlockUser = () =>
-        dispatch(
-            showModal({
-                title: 'Confirm',
-                body: (
-                    <>
-                        Are you sure you want to unlock{' '}
-                        <strong>
-                            {user.data.firstName} {user.data.lastName}
-                        </strong>
-                        ?
-                    </>
-                ),
-                onOk: async () => {
-                    const { data: result } = await unlockUser(id);
-
-                    if (result) {
-                        dispatch(
-                            showToast({
-                                variant: 'success',
-                                message: result.message
-                            })
-                        );
-
-                        refetch();
-                    }
+        showModal({
+            title: 'Confirm',
+            body: (
+                <>
+                    Are you sure you want to unlock{' '}
+                    <strong>
+                        {data.firstName} {data.lastName}
+                    </strong>
+                    ?
+                </>
+            ),
+            onOk: async () => {
+                const result = await unlockUser();
+                if (result.ok) {
+                    await request();
+                    toast.success(result.message);
                 }
-            })
-        );
+            }
+        });
 
     const onDeleteUser = () =>
-        dispatch(
-            showModal({
-                title: 'Confirm',
-                body: (
-                    <>
-                        Are you sure you want to delete{' '}
-                        <strong>
-                            {user.data.firstName} {user.data.lastName}
-                        </strong>
-                        ?
-                    </>
-                ),
-                onOk: async () => {
-                    const { data: result } = await deleteUser(id);
-
-                    if (result) {
-                        dispatch(
-                            showToast({
-                                variant: 'success',
-                                message: result.message
-                            })
-                        );
-
-                        navigate('/user');
-                    }
+        showModal({
+            title: 'Confirm',
+            body: (
+                <>
+                    Are you sure you want to delete{' '}
+                    <strong>
+                        {data.firstName} {data.lastName}
+                    </strong>
+                    ?
+                </>
+            ),
+            onOk: async () => {
+                const result = await deleteUser();
+                if (result.ok) {
+                    toast.success(result.message);
+                    navigate('/user');
                 }
-            })
-        );
+            }
+        });
 
     return (
         <Container>
@@ -172,7 +140,7 @@ export const UpdateUserPage = () => {
 
             <Formik
                 enableReinitialize={true}
-                initialValues={user.data}
+                initialValues={data}
                 validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')
@@ -245,7 +213,7 @@ export const UpdateUserPage = () => {
                             >
                                 Cancel
                             </Button>
-                            {user.data.isLockedOut ? (
+                            {data.isLockedOut ? (
                                 <Button
                                     variant="warning"
                                     className="me-1"

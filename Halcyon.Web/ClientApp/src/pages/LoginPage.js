@@ -1,32 +1,25 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, CheckboxInput, Button } from '../components';
-import { setToken } from '../features';
-import { useCreateTokenMutation } from '../redux';
+import { useAuth } from '../contexts';
+import { useCreateToken } from '../services';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const { setToken } = useAuth();
 
-    const [createToken] = useCreateTokenMutation();
+    const { request: createToken } = useCreateToken();
 
     const onSubmit = async variables => {
-        const { data: result } = await createToken(variables);
+        const result = await createToken(variables);
 
-        if (result) {
-            dispatch(
-                setToken({
-                    accessToken: result.data.accessToken,
-                    persist: variables.rememberMe
-                })
-            );
-
+        if (result.ok) {
+            setToken(result.data.accessToken, variables.rememberMe);
             navigate('/');
         }
     };

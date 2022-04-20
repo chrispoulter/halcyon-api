@@ -1,32 +1,25 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, Button } from '../components';
-import { showToast } from '../features';
-import { useChangePasswordMutation } from '../redux';
+import { useToast } from '../contexts';
+import { useChangePassword } from '../services';
 
 export const ChangePasswordPage = () => {
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const toast = useToast();
 
-    const [changePassword] = useChangePasswordMutation();
+    const { request: changePassword } = useChangePassword();
 
     const onSubmit = async variables => {
-        const { data: result } = await changePassword(variables);
+        const result = await changePassword(variables);
 
-        if (result) {
-            dispatch(
-                showToast({
-                    variant: 'success',
-                    message: result.message
-                })
-            );
-
+        if (result.ok) {
+            toast.success(result.message);
             navigate('/my-account');
         }
     };
