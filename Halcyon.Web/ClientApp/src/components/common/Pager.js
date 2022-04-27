@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
 
 export const Pager = ({
@@ -15,14 +14,12 @@ export const Pager = ({
     return (
         <Pagination className="justify-content-center">
             {hasPreviousPage && (
-                <Pagination.Item as={Link} onClick={onPreviousPage}>
+                <Pagination.Item onClick={onPreviousPage}>
                     Previous
                 </Pagination.Item>
             )}
             {hasNextPage && (
-                <Pagination.Item as={Link} onClick={onNextPage}>
-                    Next
-                </Pagination.Item>
+                <Pagination.Item onClick={onNextPage}>Next</Pagination.Item>
             )}
         </Pagination>
     );
