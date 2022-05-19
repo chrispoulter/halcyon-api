@@ -15,7 +15,7 @@ export const useUpdateProfile = () =>
 export const useChangePassword = () =>
     useFetch({
         method: 'PUT',
-        url: '/manage/changepassword'
+        url: '/manage/change-password'
     });
 
 export const useDeleteAccount = () =>

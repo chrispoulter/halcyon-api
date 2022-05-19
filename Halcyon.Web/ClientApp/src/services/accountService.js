@@ -9,11 +9,11 @@ export const useRegister = () =>
 export const useForgotPassword = () =>
     useFetch({
         method: 'PUT',
-        url: '/account/forgotpassword'
+        url: '/account/forgot-password'
     });
 
 export const useResetPassword = () =>
     useFetch({
         method: 'PUT',
-        url: '/account/resetpassword'
+        url: '/account/reset-password'
     });
