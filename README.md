@@ -21,8 +21,8 @@ Create a `appsettings.Development.json` file in the web project directory.
         "HalcyonDatabase": "Host=localhost;Port=5432;Database=halcyon-dotnet;Username=postgres;Password=example"
     },
     "Email": {
-        "SmtpServer": "smtp.mailgun.org",
-        "SmtpPort": 587,
+        "SmtpServer": "localhost",
+        "SmtpPort": 1025,
         "SmtpUserName": "",
         "SmtpPassword": "",
         "NoReplyAddress": "noreply@chrispoulter.com"
