@@ -15,20 +15,20 @@
         "bootswatch": "5.1.3",
         "formik": "2.2.9",
         "jwt-decode": "3.1.2",
-        "react": "17.0.2",
-        "react-bootstrap": "2.2.0",
-        "react-dom": "17.0.2",
+        "react": "18.1.0",
+        "react-bootstrap": "2.4.0",
+        "react-dom": "18.1.0",
         "react-helmet": "6.1.0",
-        "react-router-dom": "6.2.2",
+        "react-router-dom": "6.3.0",
         "yup": "0.32.11"
     },
     "devDependencies": {
         "http-proxy-middleware": "0.19.1",
         "node-sass": "7.0.1",
-        "prettier": "2.5.1",
-        "react-scripts": "5.0.0",
+        "prettier": "2.6.2",
+        "react-scripts": "5.0.1",
         "rimraf": "3.0.2",
-        "workbox-cli": "6.5.1"
+        "workbox-cli": "6.5.3"
     },
     "browserslist": {
         "production": [
