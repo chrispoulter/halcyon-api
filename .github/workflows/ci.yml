@@ -35,8 +35,8 @@ jobs:
 
       - name: Build
         run: |
-          docker build . -f Halcyon.Web/Dockerfile -t ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }} --build-arg VERSION=${{ env.GITVERSION_SEMVER }} --build-arg STAGE=${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
-          docker push ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }}
+          docker build . -f Halcyon.Web/Dockerfile -t ${{ env.IMAGE_ID }}:${{ env.GITVERSION_ESCAPEDBRANCHNAME }} --build-arg VERSION=${{ env.GITVERSION_SEMVER }} --build-arg STAGE=${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
+          docker push ${{ env.IMAGE_ID }}:${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
 
       - name: Azure Login
         uses: azure/login@v1
@@ -75,7 +75,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web
-          images: ${{ env.IMAGE_ID }}:${{ env.GITVERSION_SEMVER }}
+          images: ${{ env.IMAGE_ID }}:${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
 
       - name: Azure Logout
         run: |
