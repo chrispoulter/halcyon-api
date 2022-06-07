@@ -6,7 +6,6 @@
         "prestart": "node aspnetcore-https && node aspnetcore-react",
         "start": "rimraf ./build && react-scripts start",
         "build": "react-scripts build",
-        "workbox": "workbox injectManifest workbox-config.js",
         "lint": "eslint src/**/*.{js,jsx}",
         "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""
     },
@@ -27,8 +26,7 @@
         "node-sass": "7.0.1",
         "prettier": "2.6.2",
         "react-scripts": "5.0.1",
-        "rimraf": "3.0.2",
-        "workbox-cli": "6.5.3"
+        "rimraf": "3.0.2"
     },
     "browserslist": {
         "production": [

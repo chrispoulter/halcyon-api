@@ -54,7 +54,6 @@
 		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
 		<Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />
 		<Exec WorkingDirectory="$(SpaRoot)" Command="yarn build" />
-		<Exec WorkingDirectory="$(SpaRoot)" Command="yarn workbox" />
 
 		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
