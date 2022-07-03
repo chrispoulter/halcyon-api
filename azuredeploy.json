@@ -17,6 +17,15 @@
         "registryPassword": {
             "type": "string"
         },
+        "logLevelDefault": {
+            "type": "string"
+        },
+        "logLevelAspNetCore": {
+            "type": "string"
+        },
+        "logLevelEntityFrameworkCore": {
+            "type": "string"
+        },
         "dbHost": {
             "type": "string"
         },
@@ -27,7 +36,7 @@
             "type": "string"
         },
         "dbPassword": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "dbDatabase": {
             "type": "string"
@@ -42,16 +51,16 @@
             "type": "string"
         },
         "emailSmtpUserName": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "emailSmtpPassword": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "emailNoReplyAddress": {
             "type": "string"
         },
         "jwtSecurityKey": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "jwtIssuer": {
             "type": "string"
@@ -63,10 +72,10 @@
             "type": "string"
         },
         "seedEmailAddress": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "seedPassword": {
-            "type": "secureString"
+            "type": "securestring"
         }
     },
     "resources": [
@@ -104,6 +113,9 @@
                 "DOCKER_REGISTRY_SERVER_URL": "[parameters('registryUrl')]",
                 "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('registryUsername')]",
                 "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('registryPassword')]",
+                "Logging__LogLevel__Default": "[parameters('logLevelDefault')]",
+                "Logging__LogLevel__Microsoft.AspNetCore": "[parameters('logLevelAspNetCore')]",
+                "Logging__LogLevel__Microsoft.EntityFrameworkCore": "[parameters('logLevelEntityFrameworkCore')]",
                 "ConnectionStrings__HalcyonDatabase": "[concat('Host=', parameters('dbHost'), ';Port=', parameters('dbPort'), ';Database=', parameters('dbDatabase'), ';Username=', parameters('dbUser') , ';Password=', parameters('dbPassword'))]",
                 "Email__SmtpServer": "[parameters('emailSmtpServer')]",
                 "Email__SmtpPort": "[parameters('emailSmtpPort')]",

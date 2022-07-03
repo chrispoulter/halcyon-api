@@ -23,9 +23,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration["ConnectionStrings:HalcyonDatabase"].Trim('"');
 
-builder.Services.AddDbContext<HalcyonDbContext>(options =>
+builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
     options
-        .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+        .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
         .UseNpgsql(
             connectionString,
             builder => builder.EnableRetryOnFailure())
