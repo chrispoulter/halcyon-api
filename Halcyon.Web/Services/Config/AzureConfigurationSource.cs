@@ -3,8 +3,6 @@
     public class AzureConfigurationSource : IConfigurationSource
     {
         public IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            return new AzureConfigurationProvider();
-        }
+            => new AzureConfigurationProvider();
     }
 }
