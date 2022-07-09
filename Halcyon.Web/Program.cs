@@ -175,6 +175,7 @@ Task WriteResponse(HttpContext context, HealthReport healthReport)
         jsonWriter.WriteString("Logging:LogLevel:Default", builder.Configuration["Logging:LogLevel:Default"]);
         jsonWriter.WriteString("Logging:LogLevel:Microsoft.AspNetCore", builder.Configuration["Logging:LogLevel:Microsoft.AspNetCore"]);
         jsonWriter.WriteString("Logging:LogLevel:Microsoft.EntityFrameworkCore", builder.Configuration["Logging:LogLevel:Microsoft.EntityFrameworkCore"]);
+        jsonWriter.WriteString("Logging:LogLevel:Something", builder.Configuration["Logging:LogLevel:Something"]);
 
         foreach (var entry in healthReport.Entries)
         {
