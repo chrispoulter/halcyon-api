@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
@@ -161,47 +161,42 @@ export const UpdateUserPage = () => {
             >
                 {({ isSubmitting }) => (
                     <Form noValidate>
-                        <Field
+                        <TextInput
                             name="emailAddress"
                             type="email"
                             label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
-                            component={TextInput}
                         />
 
-                        <Field
+                        <TextInput
                             name="firstName"
                             type="text"
                             label="First Name"
                             required
                             maxLength={50}
-                            component={TextInput}
                         />
 
-                        <Field
+                        <TextInput
                             name="lastName"
                             type="text"
                             label="Last Name"
                             required
                             maxLength={50}
-                            component={TextInput}
                         />
 
-                        <Field
+                        <DateInput
                             name="dateOfBirth"
                             type="date"
                             label="Date Of Birth"
                             required
-                            component={DateInput}
                         />
 
-                        <Field
+                        <CheckboxGroupInput
                             name="roles"
                             label="Roles"
                             options={ALL_ROLES}
-                            component={CheckboxGroupInput}
                         />
 
                         <div className="mb-3 text-end">

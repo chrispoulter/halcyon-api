@@ -1,21 +1,22 @@
 import React from 'react';
+import { useField } from 'formik';
 import Form from 'react-bootstrap/Form';
 
-export const CheckboxInput = ({ field, form, label }) => {
+export const CheckboxInput = ({ label, ...rest }) => {
+    const [field, meta] = useField(rest);
     const { name, value } = field;
-    const { errors, touched } = form;
-    const error = errors[name];
-    const touch = touched[name];
+    const { error, touched } = meta;
 
     return (
         <Form.Group controlId={name} className="mb-3">
             <Form.Check
                 {...field}
+                {...rest}
                 id={name}
                 type="checkbox"
                 label={label}
                 checked={value}
-                isInvalid={!!touch && !!error}
+                isInvalid={!!touched && !!error}
             />
             <Form.Control.Feedback type="invalid">
                 {error}

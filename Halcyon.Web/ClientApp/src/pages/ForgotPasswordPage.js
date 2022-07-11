@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, Button } from '../components';
@@ -47,14 +47,13 @@ export const ForgotPasswordPage = () => {
             >
                 {({ isSubmitting }) => (
                     <Form noValidate>
-                        <Field
+                        <TextInput
                             name="emailAddress"
                             type="email"
                             label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
-                            component={TextInput}
                         />
 
                         <div className="mb-3 text-end">

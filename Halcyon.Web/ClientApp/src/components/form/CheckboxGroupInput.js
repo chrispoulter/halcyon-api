@@ -1,11 +1,11 @@
 import React from 'react';
+import { useField } from 'formik';
 import Form from 'react-bootstrap/Form';
 
-export const CheckboxGroupInput = ({ field, form, label, options }) => {
+export const CheckboxGroupInput = ({ label, options, ...rest }) => {
+    const [field, meta] = useField(rest);
     const { name, onChange, onBlur, value } = field;
-    const { errors, touched } = form;
-    const error = errors[name];
-    const touch = touched[name];
+    const { error, touched } = meta;
     const values = value || [];
 
     const handleChange = (option, checked) => {
@@ -41,13 +41,14 @@ export const CheckboxGroupInput = ({ field, form, label, options }) => {
             {Object.entries(options).map(([value, label]) => (
                 <Form.Check
                     {...field}
+                    {...rest}
                     key={`${name}.${value}`}
                     id={`${name}.${value}`}
                     name={`${name}.${value}`}
                     type="checkbox"
                     label={label}
                     checked={!!values.find(item => item === value)}
-                    isInvalid={!!touch && !!error}
+                    isInvalid={!!touched && !!error}
                     onChange={event =>
                         handleChange(value, event.target.checked)
                     }

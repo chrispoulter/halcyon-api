@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, CheckboxInput, Button } from '../components';
@@ -50,30 +50,27 @@ export const LoginPage = () => {
             >
                 {({ isSubmitting }) => (
                     <Form noValidate>
-                        <Field
+                        <TextInput
                             name="emailAddress"
                             type="email"
                             label="Email Address"
                             required
                             maxLength={254}
                             autoComplete="username"
-                            component={TextInput}
                         />
 
-                        <Field
+                        <TextInput
                             name="password"
                             type="password"
                             label="Password"
                             required
                             maxLength={50}
                             autoComplete="current-password"
-                            component={TextInput}
                         />
 
-                        <Field
+                        <CheckboxInput
                             name="rememberMe"
                             label="Remember my password on this computer"
-                            component={CheckboxInput}
                         />
 
                         <div className="mb-3 text-end">

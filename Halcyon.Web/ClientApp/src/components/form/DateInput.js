@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useField } from 'formik';
 import Form from 'react-bootstrap/Form';
 
 const currentYear = new Date().getFullYear();
@@ -18,11 +19,10 @@ const monthNames = [
     'December'
 ];
 
-export const DateInput = ({ field, form, label }) => {
+export const DateInput = ({ label, ...rest }) => {
+    const [field, meta] = useField(rest);
     const { name, onChange, onBlur, value } = field;
-    const { errors, touched } = form;
-    const error = errors[name];
-    const touch = touched[name];
+    const { error, touched } = meta;
 
     const dateValue = {
         year: -1,
@@ -80,7 +80,7 @@ export const DateInput = ({ field, form, label }) => {
                 <Form.Select
                     id={`${name}.date`}
                     value={state.date}
-                    isInvalid={!!touch && !!error}
+                    isInvalid={!!touched && !!error}
                     onChange={event => handleDay(event.target.value)}
                     onBlur={handleBlur}
                     className="me-1"
@@ -93,7 +93,7 @@ export const DateInput = ({ field, form, label }) => {
                 <Form.Select
                     id={`${name}.month`}
                     value={state.month}
-                    isInvalid={!!touch && !!error}
+                    isInvalid={!!touched && !!error}
                     onChange={event => handleMonth(event.target.value)}
                     onBlur={handleBlur}
                     className="me-1"
@@ -108,7 +108,7 @@ export const DateInput = ({ field, form, label }) => {
                 <Form.Select
                     id={`${name}.year`}
                     value={state.year}
-                    isInvalid={!!touch && !!error}
+                    isInvalid={!!touched && !!error}
                     onChange={event => handleYear(event.target.value)}
                     onBlur={handleBlur}
                 >
@@ -118,7 +118,7 @@ export const DateInput = ({ field, form, label }) => {
                     ))}
                 </Form.Select>
             </div>
-            {touch && error && (
+            {touched && error && (
                 <div className="invalid-feedback d-block">{error}</div>
             )}
         </Form.Group>

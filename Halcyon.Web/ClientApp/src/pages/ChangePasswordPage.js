@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, Button } from '../components';
@@ -57,32 +57,29 @@ export const ChangePasswordPage = () => {
             >
                 {({ isSubmitting }) => (
                     <Form noValidate>
-                        <Field
+                        <TextInput
                             name="currentPassword"
                             type="password"
                             label="Current Password"
                             required
                             maxLength={50}
                             autoComplete="current-password"
-                            component={TextInput}
                         />
-                        <Field
+                        <TextInput
                             name="newPassword"
                             type="password"
                             label="New Password"
                             required
                             maxLength={50}
                             autoComplete="new-password"
-                            component={TextInput}
                         />
-                        <Field
+                        <TextInput
                             name="confirmNewPassword"
                             type="password"
                             label="Confirm New Password"
                             required
                             maxLength={50}
                             autoComplete="new-password"
-                            component={TextInput}
                         />
 
                         <div className="mb-3 text-end">
