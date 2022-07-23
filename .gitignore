@@ -9,4 +9,5 @@ appsettings.Development.json
 node_modules
 build
 .eslintcache
+yarn-error.log
 .env*
