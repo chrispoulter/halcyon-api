@@ -175,7 +175,6 @@ Task WriteResponse(HttpContext context, HealthReport healthReport)
         jsonWriter.WriteStartObject();
         jsonWriter.WriteString("status", healthReport.Status.ToString());
         jsonWriter.WriteString("version", builder.Configuration["App:Version"]);
-        jsonWriter.WriteString("stage", builder.Configuration["App:Stage"]);
 
         foreach (var entry in healthReport.Entries)
         {

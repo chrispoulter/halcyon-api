@@ -5,9 +5,6 @@ WORKDIR /app
 ARG VERSION=1.0.0
 ENV App__Version=$VERSION
 
-ARG STAGE=local
-ENV App__Stage=$STAGE
-
 ENV ASPNETCORE_URLS=http://+:5000
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
@@ -27,9 +24,6 @@ RUN apt-get install -y nodejs
 
 ARG VERSION=1.0.0
 ENV REACT_APP_VERSION=$VERSION
-
-ARG STAGE=local
-ENV REACT_APP_STAGE=$STAGE
 
 RUN npm install -g yarn
 RUN dotnet publish "Halcyon.Web.csproj" -c Release -o /app/publish
