@@ -7,6 +7,5 @@
     "**/build": true,
     "**/.eslintcache": true
   },
-  "terminal.integrated.cwd": "./Halcyon.Web",
   "eslint.workingDirectories": ["./Halcyon.Web/ClientApp"]
 }
