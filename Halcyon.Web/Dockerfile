@@ -15,9 +15,7 @@ ENV REACT_APP_VERSION=$VERSION
 COPY ["Halcyon.Web/Halcyon.Web.csproj", "Halcyon.Web/"]
 RUN dotnet restore "Halcyon.Web/Halcyon.Web.csproj"
 COPY . .
-WORKDIR "/src/Halcyon.Web"
-# RUN dotnet build "Halcyon.Web.csproj" -c Release -o /app/build -p:Version=$VERSION
-RUN dotnet publish "Halcyon.Web.csproj" -c Release -o /app/publish -p:Version=$VERSION
+RUN dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -o /app/publish -p:Version=$VERSION
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS final
 WORKDIR /app
