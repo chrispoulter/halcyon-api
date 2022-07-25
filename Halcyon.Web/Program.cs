@@ -16,9 +16,14 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+var version = Assembly.GetEntryAssembly()
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,9 +87,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc(builder.Configuration["App:Version"], new OpenApiInfo
+    c.SwaggerDoc(version, new OpenApiInfo
     {
-        Version = builder.Configuration["App:Version"],
+        Version = version,
         Title = "Halcyon API",
         Description = "A web application template."
     });
@@ -117,7 +122,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>("database");
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("Seed"));
@@ -146,7 +150,7 @@ app.UseSwagger();
 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint($"/swagger/{builder.Configuration["App:Version"]}/swagger.json", builder.Configuration["App:Version"]);
+    c.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
     c.DocumentTitle = "Halcyon API";
     c.RoutePrefix = "api";
 });
@@ -174,7 +178,7 @@ Task WriteResponse(HttpContext context, HealthReport healthReport)
     {
         jsonWriter.WriteStartObject();
         jsonWriter.WriteString("status", healthReport.Status.ToString());
-        jsonWriter.WriteString("version", builder.Configuration["App:Version"]);
+        jsonWriter.WriteString("version", version);
 
         foreach (var entry in healthReport.Entries)
         {
