@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import useOnClickOutside from 'use-onclickoutside';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { useOnClickOutside } from '../../hooks';
 import { HasPermission, UserProfile } from '../auth';
 import { USER_ADMINISTRATOR_ROLES } from '../../utils/auth';
 
