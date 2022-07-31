@@ -1,25 +1,32 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, Button } from '../components';
-import { useToast } from '../contexts';
-import { useForgotPassword } from '../services';
+import { showToast } from '../features';
+import { useForgotPasswordMutation } from '../redux';
 
 export const ForgotPasswordPage = () => {
     const navigate = useNavigate();
 
-    const toast = useToast();
+    const dispatch = useDispatch();
 
-    const { request: forgotPassword } = useForgotPassword();
+    const [forgotPassword] = useForgotPasswordMutation();
 
     const onSubmit = async variables => {
-        const result = await forgotPassword(variables);
+        const { data: result } = await forgotPassword(variables);
 
-        if (result.ok) {
-            toast.success(result.message);
+        if (result) {
+            dispatch(
+                showToast({
+                    variant: 'success',
+                    message: result.message
+                })
+            );
+
             navigate('/login');
         }
     };

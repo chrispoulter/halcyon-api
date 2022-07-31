@@ -1,28 +1,29 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import { Spinner, TextInput, DateInput, Button } from '../components';
-import { useToast } from '../contexts';
-import { useGetProfile, useUpdateProfile } from '../services';
+import { showToast } from '../features';
+import { useGetProfileQuery, useUpdateProfileMutation } from '../redux';
 
 export const UpdateProfilePage = () => {
     const navigate = useNavigate();
 
-    const toast = useToast();
+    const dispatch = useDispatch();
 
-    const { loading, data } = useGetProfile();
+    const { isFetching, data: profile } = useGetProfileQuery();
 
-    const { request: updateProfile } = useUpdateProfile();
+    const [updateProfile] = useUpdateProfileMutation();
 
-    if (loading) {
+    if (isFetching) {
         return <Spinner />;
     }
 
-    if (!data) {
+    if (!profile?.data) {
         return (
             <Container>
                 <Alert variant="info">Profile could not be found.</Alert>
@@ -31,10 +32,16 @@ export const UpdateProfilePage = () => {
     }
 
     const onSubmit = async variables => {
-        const result = await updateProfile(variables);
+        const { data: result } = await updateProfile(variables);
 
-        if (result.ok) {
-            toast.success(result.message);
+        if (result) {
+            dispatch(
+                showToast({
+                    variant: 'success',
+                    message: result.message
+                })
+            );
+
             navigate('/my-account');
         }
     };
@@ -50,7 +57,7 @@ export const UpdateProfilePage = () => {
 
             <Formik
                 enableReinitialize={true}
-                initialValues={data}
+                initialValues={profile.data}
                 validationSchema={Yup.object({
                     emailAddress: Yup.string()
                         .label('Email Address')

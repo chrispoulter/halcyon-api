@@ -1,30 +1,28 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useDispatch } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import { Button, Spinner } from '../components';
-import { useModal, useAuth, useToast } from '../contexts';
-import { useGetProfile, useDeleteAccount } from '../services';
+import { showToast, showModal, removeToken } from '../features';
+import { useGetProfileQuery, useDeleteAccountMutation } from '../redux';
 
 export const MyAccountPage = () => {
     const navigate = useNavigate();
 
-    const { removeToken } = useAuth();
+    const dispatch = useDispatch();
 
-    const { showModal } = useModal();
+    const { isFetching, data: profile } = useGetProfileQuery();
 
-    const toast = useToast();
+    const [deleteAccount, { isLoading: isDeleting }] =
+        useDeleteAccountMutation();
 
-    const { loading, data } = useGetProfile();
-
-    const { request: deleteAccount, loading: isDeleting } = useDeleteAccount();
-
-    if (loading) {
+    if (isFetching) {
         return <Spinner />;
     }
 
-    if (!data) {
+    if (!profile?.data) {
         return (
             <Container>
                 <Alert variant="info">Profile could not be found.</Alert>
@@ -33,19 +31,28 @@ export const MyAccountPage = () => {
     }
 
     const onDeleteAccount = () =>
-        showModal({
-            title: 'Confirm',
-            body: 'Are you sure you want to delete your account?',
-            onOk: async () => {
-                const result = await deleteAccount();
+        dispatch(
+            showModal({
+                title: 'Confirm',
+                body: 'Are you sure you want to delete your account?',
+                onOk: async () => {
+                    const { data: result } = await deleteAccount();
 
-                if (result.ok) {
-                    toast.success(result.message);
-                    removeToken();
-                    navigate('/');
+                    if (result) {
+                        dispatch(
+                            showToast({
+                                variant: 'success',
+                                message: result.message
+                            })
+                        );
+
+                        dispatch(removeToken());
+
+                        navigate('/');
+                    }
                 }
-            }
-        });
+            })
+        );
 
     return (
         <Container>
@@ -67,7 +74,7 @@ export const MyAccountPage = () => {
             <p>
                 <span className="text-muted">Email Address</span>
                 <br />
-                {data.emailAddress}
+                {profile.data.emailAddress}
             </p>
 
             <p>
@@ -81,13 +88,13 @@ export const MyAccountPage = () => {
             <p>
                 <span className="text-muted">Name</span>
                 <br />
-                {data.firstName} {data.lastName}
+                {profile.data.firstName} {profile.data.lastName}
             </p>
 
             <p>
                 <span className="text-muted">Date Of Birth</span>
                 <br />
-                {new Date(data.dateOfBirth).toLocaleDateString('en', {
+                {new Date(profile.data.dateOfBirth).toLocaleDateString('en', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric'

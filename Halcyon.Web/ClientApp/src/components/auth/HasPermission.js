@@ -1,9 +1,10 @@
 import React from 'react';
-import { useAuth } from '../../contexts';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../features';
 import { isAuthorized } from '../../utils/auth';
 
 export const HasPermission = ({ requiredRoles, fallback, children }) => {
-    const { currentUser } = useAuth();
+    const currentUser = useSelector(selectCurrentUser);
 
     const isAuthenticated = isAuthorized(currentUser, requiredRoles);
     if (!isAuthenticated) {
