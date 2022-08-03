@@ -13,13 +13,14 @@ import {
     CheckboxGroupInput,
     Button
 } from '../components';
-import { showToast, showModal } from '../features';
 import {
     useGetUserQuery,
     useUpdateUserMutation,
     useLockUserMutation,
     useUnlockUserMutation,
-    useDeleteUserMutation
+    useDeleteUserMutation,
+    showToast,
+    showModal
 } from '../redux';
 import { ALL_ROLES } from '../utils/auth';
 

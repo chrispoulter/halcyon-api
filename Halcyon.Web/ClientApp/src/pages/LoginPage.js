@@ -6,8 +6,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { TextInput, CheckboxInput, Button } from '../components';
-import { setToken } from '../features';
-import { useCreateTokenMutation } from '../redux';
+import { useCreateTokenMutation, setToken } from '../redux';
 
 export const LoginPage = () => {
     const navigate = useNavigate();

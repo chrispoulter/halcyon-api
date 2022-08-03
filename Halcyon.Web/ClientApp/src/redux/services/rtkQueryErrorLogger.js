@@ -1,5 +1,5 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { showToast, removeToken } from '../../features';
+import { showToast, removeToken } from '../features';
 
 export const rtkQueryErrorLogger =
     ({ dispatch }) =>

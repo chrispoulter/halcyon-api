@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { selectCurrentUser, removeToken } from '../../features';
+import { selectCurrentUser, removeToken } from '../../redux';
 import { HasPermission } from './HasPermission';
 
 export const UserProfile = () => {
