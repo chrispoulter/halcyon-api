@@ -180,7 +180,7 @@ Task WriteResponse(HttpContext context, HealthReport healthReport)
     return context.Response.WriteAsync(Encoding.UTF8.GetString(memoryStream.ToArray()));
 }
 
-app.MapHealthChecks("/health", new HealthCheckOptions
+app.MapHealthChecks("/api/health", new HealthCheckOptions
 {
     ResponseWriter = WriteResponse
 });
