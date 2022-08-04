@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BoostrapModal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { selectModal, hideModal } from '../../redux';
+import { selectModal, hideModal } from '../redux';
 
 export const Modal = () => {
     const dispatch = useDispatch();
