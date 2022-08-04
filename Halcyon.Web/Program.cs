@@ -5,7 +5,6 @@ using Halcyon.Web.Services.Config;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
-using Halcyon.Web.Services.Seed;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -126,23 +125,11 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("Seed"));
 
-builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
-    await seedService.SeedDataAsync();
-}
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseMigrationsEndPoint();
-}
 
 app.UseHttpsRedirection();
 

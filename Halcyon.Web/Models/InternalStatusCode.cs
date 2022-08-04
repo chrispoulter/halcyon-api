@@ -2,6 +2,7 @@
 {
     public enum InternalStatusCode
     {
+        ENVIRONMENT_SEEDED,
         DUPLICATE_USER,
         USER_REGISTERED,
         FORGOT_PASSWORD,

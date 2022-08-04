@@ -1,12 +1,18 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Models;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Net;
 
-namespace Halcyon.Web.Services.Seed
+namespace Halcyon.Web.Controllers
 {
-    public class SeedService : ISeedService
+    [ApiController]
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    public class SeedController : BaseController
     {
         private readonly HalcyonDbContext _context;
 
@@ -14,7 +20,7 @@ namespace Halcyon.Web.Services.Seed
 
         private readonly SeedSettings _seedSettings;
 
-        public SeedService(
+        public SeedController(
             HalcyonDbContext context,
             IHashService hashService,
             IOptions<SeedSettings> seedSettings)
@@ -24,7 +30,9 @@ namespace Halcyon.Web.Services.Seed
             _seedSettings = seedSettings.Value;
         }
 
-        public async Task SeedDataAsync()
+        [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Index()
         {
             await _context.Database.MigrateAsync();
 
@@ -37,6 +45,12 @@ namespace Halcyon.Web.Services.Seed
             }
 
             await AddSystemUserAsync(roleIds);
+
+            return Ok(new ApiResponse
+            {
+                Code = InternalStatusCode.ENVIRONMENT_SEEDED,
+                Message = "Environment seeded."
+            });
         }
 
         private async Task<int> AddRoleAsync(string name)
