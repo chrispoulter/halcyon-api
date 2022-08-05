@@ -7,21 +7,25 @@ import { selectModal, hideModal } from '../redux';
 export const Modal = () => {
     const dispatch = useDispatch();
 
-    const { title, body, onOk } = useSelector(selectModal);
+    const modal = useSelector(selectModal);
 
     const onCancel = () => dispatch(hideModal());
 
     const onConfirm = async () => {
         dispatch(hideModal());
-        await onOk();
+        await modal.onOk();
     };
 
+    if (!modal) {
+        return null;
+    }
+
     return (
-        <BoostrapModal show={!!title} onHide={onCancel}>
+        <BoostrapModal show onHide={onCancel}>
             <BoostrapModal.Header closeButton>
-                <BoostrapModal.Title>{title}</BoostrapModal.Title>
+                <BoostrapModal.Title>{modal.title}</BoostrapModal.Title>
             </BoostrapModal.Header>
-            <BoostrapModal.Body>{body}</BoostrapModal.Body>
+            <BoostrapModal.Body>{modal.body}</BoostrapModal.Body>
             <BoostrapModal.Footer>
                 <Button variant="secondary" onClick={onCancel}>
                     Cancel

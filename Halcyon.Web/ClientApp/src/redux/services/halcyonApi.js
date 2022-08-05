@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { selectAccessToken } from '../features';
 import { config } from '../../utils/config';
 
 export const halcyonApi = createApi({
@@ -6,7 +7,7 @@ export const halcyonApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: config.API_URL,
         prepareHeaders: (headers, { getState }) => {
-            const { accessToken } = getState().auth;
+            const accessToken = selectAccessToken(getState());
 
             if (accessToken) {
                 headers.set('authorization', `Bearer ${accessToken}`);
@@ -15,6 +16,7 @@ export const halcyonApi = createApi({
             return headers;
         }
     }),
+    tagTypes: ['User'],
     endpoints: builder => ({
         register: builder.mutation({
             query: body => ({
@@ -22,7 +24,7 @@ export const halcyonApi = createApi({
                 method: 'POST',
                 body
             }),
-            invalidatesTags: [{ type: 'Users', id: 'PARTIAL-LIST' }]
+            invalidatesTags: [{ type: 'User', id: 'PARTIAL-LIST' }]
         }),
         forgotPassword: builder.mutation({
             query: body => ({
@@ -47,7 +49,7 @@ export const halcyonApi = createApi({
         }),
         getProfile: builder.query({
             query: () => '/manage',
-            providesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            providesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         updateProfile: builder.mutation({
             query: body => ({
@@ -55,7 +57,7 @@ export const halcyonApi = createApi({
                 method: 'PUT',
                 body
             }),
-            invalidatesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            invalidatesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         changePassword: builder.mutation({
             query: body => ({
@@ -63,14 +65,14 @@ export const halcyonApi = createApi({
                 method: 'PUT',
                 body
             }),
-            invalidatesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            invalidatesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         deleteAccount: builder.mutation({
             query: () => ({
                 url: '/manage',
                 method: 'DELETE'
             }),
-            invalidatesTags: [{ type: 'Users', id: 'PARTIAL-LIST' }]
+            invalidatesTags: [{ type: 'User', id: 'PARTIAL-LIST' }]
         }),
         searchUsers: builder.query({
             query: params => ({
@@ -78,9 +80,9 @@ export const halcyonApi = createApi({
                 params
             }),
             providesTags: result => [
-                { type: 'Users', id: 'PARTIAL-LIST' },
+                { type: 'User', id: 'PARTIAL-LIST' },
                 ...(result?.data?.items?.map(user => ({
-                    type: 'Users',
+                    type: 'User',
                     id: user.id
                 })) || [])
             ]
@@ -91,11 +93,11 @@ export const halcyonApi = createApi({
                 method: 'POST',
                 body
             }),
-            invalidatesTags: [{ type: 'Users', id: 'PARTIAL-LIST' }]
+            invalidatesTags: [{ type: 'User', id: 'PARTIAL-LIST' }]
         }),
         getUser: builder.query({
             query: id => `/user/${id}`,
-            providesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            providesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         updateUser: builder.mutation({
             query: ({ id, body }) => ({
@@ -103,21 +105,21 @@ export const halcyonApi = createApi({
                 method: 'PUT',
                 body
             }),
-            invalidatesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            invalidatesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         lockUser: builder.mutation({
             query: id => ({
                 url: `/user/${id}/lock`,
                 method: 'PUT'
             }),
-            invalidatesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            invalidatesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         unlockUser: builder.mutation({
             query: id => ({
                 url: `/user/${id}/unlock`,
                 method: 'PUT'
             }),
-            invalidatesTags: result => [{ type: 'Users', id: result?.data?.id }]
+            invalidatesTags: result => [{ type: 'User', id: result?.data?.id }]
         }),
         deleteUser: builder.mutation({
             query: id => ({
@@ -125,8 +127,8 @@ export const halcyonApi = createApi({
                 method: 'DELETE'
             }),
             invalidatesTags: result => [
-                { type: 'Users', id: 'PARTIAL-LIST' },
-                { type: 'Users', id: result?.data?.id }
+                { type: 'User', id: 'PARTIAL-LIST' },
+                { type: 'User', id: result?.data?.id }
             ]
         })
     })

@@ -6,10 +6,7 @@ const initialState = () => {
     const accessToken = getItem('accessToken');
 
     if (!accessToken) {
-        return {
-            accessToken: undefined,
-            currentUser: undefined
-        };
+        return null;
     }
 
     const currentUser = jwtDecode(accessToken);
@@ -24,15 +21,19 @@ const slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setToken: (state, { payload: { accessToken, persist } }) => {
-            state.accessToken = accessToken;
-            state.currentUser = jwtDecode(accessToken);
+        setToken: (_, { payload: { accessToken, persist } }) => {
             setItem('accessToken', accessToken, persist);
+
+            const currentUser = jwtDecode(accessToken);
+
+            return {
+                accessToken,
+                currentUser
+            };
         },
-        removeToken: state => {
-            state.accessToken = undefined;
-            state.currentUser = undefined;
+        removeToken: () => {
             removeItem('accessToken');
+            return null;
         }
     }
 });
@@ -41,4 +42,6 @@ export const { setToken, removeToken } = slice.actions;
 
 export const authReducer = slice.reducer;
 
-export const selectCurrentUser = state => state.auth.currentUser;
+export const selectCurrentUser = state => state.auth?.currentUser;
+
+export const selectAccessToken = state => state.auth?.accessToken;
