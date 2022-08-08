@@ -20,6 +20,7 @@ export const rtkQueryErrorLogger =
 
                 case 401:
                     dispatch(removeToken());
+                    window.location.href = '/login';
                     break;
 
                 case 403:
