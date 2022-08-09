@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { RequireAuth } from './components';
+import { PrivateRoute } from './components';
 import {
     HomePage,
     NotFoundPage,
@@ -24,60 +24,18 @@ export const Router = () => (
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route element={<PrivateRoute />}>
+            <Route path="/my-account" element={<MyAccountPage />} />
+            <Route path="/update-profile" element={<UpdateProfilePage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
+        </Route>
         <Route
-            path="/my-account"
-            element={
-                <RequireAuth>
-                    <MyAccountPage />
-                </RequireAuth>
-            }
-        />
-
-        <Route
-            path="/update-profile"
-            element={
-                <RequireAuth>
-                    <UpdateProfilePage />
-                </RequireAuth>
-            }
-        />
-
-        <Route
-            path="/change-password"
-            element={
-                <RequireAuth>
-                    <ChangePasswordPage />
-                </RequireAuth>
-            }
-        />
-
-        <Route
-            path="/user"
-            element={
-                <RequireAuth requiredRoles={USER_ADMINISTRATOR_ROLES}>
-                    <UserPage />
-                </RequireAuth>
-            }
-        />
-
-        <Route
-            path="/user/create"
-            element={
-                <RequireAuth requiredRoles={USER_ADMINISTRATOR_ROLES}>
-                    <CreateUserPage />
-                </RequireAuth>
-            }
-        />
-
-        <Route
-            path="/user/:id"
-            element={
-                <RequireAuth requiredRoles={USER_ADMINISTRATOR_ROLES}>
-                    <UpdateUserPage />
-                </RequireAuth>
-            }
-        />
-
+            element={<PrivateRoute requiredRoles={USER_ADMINISTRATOR_ROLES} />}
+        >
+            <Route path="/user" element={<UserPage />} />
+            <Route path="/user/create" element={<CreateUserPage />} />
+            <Route path="/user/:id" element={<UpdateUserPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
     </Routes>
 );

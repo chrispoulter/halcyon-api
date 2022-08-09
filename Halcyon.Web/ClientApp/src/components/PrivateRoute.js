@@ -1,11 +1,11 @@
 import React from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, Outlet } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../redux';
 import { AccessDeniedPage } from '../pages';
 import { isAuthorized } from '../utils/auth';
 
-export const RequireAuth = ({ children, requiredRoles }) => {
+export const PrivateRoute = ({ requiredRoles }) => {
     const currentUser = useSelector(selectCurrentUser);
 
     if (!isAuthorized(currentUser)) {
@@ -16,5 +16,5 @@ export const RequireAuth = ({ children, requiredRoles }) => {
         return <AccessDeniedPage />;
     }
 
-    return children;
+    return <Outlet />;
 };
