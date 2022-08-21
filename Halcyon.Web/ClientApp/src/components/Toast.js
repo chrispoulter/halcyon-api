@@ -12,7 +12,11 @@ export const Toast = () => {
     const onClose = id => dispatch(hideToast(id));
 
     return (
-        <ToastContainer position="bottom-end" className="p-3">
+        <ToastContainer
+            position="bottom-end"
+            className="p-3"
+            containerPosition="fixed"
+        >
             {toasts.map(({ id, variant, message }) => (
                 <BootstrapToast
                     key={id}
