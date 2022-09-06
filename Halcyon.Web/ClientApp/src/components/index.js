@@ -13,5 +13,5 @@ export * from './Pager';
 export * from './Spinner';
 export * from './Toast';
 export * from './HasPermission';
-export * from './PrivateRoute';
+export * from './Auth';
 export * from './UserProfile';

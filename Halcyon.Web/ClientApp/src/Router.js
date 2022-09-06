@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { PrivateRoute } from './components';
+import { Auth } from './components';
 import {
     HomePage,
     NotFoundPage,
@@ -24,14 +24,12 @@ export const Router = () => (
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-        <Route element={<PrivateRoute />}>
+        <Route element={<Auth />}>
             <Route path="/my-account" element={<MyAccountPage />} />
             <Route path="/update-profile" element={<UpdateProfilePage />} />
             <Route path="/change-password" element={<ChangePasswordPage />} />
         </Route>
-        <Route
-            element={<PrivateRoute requiredRoles={USER_ADMINISTRATOR_ROLES} />}
-        >
+        <Route element={<Auth requiredRoles={USER_ADMINISTRATOR_ROLES} />}>
             <Route path="/user" element={<UserPage />} />
             <Route path="/user/create" element={<CreateUserPage />} />
             <Route path="/user/:id" element={<UpdateUserPage />} />
