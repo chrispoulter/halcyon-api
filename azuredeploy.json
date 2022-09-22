@@ -41,9 +41,6 @@
         "dbDatabase": {
             "type": "string"
         },
-        "dbSSL": {
-            "type": "string"
-        },
         "emailSmtpServer": {
             "type": "string"
         },
