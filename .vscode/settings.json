@@ -4,7 +4,7 @@
     "**/bin": true,
     "**/obj": true,
     "**/node_modules": true,
-    "**/build": true,
+    "**/dist": true,
     "**/.eslintcache": true
   },
   "eslint.workingDirectories": ["./Halcyon.Web/ClientApp"]

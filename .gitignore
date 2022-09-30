@@ -7,7 +7,7 @@ appsettings.Development.json
 *.user
 
 node_modules
-build
+dist
 .eslintcache
 yarn-error.log
 .env*

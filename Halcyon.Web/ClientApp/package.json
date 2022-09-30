@@ -3,43 +3,35 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "prestart": "node aspnetcore-https && node aspnetcore-react",
-        "start": "rimraf ./build && react-scripts start",
-        "build": "react-scripts build",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
         "lint": "eslint src/**/*.{js,jsx}",
-        "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""
+        "format": "prettier --write \"**/*.{js,jsx,json,scss,md,yml,html}\""
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.5",
-        "bootstrap": "5.2.0",
-        "bootswatch": "5.2.0",
+        "bootstrap": "5.2.1",
+        "bootswatch": "5.2.1",
         "formik": "2.2.9",
         "jwt-decode": "3.1.2",
         "react": "18.2.0",
         "react-bootstrap": "2.5.0",
         "react-dom": "18.2.0",
         "react-helmet": "6.1.0",
-        "react-redux": "8.0.2",
-        "react-router-dom": "6.3.0",
+        "react-redux": "8.0.4",
+        "react-router-dom": "6.4.1",
         "yup": "0.32.11"
     },
     "devDependencies": {
-        "http-proxy-middleware": "0.19.1",
-        "node-sass": "7.0.1",
+        "@types/react": "18.0.21",
+        "@types/react-dom": "18.0.6",
+        "@vitejs/plugin-react": "2.1.0",
+        "eslint": "8.24.0",
+        "eslint-config-next": "12.3.1",
+        "eslint-config-react-app": "7.0.1",
         "prettier": "2.7.1",
-        "react-scripts": "5.0.1",
-        "rimraf": "3.0.2"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+        "sass": "1.55.0",
+        "vite": "3.1.4"
     }
 }
