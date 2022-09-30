@@ -7,7 +7,7 @@
         "start": "rimraf ./build && react-scripts start",
         "build": "react-scripts build",
         "lint": "eslint src/**/*.{js,jsx}",
-        "format": "prettier --write \"**/*.{js,jsx,json,css,md,yml,html}\""
+        "format": "prettier --write \"**/*.{js,jsx,json,scss,md,yml,html}\""
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.5",
