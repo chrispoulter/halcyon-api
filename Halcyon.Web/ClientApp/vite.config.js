@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
+import { execSync } from 'child_process';
 
 const generateCerts = () => {
     const baseFolder =
@@ -29,9 +29,9 @@ const generateCerts = () => {
     const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
     if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-        spawn(
-            'dotnet',
+        execSync(
             [
+                'dotnet',
                 'dev-certs',
                 'https',
                 '--export-path',
@@ -39,9 +39,9 @@ const generateCerts = () => {
                 '--format',
                 'Pem',
                 '--no-password'
-            ],
+            ].join(' '),
             { stdio: 'inherit' }
-        ).on('exit', code => process.exit(code));
+        );
     }
 
     return {
@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
             strictPort: true,
             https: generateCerts(),
             proxy: {
-                '^/(api|swagger)/*': {
+                '^/(api|swagger|health)/*': {
                     secure: false,
                     changeOrigin: true,
                     target: env.ASPNETCORE_HTTPS_PORT
