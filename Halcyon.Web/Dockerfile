@@ -10,7 +10,7 @@ FROM base AS build
 WORKDIR /src
 
 ARG VERSION=1.0.0
-ENV REACT_APP_VERSION=$VERSION
+ENV VITE_VERSION=$VERSION
 
 COPY ["Halcyon.Web/Halcyon.Web.csproj", "Halcyon.Web/"]
 RUN dotnet restore "Halcyon.Web/Halcyon.Web.csproj"

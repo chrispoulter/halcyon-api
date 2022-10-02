@@ -20,7 +20,7 @@
 **/npm-debug.log
 **/yarn-error.log
 **/obj
-**/build
+**/dist
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/appsettings.Development.json
