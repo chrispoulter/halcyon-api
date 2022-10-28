@@ -8,6 +8,15 @@
     },
     "rules": {
         "no-template-curly-in-string": "off",
-        "react-hooks/exhaustive-deps": "off"
+        "react-hooks/exhaustive-deps": "off",
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "varsIgnorePattern": "^_",
+                "args": "after-used",
+                "argsIgnorePattern": "^_"
+            }
+        ]
     }
 }
