@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import { TextInput, Button } from '../components';
-import { useChangePasswordMutation, showToast } from '../redux';
+import { TextInput, Button } from '@/components';
+import { useChangePasswordMutation, showToast } from '@/redux';
 
 export const ChangePasswordPage = () => {
     const navigate = useNavigate();

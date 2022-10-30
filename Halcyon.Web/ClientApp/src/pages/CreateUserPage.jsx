@@ -5,14 +5,9 @@ import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Container from 'react-bootstrap/Container';
-import {
-    TextInput,
-    DateInput,
-    CheckboxGroupInput,
-    Button
-} from '../components';
-import { useCreateUserMutation, showToast } from '../redux';
-import { ALL_ROLES } from '../utils/auth';
+import { TextInput, DateInput, CheckboxGroupInput, Button } from '@/components';
+import { useCreateUserMutation, showToast } from '@/redux';
+import { ALL_ROLES } from '@/utils/auth';
 
 export const CreateUserPage = () => {
     const navigate = useNavigate();

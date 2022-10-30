@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { useOnClickOutside } from '../hooks';
+import { useOnClickOutside } from '@/hooks';
 import { HasPermission } from './HasPermission';
 import { UserProfile } from './UserProfile';
-import { USER_ADMINISTRATOR_ROLES } from '../utils/auth';
+import { USER_ADMINISTRATOR_ROLES } from '@/utils/auth';
 
 export const Header = () => {
     const ref = useRef();

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
-import { getItem, setItem, removeItem } from '../../utils/storage';
+import { getItem, setItem, removeItem } from '@/utils/storage';
 
 const initialState = () => {
     const accessToken = getItem('accessToken');

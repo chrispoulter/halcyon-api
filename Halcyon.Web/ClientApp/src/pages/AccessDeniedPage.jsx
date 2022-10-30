@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Button from 'react-bootstrap/Button';
-import { Hero } from '../components';
+import { Hero } from '@/components';
 
 export const AccessDeniedPage = () => (
     <>

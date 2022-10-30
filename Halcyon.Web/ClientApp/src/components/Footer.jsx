@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import { config } from '../utils/config';
+import { config } from '@/utils/config';
 
 const currentYear = new Date().getFullYear();
 

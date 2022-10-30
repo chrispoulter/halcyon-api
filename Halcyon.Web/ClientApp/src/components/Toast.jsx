@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BootstrapToast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
-import { hideToast, selectToasts } from '../redux';
+import { hideToast, selectToasts } from '@/redux';
 
 export const Toast = () => {
     const dispatch = useDispatch();

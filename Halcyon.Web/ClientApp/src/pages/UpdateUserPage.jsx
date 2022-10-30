@@ -12,7 +12,7 @@ import {
     DateInput,
     CheckboxGroupInput,
     Button
-} from '../components';
+} from '@/components';
 import {
     useGetUserQuery,
     useUpdateUserMutation,
@@ -21,8 +21,8 @@ import {
     useDeleteUserMutation,
     showToast,
     showModal
-} from '../redux';
-import { ALL_ROLES } from '../utils/auth';
+} from '@/redux';
+import { ALL_ROLES } from '@/utils/auth';
 
 export const UpdateUserPage = () => {
     const navigate = useNavigate();

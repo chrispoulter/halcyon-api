@@ -4,14 +4,14 @@ import { Helmet } from 'react-helmet';
 import { useDispatch } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import { Button, Spinner } from '../components';
+import { Button, Spinner } from '@/components';
 import {
     useGetProfileQuery,
     useDeleteAccountMutation,
     showToast,
     showModal,
     removeToken
-} from '../redux';
+} from '@/redux';
 
 export const MyAccountPage = () => {
     const navigate = useNavigate();
