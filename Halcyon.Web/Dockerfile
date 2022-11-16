@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS base
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS base
 RUN apt-get update
 RUN apt-get install -y curl
 RUN apt-get install -y libpng-dev libjpeg-dev curl libxi6 build-essential libgl1-mesa-glx
@@ -17,7 +17,7 @@ RUN dotnet restore "Halcyon.Web/Halcyon.Web.csproj"
 COPY . .
 RUN dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -o /app/publish -p:Version=$VERSION
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 COPY --from=build ["/app/publish", "./"]
 

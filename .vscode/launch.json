@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Halcyon.Web/bin/Debug/net6.0/Halcyon.Web.dll",
+      "program": "${workspaceFolder}/Halcyon.Web/bin/Debug/net7.0/Halcyon.Web.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Halcyon.Web",
       "stopAtEntry": false,
