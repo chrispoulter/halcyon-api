@@ -9,7 +9,6 @@ using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -81,8 +80,6 @@ builder.Services.AddControllersWithViews(options =>
     };
 });
 
-builder.Services.AddRazorPages();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc(version, new OpenApiInfo
@@ -140,16 +137,6 @@ app.UseSwaggerUI(c =>
     c.DocumentTitle = "Halcyon API";
     c.RoutePrefix = "api";
 });
-
-var provider = new FileExtensionContentTypeProvider();
-provider.Mappings[".webmanifest"] = "application/manifest+json";
-
-var staticFileOptions = new StaticFileOptions
-{
-    ContentTypeProvider = provider
-};
-
-app.UseStaticFiles(staticFileOptions);
 
 app.UseRouting();
 app.UseAuthentication();

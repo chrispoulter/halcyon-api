@@ -16,11 +16,7 @@
 **/docker-compose*
 **/compose*
 **/Dockerfile*
-**/node_modules
-**/npm-debug.log
-**/yarn-error.log
 **/obj
-**/dist
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/appsettings.Development.json

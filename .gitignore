@@ -5,9 +5,4 @@ PublishProfiles
 ServiceDependencies*
 appsettings.Development.json
 *.user
-
-node_modules
-dist
-.eslintcache
-yarn-error.log
 .env*
