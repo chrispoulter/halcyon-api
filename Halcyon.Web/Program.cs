@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -80,16 +81,16 @@ builder.Services.AddControllers(options =>
     };
 });
 
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc(version, new OpenApiInfo
+    options.SwaggerDoc(version, new OpenApiInfo
     {
         Version = version,
         Title = "Halcyon API",
         Description = "A web api template."
     });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
@@ -98,7 +99,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Please insert JWT token into field"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -117,6 +118,16 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>("database");
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy => policy
+            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithMethods("GET", "POST", "PUT", "OPTIONS")
+            .WithHeaders(HeaderNames.Authorization));
+});
+
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("Seed"));
@@ -130,11 +141,11 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseSwagger();
-app.UseSwaggerUI(c =>
+app.UseSwaggerUI(options =>
 {
-    c.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
-    c.DocumentTitle = "Halcyon API";
-    c.RoutePrefix = string.Empty;
+    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
+    options.DocumentTitle = "Halcyon API";
+    options.RoutePrefix = string.Empty;
 });
 
 app.UseAuthentication();
@@ -169,5 +180,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     ResponseWriter = WriteResponse
 });
 
+app.UseCors();
 app.MapControllers();
 app.Run();
