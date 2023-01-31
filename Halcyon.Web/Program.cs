@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllersWithViews(options =>
+builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(ApiExceptionFilterAttribute));
 })
@@ -86,7 +86,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Version = version,
         Title = "Halcyon API",
-        Description = "A web application template."
+        Description = "A web api template."
     });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -130,15 +130,13 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseSwagger();
-
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
     c.DocumentTitle = "Halcyon API";
-    c.RoutePrefix = "api";
+    c.RoutePrefix = string.Empty;
 });
 
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -166,17 +164,10 @@ Task WriteResponse(HttpContext context, HealthReport healthReport)
     return context.Response.WriteAsync(Encoding.UTF8.GetString(memoryStream.ToArray()));
 }
 
-app.MapHealthChecks("/api/health", new HealthCheckOptions
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = WriteResponse
 });
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapRazorPages();
-
-app.MapFallbackToFile("index.html"); ;
-
+app.MapControllers();
 app.Run();

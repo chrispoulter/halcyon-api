@@ -11,7 +11,7 @@ namespace Halcyon.Web.Controllers
 {
     [ApiController]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class TokenController : BaseController
     {
         private readonly HalcyonDbContext _context;

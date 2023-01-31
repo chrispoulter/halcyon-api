@@ -1,11 +1,9 @@
 # Halcyon
 
-A web application template.
+A web api template.
 
 **Technologies used:**
 
-- React
-  [https://reactjs.org](https://reactjs.org)
 - .NET Core
   [https://github.com/dotnet/core](https://github.com/dotnet/core)
 - PostgreSQL

@@ -13,7 +13,7 @@ namespace Halcyon.Web.Controllers
     [Produces("application/json")]
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [AuthorizeRole(Roles.SYSTEM_ADMINISTRATOR, Roles.USER_ADMINISTRATOR)]
     public class UserController : BaseController
     {
