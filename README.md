@@ -1,4 +1,4 @@
-# Halcyon
+# Halcyon API
 
 A web api template.
 
@@ -16,7 +16,7 @@ Create a `appsettings.Development.json` file in the web project directory.
 ```
 {
     "ConnectionStrings": {
-        "HalcyonDatabase": "Host=localhost;Port=5432;Database=halcyon-dotnet;Username=postgres;Password=example"
+        "HalcyonDatabase": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=example"
     },
     "Email": {
         "SmtpServer": "localhost",

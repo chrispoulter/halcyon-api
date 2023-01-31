@@ -9,7 +9,7 @@ on:
 concurrency: ci-${{ github.ref }}
 
 env:
-  IMAGE_ID: ${{ secrets.REGISTRY_URL }}/${{ github.repository_owner }}/halcyon-dotnet
+  IMAGE_ID: ${{ secrets.REGISTRY_URL }}/${{ github.repository_owner }}/halcyon-api
 
 jobs:
   build-and-deploy:
@@ -49,7 +49,7 @@ jobs:
           resourceGroupName: halcyon
           template: ./azuredeploy.json
           parameters: plan="halcyon-plan"
-            web="halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web"
+            web="halcyon-api-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web"
             registryUrl="${{ secrets.REGISTRY_URL }}"
             registryUserName="${{ secrets.REGISTRY_USERNAME }}"
             registryPassword="${{ secrets.REGISTRY_PASSWORD }}"
@@ -60,7 +60,7 @@ jobs:
             dbPort="${{ secrets.DB_PORT }}"
             dbUser="${{ secrets.DB_USER }}"
             dbPassword="${{ secrets.DB_PASSWORD }}"
-            dbDatabase="halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}"
+            dbDatabase="halcyon-api-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}"
             emailSmtpServer="${{ secrets.EMAIL_SMTP_SERVER }}"
             emailSmtpPort="${{ secrets.EMAIL_SMTP_PORT }}"
             emailSmtpUserName="${{ secrets.EMAIL_SMTP_USERNAME }}"
@@ -76,7 +76,7 @@ jobs:
       - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
-          app-name: halcyon-dotnet-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web
+          app-name: halcyon-api-${{ env.GITVERSION_ESCAPEDBRANCHNAME }}-web
           images: ${{ env.IMAGE_ID }}:${{ env.GITVERSION_ESCAPEDBRANCHNAME }}
 
       - name: Azure Logout
