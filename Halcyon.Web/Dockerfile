@@ -1,16 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS base
-RUN apt-get update
-RUN apt-get install -y curl
-RUN apt-get install -y libpng-dev libjpeg-dev curl libxi6 build-essential libgl1-mesa-glx
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install -g yarn
-
-FROM base AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
 ARG VERSION=1.0.0
-ENV VITE_VERSION=$VERSION
 
 COPY ["Halcyon.Web/Halcyon.Web.csproj", "Halcyon.Web/"]
 RUN dotnet restore "Halcyon.Web/Halcyon.Web.csproj"
