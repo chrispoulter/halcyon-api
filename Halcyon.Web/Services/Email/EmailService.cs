@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Halcyon.Web.Services.Email
 {
-    public class EmailService : IEmailService
+    public partial class EmailService : IEmailService
     {
         private readonly EmailSettings _emailSettings;
 
@@ -77,7 +77,7 @@ namespace Halcyon.Web.Services.Email
 
         public string GetTitle(string template)
         {
-            var match = Regex.Match(template, @"<title>\s*(.+?)\s*</title>");
+            var match = TitleRegex().Match(template);
             return match.Success ? match.Groups[1].Value : string.Empty;
         }
 
@@ -90,5 +90,8 @@ namespace Halcyon.Web.Services.Email
 
             return template;
         }
+
+        [GeneratedRegex("<title>\\s*(.+?)\\s*</title>")]
+        private static partial Regex TitleRegex();
     }
 }
