@@ -5,7 +5,7 @@ A web api template.
 **Technologies used:**
 
 - .NET Core
-  [https://github.com/dotnet/core](https://github.com/dotnet/core)
+  [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
 
