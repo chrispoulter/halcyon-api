@@ -9,5 +9,10 @@ namespace Halcyon.Web.Models.Account
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
+
+        [DisplayName("Site Url")]
+        [Required]
+        [Url]
+        public string SiteUrl { get; set; }
     }
 }
