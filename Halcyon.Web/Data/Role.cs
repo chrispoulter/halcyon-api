@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Halcyon.Web.Data
+﻿namespace Halcyon.Web.Data
 {
-    public class Role
+    public enum Role
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public string Name { get; set; }
+        SYSTEM_ADMINISTRATOR,
+        USER_ADMINISTRATOR
     }
 }

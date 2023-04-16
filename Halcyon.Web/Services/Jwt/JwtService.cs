@@ -31,9 +31,9 @@ namespace Halcyon.Web.Services.Jwt
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName)
             };
 
-            foreach (var role in user.UserRoles.Select(ur => ur.Role))
+            foreach (var role in user.Roles)
             {
-                claims.Add(new Claim("role", role.Name));
+                claims.Add(new Claim("role", role.ToString()));
             }
 
             var token = new JwtSecurityToken(

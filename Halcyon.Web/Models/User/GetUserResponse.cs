@@ -1,4 +1,6 @@
-﻿namespace Halcyon.Web.Models.User
+﻿using Halcyon.Web.Data;
+
+namespace Halcyon.Web.Models.User
 {
     public class GetUserResponse
     {
@@ -14,6 +16,6 @@
 
         public bool IsLockedOut { get; set; }
 
-        public List<string> Roles { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Data
 {
@@ -6,7 +7,7 @@ namespace Halcyon.Web.Data
     {
         public User()
         {
-            UserRoles = new HashSet<UserRole>();
+            Roles = new List<Role>();
         }
 
         [Key]
@@ -33,6 +34,6 @@ namespace Halcyon.Web.Data
         [Required]
         public bool IsLockedOut { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

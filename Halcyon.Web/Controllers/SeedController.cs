@@ -36,48 +36,8 @@ namespace Halcyon.Web.Controllers
         {
             await _context.Database.MigrateAsync();
 
-            var roleIds = new List<int>();
-
-            foreach (Roles role in Enum.GetValues(typeof(Roles)))
-            {
-                var roleId = await AddRoleAsync(role.ToString());
-                roleIds.Add(roleId);
-            }
-
-            await AddSystemUserAsync(roleIds);
-
-            return Ok(new ApiResponse
-            {
-                Code = InternalStatusCode.ENVIRONMENT_SEEDED,
-                Message = "Environment seeded."
-            });
-        }
-
-        private async Task<int> AddRoleAsync(string name)
-        {
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(u => u.Name == name);
-
-            if (role == null)
-            {
-                role = new Role
-                {
-                    Name = name
-                };
-
-                _context.Roles.Add(role);
-
-                await _context.SaveChangesAsync();
-            }
-
-            return role.Id;
-        }
-
-        private async Task<int> AddSystemUserAsync(List<int> roleIds)
-        {
             var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
+                     .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
 
             if (user == null)
             {
@@ -90,17 +50,15 @@ namespace Halcyon.Web.Controllers
             user.FirstName = "System";
             user.LastName = "Administrator";
             user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();
-
-            user.UserRoles.Clear();
-
-            foreach (var roleId in roleIds)
-            {
-                user.UserRoles.Add(new UserRole { RoleId = roleId });
-            }
+            user.Roles = new List<Role> { Role.SYSTEM_ADMINISTRATOR };
 
             await _context.SaveChangesAsync();
 
-            return user.Id;
+            return Ok(new ApiResponse
+            {
+                Code = InternalStatusCode.ENVIRONMENT_SEEDED,
+                Message = "Environment seeded."
+            });
         }
     }
 }

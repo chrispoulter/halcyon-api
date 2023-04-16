@@ -36,8 +36,6 @@ namespace Halcyon.Web.Controllers
         public async Task<IActionResult> CreateToken(CreateTokenModel model)
         {
             var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
 
             if (user == null)

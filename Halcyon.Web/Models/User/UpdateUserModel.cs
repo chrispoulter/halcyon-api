@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Halcyon.Web.Data;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.User
@@ -7,7 +8,7 @@ namespace Halcyon.Web.Models.User
     {
         public UpdateUserModel()
         {
-            Roles = new List<string>();
+            Roles = new List<Role>();
         }
 
         [DisplayName("Email Address")]
@@ -30,6 +31,6 @@ namespace Halcyon.Web.Models.User
         [Required]
         public DateTime? DateOfBirth { get; set; }
 
-        public List<string> Roles { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

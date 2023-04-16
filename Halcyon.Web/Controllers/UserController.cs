@@ -14,7 +14,7 @@ namespace Halcyon.Web.Controllers
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Forbidden)]
     [Route("[controller]")]
-    [AuthorizeRole(Roles.SYSTEM_ADMINISTRATOR, Roles.USER_ADMINISTRATOR)]
+    [AuthorizeRole(Role.SYSTEM_ADMINISTRATOR, Role.USER_ADMINISTRATOR)]
     public class UserController : BaseController
     {
         private readonly HalcyonDbContext _context;
@@ -68,9 +68,7 @@ namespace Halcyon.Web.Controllers
                     LastName = user.LastName,
                     DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
-                    Roles = user.UserRoles
-                        .Select(ur => ur.Role.Name)
-                        .ToList()
+                    Roles = user.Roles
                 })
                 .ToListAsync();
 
@@ -93,8 +91,6 @@ namespace Halcyon.Web.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -116,9 +112,7 @@ namespace Halcyon.Web.Controllers
                     LastName = user.LastName,
                     DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
-                    Roles = user.UserRoles
-                        .Select(ur => ur.Role.Name)
-                        .ToList()
+                    Roles = user.Roles
                 }
             });
         }
@@ -146,19 +140,9 @@ namespace Halcyon.Web.Controllers
                 Password = _hashService.GenerateHash(model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth.Value.ToUniversalTime()
+                DateOfBirth = model.DateOfBirth.Value.ToUniversalTime(),
+                Roles = model.Roles
             };
-
-            user.UserRoles.Clear();
-
-            var roles = await _context.Roles
-                .Where(r => model.Roles.Contains(r.Name))
-                .ToListAsync();
-
-            foreach (var role in roles)
-            {
-                user.UserRoles.Add(new UserRole { RoleId = role.Id });
-            }
 
             _context.Users.Add(user);
 
@@ -179,7 +163,6 @@ namespace Halcyon.Web.Controllers
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
         {
             var user = await _context.Users
-                .Include(u => u.UserRoles)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -210,17 +193,7 @@ namespace Halcyon.Web.Controllers
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.DateOfBirth = model.DateOfBirth.Value.ToUniversalTime();
-
-            user.UserRoles.Clear();
-
-            var roles = await _context.Roles
-                .Where(r => model.Roles.Contains(r.Name))
-                .ToListAsync();
-
-            foreach (var role in roles)
-            {
-                user.UserRoles.Add(new UserRole { RoleId = role.Id });
-            }
+            user.Roles = model.Roles;
 
             await _context.SaveChangesAsync();
 

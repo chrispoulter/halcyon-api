@@ -35,8 +35,7 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
         .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
         .UseNpgsql(
             connectionString,
-            builder => builder.EnableRetryOnFailure())
-        .UseSnakeCaseNamingConvention());
+            builder => builder.EnableRetryOnFailure()));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
