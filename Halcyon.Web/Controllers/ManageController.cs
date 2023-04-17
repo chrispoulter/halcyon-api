@@ -1,7 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Manage;
-using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,7 +57,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileModel model)
@@ -98,7 +97,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.PROFILE_UPDATED,
                 Message = "Your profile has been updated.",
@@ -107,7 +106,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("change-password")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
@@ -139,7 +138,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.PASSWORD_CHANGED,
                 Message = "Your password has been changed.",
@@ -148,7 +147,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteProfile()
         {
@@ -168,7 +167,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.ACCOUNT_DELETED,
                 Message = "Your account has been deleted.",

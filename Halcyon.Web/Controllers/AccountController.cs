@@ -1,7 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.Account;
-using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -61,7 +60,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_REGISTERED,
                 Message = "User successfully registered.",
@@ -103,7 +102,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("reset-password")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
@@ -127,7 +126,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.PASSWORD_RESET,
                 Message = "Your password has been reset.",

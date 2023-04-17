@@ -118,7 +118,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserModel model)
         {
@@ -148,7 +148,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_CREATED,
                 Message = "User successfully created.",
@@ -157,7 +157,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
@@ -197,7 +197,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_UPDATED,
                 Message = "User successfully updated.",
@@ -206,7 +206,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}/lock")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> LockUser(int id)
@@ -236,7 +236,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_LOCKED,
                 Message = "User successfully locked.",
@@ -245,7 +245,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("{id}/unlock")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UnlockUser(int id)
         {
@@ -265,7 +265,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_UNLOCKED,
                 Message = "User successfully unlocked.",
@@ -274,7 +274,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<UserUpdatedResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteUser(int id)
@@ -304,7 +304,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UserUpdatedResponse>
+            return Ok(new ApiResponse<UpdatedResponse>
             {
                 Code = InternalStatusCode.USER_DELETED,
                 Message = "User successfully deleted.",
