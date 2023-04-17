@@ -28,9 +28,9 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<ListUsersResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<SearchUsersResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ListUsers([FromQuery] ListUsersModel model)
+        public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersModel model)
         {
             var page = Math.Max(model.Page ?? 1, 1);
             var size = Math.Min(model.Size ?? 50, 50);
@@ -74,7 +74,7 @@ namespace Halcyon.Web.Controllers
 
             var pageCount = (count + size - 1) / size;
 
-            return Ok(new ApiResponse<ListUsersResponse>
+            return Ok(new ApiResponse<SearchUsersResponse>
             {
                 Data =
                 {

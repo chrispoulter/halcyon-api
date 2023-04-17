@@ -1,8 +1,8 @@
 ﻿namespace Halcyon.Web.Models.User
 {
-    public class ListUsersResponse
+    public class SearchUsersResponse
     {
-        public ListUsersResponse()
+        public SearchUsersResponse()
         {
             Items = new List<GetUserResponse>();
         }
