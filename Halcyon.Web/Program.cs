@@ -7,17 +7,14 @@ using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var version = Assembly.GetEntryAssembly()
@@ -150,34 +147,7 @@ app.UseSwaggerUI(options =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-Task WriteResponse(HttpContext context, HealthReport healthReport)
-{
-    context.Response.ContentType = "application/json; charset=utf-8";
-
-    using var memoryStream = new MemoryStream();
-    using (var jsonWriter = new Utf8JsonWriter(memoryStream))
-    {
-        jsonWriter.WriteStartObject();
-        jsonWriter.WriteString("status", healthReport.Status.ToString());
-        jsonWriter.WriteString("version", version);
-
-        foreach (var entry in healthReport.Entries)
-        {
-            jsonWriter.WriteStartObject(entry.Key);
-            jsonWriter.WriteString("status", entry.Value.Status.ToString());
-            jsonWriter.WriteEndObject();
-        }
-
-        jsonWriter.WriteEndObject();
-    }
-
-    return context.Response.WriteAsync(Encoding.UTF8.GetString(memoryStream.ToArray()));
-}
-
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = WriteResponse
-});
+app.MapHealthChecks("/health");
 
 app.UseCors();
 app.MapControllers();
