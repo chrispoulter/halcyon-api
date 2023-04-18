@@ -78,7 +78,10 @@ namespace Halcyon.Web.Services.Email
         public string GetTitle(string template)
         {
             var match = TitleRegex().Match(template);
-            return match.Success ? match.Groups[1].Value : string.Empty;
+
+            return match.Success
+                ? match.Groups[1].Value
+                : string.Empty;
         }
 
         public string ReplaceData(string template, Dictionary<string, string> data)

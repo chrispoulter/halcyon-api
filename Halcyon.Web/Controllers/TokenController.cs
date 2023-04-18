@@ -48,6 +48,7 @@ namespace Halcyon.Web.Controllers
             }
 
             var verified = _hashService.VerifyHash(request.Password, user.Password);
+
             if (!verified)
             {
                 return BadRequest(new ApiResponse
