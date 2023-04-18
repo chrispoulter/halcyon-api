@@ -1,27 +1,15 @@
-﻿using Halcyon.Web.Data;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Web.Models.User
+namespace Halcyon.Web.Models.Manage
 {
-    public class CreateUserModel
+    public class UpdateProfileRequest
     {
-        public CreateUserModel()
-        {
-            Roles = new List<Role>();
-        }
-
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]
         [MaxLength(255)]
         public string EmailAddress { get; set; }
-
-        [DisplayName("Password")]
-        [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
-        public string Password { get; set; }
 
         [DisplayName("First Name")]
         [Required]
@@ -36,7 +24,5 @@ namespace Halcyon.Web.Models.User
         [DisplayName("Date Of Birth")]
         [Required]
         public DateTime? DateOfBirth { get; set; }
-
-        public List<Role> Roles { get; set; }
     }
 }

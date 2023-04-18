@@ -30,21 +30,21 @@ namespace Halcyon.Web.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<SearchUsersResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersModel model)
+        public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersRequest request)
         {
-            var page = Math.Max(model.Page ?? 1, 1);
-            var size = Math.Min(model.Size ?? 50, 50);
+            var page = Math.Max(request.Page ?? 1, 1);
+            var size = Math.Min(request.Size ?? 50, 50);
 
             var query = _context.Users.AsQueryable();
 
-            if (!string.IsNullOrEmpty(model.Search))
+            if (!string.IsNullOrEmpty(request.Search))
             {
-                query = query.Where(u => (u.EmailAddress + " " + u.FirstName + " " + u.LastName).ToLower().Contains(model.Search.ToLower()));
+                query = query.Where(u => (u.EmailAddress + " " + u.FirstName + " " + u.LastName).ToLower().Contains(request.Search.ToLower()));
             }
 
             var count = await query.CountAsync();
 
-            query = model.Sort switch
+            query = request.Sort switch
             {
                 UserSort.EMAIL_ADDRESS_DESC => query.OrderByDescending(r => r.EmailAddress),
                 UserSort.EMAIL_ADDRESS_ASC => query.OrderBy(r => r.EmailAddress),
@@ -120,28 +120,28 @@ namespace Halcyon.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateUser(CreateUserModel model)
+        public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
             var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (existing != null)
             {
                 return BadRequest(new ApiResponse
                 {
                     Code = InternalStatusCode.DUPLICATE_USER,
-                    Message = $"User name \"{model.EmailAddress}\" is already taken."
+                    Message = $"User name \"{request.EmailAddress}\" is already taken."
                 });
             }
 
             var user = new User
             {
-                EmailAddress = model.EmailAddress,
-                Password = _hashService.GenerateHash(model.Password),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth.Value.ToUniversalTime(),
-                Roles = model.Roles
+                EmailAddress = request.EmailAddress,
+                Password = _hashService.GenerateHash(request.Password),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime(),
+                Roles = request.Roles
             };
 
             _context.Users.Add(user);
@@ -160,7 +160,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateUser(int id, UpdateUserModel model)
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -174,26 +174,26 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (!model.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
+            if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
                 var existing = await _context.Users
-                    .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                    .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
                 if (existing != null)
                 {
                     return BadRequest(new ApiResponse
                     {
                         Code = InternalStatusCode.DUPLICATE_USER,
-                        Message = $"User name \"{model.EmailAddress}\" is already taken."
+                        Message = $"User name \"{request.EmailAddress}\" is already taken."
                     });
                 }
             }
 
-            user.EmailAddress = model.EmailAddress;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.DateOfBirth = model.DateOfBirth.Value.ToUniversalTime();
-            user.Roles = model.Roles;
+            user.EmailAddress = request.EmailAddress;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
+            user.Roles = request.Roles;
 
             await _context.SaveChangesAsync();
 

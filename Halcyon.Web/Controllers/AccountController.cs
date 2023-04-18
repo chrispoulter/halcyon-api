@@ -33,27 +33,27 @@ namespace Halcyon.Web.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (existing != null)
             {
                 return BadRequest(new ApiResponse
                 {
                     Code = InternalStatusCode.DUPLICATE_USER,
-                    Message = $"User name \"{model.EmailAddress}\" is already taken."
+                    Message = $"User name \"{request.EmailAddress}\" is already taken."
                 });
             }
 
             var user = new User
             {
-                EmailAddress = model.EmailAddress,
-                Password = _hashService.GenerateHash(model.Password),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth.Value.ToUniversalTime()
+                EmailAddress = request.EmailAddress,
+                Password = _hashService.GenerateHash(request.Password),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime()
             };
 
             _context.Users.Add(user);
@@ -71,10 +71,10 @@ namespace Halcyon.Web.Controllers
         [HttpPut("forgot-password")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (user != null && !user.IsLockedOut)
             {
@@ -88,8 +88,8 @@ namespace Halcyon.Web.Controllers
                 };
 
                 message.To.Add(user.EmailAddress);
-                message.Data.Add("SiteUrl", model.SiteUrl);
-                message.Data.Add($"PasswordResetUrl", $"{model.SiteUrl}/reset-password/{user.PasswordResetToken}");
+                message.Data.Add("SiteUrl", request.SiteUrl);
+                message.Data.Add($"PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}");
 
                 await _emailService.SendEmailAsync(message);
             }
@@ -104,15 +104,15 @@ namespace Halcyon.Web.Controllers
         [HttpPut("reset-password")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (
                 user == null
                 || user.IsLockedOut
-                || !model.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
+                || !request.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
             {
                 return BadRequest(new ApiResponse
                 {
@@ -121,7 +121,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            user.Password = _hashService.GenerateHash(model.NewPassword);
+            user.Password = _hashService.GenerateHash(request.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();

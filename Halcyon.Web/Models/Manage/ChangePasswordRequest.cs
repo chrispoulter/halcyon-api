@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Manage
 {
-    public class ChangePasswordModel
+    public class ChangePasswordRequest
     {
         [DisplayName("Current Password")]
         [Required]

@@ -60,7 +60,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateProfile(UpdateProfileModel model)
+        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
@@ -75,25 +75,25 @@ namespace Halcyon.Web.Controllers
             }
 
 
-            if (!model.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
+            if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
                 var existing = await _context.Users
-                    .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                    .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
                 if (existing != null)
                 {
                     return BadRequest(new ApiResponse
                     {
                         Code = InternalStatusCode.DUPLICATE_USER,
-                        Message = $"User name \"{model.EmailAddress}\" is already taken."
+                        Message = $"User name \"{request.EmailAddress}\" is already taken."
                     });
                 }
             }
 
-            user.EmailAddress = model.EmailAddress;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.DateOfBirth = model.DateOfBirth.Value.ToUniversalTime();
+            user.EmailAddress = request.EmailAddress;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
 
             await _context.SaveChangesAsync();
 
@@ -109,7 +109,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
@@ -123,7 +123,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            var verified = _hashService.VerifyHash(model.CurrentPassword, user.Password);
+            var verified = _hashService.VerifyHash(request.CurrentPassword, user.Password);
             if (!verified)
             {
                 return BadRequest(new ApiResponse
@@ -133,7 +133,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            user.Password = _hashService.GenerateHash(model.NewPassword);
+            user.Password = _hashService.GenerateHash(request.NewPassword);
             user.PasswordResetToken = null;
 
             await _context.SaveChangesAsync();

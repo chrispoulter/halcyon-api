@@ -3,21 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Account
 {
-    public class ResetPasswordModel
+    public class ForgotPasswordRequest
     {
-        [DisplayName("Token")]
-        [Required]
-        public string Token { get; set; }
-
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("New Password")]
+        [DisplayName("Site Url")]
         [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
-        public string NewPassword { get; set; }
+        [Url]
+        public string SiteUrl { get; set; }
     }
 }

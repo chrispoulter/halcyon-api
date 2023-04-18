@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Web.Models.Account
+namespace Halcyon.Web.Models.Token
 {
-    public class ForgotPasswordModel
+    public class CreateTokenRequest
     {
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("Site Url")]
+        [DisplayName("Password")]
         [Required]
-        [Url]
-        public string SiteUrl { get; set; }
+        public string Password { get; set; }
     }
 }

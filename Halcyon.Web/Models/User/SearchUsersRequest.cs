@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Web.Models.User
 {
-    public class SearchUsersModel
+    public class SearchUsersRequest
     {
         public string Search { get; set; }
 

@@ -33,10 +33,10 @@ namespace Halcyon.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<JwtResult>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateToken(CreateTokenModel model)
+        public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == model.EmailAddress);
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (user == null)
             {
@@ -47,7 +47,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            var verified = _hashService.VerifyHash(model.Password, user.Password);
+            var verified = _hashService.VerifyHash(request.Password, user.Password);
             if (!verified)
             {
                 return BadRequest(new ApiResponse
