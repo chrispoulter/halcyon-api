@@ -1,13 +1,17 @@
-﻿namespace Halcyon.Web.Models.User
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Halcyon.Web.Models.User
 {
     public class SearchUsersRequest
     {
         public string Search { get; set; }
 
-        public UserSort? Sort { get; set; }
+        public UserSort Sort { get; set; } = UserSort.NAME_ASC;
 
-        public int? Page { get; set; }
+        [Range(1, int.MaxValue)]
+        public int Page { get; set; } = 1;
 
-        public int? Size { get; set; }
+        [Range(1, 50)]
+        public int Size { get; set; } = 50;
     }
 }

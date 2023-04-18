@@ -32,9 +32,6 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersRequest request)
         {
-            var page = Math.Max(request.Page ?? 1, 1);
-            var size = Math.Min(request.Size ?? 50, 50);
-
             var query = _context.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Search))
@@ -52,12 +49,12 @@ namespace Halcyon.Web.Controllers
                 _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName),
             };
 
-            if (page > 1)
+            if (request.Page > 1)
             {
-                query = query.Skip((page - 1) * size);
+                query = query.Skip((request.Page - 1) * request.Size);
             }
 
-            query = query.Take(size);
+            query = query.Take(request.Size);
 
             var users = await query
                 .Select(user => new GetUserResponse
@@ -72,15 +69,15 @@ namespace Halcyon.Web.Controllers
                 })
                 .ToListAsync();
 
-            var pageCount = (count + size - 1) / size;
+            var pageCount = (count + request.Size - 1) / request.Size;
 
             return Ok(new ApiResponse<SearchUsersResponse>
             {
                 Data =
                 {
                     Items = users,
-                    HasNextPage = page < pageCount,
-                    HasPreviousPage = page > 1
+                    HasNextPage = request.Page < pageCount,
+                    HasPreviousPage = request.Page > 1
                 }
             });
         }
