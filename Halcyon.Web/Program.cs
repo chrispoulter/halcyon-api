@@ -67,13 +67,14 @@ builder.Services.AddControllers(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
     {
-        return new BadRequestObjectResult(new ApiResponse
+        return new BadRequestObjectResult(new ApiResponse<List<string>>
         {
             Code = "INVALID_REQUEST",
-            Message = context.ModelState.Values
+            Message = "Request is invalid.",
+            Data = context.ModelState.Values
                 .SelectMany(error => error.Errors)
                 .Select(error => error.ErrorMessage)
-                .FirstOrDefault()
+                .ToList()
         });
     };
 });
