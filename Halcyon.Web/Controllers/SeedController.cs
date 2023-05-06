@@ -56,7 +56,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse
             {
-                Code = InternalStatusCode.ENVIRONMENT_SEEDED,
+                Code = "ENVIRONMENT_SEEDED",
                 Message = "Environment seeded."
             });
         }

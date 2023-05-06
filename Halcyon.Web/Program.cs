@@ -69,6 +69,7 @@ builder.Services.AddControllers(options =>
     {
         return new BadRequestObjectResult(new ApiResponse
         {
+            Code = "INVALID_REQUEST",
             Message = context.ModelState.Values
                 .SelectMany(error => error.Errors)
                 .Select(error => error.ErrorMessage)

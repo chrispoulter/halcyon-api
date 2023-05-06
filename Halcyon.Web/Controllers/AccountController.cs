@@ -42,7 +42,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.DUPLICATE_USER,
+                    Code = "DUPLICATE_USER",
                     Message = $"User name \"{request.EmailAddress}\" is already taken."
                 });
             }
@@ -62,7 +62,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_REGISTERED,
+                Code = "USER_REGISTERED",
                 Message = "User successfully registered.",
                 Data = { Id = user.Id }
             });
@@ -96,7 +96,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse
             {
-                Code = InternalStatusCode.FORGOT_PASSWORD,
+                Code = "FORGOT_PASSWORD",
                 Message = "Instructions as to how to reset your password have been sent to you via email."
             });
         }
@@ -116,7 +116,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.INVALID_TOKEN,
+                    Code = "INVALID_TOKEN",
                     Message = "Invalid token."
                 });
             }
@@ -128,7 +128,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.PASSWORD_RESET,
+                Code = "PASSWORD_RESET",
                 Message = "Your password has been reset.",
                 Data = { Id = user.Id }
             });

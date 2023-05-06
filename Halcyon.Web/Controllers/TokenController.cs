@@ -42,7 +42,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.CREDENTIALS_INVALID,
+                    Code = "CREDENTIALS_INVALID",
                     Message = "The credentials provided were invalid."
                 });
             }
@@ -53,7 +53,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.CREDENTIALS_INVALID,
+                    Code = "CREDENTIALS_INVALID",
                     Message = "The credentials provided were invalid."
                 });
             }
@@ -62,7 +62,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_LOCKED_OUT,
+                    Code = "USER_LOCKED_OUT",
                     Message = "This account has been locked out, please try again later."
                 });
             }

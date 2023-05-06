@@ -97,7 +97,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -129,7 +129,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.DUPLICATE_USER,
+                    Code = "DUPLICATE_USER",
                     Message = $"User name \"{request.EmailAddress}\" is already taken."
                 });
             }
@@ -150,7 +150,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_CREATED,
+                Code = "USER_CREATED",
                 Message = "User successfully created.",
                 Data = { Id = user.Id }
             });
@@ -169,7 +169,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -183,7 +183,7 @@ namespace Halcyon.Web.Controllers
                 {
                     return BadRequest(new ApiResponse
                     {
-                        Code = InternalStatusCode.DUPLICATE_USER,
+                        Code = "DUPLICATE_USER",
                         Message = $"User name \"{request.EmailAddress}\" is already taken."
                     });
                 }
@@ -199,7 +199,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_UPDATED,
+                Code = "USER_UPDATED",
                 Message = "User successfully updated.",
                 Data = { Id = user.Id }
             });
@@ -218,7 +218,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -227,7 +227,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.LOCK_CURRENT_USER,
+                    Code = "LOCK_CURRENT_USER",
                     Message = "Cannot lock currently logged in user."
                 });
             }
@@ -238,7 +238,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_LOCKED,
+                Code = "USER_LOCKED",
                 Message = "User successfully locked.",
                 Data = { Id = user.Id }
             });
@@ -256,7 +256,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -267,7 +267,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_UNLOCKED,
+                Code = "USER_UNLOCKED",
                 Message = "User successfully unlocked.",
                 Data = { Id = user.Id }
             });
@@ -286,7 +286,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -295,7 +295,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.DELETE_CURRENT_USER,
+                    Code = "DELETE_CURRENT_USER",
                     Message = "Cannot delete currently logged in user."
                 });
             }
@@ -306,7 +306,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.USER_DELETED,
+                Code = "USER_DELETED",
                 Message = "User successfully deleted.",
                 Data = { Id = user.Id }
             });

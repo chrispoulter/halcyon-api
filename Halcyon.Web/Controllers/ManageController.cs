@@ -38,7 +38,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -69,7 +69,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -84,7 +84,7 @@ namespace Halcyon.Web.Controllers
                 {
                     return BadRequest(new ApiResponse
                     {
-                        Code = InternalStatusCode.DUPLICATE_USER,
+                        Code = "DUPLICATE_USER",
                         Message = $"User name \"{request.EmailAddress}\" is already taken."
                     });
                 }
@@ -99,7 +99,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.PROFILE_UPDATED,
+                Code = "PROFILE_UPDATED",
                 Message = "Your profile has been updated.",
                 Data = { Id = user.Id }
             });
@@ -118,7 +118,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -129,7 +129,7 @@ namespace Halcyon.Web.Controllers
             {
                 return BadRequest(new ApiResponse
                 {
-                    Code = InternalStatusCode.INCORRECT_PASSWORD,
+                    Code = "INCORRECT_PASSWORD",
                     Message = "Incorrect password."
                 });
             }
@@ -141,7 +141,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.PASSWORD_CHANGED,
+                Code = "PASSWORD_CHANGED",
                 Message = "Your password has been changed.",
                 Data = { Id = user.Id }
             });
@@ -159,7 +159,7 @@ namespace Halcyon.Web.Controllers
             {
                 return NotFound(new ApiResponse
                 {
-                    Code = InternalStatusCode.USER_NOT_FOUND,
+                    Code = "USER_NOT_FOUND",
                     Message = "User not found."
                 });
             }
@@ -170,7 +170,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<UpdatedResponse>
             {
-                Code = InternalStatusCode.ACCOUNT_DELETED,
+                Code = "ACCOUNT_DELETED",
                 Message = "Your account has been deleted.",
                 Data = { Id = user.Id }
             });
