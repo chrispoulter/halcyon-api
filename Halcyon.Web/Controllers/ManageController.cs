@@ -45,7 +45,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<GetProfileResponse>
             {
-                Data =
+                Data = new GetProfileResponse
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
@@ -101,7 +101,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "PROFILE_UPDATED",
                 Message = "Your profile has been updated.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -143,7 +143,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "PASSWORD_CHANGED",
                 Message = "Your password has been changed.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -172,7 +172,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "ACCOUNT_DELETED",
                 Message = "Your account has been deleted.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
     }

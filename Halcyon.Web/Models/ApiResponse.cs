@@ -1,9 +1,8 @@
 ﻿namespace Halcyon.Web.Models
 {
     public class ApiResponse<T> : ApiResponse
-        where T : new()
     {
-        public T Data { get; set; } = new T();
+        public T Data { get; set; }
     }
 
     public class ApiResponse

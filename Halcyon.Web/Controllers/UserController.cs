@@ -76,7 +76,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<SearchUsersResponse>
             {
-                Data =
+                Data = new SearchUsersResponse
                 {
                     Items = users,
                     HasNextPage = request.Page < pageCount,
@@ -104,7 +104,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<GetUserResponse>
             {
-                Data =
+                Data = new GetUserResponse
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
@@ -152,7 +152,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_CREATED",
                 Message = "User successfully created.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -201,7 +201,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_UPDATED",
                 Message = "User successfully updated.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -240,7 +240,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_LOCKED",
                 Message = "User successfully locked.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -269,7 +269,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_UNLOCKED",
                 Message = "User successfully unlocked.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
 
@@ -308,7 +308,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_DELETED",
                 Message = "User successfully deleted.",
-                Data = { Id = user.Id }
+                Data = new UpdatedResponse { Id = user.Id }
             });
         }
     }
