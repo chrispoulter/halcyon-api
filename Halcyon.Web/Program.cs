@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             NameClaimType = JwtRegisteredClaimNames.Sub,
-            RoleClaimType = "role",
+            RoleClaimType = "roles",
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
             ValidateAudience = true,
