@@ -24,6 +24,7 @@ jobs:
           versionSpec: "5.x"
 
       - name: Determine Version
+        id: gitversion
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
@@ -37,13 +38,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ env.GITVERSION_SEMVER }} -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ${{ env.DOTNET_ROOT }}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: halcyon-web
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ env.DOTNET_ROOT }}/myapp
 
   deploy:
     runs-on: ubuntu-latest
