@@ -63,6 +63,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "halcyon-api-preview"
+          app-name: halcyon-api-preview
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PREVIEW }}
           package: .
