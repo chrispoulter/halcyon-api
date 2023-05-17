@@ -32,13 +32,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "7.x"
-          include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release -p:Version=${{ env.GITVERSION_SEMVER }}
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ env.GITVERSION_SEMVER }} -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
