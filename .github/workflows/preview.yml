@@ -42,7 +42,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: .net-app
+          name: halcyon-web
           path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
@@ -56,7 +56,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
+          name: halcyon-web
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -64,5 +64,5 @@ jobs:
         with:
           app-name: "halcyon-api-preview"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_839B7B6FA3C94160964E995DA39C47CE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PREVIEW }}
           package: .
