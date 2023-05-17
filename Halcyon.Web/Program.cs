@@ -1,7 +1,6 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
-using Halcyon.Web.Services.Config;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
@@ -22,8 +21,6 @@ var version = Assembly.GetEntryAssembly()
     .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.Sources.Add(new AzureConfigurationSource());
 
 var connectionString = builder.Configuration["ConnectionStrings:HalcyonDatabase"].Trim('"');
 
