@@ -38,13 +38,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ${{ env.DOTNET_ROOT }}/myapp
+        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ./myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: halcyon-web
-          path: ${{ env.DOTNET_ROOT }}/myapp
+          path: ./myapp
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,6 +64,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: "halcyon-api-preview"
-          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PREVIEW }}
           package: .
