@@ -36,10 +36,8 @@ namespace Halcyon.Web.Controllers
 
             if (!string.IsNullOrEmpty(request.Search))
             {
-                query = query
-                    .Where(u => (u.EmailAddress + " " + u.FirstName + " " + u.LastName)
-                    .ToLower()
-                    .Contains(request.Search.ToLower()));
+                var searchTerm = request.Search.ToLowerInvariant();
+                query = query.Where(u => u.Search.Contains(searchTerm));
             }
 
             var count = await query.CountAsync();

@@ -58,6 +58,9 @@ namespace Halcyon.Web.Migrations
                     b.Property<string[]>("Roles")
                         .HasColumnType("text[]");
 
+                    b.Property<string>("Search")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmailAddress")

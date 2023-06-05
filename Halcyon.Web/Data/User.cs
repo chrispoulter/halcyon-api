@@ -5,11 +5,6 @@ namespace Halcyon.Web.Data
 {
     public class User
     {
-        public User()
-        {
-            Roles = new List<Role>();
-        }
-
         [Key]
         public int Id { get; set; }
 
@@ -18,7 +13,6 @@ namespace Halcyon.Web.Data
 
         [Required]
         public string Password { get; set; }
-
 
         public string PasswordResetToken { get; set; }
 
@@ -34,6 +28,13 @@ namespace Halcyon.Web.Data
         [Required]
         public bool IsLockedOut { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<Role> Roles { get; set; } = new List<Role>();
+
+        public string Search
+        {
+            get => $"{EmailAddress} {FirstName} {LastName}";
+
+            private set { }
+        }
     }
 }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Halcyon.Web.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20230416102852_CreateInitialSchema")]
+    [Migration("20230604090827_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -60,6 +60,9 @@ namespace Halcyon.Web.Migrations
 
                     b.Property<string[]>("Roles")
                         .HasColumnType("text[]");
+
+                    b.Property<string>("Search")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
