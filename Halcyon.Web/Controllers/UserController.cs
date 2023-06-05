@@ -36,8 +36,7 @@ namespace Halcyon.Web.Controllers
 
             if (!string.IsNullOrEmpty(request.Search))
             {
-                var searchTerm = request.Search.ToLowerInvariant();
-                query = query.Where(u => u.Search.Contains(searchTerm));
+                query = query.Where(u => EF.Functions.ILike(u.Search, $"%{request.Search}%"));
             }
 
             var count = await query.CountAsync();
