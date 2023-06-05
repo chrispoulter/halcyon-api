@@ -18,6 +18,10 @@ namespace Halcyon.Web.Data
               .IsUnique();
 
             modelBuilder.Entity<User>()
+              .Property(u => u.IsLockedOut)
+              .HasDefaultValue(false);
+
+            modelBuilder.Entity<User>()
               .Property(u => u.Roles)
               .HasColumnType("text[]");
         }

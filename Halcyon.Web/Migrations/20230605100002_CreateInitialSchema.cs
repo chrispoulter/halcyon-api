@@ -19,12 +19,12 @@ namespace Halcyon.Web.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EmailAddress = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "text", nullable: true),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsLockedOut = table.Column<bool>(type: "boolean", nullable: false),
+                    IsLockedOut = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     Roles = table.Column<string[]>(type: "text[]", nullable: true),
                     Search = table.Column<string>(type: "text", nullable: true)
                 },

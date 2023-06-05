@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Halcyon.Web.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20230604090827_CreateInitialSchema")]
+    [Migration("20230605100002_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -45,14 +45,15 @@ namespace Halcyon.Web.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsLockedOut")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordResetToken")
