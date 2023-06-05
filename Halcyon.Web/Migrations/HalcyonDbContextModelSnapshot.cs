@@ -42,14 +42,15 @@ namespace Halcyon.Web.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsLockedOut")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordResetToken")
