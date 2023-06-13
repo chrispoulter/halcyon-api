@@ -38,7 +38,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-            if (user == null)
+            if (user == null || user.Password == null)
             {
                 return BadRequest(new ApiResponse
                 {
