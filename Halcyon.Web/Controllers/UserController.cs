@@ -195,7 +195,7 @@ namespace Halcyon.Web.Controllers
             user.Roles = request.Roles;
             user.Version = Guid.NewGuid();
 
-            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
+            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -237,7 +237,7 @@ namespace Halcyon.Web.Controllers
             user.IsLockedOut = true;
             user.Version = Guid.NewGuid();
 
-            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
+            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -269,7 +269,7 @@ namespace Halcyon.Web.Controllers
             user.IsLockedOut = false;
             user.Version = Guid.NewGuid();
 
-            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
+            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 

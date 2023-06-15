@@ -97,7 +97,7 @@ namespace Halcyon.Web.Controllers
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
             user.Version = Guid.NewGuid();
 
-            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
+            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
