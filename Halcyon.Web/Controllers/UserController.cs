@@ -57,13 +57,12 @@ namespace Halcyon.Web.Controllers
             query = query.Take(request.Size);
 
             var users = await query
-                .Select(user => new GetUserResponse
+                .Select(user => new SearchUserResponse
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
                     Roles = user.Roles
                 })
