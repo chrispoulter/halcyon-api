@@ -51,7 +51,8 @@ namespace Halcyon.Web.Controllers
                     EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.ToUniversalTime()
+                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
+                    Version = user.Version
                 }
             });
         }
@@ -94,6 +95,9 @@ namespace Halcyon.Web.Controllers
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
+            user.Version = Guid.NewGuid();
+
+            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 

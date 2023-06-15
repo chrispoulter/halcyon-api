@@ -11,5 +11,7 @@
         public string LastName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
+
+        public Guid Version { get; set; }
     }
 }

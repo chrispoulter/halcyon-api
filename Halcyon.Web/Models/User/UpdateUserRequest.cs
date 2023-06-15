@@ -32,5 +32,9 @@ namespace Halcyon.Web.Models.User
         public DateTime? DateOfBirth { get; set; }
 
         public List<Role> Roles { get; set; }
+
+        [DisplayName("Version")]
+        [Required]
+        public Guid Version { get; set; }
     }
 }

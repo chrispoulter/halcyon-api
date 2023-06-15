@@ -109,7 +109,8 @@ namespace Halcyon.Web.Controllers
                     LastName = user.LastName,
                     DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
-                    Roles = user.Roles
+                    Roles = user.Roles,
+                    Version = user.Version
                 }
             });
         }
@@ -138,7 +139,8 @@ namespace Halcyon.Web.Controllers
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 DateOfBirth = request.DateOfBirth.Value.ToUniversalTime(),
-                Roles = request.Roles
+                Roles = request.Roles,
+                Version = Guid.NewGuid()
             };
 
             _context.Users.Add(user);
@@ -191,6 +193,9 @@ namespace Halcyon.Web.Controllers
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
             user.Roles = request.Roles;
+            user.Version = Guid.NewGuid();
+
+            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 

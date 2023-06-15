@@ -24,8 +24,9 @@ namespace Halcyon.Web.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsLockedOut = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    IsLockedOut = table.Column<bool>(type: "boolean", nullable: false),
                     Roles = table.Column<string[]>(type: "text[]", nullable: true),
+                    Version = table.Column<Guid>(type: "uuid", nullable: false),
                     Search = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>

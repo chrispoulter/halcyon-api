@@ -42,9 +42,7 @@ namespace Halcyon.Web.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsLockedOut")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -61,6 +59,10 @@ namespace Halcyon.Web.Migrations
 
                     b.Property<string>("Search")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Halcyon.Web.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20230605100002_CreateInitialSchema")]
+    [Migration("20230615153649_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -45,9 +45,7 @@ namespace Halcyon.Web.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsLockedOut")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -64,6 +62,10 @@ namespace Halcyon.Web.Migrations
 
                     b.Property<string>("Search")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
