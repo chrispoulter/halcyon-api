@@ -211,7 +211,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> LockUser(int id)
+        public async Task<IActionResult> LockUser(int id, LockUserRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -235,6 +235,9 @@ namespace Halcyon.Web.Controllers
             }
 
             user.IsLockedOut = true;
+            user.Version = Guid.NewGuid();
+
+            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -249,7 +252,7 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UnlockUser(int id)
+        public async Task<IActionResult> UnlockUser(int id, UnlockUserRequest request)
         {
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == id);
@@ -264,6 +267,9 @@ namespace Halcyon.Web.Controllers
             }
 
             user.IsLockedOut = false;
+            user.Version = Guid.NewGuid();
+
+            _context.Entry(user).Property(d => d.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
