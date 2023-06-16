@@ -51,8 +51,8 @@ namespace Halcyon.Web.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("PasswordResetToken")
+                        .HasColumnType("uuid");
 
                     b.Property<string[]>("Roles")
                         .HasColumnType("text[]");

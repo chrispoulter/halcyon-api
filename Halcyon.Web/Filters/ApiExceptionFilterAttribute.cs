@@ -10,29 +10,33 @@ namespace Halcyon.Web.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            if (context.Exception.GetType() == typeof(DbUpdateConcurrencyException))
+            switch (context.Exception)
             {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                case DbUpdateConcurrencyException:
+                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
 
-                var result = new ApiResponse
-                {
-                    Code = "CONFLICT",
-                    Message = context.Exception.Message
-                };
+                    context.Result = new JsonResult(
+                          new ApiResponse
+                          {
+                              Code = "CONFLICT",
+                              Message = "Data has been modified or deleted since entities were loaded."
+                          }
+                      );
 
-                context.Result = new JsonResult(result);
-            }
-            else
-            {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
 
-                var result = new ApiResponse
-                {
-                    Code = "INTERNAL_SERVER_ERROR",
-                    Message = context.Exception.Message
-                };
+                default:
+                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                context.Result = new JsonResult(result);
+                    context.Result = new JsonResult(
+                        new ApiResponse
+                        {
+                            Code = "INTERNAL_SERVER_ERROR",
+                            Message = context.Exception.Message
+                        }
+                    );
+
+                    break;
             }
         }
     }

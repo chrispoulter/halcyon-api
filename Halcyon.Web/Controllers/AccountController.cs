@@ -79,7 +79,7 @@ namespace Halcyon.Web.Controllers
 
             if (user != null && !user.IsLockedOut)
             {
-                user.PasswordResetToken = Guid.NewGuid().ToString();
+                user.PasswordResetToken = Guid.NewGuid();
 
                 await _context.SaveChangesAsync();
 
@@ -113,7 +113,7 @@ namespace Halcyon.Web.Controllers
             if (
                 user == null
                 || user.IsLockedOut
-                || !request.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
+                || request.Token != user.PasswordResetToken)
             {
                 return BadRequest(new ApiResponse
                 {

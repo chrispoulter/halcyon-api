@@ -20,7 +20,7 @@ namespace Halcyon.Web.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EmailAddress = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: true),
-                    PasswordResetToken = table.Column<string>(type: "text", nullable: true),
+                    PasswordResetToken = table.Column<Guid>(type: "uuid", nullable: true),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

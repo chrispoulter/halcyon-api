@@ -210,7 +210,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> LockUser(int id, LockUserRequest request)
+        public async Task<IActionResult> LockUser(int id, UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -251,7 +251,7 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UnlockUser(int id, UnlockUserRequest request)
+        public async Task<IActionResult> UnlockUser(int id, UpdateRequest request)
         {
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == id);

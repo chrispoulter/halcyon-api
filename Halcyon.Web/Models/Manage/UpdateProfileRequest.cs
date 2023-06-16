@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Manage
 {
-    public class UpdateProfileRequest
+    public class UpdateProfileRequest : UpdateRequest
     {
         [DisplayName("Email Address")]
         [Required]
@@ -24,9 +24,5 @@ namespace Halcyon.Web.Models.Manage
         [DisplayName("Date Of Birth")]
         [Required]
         public DateTime? DateOfBirth { get; set; }
-
-        [DisplayName("Version")]
-        [Required]
-        public Guid Version { get; set; }
     }
 }

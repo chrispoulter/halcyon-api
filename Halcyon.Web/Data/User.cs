@@ -18,7 +18,7 @@ namespace Halcyon.Web.Data
 
         public string Password { get; set; }
 
-        public string PasswordResetToken { get; set; }
+        public Guid? PasswordResetToken { get; set; }
 
         [Required]
         public string FirstName { get; set; }
