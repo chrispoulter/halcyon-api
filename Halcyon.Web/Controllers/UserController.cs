@@ -172,6 +172,15 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
+
             if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
                 var existing = await _context.Users
@@ -193,8 +202,6 @@ namespace Halcyon.Web.Controllers
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
             user.Roles = request.Roles;
             user.Version = Guid.NewGuid();
-
-            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -224,6 +231,15 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
+
             if (user.Id == CurrentUserId)
             {
                 return BadRequest(new ApiResponse
@@ -235,8 +251,6 @@ namespace Halcyon.Web.Controllers
 
             user.IsLockedOut = true;
             user.Version = Guid.NewGuid();
-
-            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -265,10 +279,17 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
+
             user.IsLockedOut = false;
             user.Version = Guid.NewGuid();
-
-            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -284,7 +305,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id, UpdateRequest request)
         {
             var user = await _context.Users
                .FirstOrDefaultAsync(u => u.Id == id);
@@ -295,6 +316,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 

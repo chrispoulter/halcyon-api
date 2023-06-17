@@ -1,7 +1,6 @@
 ﻿using Halcyon.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Halcyon.Web.Filters
@@ -10,34 +9,15 @@ namespace Halcyon.Web.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            switch (context.Exception)
+            context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var result = new ApiResponse
             {
-                case DbUpdateConcurrencyException:
-                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                Code = "INTERNAL_SERVER_ERROR",
+                Message = context.Exception.Message
+            };
 
-                    context.Result = new JsonResult(
-                          new ApiResponse
-                          {
-                              Code = "CONFLICT",
-                              Message = "Data has been modified or deleted since entities were loaded."
-                          }
-                      );
-
-                    break;
-
-                default:
-                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                    context.Result = new JsonResult(
-                        new ApiResponse
-                        {
-                            Code = "INTERNAL_SERVER_ERROR",
-                            Message = context.Exception.Message
-                        }
-                    );
-
-                    break;
-            }
+            context.Result = new JsonResult(result);
         }
     }
 }

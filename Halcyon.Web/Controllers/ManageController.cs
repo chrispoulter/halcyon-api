@@ -75,6 +75,14 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
 
             if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -96,8 +104,6 @@ namespace Halcyon.Web.Controllers
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
             user.Version = Guid.NewGuid();
-
-            _context.Entry(user).Property(u => u.Version).OriginalValue = request.Version;
 
             await _context.SaveChangesAsync();
 
@@ -124,6 +130,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 
@@ -154,7 +169,7 @@ namespace Halcyon.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteProfile()
+        public async Task<IActionResult> DeleteProfile(UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
@@ -165,6 +180,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (user.Version != request.Version)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 
