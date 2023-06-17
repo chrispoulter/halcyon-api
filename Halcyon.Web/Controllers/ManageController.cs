@@ -142,6 +142,15 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (user.Password == null)
+            {
+                return BadRequest(new ApiResponse
+                {
+                    Code = "INCORRECT_PASSWORD",
+                    Message = "Incorrect password."
+                });
+            }
+
             var verified = _hashService.VerifyHash(request.CurrentPassword, user.Password);
 
             if (!verified)
