@@ -4,6 +4,7 @@ using Halcyon.Web.Models.Manage;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -75,7 +76,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -133,7 +134,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -178,7 +179,7 @@ namespace Halcyon.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteProfile(UpdateRequest request)
+        public async Task<IActionResult> DeleteProfile([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
@@ -192,7 +193,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request?.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {

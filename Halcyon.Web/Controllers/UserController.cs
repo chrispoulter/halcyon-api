@@ -4,6 +4,7 @@ using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -172,7 +173,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -217,7 +218,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> LockUser(int id, UpdateRequest request)
+        public async Task<IActionResult> LockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -231,7 +232,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request?.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -265,7 +266,7 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UnlockUser(int id, UpdateRequest request)
+        public async Task<IActionResult> UnlockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == id);
@@ -279,7 +280,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request?.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -305,7 +306,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteUser(int id, UpdateRequest request)
+        public async Task<IActionResult> DeleteUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                .FirstOrDefaultAsync(u => u.Id == id);
@@ -319,7 +320,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Version != request.Version)
+            if (request?.Version != null && user.Version != request.Version)
             {
                 return NotFound(new ApiResponse
                 {
