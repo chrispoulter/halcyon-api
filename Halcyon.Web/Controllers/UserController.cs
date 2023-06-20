@@ -173,7 +173,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request.Version != null && user.Version != request.Version)
+            if (request.Version != null && request.Version != user.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -232,7 +232,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && user.Version != request.Version)
+            if (request?.Version != null && request.Version != user.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -280,7 +280,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && user.Version != request.Version)
+            if (request?.Version != null && request.Version != user.Version)
             {
                 return NotFound(new ApiResponse
                 {
@@ -320,7 +320,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && user.Version != request.Version)
+            if (request?.Version != null && request.Version != user.Version)
             {
                 return NotFound(new ApiResponse
                 {
