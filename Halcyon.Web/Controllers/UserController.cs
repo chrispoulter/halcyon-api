@@ -159,6 +159,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await _context.Users
@@ -175,7 +176,7 @@ namespace Halcyon.Web.Controllers
 
             if (request.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
@@ -218,6 +219,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> LockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -234,7 +236,7 @@ namespace Halcyon.Web.Controllers
 
             if (request?.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
@@ -266,6 +268,7 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UnlockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -282,7 +285,7 @@ namespace Halcyon.Web.Controllers
 
             if (request?.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
@@ -306,6 +309,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> DeleteUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -322,7 +326,7 @@ namespace Halcyon.Web.Controllers
 
             if (request?.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."

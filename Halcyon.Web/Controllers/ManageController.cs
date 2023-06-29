@@ -62,6 +62,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var user = await _context.Users
@@ -78,7 +79,7 @@ namespace Halcyon.Web.Controllers
 
             if (request.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
@@ -120,6 +121,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var user = await _context.Users
@@ -136,7 +138,7 @@ namespace Halcyon.Web.Controllers
 
             if (request.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
@@ -179,6 +181,7 @@ namespace Halcyon.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> DeleteProfile([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -195,7 +198,7 @@ namespace Halcyon.Web.Controllers
 
             if (request?.Version != null && request.Version != user.Version)
             {
-                return NotFound(new ApiResponse
+                return Conflict(new ApiResponse
                 {
                     Code = "CONFLICT",
                     Message = "Data has been modified or deleted since entities were loaded."
