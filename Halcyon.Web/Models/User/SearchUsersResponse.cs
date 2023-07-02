@@ -4,10 +4,10 @@
     {
         public SearchUsersResponse()
         {
-            Items = new List<GetUserResponse>();
+            Items = new List<SearchUserResponse>();
         }
 
-        public List<GetUserResponse> Items { get; set; }
+        public List<SearchUserResponse> Items { get; set; }
 
         public bool HasNextPage { get; set; }
 

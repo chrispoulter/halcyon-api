@@ -4,6 +4,7 @@ using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -57,13 +58,12 @@ namespace Halcyon.Web.Controllers
             query = query.Take(request.Size);
 
             var users = await query
-                .Select(user => new GetUserResponse
+                .Select(user => new SearchUserResponse
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
                     Roles = user.Roles
                 })
@@ -109,7 +109,8 @@ namespace Halcyon.Web.Controllers
                     LastName = user.LastName,
                     DateOfBirth = user.DateOfBirth.ToUniversalTime(),
                     IsLockedOut = user.IsLockedOut,
-                    Roles = user.Roles
+                    Roles = user.Roles,
+                    Version = user.Version
                 }
             });
         }
@@ -138,7 +139,8 @@ namespace Halcyon.Web.Controllers
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 DateOfBirth = request.DateOfBirth.Value.ToUniversalTime(),
-                Roles = request.Roles
+                Roles = request.Roles,
+                Version = Guid.NewGuid()
             };
 
             _context.Users.Add(user);
@@ -157,6 +159,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await _context.Users
@@ -168,6 +171,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (request.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 
@@ -191,6 +203,7 @@ namespace Halcyon.Web.Controllers
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
             user.Roles = request.Roles;
+            user.Version = Guid.NewGuid();
 
             await _context.SaveChangesAsync();
 
@@ -206,7 +219,8 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> LockUser(int id)
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> LockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -220,6 +234,15 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (request?.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
+
             if (user.Id == CurrentUserId)
             {
                 return BadRequest(new ApiResponse
@@ -230,6 +253,7 @@ namespace Halcyon.Web.Controllers
             }
 
             user.IsLockedOut = true;
+            user.Version = Guid.NewGuid();
 
             await _context.SaveChangesAsync();
 
@@ -244,7 +268,8 @@ namespace Halcyon.Web.Controllers
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UnlockUser(int id)
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> UnlockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == id);
@@ -258,7 +283,17 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (request?.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
+
             user.IsLockedOut = false;
+            user.Version = Guid.NewGuid();
 
             await _context.SaveChangesAsync();
 
@@ -274,7 +309,8 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteUser(int id)
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> DeleteUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                .FirstOrDefaultAsync(u => u.Id == id);
@@ -285,6 +321,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (request?.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 

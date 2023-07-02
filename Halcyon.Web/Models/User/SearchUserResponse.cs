@@ -1,6 +1,8 @@
-﻿namespace Halcyon.Web.Models.Manage
+﻿using Halcyon.Web.Data;
+
+namespace Halcyon.Web.Models.User
 {
-    public class GetProfileResponse
+    public class SearchUserResponse
     {
         public int Id { get; set; }
 
@@ -10,8 +12,8 @@
 
         public string LastName { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public bool IsLockedOut { get; set; }
 
-        public Guid Version { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

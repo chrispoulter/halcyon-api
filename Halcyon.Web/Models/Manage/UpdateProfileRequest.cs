@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Manage
 {
-    public class UpdateProfileRequest
+    public class UpdateProfileRequest : UpdateRequest
     {
         [DisplayName("Email Address")]
         [Required]

@@ -10,20 +10,5 @@ namespace Halcyon.Web.Data
         }
 
         public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>()
-              .HasIndex(u => u.EmailAddress)
-              .IsUnique();
-
-            modelBuilder.Entity<User>()
-              .Property(u => u.IsLockedOut)
-              .HasDefaultValue(false);
-
-            modelBuilder.Entity<User>()
-              .Property(u => u.Roles)
-              .HasColumnType("text[]");
-        }
     }
 }

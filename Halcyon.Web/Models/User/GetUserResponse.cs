@@ -17,5 +17,7 @@ namespace Halcyon.Web.Models.User
         public bool IsLockedOut { get; set; }
 
         public List<Role> Roles { get; set; }
+
+        public Guid Version { get; set; }
     }
 }

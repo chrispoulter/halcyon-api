@@ -7,7 +7,7 @@ namespace Halcyon.Web.Models.Account
     {
         [DisplayName("Token")]
         [Required]
-        public string Token { get; set; }
+        public Guid Token { get; set; }
 
         [DisplayName("Email Address")]
         [Required]

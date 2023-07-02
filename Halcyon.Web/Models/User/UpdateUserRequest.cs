@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.User
 {
-    public class UpdateUserRequest
+    public class UpdateUserRequest : UpdateRequest
     {
         public UpdateUserRequest()
         {

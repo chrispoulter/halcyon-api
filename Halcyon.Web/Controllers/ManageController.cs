@@ -4,6 +4,7 @@ using Halcyon.Web.Models.Manage;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -51,7 +52,8 @@ namespace Halcyon.Web.Controllers
                     EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.ToUniversalTime()
+                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
+                    Version = user.Version
                 }
             });
         }
@@ -60,6 +62,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var user = await _context.Users
@@ -74,6 +77,14 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
+            if (request.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
+                });
+            }
 
             if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -94,6 +105,7 @@ namespace Halcyon.Web.Controllers
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
+            user.Version = Guid.NewGuid();
 
             await _context.SaveChangesAsync();
 
@@ -109,6 +121,7 @@ namespace Halcyon.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var user = await _context.Users
@@ -120,6 +133,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (request.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 
@@ -159,7 +181,8 @@ namespace Halcyon.Web.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteProfile()
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> DeleteProfile([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
@@ -170,6 +193,15 @@ namespace Halcyon.Web.Controllers
                 {
                     Code = "USER_NOT_FOUND",
                     Message = "User not found."
+                });
+            }
+
+            if (request?.Version != null && request.Version != user.Version)
+            {
+                return Conflict(new ApiResponse
+                {
+                    Code = "CONFLICT",
+                    Message = "Data has been modified or deleted since entities were loaded."
                 });
             }
 

@@ -41,7 +41,11 @@ namespace Halcyon.Web.Controllers
 
             if (user == null)
             {
-                user = new User();
+                user = new User
+                {
+                    Version = Guid.NewGuid()
+                };
+
                 _context.Users.Add(user);
             }
 

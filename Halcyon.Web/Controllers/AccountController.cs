@@ -53,7 +53,8 @@ namespace Halcyon.Web.Controllers
                 Password = _hashService.GenerateHash(request.Password),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime()
+                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime(),
+                Version = Guid.NewGuid()
             };
 
             _context.Users.Add(user);
@@ -78,7 +79,7 @@ namespace Halcyon.Web.Controllers
 
             if (user != null && !user.IsLockedOut)
             {
-                user.PasswordResetToken = Guid.NewGuid().ToString();
+                user.PasswordResetToken = Guid.NewGuid();
 
                 await _context.SaveChangesAsync();
 
@@ -112,7 +113,7 @@ namespace Halcyon.Web.Controllers
             if (
                 user == null
                 || user.IsLockedOut
-                || !request.Token.Equals(user.PasswordResetToken, StringComparison.InvariantCultureIgnoreCase))
+                || request.Token != user.PasswordResetToken)
             {
                 return BadRequest(new ApiResponse
                 {

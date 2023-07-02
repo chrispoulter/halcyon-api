@@ -1,8 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Halcyon.Web.Data
 {
+    [Index(nameof(EmailAddress), IsUnique = true)]
+
     public class User
     {
         [Key]
@@ -13,7 +18,7 @@ namespace Halcyon.Web.Data
 
         public string Password { get; set; }
 
-        public string PasswordResetToken { get; set; }
+        public Guid? PasswordResetToken { get; set; }
 
         [Required]
         public string FirstName { get; set; }
@@ -25,9 +30,14 @@ namespace Halcyon.Web.Data
         public DateTime DateOfBirth { get; set; }
 
         [Required]
+        [DefaultValue(false)]
         public bool IsLockedOut { get; set; }
 
+        [Column(TypeName = "text[]")]
         public List<Role> Roles { get; set; } = new List<Role>();
+
+        [ConcurrencyCheck]
+        public Guid Version { get; set; }
 
         public string Search
         {
