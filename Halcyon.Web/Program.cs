@@ -31,8 +31,6 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
             connectionString,
             builder => builder.EnableRetryOnFailure()));
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
