@@ -38,7 +38,7 @@ namespace Halcyon.Web.Controllers
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-            if (existing != null)
+            if (existing is not null)
             {
                 return BadRequest(new ApiResponse
                 {
@@ -77,7 +77,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-            if (user != null && !user.IsLockedOut)
+            if (user is not null && !user.IsLockedOut)
             {
                 user.PasswordResetToken = Guid.NewGuid();
 
@@ -111,7 +111,7 @@ namespace Halcyon.Web.Controllers
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (
-                user == null
+                user is null
                 || user.IsLockedOut
                 || request.Token != user.PasswordResetToken)
             {

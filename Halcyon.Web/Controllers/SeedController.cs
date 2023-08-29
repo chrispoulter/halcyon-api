@@ -39,7 +39,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                      .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
 
-            if (user == null)
+            if (user is null)
             {
                 user = new User
                 {

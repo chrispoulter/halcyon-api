@@ -35,7 +35,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
-            if (user == null || user.IsLockedOut)
+            if (user is null || user.IsLockedOut)
             {
                 return NotFound(new ApiResponse
                 {
@@ -68,7 +68,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
-            if (user == null || user.IsLockedOut)
+            if (user is null || user.IsLockedOut)
             {
                 return NotFound(new ApiResponse
                 {
@@ -77,7 +77,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request.Version != null && request.Version != user.Version)
+            if (request.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
@@ -91,7 +91,7 @@ namespace Halcyon.Web.Controllers
                 var existing = await _context.Users
                     .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-                if (existing != null)
+                if (existing is not null)
                 {
                     return BadRequest(new ApiResponse
                     {
@@ -127,7 +127,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
-            if (user == null || user.IsLockedOut)
+            if (user is null || user.IsLockedOut)
             {
                 return NotFound(new ApiResponse
                 {
@@ -136,7 +136,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request.Version != null && request.Version != user.Version)
+            if (request.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
@@ -145,7 +145,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (user.Password == null)
+            if (user.Password is null)
             {
                 return BadRequest(new ApiResponse
                 {
@@ -187,7 +187,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
-            if (user == null || user.IsLockedOut)
+            if (user is null || user.IsLockedOut)
             {
                 return NotFound(new ApiResponse
                 {
@@ -196,7 +196,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && request.Version != user.Version)
+            if (request?.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {

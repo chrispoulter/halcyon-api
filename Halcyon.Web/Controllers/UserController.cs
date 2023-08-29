@@ -90,7 +90,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new ApiResponse
                 {
@@ -123,7 +123,7 @@ namespace Halcyon.Web.Controllers
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-            if (existing != null)
+            if (existing is not null)
             {
                 return BadRequest(new ApiResponse
                 {
@@ -165,7 +165,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new ApiResponse
                 {
@@ -174,7 +174,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request.Version != null && request.Version != user.Version)
+            if (request.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
@@ -188,7 +188,7 @@ namespace Halcyon.Web.Controllers
                 var existing = await _context.Users
                     .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-                if (existing != null)
+                if (existing is not null)
                 {
                     return BadRequest(new ApiResponse
                     {
@@ -225,7 +225,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new ApiResponse
                 {
@@ -234,7 +234,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && request.Version != user.Version)
+            if (request?.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
@@ -274,7 +274,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                  .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new ApiResponse
                 {
@@ -283,7 +283,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && request.Version != user.Version)
+            if (request?.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
@@ -315,7 +315,7 @@ namespace Halcyon.Web.Controllers
             var user = await _context.Users
                .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound(new ApiResponse
                 {
@@ -324,7 +324,7 @@ namespace Halcyon.Web.Controllers
                 });
             }
 
-            if (request?.Version != null && request.Version != user.Version)
+            if (request?.Version is not null && request.Version != user.Version)
             {
                 return Conflict(new ApiResponse
                 {
