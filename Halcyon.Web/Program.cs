@@ -118,7 +118,8 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
             .WithMethods("GET", "POST", "PUT", "OPTIONS")
-            .WithHeaders(HeaderNames.Authorization));
+            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+    );
 });
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
