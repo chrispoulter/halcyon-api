@@ -62,7 +62,7 @@ namespace Halcyon.Web.Services.Email
             }
         }
 
-        public string ReadResource(string resource)
+        private string ReadResource(string resource)
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -75,7 +75,7 @@ namespace Halcyon.Web.Services.Email
             return reader.ReadToEnd();
         }
 
-        public string GetTitle(string template)
+        private string GetTitle(string template)
         {
             var match = TitleRegex().Match(template);
 
@@ -84,7 +84,7 @@ namespace Halcyon.Web.Services.Email
                 : string.Empty;
         }
 
-        public string ReplaceData(string template, Dictionary<string, string> data)
+        private string ReplaceData(string template, Dictionary<string, string> data)
         {
             foreach (var entry in data)
             {

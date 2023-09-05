@@ -1,6 +1,7 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
+using Halcyon.Web.Services.Date;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
@@ -126,6 +127,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("Seed"));
 
+builder.Services.AddSingleton<IDateService, DateService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IJwtService, JwtService>();

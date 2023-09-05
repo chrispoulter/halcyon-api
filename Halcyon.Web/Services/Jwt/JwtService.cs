@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Services.Date;
 using Halcyon.Web.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,10 +11,15 @@ namespace Halcyon.Web.Services.Jwt
 {
     public class JwtService : IJwtService
     {
+        private readonly IDateService _dateService;
+
         private readonly JwtSettings _jwtSettings;
 
-        public JwtService(IOptions<JwtSettings> jwtSettings)
+        public JwtService(
+            IDateService dateService, 
+            IOptions<JwtSettings> jwtSettings)
         {
+            _dateService = dateService;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -40,7 +46,7 @@ namespace Halcyon.Web.Services.Jwt
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
+                expires: _dateService.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
