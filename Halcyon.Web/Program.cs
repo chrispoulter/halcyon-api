@@ -23,7 +23,7 @@ var version = Assembly.GetEntryAssembly()
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration["ConnectionStrings:HalcyonDatabase"].Trim('"');
+var connectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
 builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
     options
@@ -33,6 +33,9 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
             builder => builder.EnableRetryOnFailure()));
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+var jwtSettings = new JwtSettings();
+builder.Configuration.Bind("Jwt", jwtSettings);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -44,9 +47,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecurityKey"]))
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
     });
 
