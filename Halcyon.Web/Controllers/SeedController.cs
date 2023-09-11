@@ -54,7 +54,7 @@ namespace Halcyon.Web.Controllers
             user.FirstName = "System";
             user.LastName = "Administrator";
             user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();
-            user.Roles = new List<Role> { Role.SYSTEM_ADMINISTRATOR };
+            user.Roles = new() { Role.SYSTEM_ADMINISTRATOR };
 
             await _context.SaveChangesAsync();
 

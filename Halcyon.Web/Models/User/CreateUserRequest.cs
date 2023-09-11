@@ -6,11 +6,6 @@ namespace Halcyon.Web.Models.User
 {
     public class CreateUserRequest
     {
-        public CreateUserRequest()
-        {
-            Roles = new List<Role>();
-        }
-
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]
@@ -37,6 +32,6 @@ namespace Halcyon.Web.Models.User
         [Required]
         public DateTime? DateOfBirth { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<Role> Roles { get; set; } = new();
     }
 }

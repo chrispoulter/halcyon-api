@@ -73,7 +73,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<SearchUsersResponse>
             {
-                Data = new SearchUsersResponse
+                Data = new()
                 {
                     Items = users,
                     HasNextPage = request.Page < pageCount,
@@ -101,7 +101,7 @@ namespace Halcyon.Web.Controllers
 
             return Ok(new ApiResponse<GetUserResponse>
             {
-                Data = new GetUserResponse
+                Data = new()
                 {
                     Id = user.Id,
                     EmailAddress = user.EmailAddress,
@@ -151,7 +151,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_CREATED",
                 Message = "User successfully created.",
-                Data = new UpdatedResponse { Id = user.Id }
+                Data = new() { Id = user.Id }
             });
         }
 
@@ -211,7 +211,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_UPDATED",
                 Message = "User successfully updated.",
-                Data = new UpdatedResponse { Id = user.Id }
+                Data = new() { Id = user.Id }
             });
         }
 
@@ -261,7 +261,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_LOCKED",
                 Message = "User successfully locked.",
-                Data = new UpdatedResponse { Id = user.Id }
+                Data = new() { Id = user.Id }
             });
         }
 
@@ -301,7 +301,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_UNLOCKED",
                 Message = "User successfully unlocked.",
-                Data = new UpdatedResponse { Id = user.Id }
+                Data = new() { Id = user.Id }
             });
         }
 
@@ -350,7 +350,7 @@ namespace Halcyon.Web.Controllers
             {
                 Code = "USER_DELETED",
                 Message = "User successfully deleted.",
-                Data = new UpdatedResponse { Id = user.Id }
+                Data = new() { Id = user.Id }
             });
         }
     }

@@ -37,7 +37,7 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = new()
         {
             NameClaimType = JwtRegisteredClaimNames.Sub,
             RoleClaimType = JwtClaimNames.Roles,
@@ -98,7 +98,7 @@ builder.Services.AddSwaggerGen(options =>
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                Reference = new()
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"

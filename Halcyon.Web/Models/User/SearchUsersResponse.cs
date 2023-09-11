@@ -2,12 +2,7 @@
 {
     public class SearchUsersResponse
     {
-        public SearchUsersResponse()
-        {
-            Items = new List<SearchUserResponse>();
-        }
-
-        public List<SearchUserResponse> Items { get; set; }
+        public List<SearchUserResponse> Items { get; set; } = new();
 
         public bool HasNextPage { get; set; }
 
