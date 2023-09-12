@@ -2,6 +2,8 @@
 {
     public class JwtSettings
     {
+        public static string SectionName { get; } = "Jwt";
+
         public string SecurityKey { get; set; }
 
         public string Issuer { get; set; }

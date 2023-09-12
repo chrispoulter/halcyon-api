@@ -35,7 +35,7 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var jwtSettings = new JwtSettings();
-builder.Configuration.Bind("Jwt", jwtSettings);
+builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -121,14 +121,14 @@ builder.Services.AddCors(options =>
         policy => policy
             .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods("GET", "POST", "PUT", "OPTIONS")
+            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
             .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
     );
 });
 
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("Seed"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
+builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 builder.Services.AddSingleton<IDateService, DateService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
