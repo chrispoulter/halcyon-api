@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Halcyon.Web.Filters;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Web.Models.Manage
@@ -23,6 +24,7 @@ namespace Halcyon.Web.Models.Manage
 
         [DisplayName("Date Of Birth")]
         [Required]
+        [Past]
         public DateTime? DateOfBirth { get; set; }
     }
 }

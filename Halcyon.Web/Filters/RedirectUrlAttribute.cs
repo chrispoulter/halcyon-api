@@ -18,7 +18,7 @@ namespace Halcyon.Web.Filters
             var url = value as string;
 
             if (string.IsNullOrEmpty(url))
-            {
+            { 
                 return ValidationResult.Success;
             }
 
