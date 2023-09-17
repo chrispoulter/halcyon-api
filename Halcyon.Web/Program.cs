@@ -30,7 +30,9 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
         .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
         .UseNpgsql(
             connectionString,
-            builder => builder.EnableRetryOnFailure()));
+            builder => builder.EnableRetryOnFailure())
+        .UseSnakeCaseNamingConvention()
+);
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
