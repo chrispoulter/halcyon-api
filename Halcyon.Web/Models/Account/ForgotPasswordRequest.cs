@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Halcyon.Web.Filters;
 
 namespace Halcyon.Web.Models.Account
 {
@@ -12,7 +13,7 @@ namespace Halcyon.Web.Models.Account
 
         [DisplayName("Site Url")]
         [Required]
-        [Url]
+        [RedirectUrl]
         public string SiteUrl { get; set; }
     }
 }

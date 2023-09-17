@@ -1,4 +1,5 @@
 ﻿using Halcyon.Web.Data;
+using Halcyon.Web.Filters;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -30,6 +31,7 @@ namespace Halcyon.Web.Models.User
 
         [DisplayName("Date Of Birth")]
         [Required]
+        [Past]
         public DateTime? DateOfBirth { get; set; }
 
         public List<Role> Roles { get; set; } = new();
