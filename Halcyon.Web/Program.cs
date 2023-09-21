@@ -133,9 +133,9 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSett
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 builder.Services.AddSingleton<IDateService, DateService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IHashService, HashService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IHashService, HashService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
 
 var app = builder.Build();
 
