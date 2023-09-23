@@ -2,7 +2,7 @@
 {
     public class SearchUsersResponse
     {
-        public List<SearchUserResponse> Items { get; set; } = new();
+        public List<SearchUserResponse> Items { get; set; }
 
         public bool HasNextPage { get; set; }
 

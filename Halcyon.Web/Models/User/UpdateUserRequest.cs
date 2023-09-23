@@ -28,6 +28,6 @@ namespace Halcyon.Web.Models.User
         [Past]
         public DateTime? DateOfBirth { get; set; }
 
-        public List<Role> Roles { get; set; } = new();
+        public List<Role> Roles { get; set; }
     }
 }

@@ -5,10 +5,10 @@
     {
         public EmailTemplate Template { get; set; }
 
-        public List<string> To { get; set; } = new();
+        public List<string> To { get; set; }
 
         public string From { get; set; }
 
-        public Dictionary<string, string> Data { get; set; } = new();
+        public Dictionary<string, string> Data { get; set; }
     }
 }

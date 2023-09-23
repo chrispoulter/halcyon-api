@@ -34,7 +34,7 @@ namespace Halcyon.Web.Data
         public bool IsLockedOut { get; set; }
 
         [Column(TypeName = "text[]")]
-        public List<Role> Roles { get; set; } = new();
+        public List<Role> Roles { get; set; }
 
         [ConcurrencyCheck]
         public Guid Version { get; set; }

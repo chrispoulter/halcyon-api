@@ -85,12 +85,17 @@ namespace Halcyon.Web.Controllers
 
                 var message = new EmailMessage
                 {
-                    Template = EmailTemplate.RESET_PASSWORD
+                    Template = EmailTemplate.RESET_PASSWORD,
+                    To = new()
+                    {
+                        user.EmailAddress
+                    },
+                    Data = new()
+                    {
+                        { "SiteUrl", request.SiteUrl },
+                        { "PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}" }
+                    }
                 };
-
-                message.To.Add(user.EmailAddress);
-                message.Data.Add("SiteUrl", request.SiteUrl);
-                message.Data.Add($"PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}");
 
                 await _emailService.SendEmailAsync(message);
             }
