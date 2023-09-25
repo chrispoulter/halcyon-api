@@ -20,6 +20,7 @@ namespace Halcyon.Web.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Halcyon.Web.Data.User", b =>
@@ -46,7 +47,9 @@ namespace Halcyon.Web.Migrations
                         .HasColumnName("first_name");
 
                     b.Property<bool>("IsLockedOut")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("is_locked_out");
 
                     b.Property<string>("LastName")
@@ -67,13 +70,16 @@ namespace Halcyon.Web.Migrations
                         .HasColumnName("roles");
 
                     b.Property<string>("Search")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("text")
-                        .HasColumnName("search");
+                        .HasColumnName("search")
+                        .HasComputedColumnSql("\"first_name\" || ' ' || \"last_name\" || ' ' || \"email_address\"", true);
 
-                    b.Property<Guid>("Version")
+                    b.Property<uint>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("uuid")
-                        .HasColumnName("version");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
@@ -81,6 +87,12 @@ namespace Halcyon.Web.Migrations
                     b.HasIndex("EmailAddress")
                         .IsUnique()
                         .HasDatabaseName("ix_users_email_address");
+
+                    b.HasIndex("Search")
+                        .HasDatabaseName("ix_users_search");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Search"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Search"), new[] { "gin_trgm_ops" });
 
                     b.ToTable("users", (string)null);
                 });

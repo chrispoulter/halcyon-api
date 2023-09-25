@@ -105,7 +105,6 @@ namespace Halcyon.Web.Controllers
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
-            user.Version = Guid.NewGuid();
 
             await _context.SaveChangesAsync();
 
