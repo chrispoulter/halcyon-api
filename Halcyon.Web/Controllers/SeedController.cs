@@ -38,10 +38,16 @@ namespace Halcyon.Web.Controllers
 
             if (_seedSettings.Users != null)
             {
+                var emailAddresses = _seedSettings.Users
+                    .Select(u => u.EmailAddress);
+
+                var users = await _context.Users
+                    .Where(u => emailAddresses.Contains(u.EmailAddress))
+                    .ToListAsync();
+
                 foreach (var seedUser in _seedSettings.Users)
                 {
-                    var user = await _context.Users
-                            .FirstOrDefaultAsync(u => u.EmailAddress == seedUser.EmailAddress);
+                    var user = users.FirstOrDefault(u => u.EmailAddress == seedUser.EmailAddress);
 
                     if (user is null)
                     {
