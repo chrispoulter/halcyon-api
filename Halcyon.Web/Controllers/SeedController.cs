@@ -36,22 +36,29 @@ namespace Halcyon.Web.Controllers
         {
             await _context.Database.MigrateAsync();
 
-            var user = await _context.Users
-                     .FirstOrDefaultAsync(u => u.EmailAddress == _seedSettings.EmailAddress);
-
-            if (user is null)
+            if (_seedSettings.Users != null)
             {
-                user = new();
+                foreach (var seedUser in _seedSettings.Users)
+                {
+                    var user = await _context.Users
+                            .FirstOrDefaultAsync(u => u.EmailAddress == seedUser.EmailAddress);
 
-                _context.Users.Add(user);
+                    if (user is null)
+                    {
+                        user = new();
+
+                        _context.Users.Add(user);
+                    }
+
+                    user.EmailAddress = seedUser.EmailAddress;
+                    user.Password = _hashService.GenerateHash(seedUser.Password);
+                    user.FirstName = seedUser.FirstName;
+                    user.LastName = seedUser.LastName;
+                    user.DateOfBirth = seedUser.DateOfBirth.ToUniversalTime();
+                    user.IsLockedOut = false;
+                    user.Roles = seedUser.Roles;
+                }
             }
-
-            user.EmailAddress = _seedSettings.EmailAddress;
-            user.Password = _hashService.GenerateHash(_seedSettings.Password);
-            user.FirstName = "System";
-            user.LastName = "Administrator";
-            user.DateOfBirth = new DateTime(1970, 1, 1).ToUniversalTime();
-            user.Roles = new() { Role.SYSTEM_ADMINISTRATOR };
 
             await _context.SaveChangesAsync();
 

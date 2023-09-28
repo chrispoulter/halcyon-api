@@ -21,9 +21,9 @@ Create a `appsettings.Development.json` file in the web project directory.
     "Email": {
         "SmtpServer": "localhost",
         "SmtpPort": 1025,
-        "SmtpUserName": "",
-        "SmtpPassword": "",
-        "NoReplyAddress": "noreply@chrispoulter.com"
+        "SmtpUserName": null,
+        "SmtpPassword": null,
+        "NoReplyAddress": "noreply@example.com"
     },
     "Jwt": {
         "SecurityKey": "change-me-1234567890",
@@ -32,8 +32,15 @@ Create a `appsettings.Development.json` file in the web project directory.
         "ExpiresIn": 3600
     },
     "Seed": {
-        "EmailAddress": "",
-        "Password": ""
+        "Users": [
+            {
+                "EmailAddress": "system.administrator@example.com",
+                "FirstName": "System",
+                "LastName": "Administrator",
+                "Password": "change-me-0987654321",
+                "Roles": [ "SYSTEM_ADMINISTRATOR" ]
+            }
+        ]
     }
 }
 ```
