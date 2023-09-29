@@ -12,6 +12,6 @@
 
         public DateTime DateOfBirth { get; set; }
 
-        public Guid Version { get; set; }
+        public uint Version { get; set; }
     }
 }

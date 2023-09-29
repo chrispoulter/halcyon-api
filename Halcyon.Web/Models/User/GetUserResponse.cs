@@ -18,6 +18,6 @@ namespace Halcyon.Web.Models.User
 
         public List<Role> Roles { get; set; }
 
-        public Guid Version { get; set; }
+        public uint Version { get; set; }
     }
 }

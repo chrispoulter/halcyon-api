@@ -12,6 +12,9 @@ namespace Halcyon.Web.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:pg_trgm", ",,");
+
             migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
@@ -26,8 +29,8 @@ namespace Halcyon.Web.Migrations
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     is_locked_out = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     roles = table.Column<string[]>(type: "text[]", nullable: true),
-                    version = table.Column<Guid>(type: "uuid", nullable: false),
-                    search = table.Column<string>(type: "text", nullable: true)
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
+                    search = table.Column<string>(type: "text", nullable: true, computedColumnSql: "\"first_name\" || ' ' || \"last_name\" || ' ' || \"email_address\"", stored: true)
                 },
                 constraints: table =>
                 {
@@ -39,6 +42,13 @@ namespace Halcyon.Web.Migrations
                 table: "users",
                 column: "email_address",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_search",
+                table: "users",
+                column: "search")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
         }
 
         /// <inheritdoc />
