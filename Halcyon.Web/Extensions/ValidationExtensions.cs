@@ -15,7 +15,7 @@ namespace Halcyon.Web.Extensions
 
         public static IRuleBuilderOptions<T, string> ReturnUrl<T>(this IRuleBuilder<T, string> ruleBuilder, IOptions<CorsOptions> corsOptions)
             => ruleBuilder
-                .Must((rootObject, url, context) =>
+                .Must(url =>
                 {
                     if (string.IsNullOrEmpty(url))
                     {
