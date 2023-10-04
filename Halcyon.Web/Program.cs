@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add(typeof(ApiExceptionFilterAttribute));
+    options.Filters.Add<ApiExceptionFilterAttribute>();
 })
 .AddJsonOptions(options =>
 {
@@ -115,7 +115,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>("database");
+    .AddDbContextCheck<HalcyonDbContext>();
 
 builder.Services.AddCors(options =>
 {
