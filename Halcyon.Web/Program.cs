@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Halcyon.Web.Data;
 using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
@@ -113,6 +115,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>("database");
