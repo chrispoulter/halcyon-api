@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Index()
         {
             await _context.Database.MigrateAsync();
@@ -68,11 +67,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse
-            {
-                Code = "ENVIRONMENT_SEEDED",
-                Message = "Environment seeded."
-            });
+            return Ok();
         }
     }
 }

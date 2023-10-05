@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.Token;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
@@ -31,8 +30,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users
@@ -40,37 +39,31 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.Password is null)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "CREDENTIALS_INVALID",
-                    Message = "The credentials provided were invalid."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    title: "The credentials provided were invalid."
+                );
             }
 
             var verified = _hashService.VerifyHash(request.Password, user.Password);
 
             if (!verified)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "CREDENTIALS_INVALID",
-                    Message = "The credentials provided were invalid."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    title: "The credentials provided were invalid."x
+                );
             }
 
             if (user.IsLockedOut)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "USER_LOCKED_OUT",
-                    Message = "This account has been locked out, please try again later."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    title: "This account has been locked out, please try again later."
+                );
             }
 
-            return Ok(new ApiResponse<string>
-            {
-                Data = _jwtService.GenerateToken(user)
-            });
+            return Ok(_jwtService.GenerateToken(user));
         }
     }
 }

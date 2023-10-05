@@ -12,7 +12,7 @@ namespace Halcyon.Web.Controllers
 {
     [ApiController]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [Route("[controller]")]
     [Authorize]
     public class ManageController : BaseController
@@ -28,8 +28,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<GetProfileResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetProfileResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetProfile()
         {
             var user = await _context.Users
@@ -37,32 +37,28 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.IsLockedOut)
             {
-                return NotFound(new ApiResponse
-                {
-                    Code = "USER_NOT_FOUND",
-                    Message = "User not found."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.NotFound,
+                    title: "User not found."
+                );
             }
 
-            return Ok(new ApiResponse<GetProfileResponse>
+            return Ok(new GetProfileResponse()
             {
-                Data = new()
-                {
-                    Id = user.Id,
-                    EmailAddress = user.EmailAddress,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.ToUniversalTime(),
-                    Version = user.Version
-                }
+                Id = user.Id,
+                EmailAddress = user.EmailAddress,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth.ToUniversalTime(),
+                Version = user.Version
             });
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var user = await _context.Users
@@ -70,20 +66,18 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.IsLockedOut)
             {
-                return NotFound(new ApiResponse
-                {
-                    Code = "USER_NOT_FOUND",
-                    Message = "User not found."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.NotFound,
+                    title: "User not found."
+                );
             }
 
             if (request.Version is not null && request.Version != user.Version)
             {
-                return Conflict(new ApiResponse
-                {
-                    Code = "CONFLICT",
-                    Message = "Data has been modified or deleted since entities were loaded."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.Conflict,
+                    title: "Data has been modified since entities were loaded."
+                );
             }
 
             if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
@@ -93,11 +87,10 @@ namespace Halcyon.Web.Controllers
 
                 if (existing is not null)
                 {
-                    return BadRequest(new ApiResponse
-                    {
-                        Code = "DUPLICATE_USER",
-                        Message = $"User name \"{request.EmailAddress}\" is already taken."
-                    });
+                    return Problem(
+                        statusCode: (int)HttpStatusCode.BadRequest,
+                        title: "User name is already taken."x
+                    );
                 }
             }
 
@@ -108,19 +101,14 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UpdatedResponse>
-            {
-                Code = "PROFILE_UPDATED",
-                Message = "Your profile has been updated.",
-                Data = new() { Id = user.Id }
-            });
+            return Ok(new UpdatedResponse { Id = user.Id });
         }
 
         [HttpPut("change-password")]
-        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var user = await _context.Users
@@ -128,40 +116,36 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.IsLockedOut)
             {
-                return NotFound(new ApiResponse
-                {
-                    Code = "USER_NOT_FOUND",
-                    Message = "User not found."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.NotFound,
+                    title: "User not found."
+                );
             }
 
             if (request.Version is not null && request.Version != user.Version)
             {
-                return Conflict(new ApiResponse
-                {
-                    Code = "CONFLICT",
-                    Message = "Data has been modified or deleted since entities were loaded."
-                });
+                return Problem(
+                     statusCode: (int)HttpStatusCode.Conflict,
+                     title: "Data has been modified since entities were loaded."
+                 );
             }
 
             if (user.Password is null)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "INCORRECT_PASSWORD",
-                    Message = "Incorrect password."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    title: "Incorrect password."
+                );
             }
 
             var verified = _hashService.VerifyHash(request.CurrentPassword, user.Password);
 
             if (!verified)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "INCORRECT_PASSWORD",
-                    Message = "Incorrect password."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    title: "Incorrect password."
+                );
             }
 
             user.Password = _hashService.GenerateHash(request.NewPassword);
@@ -169,18 +153,13 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UpdatedResponse>
-            {
-                Code = "PASSWORD_CHANGED",
-                Message = "Your password has been changed.",
-                Data = new() { Id = user.Id }
-            });
+            return Ok(new UpdatedResponse { Id = user.Id });
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> DeleteProfile([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -188,32 +167,25 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.IsLockedOut)
             {
-                return NotFound(new ApiResponse
-                {
-                    Code = "USER_NOT_FOUND",
-                    Message = "User not found."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.NotFound,
+                    title: "User not found."
+                );
             }
 
             if (request?.Version is not null && request.Version != user.Version)
             {
-                return Conflict(new ApiResponse
-                {
-                    Code = "CONFLICT",
-                    Message = "Data has been modified or deleted since entities were loaded."
-                });
+                return Problem(
+                    statusCode: (int)HttpStatusCode.Conflict,
+                    title: "Data has been modified since entities were loaded."
+                );
             }
 
             _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UpdatedResponse>
-            {
-                Code = "ACCOUNT_DELETED",
-                Message = "Your account has been deleted.",
-                Data = new() { Id = user.Id }
-            });
+            return Ok(new UpdatedResponse { Id = user.Id });
         }
     }
 }
