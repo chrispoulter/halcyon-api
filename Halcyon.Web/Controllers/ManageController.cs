@@ -89,7 +89,7 @@ namespace Halcyon.Web.Controllers
                 {
                     return Problem(
                         statusCode: (int)HttpStatusCode.BadRequest,
-                        title: "User name is already taken."x
+                        title: "User name is already taken."
                     );
                 }
             }

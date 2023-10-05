@@ -51,7 +51,7 @@ namespace Halcyon.Web.Controllers
             {
                 return Problem(
                     statusCode: (int)HttpStatusCode.BadRequest,
-                    title: "The credentials provided were invalid."x
+                    title: "The credentials provided were invalid."
                 );
             }
 
