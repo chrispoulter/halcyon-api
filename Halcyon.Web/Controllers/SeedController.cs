@@ -1,10 +1,10 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
@@ -55,13 +55,8 @@ namespace Halcyon.Web.Controllers
                         _context.Users.Add(user);
                     }
 
-                    user.EmailAddress = seedUser.EmailAddress;
-                    user.Password = _hashService.GenerateHash(seedUser.Password);
-                    user.FirstName = seedUser.FirstName;
-                    user.LastName = seedUser.LastName;
-                    user.DateOfBirth = seedUser.DateOfBirth.ToUniversalTime();
-                    user.IsLockedOut = false;
-                    user.Roles = seedUser.Roles;
+                    var password = _hashService.GenerateHash(seedUser.Password);
+                    (seedUser, password).Adapt(user);
                 }
             }
 

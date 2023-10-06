@@ -1,5 +1,6 @@
 ﻿using Halcyon.Web.Data;
 using Halcyon.Web.Filters.Validation;
+using Mapster;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -35,5 +36,16 @@ namespace Halcyon.Web.Models.User
         public DateTime? DateOfBirth { get; set; }
 
         public List<Role> Roles { get; set; }
+    }
+
+    public class CreateUserRequestMappingConfig : IRegister
+    {
+        public void Register(TypeAdapterConfig config)
+        {
+            config
+                .NewConfig<(CreateUserRequest, string), Data.User>()
+                .Map(dest => dest, src => src.Item1)
+                .Map(dest => dest.Password, src => src.Item2);
+        }
     }
 }

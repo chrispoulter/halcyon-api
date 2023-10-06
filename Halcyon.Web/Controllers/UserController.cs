@@ -3,6 +3,7 @@ using Halcyon.Web.Filters;
 using Halcyon.Web.Models;
 using Halcyon.Web.Models.User;
 using Halcyon.Web.Services.Hash;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -57,15 +58,7 @@ namespace Halcyon.Web.Controllers
             query = query.Take(request.Size);
 
             var users = await query
-                .Select(user => new SearchUserResponse
-                {
-                    Id = user.Id,
-                    EmailAddress = user.EmailAddress,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    IsLockedOut = user.IsLockedOut,
-                    Roles = user.Roles
-                })
+                .ProjectToType<SearchUserResponse>()
                 .ToListAsync();
 
             var pageCount = (count + request.Size - 1) / request.Size;
@@ -94,17 +87,9 @@ namespace Halcyon.Web.Controllers
                 );
             }
 
-            return Ok(new GetUserResponse()
-            {
-                Id = user.Id,
-                EmailAddress = user.EmailAddress,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.ToUniversalTime(),
-                IsLockedOut = user.IsLockedOut,
-                Roles = user.Roles,
-                Version = user.Version
-            });
+            var result = user.Adapt<GetUserResponse>();
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -123,15 +108,8 @@ namespace Halcyon.Web.Controllers
                 );
             }
 
-            var user = new User
-            {
-                EmailAddress = request.EmailAddress,
-                Password = _hashService.GenerateHash(request.Password),
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime(),
-                Roles = request.Roles
-            };
+            var password = _hashService.GenerateHash(request.Password);
+            var user = (request, password).Adapt<User>();
 
             _context.Users.Add(user);
 
@@ -180,11 +158,7 @@ namespace Halcyon.Web.Controllers
                 }
             }
 
-            user.EmailAddress = request.EmailAddress;
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
-            user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
-            user.Roles = request.Roles;
+            request.Adapt(user);
 
             await _context.SaveChangesAsync();
 
