@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Mapster;
 
 namespace Halcyon.Web.Settings
 {
@@ -23,16 +22,5 @@ namespace Halcyon.Web.Settings
         public DateTime DateOfBirth { get; set; }
 
         public List<Role> Roles { get; set; }
-    }
-
-    public class SeedUserMappingConfig : IRegister
-    {
-        public void Register(TypeAdapterConfig config)
-        {
-            config
-                .NewConfig<(SeedUser, string), User>()
-                .Map(dest => dest, src => src.Item1)
-                .Map(dest => dest.Password, src => src.Item2);
-        }
     }
 }
