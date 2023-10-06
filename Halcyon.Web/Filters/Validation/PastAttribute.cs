@@ -1,7 +1,7 @@
 ﻿using Halcyon.Web.Services.Date;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Web.Filters
+namespace Halcyon.Web.Filters.Validation
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class PastAttribute : ValidationAttribute
@@ -21,7 +21,7 @@ namespace Halcyon.Web.Filters
             var dateService = validationContext.GetService<IDateService>();
 
             if (date < dateService.UtcNow)
-            { 
+            {
                 return ValidationResult.Success;
             }
 

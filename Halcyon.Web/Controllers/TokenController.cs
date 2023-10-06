@@ -30,7 +30,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(TokenResult), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Token), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
@@ -63,7 +63,7 @@ namespace Halcyon.Web.Controllers
                 );
             }
 
-            var result = _jwtService.GenerateToken(user);
+            var result = _jwtService.CreateToken(user);
 
             return Ok(result);
         }

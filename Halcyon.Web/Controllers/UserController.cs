@@ -109,7 +109,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
@@ -138,11 +138,11 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new UpdatedResponse { Id = user.Id });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
@@ -189,11 +189,11 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new UpdatedResponse { Id = user.Id });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
 
         [HttpPut("{id}/lock")]
-        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
@@ -230,11 +230,11 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new UpdatedResponse { Id = user.Id });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
 
         [HttpPut("{id}/unlock")]
-        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
         public async Task<IActionResult> UnlockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
@@ -262,11 +262,11 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new UpdatedResponse { Id = user.Id });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(UpdatedResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
@@ -303,7 +303,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new UpdatedResponse { Id = user.Id });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
     }
 }

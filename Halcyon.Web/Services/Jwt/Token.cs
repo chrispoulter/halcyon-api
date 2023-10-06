@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Web.Services.Jwt
 {
-    public class TokenResult
+    public class Token
     {
         public string AccessToken { get; set; }
 
