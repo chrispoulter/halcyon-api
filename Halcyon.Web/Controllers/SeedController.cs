@@ -1,5 +1,4 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +9,9 @@ using System.Net;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("[controller]")]
-    public class SeedController : BaseController
+    [Produces("text/plain")]
+    public class SeedController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
 
@@ -31,7 +30,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> Index()
         {
             await _context.Database.MigrateAsync();
@@ -68,11 +67,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse
-            {
-                Code = "ENVIRONMENT_SEEDED",
-                Message = "Environment seeded."
-            });
+            return Content("Environment seeded.");
         }
     }
 }

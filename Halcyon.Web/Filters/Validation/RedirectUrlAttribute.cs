@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Halcyon.Web.Filters
+namespace Halcyon.Web.Filters.Validation
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class RedirectUrlAttribute : ValidationAttribute
@@ -18,7 +18,7 @@ namespace Halcyon.Web.Filters
             var url = value as string;
 
             if (string.IsNullOrEmpty(url))
-            { 
+            {
                 return ValidationResult.Success;
             }
 

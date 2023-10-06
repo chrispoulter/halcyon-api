@@ -1,4 +1,4 @@
-﻿using Halcyon.Web.Filters;
+﻿using Halcyon.Web.Filters.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

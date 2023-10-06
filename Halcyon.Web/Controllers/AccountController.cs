@@ -5,14 +5,13 @@ using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("[controller]")]
-    public class AccountController : BaseController
+    [Produces("application/json")]
+    public class AccountController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
 
@@ -31,8 +30,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existing = await _context.Users
@@ -40,11 +39,10 @@ namespace Halcyon.Web.Controllers
 
             if (existing is not null)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "DUPLICATE_USER",
-                    Message = $"User name \"{request.EmailAddress}\" is already taken."
-                });
+                return Problem(
+                  statusCode: StatusCodes.Status400BadRequest,
+                  title: "User name is already taken."
+              );
             }
 
             var user = new User
@@ -60,17 +58,12 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UpdatedResponse>
-            {
-                Code = "USER_REGISTERED",
-                Message = "User successfully registered.",
-                Data = new() { Id = user.Id }
-            });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
 
         [HttpPut("forgot-password")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
             var user = await _context.Users
@@ -99,16 +92,12 @@ namespace Halcyon.Web.Controllers
                 await _emailService.SendEmailAsync(message);
             }
 
-            return Ok(new ApiResponse
-            {
-                Code = "FORGOT_PASSWORD",
-                Message = "Instructions as to how to reset your password have been sent to you via email."
-            });
+            return Ok();
         }
 
         [HttpPut("reset-password")]
-        [ProducesResponseType(typeof(ApiResponse<UpdatedResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
             var user = await _context.Users
@@ -119,11 +108,10 @@ namespace Halcyon.Web.Controllers
                 || user.IsLockedOut
                 || request.Token != user.PasswordResetToken)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "INVALID_TOKEN",
-                    Message = "Invalid token."
-                });
+                return Problem(
+                  statusCode: StatusCodes.Status400BadRequest,
+                  title: "Invalid token."
+              );
             }
 
             user.Password = _hashService.GenerateHash(request.NewPassword);
@@ -131,12 +119,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<UpdatedResponse>
-            {
-                Code = "PASSWORD_RESET",
-                Message = "Your password has been reset.",
-                Data = new() { Id = user.Id }
-            });
+            return Ok(new UpdateResponse { Id = user.Id });
         }
     }
 }
