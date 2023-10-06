@@ -13,7 +13,7 @@ namespace Halcyon.Web.Controllers
     [Route("[controller]")]
     [Authorize]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public class ManageController : BaseController
     {
         private readonly HalcyonDbContext _context;

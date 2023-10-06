@@ -13,8 +13,8 @@ namespace Halcyon.Web.Controllers
     [Route("[controller]")]
     [AuthorizeRole(Role.SYSTEM_ADMINISTRATOR, Role.USER_ADMINISTRATOR)]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public class UserController : BaseController
     {
         private readonly HalcyonDbContext _context;
