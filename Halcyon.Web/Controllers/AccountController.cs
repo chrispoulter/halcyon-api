@@ -31,7 +31,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPost("register")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existing = await _context.Users
@@ -63,7 +63,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("forgot-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
             var user = await _context.Users
@@ -97,7 +97,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("reset-password")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
             var user = await _context.Users

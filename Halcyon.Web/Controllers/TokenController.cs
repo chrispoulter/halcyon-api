@@ -30,7 +30,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users

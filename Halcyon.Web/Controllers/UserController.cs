@@ -29,7 +29,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(SearchUsersResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersRequest request)
         {
             var query = _context.Users.AsQueryable();
@@ -80,7 +80,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
@@ -109,7 +109,7 @@ namespace Halcyon.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
             var existing = await _context.Users
@@ -142,9 +142,9 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await _context.Users
@@ -193,9 +193,9 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("{id}/lock")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> LockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -234,8 +234,8 @@ namespace Halcyon.Web.Controllers
 
         [HttpPut("{id}/unlock")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UnlockUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -266,9 +266,9 @@ namespace Halcyon.Web.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> DeleteUser(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
