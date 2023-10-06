@@ -1,8 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Halcyon.Web.Data;
-using Halcyon.Web.Filters;
-using Halcyon.Web.Models;
 using Halcyon.Web.Services.Date;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
@@ -10,7 +8,6 @@ using Halcyon.Web.Services.Jwt;
 using Halcyon.Web.Settings;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -57,29 +54,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllers(options =>
-    {
-        options.Filters.Add<ApiExceptionFilterAttribute>();
-    })
+builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    })
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        options.InvalidModelStateResponseFactory = context =>
-        {
-            return new BadRequestObjectResult(new ApiResponse<List<string>>
-            {
-                Code = "INVALID_REQUEST",
-                Message = "Request is invalid.",
-                Data = context.ModelState.Values
-                    .SelectMany(error => error.Errors)
-                    .Select(error => error.ErrorMessage)
-                    .ToList()
-            });
-        };
     });
 
 builder.Services.AddSwaggerGen(options =>
@@ -150,6 +129,7 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseExceptionHandler("/error");
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>

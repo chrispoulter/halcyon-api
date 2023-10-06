@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Web.Models
 {
-    public class UpdatedResponse
+    public class UpdateResponse
     {
         public int Id { get; set; }
     }

@@ -1,18 +1,16 @@
 ﻿using Halcyon.Web.Data;
-using Halcyon.Web.Models;
 using Halcyon.Web.Models.Token;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("[controller]")]
-    public class TokenController : BaseController
+    [Produces("application/json")]
+    public class TokenController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
 
@@ -31,8 +29,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users
@@ -40,37 +38,33 @@ namespace Halcyon.Web.Controllers
 
             if (user is null || user.Password is null)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "CREDENTIALS_INVALID",
-                    Message = "The credentials provided were invalid."
-                });
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "The credentials provided were invalid."
+                );
             }
 
             var verified = _hashService.VerifyHash(request.Password, user.Password);
 
             if (!verified)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "CREDENTIALS_INVALID",
-                    Message = "The credentials provided were invalid."
-                });
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "The credentials provided were invalid."
+                );
             }
 
             if (user.IsLockedOut)
             {
-                return BadRequest(new ApiResponse
-                {
-                    Code = "USER_LOCKED_OUT",
-                    Message = "This account has been locked out, please try again later."
-                });
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "This account has been locked out, please try again later."
+                );
             }
 
-            return Ok(new ApiResponse<string>
-            {
-                Data = _jwtService.GenerateToken(user)
-            });
+            var result = _jwtService.CreateToken(user);
+
+            return Ok(result);
         }
     }
 }
