@@ -29,13 +29,12 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
 builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
+{
     options
         .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-        .UseNpgsql(
-            connectionString,
-            builder => builder.EnableRetryOnFailure())
-        .UseSnakeCaseNamingConvention()
-);
+        .UseNpgsql(connectionString, builder => builder.EnableRetryOnFailure())
+        .UseSnakeCaseNamingConvention();
+});
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -59,29 +58,29 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(typeof(ApiExceptionFilterAttribute));
-})
-.AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-})
-.ConfigureApiBehaviorOptions(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
     {
-        return new BadRequestObjectResult(new ApiResponse<List<string>>
+        options.Filters.Add<ApiExceptionFilterAttribute>();
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
         {
-            Code = "INVALID_REQUEST",
-            Message = "Request is invalid.",
-            Data = context.ModelState.Values
-                .SelectMany(error => error.Errors)
-                .Select(error => error.ErrorMessage)
-                .ToList()
-        });
-    };
-});
+            return new BadRequestObjectResult(new ApiResponse<List<string>>
+            {
+                Code = "INVALID_REQUEST",
+                Message = "Request is invalid.",
+                Data = context.ModelState.Values
+                    .SelectMany(error => error.Errors)
+                    .Select(error => error.ErrorMessage)
+                    .ToList()
+            });
+        };
+    });
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -126,7 +125,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>("database");
+    .AddDbContextCheck<HalcyonDbContext>();
 
 builder.Services.AddCors(options =>
 {
