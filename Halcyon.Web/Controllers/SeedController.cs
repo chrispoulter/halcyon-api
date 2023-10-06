@@ -11,7 +11,7 @@ namespace Halcyon.Web.Controllers
     [ApiController]
     [Produces("text/plain")]
     [Route("[controller]")]
-    public class SeedController : BaseController
+    public class SeedController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
 

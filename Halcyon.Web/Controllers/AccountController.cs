@@ -12,7 +12,7 @@ namespace Halcyon.Web.Controllers
     [ApiController]
     [Produces("application/json")]
     [Route("[controller]")]
-    public class AccountController : BaseController
+    public class AccountController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
 
