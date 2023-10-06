@@ -9,8 +9,8 @@ using System.Net;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("text/plain")]
     [Route("[controller]")]
+    [Produces("text/plain")]
     public class SeedController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
@@ -30,7 +30,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> Index()
         {
             await _context.Database.MigrateAsync();

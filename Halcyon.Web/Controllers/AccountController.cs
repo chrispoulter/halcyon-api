@@ -5,13 +5,12 @@ using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("[controller]")]
+    [Produces("application/json")]
     public class AccountController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
@@ -31,8 +30,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existing = await _context.Users
@@ -41,7 +40,7 @@ namespace Halcyon.Web.Controllers
             if (existing is not null)
             {
                 return Problem(
-                  statusCode: (int)HttpStatusCode.BadRequest,
+                  statusCode: StatusCodes.Status400BadRequest,
                   title: "User name is already taken."
               );
             }
@@ -63,8 +62,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("forgot-password")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
             var user = await _context.Users
@@ -97,8 +96,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("reset-password")]
-        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
             var user = await _context.Users
@@ -110,7 +109,7 @@ namespace Halcyon.Web.Controllers
                 || request.Token != user.PasswordResetToken)
             {
                 return Problem(
-                  statusCode: (int)HttpStatusCode.BadRequest,
+                  statusCode: StatusCodes.Status400BadRequest,
                   title: "Invalid token."
               );
             }

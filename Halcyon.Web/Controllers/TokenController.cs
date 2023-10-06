@@ -4,13 +4,12 @@ using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("[controller]")]
+    [Produces("application/json")]
     public class TokenController : ControllerBase
     {
         private readonly HalcyonDbContext _context;
@@ -30,8 +29,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Token), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users
@@ -40,7 +39,7 @@ namespace Halcyon.Web.Controllers
             if (user is null || user.Password is null)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.BadRequest,
+                    statusCode: StatusCodes.Status400BadRequest,
                     title: "The credentials provided were invalid."
                 );
             }
@@ -50,7 +49,7 @@ namespace Halcyon.Web.Controllers
             if (!verified)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.BadRequest,
+                    statusCode: StatusCodes.Status400BadRequest,
                     title: "The credentials provided were invalid."
                 );
             }
@@ -58,7 +57,7 @@ namespace Halcyon.Web.Controllers
             if (user.IsLockedOut)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.BadRequest,
+                    statusCode: StatusCodes.Status400BadRequest,
                     title: "This account has been locked out, please try again later."
                 );
             }

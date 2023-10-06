@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Halcyon.Web.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorController : ControllerBase
     {
         public IActionResult Error()

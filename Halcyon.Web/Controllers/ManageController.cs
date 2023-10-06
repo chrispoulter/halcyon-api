@@ -6,15 +6,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [Route("[controller]")]
     [Authorize]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class ManageController : BaseController
     {
         private readonly HalcyonDbContext _context;
@@ -28,8 +27,8 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetProfileResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetProfileResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProfile()
         {
             var user = await _context.Users
@@ -38,7 +37,7 @@ namespace Halcyon.Web.Controllers
             if (user is null || user.IsLockedOut)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.NotFound,
+                    statusCode: StatusCodes.Status404NotFound,
                     title: "User not found."
                 );
             }
@@ -55,10 +54,10 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             var user = await _context.Users
@@ -67,7 +66,7 @@ namespace Halcyon.Web.Controllers
             if (user is null || user.IsLockedOut)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.NotFound,
+                    statusCode: StatusCodes.Status404NotFound,
                     title: "User not found."
                 );
             }
@@ -75,7 +74,7 @@ namespace Halcyon.Web.Controllers
             if (request.Version is not null && request.Version != user.Version)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.Conflict,
+                    statusCode: StatusCodes.Status409Conflict,
                     title: "Data has been modified since entities were loaded."
                 );
             }
@@ -88,7 +87,7 @@ namespace Halcyon.Web.Controllers
                 if (existing is not null)
                 {
                     return Problem(
-                        statusCode: (int)HttpStatusCode.BadRequest,
+                        statusCode: StatusCodes.Status400BadRequest,
                         title: "User name is already taken."
                     );
                 }
@@ -105,10 +104,10 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpPut("change-password")]
-        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             var user = await _context.Users
@@ -117,7 +116,7 @@ namespace Halcyon.Web.Controllers
             if (user is null || user.IsLockedOut)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.NotFound,
+                    statusCode: StatusCodes.Status404NotFound,
                     title: "User not found."
                 );
             }
@@ -125,7 +124,7 @@ namespace Halcyon.Web.Controllers
             if (request.Version is not null && request.Version != user.Version)
             {
                 return Problem(
-                     statusCode: (int)HttpStatusCode.Conflict,
+                     statusCode: StatusCodes.Status409Conflict,
                      title: "Data has been modified since entities were loaded."
                  );
             }
@@ -133,7 +132,7 @@ namespace Halcyon.Web.Controllers
             if (user.Password is null)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.BadRequest,
+                    statusCode: StatusCodes.Status400BadRequest,
                     title: "Incorrect password."
                 );
             }
@@ -143,7 +142,7 @@ namespace Halcyon.Web.Controllers
             if (!verified)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.BadRequest,
+                    statusCode: StatusCodes.Status400BadRequest,
                     title: "Incorrect password."
                 );
             }
@@ -157,9 +156,9 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(UpdateResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> DeleteProfile([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
         {
             var user = await _context.Users
@@ -168,7 +167,7 @@ namespace Halcyon.Web.Controllers
             if (user is null || user.IsLockedOut)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.NotFound,
+                    statusCode: StatusCodes.Status404NotFound,
                     title: "User not found."
                 );
             }
@@ -176,7 +175,7 @@ namespace Halcyon.Web.Controllers
             if (request?.Version is not null && request.Version != user.Version)
             {
                 return Problem(
-                    statusCode: (int)HttpStatusCode.Conflict,
+                    statusCode: StatusCodes.Status409Conflict,
                     title: "Data has been modified since entities were loaded."
                 );
             }
