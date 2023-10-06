@@ -9,7 +9,7 @@ using System.Net;
 namespace Halcyon.Web.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
+    [Produces("text/plain")]
     [Route("[controller]")]
     public class SeedController : BaseController
     {
@@ -30,7 +30,7 @@ namespace Halcyon.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Index()
         {
             await _context.Database.MigrateAsync();
@@ -67,7 +67,7 @@ namespace Halcyon.Web.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Content("Environment seeded.");
         }
     }
 }
