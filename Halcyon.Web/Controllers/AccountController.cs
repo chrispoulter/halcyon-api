@@ -3,6 +3,7 @@ using Halcyon.Web.Models;
 using Halcyon.Web.Models.Account;
 using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,16 +18,16 @@ namespace Halcyon.Web.Controllers
 
         private readonly IHashService _hashService;
 
-        private readonly IEmailService _emailService;
+        private readonly IBus _bus;
 
         public AccountController(
             HalcyonDbContext context,
             IHashService hashService,
-            IEmailService emailService)
+            IBus bus)
         {
             _context = context;
             _hashService = hashService;
-            _emailService = emailService;
+            _bus = bus;
         }
 
         [HttpPost("register")]
@@ -75,7 +76,7 @@ namespace Halcyon.Web.Controllers
 
                 await _context.SaveChangesAsync();
 
-                var message = new EmailMessage
+                var message = new EmailEvent
                 {
                     Template = EmailTemplate.RESET_PASSWORD,
                     To = new()
@@ -89,7 +90,7 @@ namespace Halcyon.Web.Controllers
                     }
                 };
 
-                await _emailService.SendEmailAsync(message);
+                await _bus.Publish(message);
             }
 
             return Ok();

@@ -1,9 +1,9 @@
 using Halcyon.Web.Data;
 using Halcyon.Web.Services.Date;
-using Halcyon.Web.Services.Email;
 using Halcyon.Web.Services.Hash;
 using Halcyon.Web.Services.Jwt;
 using Halcyon.Web.Settings;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +58,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumers(Assembly.GetExecutingAssembly());
+    
+    x.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc(version, new OpenApiInfo
@@ -111,7 +121,6 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSett
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 builder.Services.AddSingleton<IDateService, DateService>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IHashService, HashService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
