@@ -4,7 +4,7 @@
     {
         public EmailTemplate Template { get; set; }
 
-        public List<string> To { get; set; }
+        public string To { get; set; }
 
         public string From { get; set; }
 

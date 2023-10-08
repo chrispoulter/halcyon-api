@@ -31,18 +31,12 @@ namespace Halcyon.Web.Services.Email
                 ? _emailSettings.NoReplyAddress
                 : message.From;
 
-            var mailMessage = new MailMessage
+            var mailMessage = new MailMessage(from, message.To)
             {
-                From = new MailAddress(from),
                 Subject = subject,
                 IsBodyHtml = true,
                 Body = body,
             };
-
-            foreach (var emailAddress in message.To)
-            {
-                mailMessage.To.Add(new MailAddress(emailAddress));
-            }
 
             try
             {
