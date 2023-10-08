@@ -78,10 +78,7 @@ namespace Halcyon.Web.Controllers
                 var message = new EmailMessage
                 {
                     Template = EmailTemplate.RESET_PASSWORD,
-                    To = new()
-                    {
-                        user.EmailAddress
-                    },
+                    To = user.EmailAddress,
                     Data = new()
                     {
                         { "SiteUrl", request.SiteUrl },
