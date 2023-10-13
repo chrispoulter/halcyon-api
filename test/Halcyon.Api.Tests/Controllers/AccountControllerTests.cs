@@ -7,7 +7,6 @@ using Halcyon.Api.Services.Hash;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.EntityFrameworkCore;
-using Xunit;
 
 namespace Halcyon.Api.Tests.Controllers
 {
