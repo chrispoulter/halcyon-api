@@ -1,5 +1,6 @@
 using Halcyon.Api.Controllers;
 using Halcyon.Api.Data;
+using Halcyon.Api.Models;
 using Halcyon.Api.Models.Account;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -13,8 +14,10 @@ namespace Halcyon.Api.Tests.Controllers
     public class AccountControllerTests
     {
         [Fact]
-        public async Task Register_ShouldCreateNewUser()
+        public async Task Register_WhenRequestValid_ShouldCreateNewUser()
         {
+            var newId = 1;
+
             var request = new RegisterRequest
             {
                 EmailAddress = "test@example.com",
@@ -25,7 +28,15 @@ namespace Halcyon.Api.Tests.Controllers
             };
 
             var mockDbContext = new Mock<HalcyonDbContext>();
-            mockDbContext.Setup(x => x.Users).ReturnsDbSet(new List<User>() { });
+
+            var users = new List<User>();
+            mockDbContext.Setup(m => m.Users).ReturnsDbSet(users);
+
+            mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
+                .Callback<User>(u => users.Add(u));
+
+            mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Callback(() => users.First().Id = newId);
 
             var mockHashService = new Mock<IHashService>();
             var mockEmailService = new Mock<IEmailService>();
@@ -38,12 +49,9 @@ namespace Halcyon.Api.Tests.Controllers
             var response = await controller.Register(request) as OkObjectResult;
             Assert.NotNull(response);
 
-            mockDbContext.Verify(m => m.Add(It.IsAny<User>()), Times.Once());
-            mockDbContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
-
-            //var result = response.Value as UpdateResponse;
-            //Assert.NotNull(result);
-            //Assert.Equal(42, result.Id);
+            var result = response.Value as UpdateResponse;
+            Assert.NotNull(result);
+            Assert.Equal(newId, result.Id);
         }
     }
 }
