@@ -2,8 +2,8 @@ using Halcyon.Api.Controllers;
 using Halcyon.Api.Data;
 using Halcyon.Api.Models;
 using Halcyon.Api.Models.Account;
-using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -36,12 +36,12 @@ namespace Halcyon.Api.Tests.Controllers
                 .Callback(() => users.ForEach(u => u.Id = users.IndexOf(u) + 1));
 
             var mockHashService = new Mock<IHashService>();
-            var mockEmailService = new Mock<IEmailService>();
+            var mockBus = new Mock<IBus>();
 
             var controller = new AccountController(
                 mockDbContext.Object,
                 mockHashService.Object,
-                mockEmailService.Object);
+                mockBus.Object);
 
             var response = await controller.Register(request) as OkObjectResult;
             Assert.NotNull(response);

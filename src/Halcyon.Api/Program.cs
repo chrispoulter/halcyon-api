@@ -1,10 +1,10 @@
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Date;
-using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Halcyon.Api.Settings;
 using Mapster;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +58,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddMassTransit(options =>
+{
+    options.AddConsumers(Assembly.GetExecutingAssembly());
+
+    options.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -114,7 +124,6 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSett
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 builder.Services.AddSingleton<IDateService, DateService>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IHashService, HashService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 

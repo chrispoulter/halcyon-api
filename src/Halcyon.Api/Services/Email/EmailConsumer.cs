@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Settings;
+using Halcyon.Api.Settings;
+using MassTransit;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
@@ -7,20 +8,21 @@ using System.Text.RegularExpressions;
 
 namespace Halcyon.Api.Services.Email
 {
-    public partial class EmailService : IEmailService
+    public partial class EmailConsumer : IConsumer<EmailEvent>
     {
         private readonly EmailSettings _emailSettings;
 
-        private readonly ILogger<EmailService> _logger;
+        private readonly ILogger<EmailConsumer> _logger;
 
-        public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
+        public EmailConsumer(IOptions<EmailSettings> emailSettings, ILogger<EmailConsumer> logger)
         {
             _emailSettings = emailSettings.Value;
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(EmailMessage message)
+        public async Task Consume(ConsumeContext<EmailEvent> context)
         {
+            var message = context.Message;
             var template = ReadResource($"{message.Template}.html");
             var title = GetTitle(template);
 
@@ -54,6 +56,7 @@ namespace Halcyon.Api.Services.Email
             {
                 _logger.LogError(error, "Email Send Failed");
             }
+
         }
 
         private string ReadResource(string resource)

@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Api.Services.Email
 {
-    public class EmailMessage
+    public class EmailEvent
     {
         public EmailTemplate Template { get; set; }
 
