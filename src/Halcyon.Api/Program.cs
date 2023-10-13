@@ -4,6 +4,7 @@ using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Halcyon.Api.Settings;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -105,6 +106,8 @@ builder.Services.AddCors(options =>
             .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
     );
 });
+
+TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));

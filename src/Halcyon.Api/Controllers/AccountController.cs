@@ -3,6 +3,7 @@ using Halcyon.Api.Models;
 using Halcyon.Api.Models.Account;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,14 +46,8 @@ namespace Halcyon.Api.Controllers
               );
             }
 
-            var user = new User
-            {
-                EmailAddress = request.EmailAddress,
-                Password = _hashService.GenerateHash(request.Password),
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth.Value.ToUniversalTime()
-            };
+            var password =_hashService.GenerateHash(request.Password);
+            var user = (request, password).Adapt<User>();
 
             _context.Users.Add(user);
 

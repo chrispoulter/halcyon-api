@@ -2,6 +2,7 @@
 using Halcyon.Api.Models;
 using Halcyon.Api.Models.Manage;
 using Halcyon.Api.Services.Hash;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -43,15 +44,9 @@ namespace Halcyon.Api.Controllers
                 );
             }
 
-            return Ok(new GetProfileResponse()
-            {
-                Id = user.Id,
-                EmailAddress = user.EmailAddress,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.ToUniversalTime(),
-                Version = user.Version
-            });
+            var result = user.Adapt<GetProfileResponse>();
+
+            return Ok(result);
         }
 
         [HttpPut]
@@ -94,10 +89,7 @@ namespace Halcyon.Api.Controllers
                 }
             }
 
-            user.EmailAddress = request.EmailAddress;
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
-            user.DateOfBirth = request.DateOfBirth.Value.ToUniversalTime();
+            request.Adapt(user);
 
             await _context.SaveChangesAsync();
 
