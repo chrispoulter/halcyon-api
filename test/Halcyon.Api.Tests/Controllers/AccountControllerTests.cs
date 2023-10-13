@@ -13,39 +13,55 @@ namespace Halcyon.Api.Tests.Controllers
 {
     public class AccountControllerTests
     {
+        private readonly Mock<HalcyonDbContext> _mockDbContext;
+
+        private readonly List<User> _storedUsers;
+
+        private readonly Mock<IHashService> _mockHashService;
+
+        private readonly Mock<IBus> _mockBus;
+
+        private readonly AccountController _accountController;
+
+        public AccountControllerTests()
+        {
+            _mockDbContext = new Mock<HalcyonDbContext>();
+            _mockHashService = new Mock<IHashService>();
+            _mockBus = new Mock<IBus>();
+            _storedUsers = new List<User>();
+
+            _mockDbContext.Setup(m => m.Users)
+                .ReturnsDbSet(_storedUsers);
+
+            _mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
+                .Callback<User>(_storedUsers.Add);
+
+            _mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Callback(() => _storedUsers.ForEach(user => user.Id = _storedUsers.IndexOf(user) + 1));
+
+            _accountController = new AccountController(
+                _mockDbContext.Object,
+                _mockHashService.Object,
+                _mockBus.Object);
+        }
+
         [Fact]
         public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
         {
             var request = new RegisterRequest
-            { 
-                EmailAddress = "test@example.com" 
-            };
-
-            var mockDbContext = new Mock<HalcyonDbContext>();
-            var mockHashService = new Mock<IHashService>();
-            var mockBus = new Mock<IBus>();
-
-            var storedUsers = new List<User> 
             {
-                new User
-                {
-                    EmailAddress = request.EmailAddress
-                }
+                EmailAddress = "test@example.com"
             };
 
-            mockDbContext.Setup(m => m.Users)
-                .ReturnsDbSet(storedUsers);
+            _storedUsers.Add(new User
+            {
+                EmailAddress = request.EmailAddress
+            });
 
-            var controller = new AccountController(
-                mockDbContext.Object,
-                mockHashService.Object,
-                mockBus.Object);
-
-            var result = await controller.Register(request);
+            var result = await _accountController.Register(request);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             var response = Assert.IsType<ProblemDetails>(objectResult.Value);
-
             Assert.Equal(StatusCodes.Status400BadRequest, response.Status);
         }
 
@@ -54,31 +70,10 @@ namespace Halcyon.Api.Tests.Controllers
         {
             var request = new RegisterRequest();
 
-            var mockDbContext = new Mock<HalcyonDbContext>();
-            var mockHashService = new Mock<IHashService>();
-            var mockBus = new Mock<IBus>();
-
-            var storedUsers = new List<User>();
-
-            mockDbContext.Setup(m => m.Users)
-                .ReturnsDbSet(storedUsers);
-
-            mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-                .Callback<User>(storedUsers.Add);
-
-            mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Callback(() => storedUsers.ForEach(user => user.Id = storedUsers.IndexOf(user) + 1));
-
-            var controller = new AccountController(
-                mockDbContext.Object,
-                mockHashService.Object,
-                mockBus.Object);
-
-            var result = await controller.Register(request);
+            var result = await _accountController.Register(request);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
             var response = Assert.IsType<UpdateResponse>(objectResult.Value);
-
             Assert.Equal(1, response.Id);
         }
     }
