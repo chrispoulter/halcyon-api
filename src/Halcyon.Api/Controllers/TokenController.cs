@@ -34,6 +34,7 @@ namespace Halcyon.Api.Controllers
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
             var user = await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (user is null || user.Password is null)

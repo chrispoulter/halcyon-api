@@ -32,7 +32,9 @@ namespace Halcyon.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchUsers([FromQuery] SearchUsersRequest request)
         {
-            var query = _context.Users.AsQueryable();
+            var query = _context.Users
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Search))
             {
@@ -84,6 +86,7 @@ namespace Halcyon.Api.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user is null)

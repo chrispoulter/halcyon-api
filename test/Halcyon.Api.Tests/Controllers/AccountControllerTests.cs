@@ -16,8 +16,6 @@ namespace Halcyon.Api.Tests.Controllers
         [Fact]
         public async Task Register_WhenRequestValid_ShouldCreateNewUser()
         {
-            var newId = 1;
-
             var request = new RegisterRequest
             {
                 EmailAddress = "test@example.com",
@@ -33,10 +31,10 @@ namespace Halcyon.Api.Tests.Controllers
             mockDbContext.Setup(m => m.Users).ReturnsDbSet(users);
 
             mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-                .Callback<User>(u => users.Add(u));
+                .Callback<User>(users.Add);
 
             mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Callback(() => users.First().Id = newId);
+                .Callback(() => users.ForEach(u => u.Id = users.IndexOf(u) + 1));
 
             var mockHashService = new Mock<IHashService>();
             var mockEmailService = new Mock<IEmailService>();
@@ -51,7 +49,7 @@ namespace Halcyon.Api.Tests.Controllers
 
             var result = response.Value as UpdateResponse;
             Assert.NotNull(result);
-            Assert.Equal(newId, result.Id);
+            Assert.Equal(1, result.Id);
         }
     }
 }

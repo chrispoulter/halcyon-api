@@ -32,6 +32,7 @@ namespace Halcyon.Api.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var user = await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
             if (user is null || user.IsLockedOut)
