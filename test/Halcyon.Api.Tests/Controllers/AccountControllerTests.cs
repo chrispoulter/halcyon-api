@@ -25,18 +25,19 @@ namespace Halcyon.Api.Tests.Controllers
             };
 
             var mockDbContext = new Mock<HalcyonDbContext>();
-
-            var users = new List<User>();
-            mockDbContext.Setup(m => m.Users).ReturnsDbSet(users);
-
-            mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-                .Callback<User>(users.Add);
-
-            mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Callback(() => users.ForEach(u => u.Id = users.IndexOf(u) + 1));
-
             var mockHashService = new Mock<IHashService>();
             var mockBus = new Mock<IBus>();
+
+            var storedUsers = new List<User>();
+
+            mockDbContext.Setup(m => m.Users)
+                .ReturnsDbSet(storedUsers);
+
+            mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
+                .Callback<User>(storedUsers.Add);
+
+            mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Callback(() => storedUsers.ForEach(user => user.Id = storedUsers.IndexOf(user) + 1));
 
             var controller = new AccountController(
                 mockDbContext.Object,
