@@ -34,17 +34,20 @@ jobs:
         with:
           dotnet-version: "7.x"
 
-      - name: Build with dotnet
+      - name: Build
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish "Halcyon.Web/Halcyon.Web.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ./myapp
+      - name: Test
+        run: dotnet test --configuration Release
+
+      - name: Publish
+        run: dotnet publish "src/Halcyon.Api/Halcyon.Api.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ./api
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: halcyon-web
-          path: ./myapp
+          name: halcyon-api
+          path: ./api
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,7 +60,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: halcyon-web
+          name: halcyon-api
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
