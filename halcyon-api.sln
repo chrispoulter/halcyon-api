@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Halcyon.Web", "Halcyon.Web\Halcyon.Web.csproj", "{E6358DA2-23B8-4631-952C-6791A52E097E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62A0DCB9-F97D-48C8-964B-792D12FF324E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -13,19 +11,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C1C1C1DC-3157-4566-984D-571A6CB8B1B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BF87506E-345E-4569-8A46-7BDBB237D53C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Halcyon.Api", "src\Halcyon.Api\Halcyon.Api.csproj", "{F87620C3-B676-477E-BC66-E1F0C92F44C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Halcyon.Api.Tests", "test\Halcyon.Api.Tests\Halcyon.Api.Tests.csproj", "{FFF1499E-1E31-42AD-AF3F-D10E37CA340A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6358DA2-23B8-4631-952C-6791A52E097E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6358DA2-23B8-4631-952C-6791A52E097E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6358DA2-23B8-4631-952C-6791A52E097E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6358DA2-23B8-4631-952C-6791A52E097E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87620C3-B676-477E-BC66-E1F0C92F44C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87620C3-B676-477E-BC66-E1F0C92F44C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87620C3-B676-477E-BC66-E1F0C92F44C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87620C3-B676-477E-BC66-E1F0C92F44C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF1499E-1E31-42AD-AF3F-D10E37CA340A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF1499E-1E31-42AD-AF3F-D10E37CA340A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF1499E-1E31-42AD-AF3F-D10E37CA340A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF1499E-1E31-42AD-AF3F-D10E37CA340A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F87620C3-B676-477E-BC66-E1F0C92F44C2} = {C1C1C1DC-3157-4566-984D-571A6CB8B1B4}
+		{FFF1499E-1E31-42AD-AF3F-D10E37CA340A} = {BF87506E-345E-4569-8A46-7BDBB237D53C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5198F1F-1260-477B-AAC2-33A4082BC5C6}
