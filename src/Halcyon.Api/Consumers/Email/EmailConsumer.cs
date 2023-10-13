@@ -6,7 +6,7 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Halcyon.Api.Services.Email
+namespace Halcyon.Api.Consumers.Email
 {
     public partial class EmailConsumer : IConsumer<EmailEvent>
     {

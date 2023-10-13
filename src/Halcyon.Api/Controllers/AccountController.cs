@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Data;
+﻿using Halcyon.Api.Consumers.Email;
+using Halcyon.Api.Data;
 using Halcyon.Api.Models;
 using Halcyon.Api.Models.Account;
-using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using MassTransit;
