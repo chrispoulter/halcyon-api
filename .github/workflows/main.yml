@@ -34,14 +34,17 @@ jobs:
         with:
           dotnet-version: "7.x"
 
+      - name: Restore
+        run: dotnet restore
+
       - name: Build
-        run: dotnet build --configuration Release
+        run: dotnet build --no-restore
 
       - name: Test
-        run: dotnet test --configuration Release
+        run: dotnet test --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish "src/Halcyon.Api/Halcyon.Api.csproj" -c Release -p:Version=${{ steps.gitversion.outputs.semVer }} -o ./api
+        run: dotnet publish "src/Halcyon.Api/Halcyon.Api.csproj" --configuration Release --output ./api -p:Version=${{ steps.gitversion.outputs.semVer }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
