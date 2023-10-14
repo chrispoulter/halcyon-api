@@ -8,9 +8,9 @@ namespace Halcyon.Api.Extensions
 {
     public static class ValidationExtensions
     {
-        public static IRuleBuilderOptions<T, DateTime?> InThePast<T>(this IRuleBuilder<T, DateTime?> ruleBuilder, IDateService dateService)
+        public static IRuleBuilderOptions<T, DateOnly?> InThePast<T>(this IRuleBuilder<T, DateOnly?> ruleBuilder, IDateService dateService)
             => ruleBuilder
-                .LessThan(dateService.UtcNow)
+                .LessThan(DateOnly.FromDateTime(dateService.UtcNow))
                 .WithMessage("'{PropertyName}' must be in the past.");
 
         public static IRuleBuilderOptions<T, string> ReturnUrl<T>(this IRuleBuilder<T, string> ruleBuilder, IOptions<CorsOptions> corsOptions)
