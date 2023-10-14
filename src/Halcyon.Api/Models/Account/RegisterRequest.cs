@@ -31,6 +31,6 @@ namespace Halcyon.Api.Models.Account
         [DisplayName("Date Of Birth")]
         [Required]
         [Past]
-        public DateTime? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
     }
 }

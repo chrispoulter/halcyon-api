@@ -26,7 +26,7 @@ namespace Halcyon.Api.Models.User
         [DisplayName("Date Of Birth")]
         [Required]
         [Past]
-        public DateTime? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
         public List<Role> Roles { get; set; }
     }
