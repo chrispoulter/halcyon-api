@@ -10,7 +10,7 @@
 
         public string LastName { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         public uint Version { get; set; }
     }

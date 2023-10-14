@@ -26,7 +26,7 @@ namespace Halcyon.Api.Migrations
                     password_reset_token = table.Column<Guid>(type: "uuid", nullable: true),
                     first_name = table.Column<string>(type: "text", nullable: false),
                     last_name = table.Column<string>(type: "text", nullable: false),
-                    date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
                     is_locked_out = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     roles = table.Column<string[]>(type: "text[]", nullable: true),
                     xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),

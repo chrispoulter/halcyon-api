@@ -12,7 +12,7 @@ namespace Halcyon.Api.Models.User
 
         public string LastName { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         public bool IsLockedOut { get; set; }
 

@@ -13,14 +13,14 @@ namespace Halcyon.Api.Filters.Validation
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is not DateTime date)
+            if (value is not DateOnly date)
             {
                 return ValidationResult.Success;
             }
 
             var dateService = validationContext.GetService<IDateService>();
 
-            if (date < dateService.UtcNow)
+            if (date < DateOnly.FromDateTime(dateService.UtcNow))
             {
                 return ValidationResult.Success;
             }
