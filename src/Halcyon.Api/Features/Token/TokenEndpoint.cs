@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,6 @@ namespace Halcyon.Api.Features.Token
 
         public static async Task<IResult> HandleAsync(
             TokenRequest request,
-            IValidator<TokenRequest> validator,
             HalcyonDbContext dbContext,
             IHashService hashService,
             IJwtService jwtService)

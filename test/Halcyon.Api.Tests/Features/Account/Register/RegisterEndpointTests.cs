@@ -1,5 +1,3 @@
-using FluentValidation;
-using FluentValidation.Results;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
 using Halcyon.Api.Features.Account.Register;
@@ -13,8 +11,6 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 {
     public class RegisterEndpointTests
     {
-        private readonly Mock<IValidator<RegisterRequest>> _mockValidator;
-
         private readonly Mock<HalcyonDbContext> _mockDbContext;
 
         private readonly List<User> _storedUsers;
@@ -23,13 +19,9 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 
         public RegisterEndpointTests()
         {
-            _mockValidator = new Mock<IValidator<RegisterRequest>>();
             _mockDbContext = new Mock<HalcyonDbContext>();
             _mockHashService = new Mock<IHashService>();
             _storedUsers = new List<User>();
-
-            _mockValidator.Setup(m => m.ValidateAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ValidationResult());
 
             _mockDbContext.Setup(m => m.Users)
                 .ReturnsDbSet(_storedUsers);
@@ -56,7 +48,6 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 
             var result = await RegisterEndpoint.HandleAsync(
                 request,
-                _mockValidator.Object,
                 _mockDbContext.Object,
                 _mockHashService.Object
             );
@@ -72,7 +63,6 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 
             var result = await RegisterEndpoint.HandleAsync(
                 request,
-                _mockValidator.Object,
                 _mockDbContext.Object,
                 _mockHashService.Object
             );

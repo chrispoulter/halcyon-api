@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -22,7 +21,6 @@ namespace Halcyon.Api.Features.Users.SearchUsers
 
         public static async Task<IResult> HandleAsync(
             [AsParameters] SearchUsersRequest request,
-            IValidator<SearchUsersRequest> validator,
             HalcyonDbContext dbContext)
         {
             var query = dbContext.Users

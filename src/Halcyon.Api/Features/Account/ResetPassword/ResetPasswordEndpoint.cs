@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -21,7 +20,6 @@ namespace Halcyon.Api.Features.Account.ResetPassword
 
         public static async Task<IResult> HandleAsync(
             ResetPasswordRequest request,
-            IValidator<ResetPasswordRequest> validator,
             HalcyonDbContext dbContext,
             IHashService hashService)
         {

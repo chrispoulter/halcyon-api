@@ -1,10 +1,9 @@
 ﻿using Halcyon.Api.Data;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using FluentValidation;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
@@ -25,7 +24,6 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
 
         public static async Task<IResult> HandleAsync(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
-            IValidator<UpdateRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {

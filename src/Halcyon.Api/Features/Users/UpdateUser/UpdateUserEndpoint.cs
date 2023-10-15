@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -26,7 +25,6 @@ namespace Halcyon.Api.Features.Users.UpdateUser
         public static async Task<IResult> HandleAsync(
             int id,
             UpdateUserRequest request,
-            IValidator<UpdateUserRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -25,7 +24,6 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
 
         public static async Task<IResult> HandleAsync(
             ChangePasswordRequest request,
-            IValidator<ChangePasswordRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
             IHashService hashService)

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +26,6 @@ namespace Halcyon.Api.Features.Users.LockUser
         public static async Task<IResult> HandleAsync(
             int id,
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
-            IValidator<UpdateRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {var currentUserId = currentUser.GetUserId();

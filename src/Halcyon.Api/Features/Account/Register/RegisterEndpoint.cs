@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -20,16 +19,9 @@ namespace Halcyon.Api.Features.Account.Register
 
         public static async Task<IResult> HandleAsync(
             RegisterRequest request,
-            IValidator<RegisterRequest> validator,
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var existing = await dbContext.Users
                  .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

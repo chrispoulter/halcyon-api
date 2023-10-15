@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +23,6 @@ namespace Halcyon.Api.Features.Users.CreateUser
 
         public static async Task<IResult> HandleAsync(
             CreateUserRequest request,
-            IValidator<CreateUserRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
             IHashService hashService)
