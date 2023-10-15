@@ -41,6 +41,8 @@ builder.Services.ConfigureHttpJsonOptions(options => {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.AddProblemDetails();
+
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var jwtSettings = new JwtSettings();
@@ -64,7 +66,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddProblemDetails();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsUserAdministrator", policy =>
+        policy.RequireRole(new[] 
+        { 
+            Role.SYSTEM_ADMINISTRATOR, 
+            Role.USER_ADMINISTRATOR 
+        }
+        .Select(r => r.ToString())
+    )
+);
 
 builder.Services.AddMassTransit(options =>
 {

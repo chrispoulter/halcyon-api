@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Halcyon.Api.Filters.Validation;
+using Halcyon.Api.Filters;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
