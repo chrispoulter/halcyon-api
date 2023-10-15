@@ -2,12 +2,12 @@ using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
 using Halcyon.Api.Features.Account.Register;
 using Halcyon.Api.Features.Account.ResetPassword;
+using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Features.Token.CreateToken;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
-using Halcyon.Api.Settings;
 using Mapster;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -157,6 +157,8 @@ app.MapControllers();
 app.MapRegisterEndpoint()
     .MapForgotPasswordEndpoint()
     .MapResetPasswordEndpoint();
+
+app.MapSeedEndpoint();
 
 app.MapCreateTokenEndpoint();
 

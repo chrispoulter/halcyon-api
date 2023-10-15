@@ -1,11 +1,10 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Api.Filters.Validation;
+﻿using Halcyon.Api.Filters.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Models.User
+namespace Halcyon.Api.Features.Manage.UpdateProfile
 {
-    public class UpdateUserRequest : UpdateRequest
+    public class UpdateProfileRequest : UpdateRequest
     {
         [DisplayName("Email Address")]
         [Required]
@@ -27,7 +26,5 @@ namespace Halcyon.Api.Models.User
         [Required]
         [Past]
         public DateOnly? DateOfBirth { get; set; }
-
-        public List<Role> Roles { get; set; }
     }
 }

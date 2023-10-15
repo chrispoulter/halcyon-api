@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Token.CreateToken
 {
-    public static class CreateTokenEndpoint
+    public static class SeedEndpoint
     {
         public static WebApplication MapCreateTokenEndpoint(this WebApplication app)
         {
-            app.MapPut("/token", HandleAsync)
+            app.MapPost("/token", HandleAsync)
                 .WithTags("Token")
                 .Produces<Services.Jwt.Token>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

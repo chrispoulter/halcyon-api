@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Halcyon.Api.Models
+namespace Halcyon.Api.Features
 {
     public class UpdateRequest
     {

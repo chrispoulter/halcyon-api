@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Models.User
+﻿namespace Halcyon.Api.Features.Users.SearchUsers
 {
     public enum UserSort
     {

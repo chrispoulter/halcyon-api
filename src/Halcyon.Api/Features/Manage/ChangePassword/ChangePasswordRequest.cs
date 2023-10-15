@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Models.Manage
+namespace Halcyon.Api.Features.Manage.ChangePassword
 {
     public class ChangePasswordRequest : UpdateRequest
     {

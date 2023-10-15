@@ -3,21 +3,15 @@ using Halcyon.Api.Filters.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Models.User
+namespace Halcyon.Api.Features.Users.UpdateUser
 {
-    public class CreateUserRequest
+    public class UpdateUserRequest : UpdateRequest
     {
         [DisplayName("Email Address")]
         [Required]
         [EmailAddress]
         [MaxLength(255)]
         public string EmailAddress { get; set; }
-
-        [DisplayName("Password")]
-        [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
-        public string Password { get; set; }
 
         [DisplayName("First Name")]
         [Required]

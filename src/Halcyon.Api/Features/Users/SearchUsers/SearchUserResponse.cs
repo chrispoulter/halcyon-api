@@ -1,6 +1,6 @@
 ﻿using Halcyon.Api.Data;
 
-namespace Halcyon.Api.Models.User
+namespace Halcyon.Api.Features.Users.SearchUsers
 {
     public class SearchUserResponse
     {

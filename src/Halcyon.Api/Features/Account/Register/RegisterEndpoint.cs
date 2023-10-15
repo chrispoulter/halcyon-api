@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Models;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;

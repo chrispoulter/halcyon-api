@@ -1,7 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
-using Halcyon.Api.Models.User;
-using Halcyon.Api.Settings;
+using Halcyon.Api.Features.Seed;
+using Halcyon.Api.Features.Users.CreateUser;
 using Mapster;
 
 namespace Halcyon.Api.Mappings

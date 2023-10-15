@@ -1,12 +1,19 @@
 ﻿using Halcyon.Api.Data;
 
-namespace Halcyon.Api.Models.User
+namespace Halcyon.Api.Features.Seed
 {
-    public class GetUserResponse
+    public class SeedSettings
     {
-        public int Id { get; set; }
+        public static string SectionName { get; } = "Seed";
 
+        public List<SeedUser> Users { get; set; }
+    }
+
+    public class SeedUser
+    {
         public string EmailAddress { get; set; }
+
+        public string Password { get; set; }
 
         public string FirstName { get; set; }
 
@@ -14,10 +21,6 @@ namespace Halcyon.Api.Models.User
 
         public DateOnly DateOfBirth { get; set; }
 
-        public bool IsLockedOut { get; set; }
-
         public List<Role> Roles { get; set; }
-
-        public uint Version { get; set; }
     }
 }
