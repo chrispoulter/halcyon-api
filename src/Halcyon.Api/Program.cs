@@ -149,7 +149,11 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-//app.UseExceptionHandler();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
