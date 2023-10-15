@@ -25,10 +25,4 @@
 		<EmbeddedResource Include="Templates\RESET_PASSWORD.html" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Features\Users\DeleteUser\" />
-	  <Folder Include="Features\Users\LockUser\" />
-	  <Folder Include="Features\Users\UnlockUser\" />
-	</ItemGroup>
-
 </Project>

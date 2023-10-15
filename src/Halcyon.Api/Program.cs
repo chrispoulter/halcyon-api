@@ -1,13 +1,8 @@
 using Halcyon.Api.Data;
-using Halcyon.Api.Features.Account.ForgotPassword;
-using Halcyon.Api.Features.Account.Register;
-using Halcyon.Api.Features.Account.ResetPassword;
-using Halcyon.Api.Features.Manage.ChangePassword;
-using Halcyon.Api.Features.Manage.DeleteProfile;
-using Halcyon.Api.Features.Manage.GetProfile;
-using Halcyon.Api.Features.Manage.UpdateProfile;
+using Halcyon.Api.Features.Account;
+using Halcyon.Api.Features.Manage;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Features.Token.CreateToken;
+using Halcyon.Api.Features.Token;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -65,6 +60,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
     });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddMassTransit(options =>
 {
@@ -148,24 +145,17 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapHealthChecks("/health");
 
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapRegisterEndpoint()
-    .MapForgotPasswordEndpoint()
-    .MapResetPasswordEndpoint();
-
-app.MapGetProfileEndpoint()
-    .MapUpdateProfileEndpoint()
-    .MapChangePasswordEndpoint()
-    .MapDeleteProfileEndpoint();
-
+app.MapAccountEndpoints();
+app.MapManageEndpoints();
 app.MapSeedEndpoint();
+app.MapTokenEndpoint();
 
-app.MapCreateTokenEndpoint();
+
 
 app.Run();

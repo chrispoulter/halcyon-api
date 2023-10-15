@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Features.Token.CreateToken
+namespace Halcyon.Api.Features.Token
 {
-    public class CreateTokenRequest
+    public class TokenRequest
     {
         [DisplayName("Email Address")]
         [Required]

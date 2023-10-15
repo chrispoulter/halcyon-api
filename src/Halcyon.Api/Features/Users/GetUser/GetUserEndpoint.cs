@@ -1,17 +1,16 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
-namespace Halcyon.Api.Features.Manage.GetProfile
+namespace Halcyon.Api.Features.Users.GetUser
 {
-    public static class UpdateProfileEndpoint
+    public static class GetUserEndpoint
     {
-        public static WebApplication MapGetProfileEndpoint(this WebApplication app)
+        public static WebApplication MapGetUserEndpoint(this WebApplication app)
         {
-            app.MapGet("/manage", HandleAsync)
+            app.MapGet("/user/{id}", HandleAsync)
                 .RequireAuthorization()
-                .WithTags("Manage")
+                .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
@@ -19,17 +18,14 @@ namespace Halcyon.Api.Features.Manage.GetProfile
         }
 
         public static async Task<IResult> HandleAsync(
-            UpdateRequest request,
-            ClaimsPrincipal currentUser,
+            int id,
             HalcyonDbContext dbContext)
         {
-            var currentUserId = currentUser.GetUserId();
-
             var user = await dbContext.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == currentUserId);
+               .AsNoTracking()
+               .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user is null || user.IsLockedOut)
+            if (user is null)
             {
                 return Results.Problem(
                     statusCode: StatusCodes.Status404NotFound,
@@ -37,7 +33,7 @@ namespace Halcyon.Api.Features.Manage.GetProfile
                 );
             }
 
-            var result = user.Adapt<GetProfileResponse>();
+            var result = user.Adapt<GetUserResponse>();
 
             return Results.Ok(result);
         }

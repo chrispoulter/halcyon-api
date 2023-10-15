@@ -3,11 +3,11 @@ using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Token.CreateToken
+namespace Halcyon.Api.Features.Token
 {
-    public static class SeedEndpoint
+    public static class TokenEndpoint
     {
-        public static WebApplication MapCreateTokenEndpoint(this WebApplication app)
+        public static WebApplication MapTokenEndpoint(this WebApplication app)
         {
             app.MapPost("/token", HandleAsync)
                 .WithTags("Token")
@@ -18,7 +18,7 @@ namespace Halcyon.Api.Features.Token.CreateToken
         }
 
         public static async Task<IResult> HandleAsync(
-            CreateTokenRequest request,
+            TokenRequest request,
             HalcyonDbContext dbContext,
             IHashService hashService,
             IJwtService jwtService)

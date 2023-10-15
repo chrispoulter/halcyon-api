@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Extensions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -22,8 +21,8 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
         }
 
         public static async Task<IResult> HandleAsync(
-            ClaimsPrincipal currentUser,
             UpdateProfileRequest request,
+            ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
             var currentUserId = currentUser.GetUserId();

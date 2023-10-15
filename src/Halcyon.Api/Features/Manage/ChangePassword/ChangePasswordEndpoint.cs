@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Extensions;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -22,8 +21,8 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
         }
 
         public static async Task<IResult> HandleAsync(
-            ClaimsPrincipal currentUser,
             ChangePasswordRequest request,
+            ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
             IHashService hashService)
         {

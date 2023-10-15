@@ -2,16 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Halcyon.Api.Features.Manage.DeleteProfile
+namespace Halcyon.Api.Features.Users.DeleteUser
 {
-    public static class DeleteProfileEndpoint
+    public static class DeleteUserEndpoint
     {
-        public static WebApplication MapDeleteProfileEndpoint(this WebApplication app)
+        public static WebApplication MapDeleteUserEndpoint(this WebApplication app)
         {
-            app.MapDelete("/manage", HandleAsync)
+            app.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization()
-                .WithTags("Manage")
+                .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
@@ -19,6 +20,7 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
         }
 
         public static async Task<IResult> HandleAsync(
+            int id,
             UpdateRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
@@ -26,9 +28,9 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == currentUserId);
+               .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (user is null || user.IsLockedOut)
+            if (user is null)
             {
                 return Results.Problem(
                     statusCode: StatusCodes.Status404NotFound,
@@ -41,6 +43,14 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
                 return Results.Problem(
                     statusCode: StatusCodes.Status409Conflict,
                     title: "Data has been modified since entities were loaded."
+                );
+            }
+
+            if (user.Id == currentUserId)
+            {
+                return Results.Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Cannot delete currently logged in user."
                 );
             }
 
