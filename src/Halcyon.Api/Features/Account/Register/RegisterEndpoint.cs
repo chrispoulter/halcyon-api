@@ -10,7 +10,11 @@ namespace Halcyon.Api.Features.Account.Register
     {
         public static WebApplication MapRegisterEndpoint(this WebApplication app)
         {
-            app.MapPost("/account/register", HandleAsync);
+            app.MapPost("/account/register", HandleAsync)
+                .WithTags("Account")
+                .Produces<UpdateResponse>(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest);
+
             return app;
         }
 

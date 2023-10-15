@@ -73,6 +73,7 @@ builder.Services.AddMassTransit(options =>
     });
 });
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc(version, new OpenApiInfo
