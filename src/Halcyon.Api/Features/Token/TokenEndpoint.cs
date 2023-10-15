@@ -1,8 +1,8 @@
-﻿using Halcyon.Api.Data;
+﻿using FluentValidation;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
-using MiniValidation;
 
 namespace Halcyon.Api.Features.Token
 {
@@ -20,14 +20,15 @@ namespace Halcyon.Api.Features.Token
 
         public static async Task<IResult> HandleAsync(
             TokenRequest request,
+            IValidator<TokenRequest> validator,
             HalcyonDbContext dbContext,
             IHashService hashService,
             IJwtService jwtService)
         {
-            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
-            if (!isValid)
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(errors);
+                return Results.ValidationProblem(validationResult.ToDictionary());
             }
 
             var user = await dbContext.Users

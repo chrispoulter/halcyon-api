@@ -1,8 +1,8 @@
-﻿using Halcyon.Api.Data;
+﻿using FluentValidation;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using MiniValidation;
 
 namespace Halcyon.Api.Features.Users.UnlockUser
 {
@@ -23,12 +23,13 @@ namespace Halcyon.Api.Features.Users.UnlockUser
         public static async Task<IResult> HandleAsync(
             int id,
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+            IValidator<UpdateRequest> validator,
             HalcyonDbContext dbContext)
         {
-            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
-            if (!isValid)
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(errors);
+                return Results.ValidationProblem(validationResult.ToDictionary());
             }
 
             var user = await dbContext.Users

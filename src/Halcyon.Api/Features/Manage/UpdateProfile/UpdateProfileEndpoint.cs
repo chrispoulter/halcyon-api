@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Data;
+﻿using FluentValidation;
+using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using MiniValidation;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile
@@ -23,13 +23,14 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
 
         public static async Task<IResult> HandleAsync(
             UpdateProfileRequest request,
+            IValidator<UpdateProfileRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
-            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
-            if (!isValid)
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(errors);
+                return Results.ValidationProblem(validationResult.ToDictionary());
             }
 
             var currentUserId = currentUser.GetUserId();

@@ -21,8 +21,6 @@ namespace Halcyon.Api.Features.Users.GetUser
             int id,
             HalcyonDbContext dbContext)
         {
-            throw new Exception("BANNGGG!!!!!");
-
             var user = await dbContext.Users
                .AsNoTracking()
                .FirstOrDefaultAsync(u => u.Id == id);

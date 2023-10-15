@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.Results;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
 using Halcyon.Api.Features.Account.Register;
@@ -11,6 +13,8 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 {
     public class RegisterEndpointTests
     {
+        private readonly Mock<IValidator<RegisterRequest>> _mockValidator;
+
         private readonly Mock<HalcyonDbContext> _mockDbContext;
 
         private readonly List<User> _storedUsers;
@@ -19,9 +23,13 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 
         public RegisterEndpointTests()
         {
+            _mockValidator = new Mock<IValidator<RegisterRequest>>();
             _mockDbContext = new Mock<HalcyonDbContext>();
             _mockHashService = new Mock<IHashService>();
             _storedUsers = new List<User>();
+
+            _mockValidator.Setup(m => m.ValidateAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ValidationResult());
 
             _mockDbContext.Setup(m => m.Users)
                 .ReturnsDbSet(_storedUsers);
@@ -46,7 +54,12 @@ namespace Halcyon.Api.Tests.Features.Account.Register
                 EmailAddress = request.EmailAddress
             });
 
-            var result = await RegisterEndpoint.HandleAsync(request, _mockDbContext.Object, _mockHashService.Object);
+            var result = await RegisterEndpoint.HandleAsync(
+                request,
+                _mockValidator.Object,
+                _mockDbContext.Object,
+                _mockHashService.Object
+            );
 
             var response = Assert.IsType<ProblemHttpResult>(result);
             Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
@@ -57,7 +70,12 @@ namespace Halcyon.Api.Tests.Features.Account.Register
         {
             var request = new RegisterRequest();
 
-            var result = await RegisterEndpoint.HandleAsync(request, _mockDbContext.Object, _mockHashService.Object);
+            var result = await RegisterEndpoint.HandleAsync(
+                request,
+                _mockValidator.Object,
+                _mockDbContext.Object,
+                _mockHashService.Object
+            );
 
             var response = Assert.IsType<Ok<UpdateResponse>>(result);
             Assert.NotNull(response.Value);

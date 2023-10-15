@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Data;
+﻿using FluentValidation;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
-using MiniValidation;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
@@ -23,14 +23,15 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
 
         public static async Task<IResult> HandleAsync(
             ChangePasswordRequest request,
+            IValidator<ChangePasswordRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
-            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
-            if (!isValid)
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(errors);
+                return Results.ValidationProblem(validationResult.ToDictionary());
             }
 
             var currentUserId = currentUser.GetUserId();

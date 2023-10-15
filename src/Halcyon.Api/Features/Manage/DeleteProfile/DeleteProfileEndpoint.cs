@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using MiniValidation;
+using FluentValidation;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
@@ -23,13 +23,14 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
 
         public static async Task<IResult> HandleAsync(
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+            IValidator<UpdateRequest> validator,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
-            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
-            if (!isValid)
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(errors);
+                return Results.ValidationProblem(validationResult.ToDictionary());
             }
 
             var currentUserId = currentUser.GetUserId();

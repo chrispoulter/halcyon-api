@@ -1,3 +1,4 @@
+using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account;
 using Halcyon.Api.Features.Manage;
@@ -10,6 +11,7 @@ using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Mapster;
 using MassTransit;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -121,6 +123,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();

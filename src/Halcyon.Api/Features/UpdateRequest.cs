@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FluentValidation.Validators;
 
 namespace Halcyon.Api.Features
 {
     public class UpdateRequest
     {
-        [Display(Name = "Version")]
         public uint? Version { get; set; }
     }
 }
