@@ -2,6 +2,10 @@ using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
 using Halcyon.Api.Features.Account.Register;
 using Halcyon.Api.Features.Account.ResetPassword;
+using Halcyon.Api.Features.Manage.ChangePassword;
+using Halcyon.Api.Features.Manage.DeleteProfile;
+using Halcyon.Api.Features.Manage.GetProfile;
+using Halcyon.Api.Features.Manage.UpdateProfile;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Features.Token.CreateToken;
 using Halcyon.Api.Services.Date;
@@ -18,7 +22,6 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 
 var version = Assembly.GetEntryAssembly()
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
@@ -55,13 +58,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
-    });
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddMassTransit(options =>
@@ -152,11 +148,15 @@ app.UseAuthorization();
 app.MapHealthChecks("/health");
 
 app.UseCors();
-app.MapControllers();
 
 app.MapRegisterEndpoint()
     .MapForgotPasswordEndpoint()
     .MapResetPasswordEndpoint();
+
+app.MapGetProfileEndpoint()
+    .MapUpdateProfileEndpoint()
+    .MapChangePasswordEndpoint()
+    .MapDeleteProfileEndpoint();
 
 app.MapSeedEndpoint();
 

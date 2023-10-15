@@ -26,7 +26,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Manage\DeleteProfile\" />
 	  <Folder Include="Features\Users\DeleteUser\" />
 	  <Folder Include="Features\Users\LockUser\" />
 	  <Folder Include="Features\Users\UnlockUser\" />
