@@ -2,15 +2,14 @@
 
 namespace Halcyon.Api.Features
 {
+    public static class RequestValidationFilterExtensions
+    {
+        public static RouteHandlerBuilder AddValidationFilter<T>(this RouteHandlerBuilder builder)
+            => builder.AddEndpointFilter<RequestValidationFilter<T>>();
+    }
+
     public class RequestValidationFilter<T> : IEndpointFilter
     {
-        private readonly IValidator<T> _validator;
-
-        public RequestValidationFilter(IValidator<T> validator)
-        {
-            _validator = validator;
-        }
-
         public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
         {
             var request = context.GetArgument<T>(0);
@@ -23,7 +22,9 @@ namespace Halcyon.Api.Features
                 );
             }
 
-            var validationResult = await _validator.ValidateAsync(request);
+            var validator = context.HttpContext.RequestServices.GetRequiredService<IValidator<T>>();
+
+            var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
                 return Results.ValidationProblem(validationResult.ToDictionary());

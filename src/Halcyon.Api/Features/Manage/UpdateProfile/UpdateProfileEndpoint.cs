@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
         {
             app.MapPut("/manage", HandleAsync)
                 .RequireAuthorization()
-                .AddEndpointFilter<RequestValidationFilter<UpdateProfileRequest>>()
+                .AddValidationFilter<UpdateProfileRequest>()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

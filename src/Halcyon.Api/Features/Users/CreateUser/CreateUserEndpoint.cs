@@ -12,7 +12,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
         {
             app.MapPost("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddEndpointFilter<RequestValidationFilter<CreateUserRequest>>()
+                .AddValidationFilter<CreateUserRequest>()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

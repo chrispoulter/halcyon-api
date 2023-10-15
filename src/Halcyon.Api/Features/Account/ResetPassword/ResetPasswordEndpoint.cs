@@ -9,7 +9,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
         public static WebApplication MapResetPasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/account/reset-password", HandleAsync)
-                .AddEndpointFilter<RequestValidationFilter<ResetPasswordRequest>>()
+                .AddValidationFilter<ResetPasswordRequest>()
                 .WithTags("Account")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

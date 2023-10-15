@@ -10,7 +10,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
         public static WebApplication MapForgotPasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/account/forgot-password", HandleAsync)
-                .AddEndpointFilter<RequestValidationFilter<ForgotPasswordRequest>>()
+                .AddValidationFilter<ForgotPasswordRequest>()
                 .WithTags("Account")
                 .Produces(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

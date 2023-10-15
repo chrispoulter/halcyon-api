@@ -10,7 +10,7 @@ namespace Halcyon.Api.Features.Token
         public static WebApplication MapTokenEndpoint(this WebApplication app)
         {
             app.MapPost("/token", HandleAsync)
-                .AddEndpointFilter<RequestValidationFilter<TokenRequest>>()
+                .AddValidationFilter<TokenRequest>()
                 .WithTags("Token")
                 .Produces<Services.Jwt.Token>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

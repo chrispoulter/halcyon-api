@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Users.UpdateUser
         {
             app.MapPut("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddEndpointFilter<RequestValidationFilter<UpdateUserRequest>>()
+                .AddValidationFilter<UpdateUserRequest>()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

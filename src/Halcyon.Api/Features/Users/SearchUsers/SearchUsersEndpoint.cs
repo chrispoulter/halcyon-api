@@ -10,7 +10,7 @@ namespace Halcyon.Api.Features.Users.SearchUsers
         {
             app.MapGet("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddEndpointFilter<RequestValidationFilter<SearchUsersRequest>>()
+                .AddValidationFilter<SearchUsersRequest>()
                 .WithTags("Users")
                 .Produces<SearchUsersResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
