@@ -3,6 +3,7 @@ using Halcyon.Api.Features.Account;
 using Halcyon.Api.Features.Manage;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Features.Token;
+using Halcyon.Api.Features.Users;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -62,6 +63,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddProblemDetails();
 
 builder.Services.AddMassTransit(options =>
 {
@@ -135,7 +138,6 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseExceptionHandler("/error");
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>

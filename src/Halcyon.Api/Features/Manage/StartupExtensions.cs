@@ -5,7 +5,7 @@ using Halcyon.Api.Features.Manage.UpdateProfile;
 
 namespace Halcyon.Api.Features.Manage
 {
-    public static class ManageEndpointExtensions
+    public static class StartupExtensions
     {
         public static WebApplication MapManageEndpoints(this WebApplication app)
         {

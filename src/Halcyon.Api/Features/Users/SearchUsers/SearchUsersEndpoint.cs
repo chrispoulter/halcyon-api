@@ -19,7 +19,7 @@ namespace Halcyon.Api.Features.Users.SearchUsers
         }
 
         public static async Task<IResult> HandleAsync(
-            [FromQuery] SearchUsersRequest request,
+            [AsParameters] SearchUsersRequest request,
             HalcyonDbContext dbContext)
         {
             var query = dbContext.Users

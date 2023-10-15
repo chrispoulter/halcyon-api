@@ -6,9 +6,9 @@ using Halcyon.Api.Features.Users.SearchUsers;
 using Halcyon.Api.Features.Users.UnlockUser;
 using Halcyon.Api.Features.Users.UpdateUser;
 
-namespace Halcyon.Api.Features.Manage
+namespace Halcyon.Api.Features.Users
 {
-    public static class UserEndpointExtensions
+    public static class StartupExtensions
     {
         public static WebApplication MapUserEndpoints(this WebApplication app)
         {
