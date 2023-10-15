@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.DeleteUser
@@ -13,7 +12,6 @@ namespace Halcyon.Api.Features.Users.DeleteUser
         {
             app.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

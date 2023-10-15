@@ -2,7 +2,6 @@
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Token
 {
@@ -11,7 +10,7 @@ namespace Halcyon.Api.Features.Token
         public static WebApplication MapTokenEndpoint(this WebApplication app)
         {
             app.MapPost("/token", HandleAsync)
-                .AddFluentValidationAutoValidation()
+                .AddEndpointFilter<RequestValidationFilter<TokenRequest>>()
                 .WithTags("Token")
                 .Produces<Services.Jwt.Token>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

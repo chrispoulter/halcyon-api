@@ -10,6 +10,7 @@ namespace Halcyon.Api.Features.Account.Register
         public static WebApplication MapRegisterEndpoint(this WebApplication app)
         {
             app.MapPost("/account/register", HandleAsync)
+                .AddEndpointFilter<RequestValidationFilter<RegisterRequest>>()
                 .WithTags("Account")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -28,9 +29,9 @@ namespace Halcyon.Api.Features.Account.Register
             if (existing is not null)
             {
                 return Results.Problem(
-                  statusCode: StatusCodes.Status400BadRequest,
-                  title: "User name is already taken."
-              );
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "User name is already taken."
+                );
             }
 
             var password = hashService.GenerateHash(request.Password);

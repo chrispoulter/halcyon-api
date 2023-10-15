@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.LockUser
@@ -13,7 +12,6 @@ namespace Halcyon.Api.Features.Users.LockUser
         {
             app.MapPut("/user/{id}/lock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

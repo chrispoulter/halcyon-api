@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Users.UnlockUser
 {
@@ -12,7 +11,6 @@ namespace Halcyon.Api.Features.Users.UnlockUser
         {
             app.MapPut("/user/{id}/unlock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)

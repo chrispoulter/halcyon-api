@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
@@ -13,7 +12,6 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
         {
             app.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()
-                .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)

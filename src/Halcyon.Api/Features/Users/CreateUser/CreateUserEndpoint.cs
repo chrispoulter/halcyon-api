@@ -2,7 +2,6 @@
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.CreateUser
@@ -13,7 +12,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
         {
             app.MapPost("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
+                .AddEndpointFilter<RequestValidationFilter<CreateUserRequest>>()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

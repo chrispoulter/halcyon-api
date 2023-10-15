@@ -1,7 +1,6 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.UpdateUser
@@ -12,7 +11,7 @@ namespace Halcyon.Api.Features.Users.UpdateUser
         {
             app.MapPut("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
+                .AddEndpointFilter<RequestValidationFilter<UpdateUserRequest>>()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
