@@ -2,6 +2,7 @@ using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
 using Halcyon.Api.Features.Account.Register;
 using Halcyon.Api.Features.Account.ResetPassword;
+using Halcyon.Api.Features.Token.CreateToken;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -156,5 +157,7 @@ app.MapControllers();
 app.MapRegisterEndpoint()
     .MapForgotPasswordEndpoint()
     .MapResetPasswordEndpoint();
+
+app.MapCreateTokenEndpoint();
 
 app.Run();

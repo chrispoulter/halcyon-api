@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Models.Token
+namespace Halcyon.Api.Features.Token.CreateToken
 {
     public class CreateTokenRequest
     {
