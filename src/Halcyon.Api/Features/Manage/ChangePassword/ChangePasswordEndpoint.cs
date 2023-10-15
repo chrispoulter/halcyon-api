@@ -1,6 +1,8 @@
 ﻿using Halcyon.Api.Data;
+using Halcyon.Api.Extensions;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
 {
@@ -9,6 +11,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
         public static WebApplication MapChangePasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/manage/change-password", HandleAsync)
+                .RequireAuthorization()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -19,11 +22,13 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
         }
 
         public static async Task<IResult> HandleAsync(
-            int currentUserId,
+            ClaimsPrincipal currentUser,
             ChangePasswordRequest request,
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
+            var currentUserId = currentUser.GetUserId();
+
             var user = await dbContext.Users
                 .FirstOrDefaultAsync(u => u.Id == currentUserId);
 

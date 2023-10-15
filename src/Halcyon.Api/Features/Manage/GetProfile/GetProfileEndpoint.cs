@@ -1,6 +1,8 @@
 ﻿using Halcyon.Api.Data;
+using Halcyon.Api.Extensions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.GetProfile
 {
@@ -9,6 +11,7 @@ namespace Halcyon.Api.Features.Manage.GetProfile
         public static WebApplication MapGetProfileEndpoint(this WebApplication app)
         {
             app.MapGet("/manage", HandleAsync)
+                .RequireAuthorization()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound);
@@ -17,10 +20,12 @@ namespace Halcyon.Api.Features.Manage.GetProfile
         }
 
         public static async Task<IResult> HandleAsync(
-            int currentUserId,
+            ClaimsPrincipal currentUser,
             UpdateRequest request,
             HalcyonDbContext dbContext)
         {
+            var currentUserId = currentUser.GetUserId();
+
             var user = await dbContext.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == currentUserId);

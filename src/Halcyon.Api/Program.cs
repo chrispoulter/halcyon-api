@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var version = Assembly.GetEntryAssembly()
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
@@ -37,6 +38,11 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
         .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
         .UseNpgsql(connectionString, builder => builder.EnableRetryOnFailure())
         .UseSnakeCaseNamingConvention();
+});
+
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
