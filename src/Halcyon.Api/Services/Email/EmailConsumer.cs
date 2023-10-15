@@ -1,4 +1,4 @@
-using Halcyon.Api.Settings;
+using Halcyon.Api.Services.Email;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using System.Net;

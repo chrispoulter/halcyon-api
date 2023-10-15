@@ -1,5 +1,9 @@
 using Halcyon.Api.Data;
+using Halcyon.Api.Features.Account.ForgotPassword;
+using Halcyon.Api.Features.Account.Register;
+using Halcyon.Api.Features.Account.ResetPassword;
 using Halcyon.Api.Services.Date;
+using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Halcyon.Api.Settings;
@@ -147,4 +151,9 @@ app.MapHealthChecks("/health");
 
 app.UseCors();
 app.MapControllers();
+
+app.MapRegisterEndpoint()
+    .MapForgotPasswordEndpoint()
+    .MapResetPasswordEndpoint();
+
 app.Run();

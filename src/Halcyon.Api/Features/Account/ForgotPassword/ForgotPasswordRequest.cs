@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Halcyon.Api.Filters.Validation;
 
-namespace Halcyon.Api.Models.Account
+namespace Halcyon.Api.Features.Account.ForgotPassword
 {
     public class ForgotPasswordRequest
     {

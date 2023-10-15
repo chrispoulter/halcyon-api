@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Settings
+﻿namespace Halcyon.Api.Services.Jwt
 {
     public class JwtSettings
     {

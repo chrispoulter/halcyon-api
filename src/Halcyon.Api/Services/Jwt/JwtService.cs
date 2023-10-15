@@ -1,6 +1,5 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Date;
-using Halcyon.Api.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

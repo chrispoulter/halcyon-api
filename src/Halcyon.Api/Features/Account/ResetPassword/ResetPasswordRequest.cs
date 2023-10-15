@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Models.Account
+namespace Halcyon.Api.Features.Account.ResetPassword
 {
     public class ResetPasswordRequest
     {
