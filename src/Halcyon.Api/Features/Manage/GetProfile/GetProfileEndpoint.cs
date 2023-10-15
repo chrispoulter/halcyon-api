@@ -5,21 +5,20 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.GetProfile
 {
-    public static class UpdateProfileEndpoint
+    public static class GetProfileEndpoint
     {
         public static WebApplication MapGetProfileEndpoint(this WebApplication app)
         {
             app.MapGet("/manage", HandleAsync)
                 .RequireAuthorization()
                 .WithTags("Manage")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
+                .Produces<GetProfileResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
             return app;
         }
 
         public static async Task<IResult> HandleAsync(
-            UpdateRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {

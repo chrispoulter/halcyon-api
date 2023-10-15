@@ -1,4 +1,6 @@
 ﻿using Halcyon.Api.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -19,14 +21,14 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
         }
 
         public static async Task<IResult> HandleAsync(
-            UpdateRequest request,
+            [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == currentUserId);
+            .FirstOrDefaultAsync(u => u.Id == currentUserId);
 
             if (user is null || user.IsLockedOut)
             {

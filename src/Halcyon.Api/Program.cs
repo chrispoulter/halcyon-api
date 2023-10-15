@@ -155,7 +155,6 @@ app.MapAccountEndpoints();
 app.MapManageEndpoints();
 app.MapSeedEndpoint();
 app.MapTokenEndpoint();
-
-
+app.MapUserEndpoints();
 
 app.Run();

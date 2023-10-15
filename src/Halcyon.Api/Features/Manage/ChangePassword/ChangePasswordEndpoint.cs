@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
 {
-    public static class DeleteProfileEndpoint
+    public static class ChangePasswordEndpoint
     {
         public static WebApplication MapChangePasswordEndpoint(this WebApplication app)
         {

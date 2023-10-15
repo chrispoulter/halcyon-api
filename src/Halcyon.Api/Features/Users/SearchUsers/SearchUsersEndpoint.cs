@@ -1,5 +1,6 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.SearchUsers
@@ -18,7 +19,7 @@ namespace Halcyon.Api.Features.Users.SearchUsers
         }
 
         public static async Task<IResult> HandleAsync(
-            SearchUsersRequest request,
+            [FromQuery] SearchUsersRequest request,
             HalcyonDbContext dbContext)
         {
             var query = dbContext.Users

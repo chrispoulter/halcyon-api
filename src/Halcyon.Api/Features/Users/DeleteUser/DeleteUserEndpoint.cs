@@ -1,4 +1,6 @@
 ﻿using Halcyon.Api.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -21,7 +23,7 @@ namespace Halcyon.Api.Features.Users.DeleteUser
 
         public static async Task<IResult> HandleAsync(
             int id,
-            UpdateRequest request,
+            [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {

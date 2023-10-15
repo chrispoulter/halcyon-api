@@ -3,7 +3,7 @@ using Mapster;
 
 namespace Halcyon.Api.Features.Users.CreateUser
 {
-    public class CreateUserRequestMappingConfig : IRegister
+    public class CreateUserMappingConfig : IRegister
     {
         public void Register(TypeAdapterConfig config)
         {

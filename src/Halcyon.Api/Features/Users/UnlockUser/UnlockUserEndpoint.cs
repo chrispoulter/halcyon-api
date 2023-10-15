@@ -1,4 +1,6 @@
 ﻿using Halcyon.Api.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.UnlockUser
@@ -19,7 +21,7 @@ namespace Halcyon.Api.Features.Users.UnlockUser
 
         public static async Task<IResult> HandleAsync(
             int id,
-            UpdateRequest request,
+            [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
             HalcyonDbContext dbContext)
         {
             var user = await dbContext.Users

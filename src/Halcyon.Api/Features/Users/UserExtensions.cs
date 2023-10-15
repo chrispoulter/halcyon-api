@@ -13,8 +13,8 @@ namespace Halcyon.Api.Features.Manage
         public static WebApplication MapUserEndpoints(this WebApplication app)
         {
             app.MapSearchUsersEndpoint();
-            app.MapGetUserEndpoint();
             app.MapCreateUserEndpoint();
+            app.MapGetUserEndpoint();
             app.MapUpdateUserEndpoint();
             app.MapLockUserEndpoint();
             app.MapUnlockUserEndpoint();
