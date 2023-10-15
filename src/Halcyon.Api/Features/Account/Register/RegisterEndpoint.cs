@@ -2,6 +2,7 @@
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Account.Register
 {
@@ -22,6 +23,12 @@ namespace Halcyon.Api.Features.Account.Register
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var existing = await dbContext.Users
                  .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

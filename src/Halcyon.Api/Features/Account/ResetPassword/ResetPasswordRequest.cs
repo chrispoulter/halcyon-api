@@ -1,20 +1,19 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Api.Features.Account.ResetPassword
 {
     public class ResetPasswordRequest
     {
-        [DisplayName("Token")]
+        [Display(Name = "Token")]
         [Required]
         public Guid Token { get; set; }
 
-        [DisplayName("Email Address")]
+        [Display(Name = "Email Address")]
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("New Password")]
+        [Display(Name = "New Password")]
         [Required]
         [MinLength(8)]
         [MaxLength(50)]

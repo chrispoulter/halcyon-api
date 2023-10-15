@@ -2,6 +2,7 @@
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.CreateUser
@@ -25,6 +26,12 @@ namespace Halcyon.Api.Features.Users.CreateUser
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var currentUserId = currentUser.GetUserId();
 
             var existing = await dbContext.Users

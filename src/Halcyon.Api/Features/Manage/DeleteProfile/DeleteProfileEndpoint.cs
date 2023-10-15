@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
@@ -25,6 +26,12 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users

@@ -2,6 +2,7 @@
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Token
 {
@@ -23,6 +24,12 @@ namespace Halcyon.Api.Features.Token
             IHashService hashService,
             IJwtService jwtService)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var user = await dbContext.Users
                    .AsNoTracking()
                    .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);

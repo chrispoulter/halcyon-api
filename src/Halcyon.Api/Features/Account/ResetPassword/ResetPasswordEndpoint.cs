@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Account.ResetPassword
 {
@@ -21,6 +22,12 @@ namespace Halcyon.Api.Features.Account.ResetPassword
             HalcyonDbContext dbContext,
             IHashService hashService)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var user = await dbContext.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

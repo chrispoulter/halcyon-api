@@ -1,15 +1,14 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
 {
     public class ChangePasswordRequest : UpdateRequest
     {
-        [DisplayName("Current Password")]
+        [Display(Name = "Current Password")]
         [Required]
         public string CurrentPassword { get; set; }
 
-        [DisplayName("New Password")]
+        [Display(Name = "New Password")]
         [Required]
         [MinLength(8)]
         [MaxLength(50)]

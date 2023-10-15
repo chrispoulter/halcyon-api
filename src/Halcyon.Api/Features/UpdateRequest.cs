@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Api.Features
 {
     public class UpdateRequest
     {
-        [DisplayName("Version")]
+        [Display(Name = "Version")]
         public uint? Version { get; set; }
     }
 }

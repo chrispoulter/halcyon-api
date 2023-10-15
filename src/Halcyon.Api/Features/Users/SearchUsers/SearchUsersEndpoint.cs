@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Users.SearchUsers
 {
@@ -21,6 +22,12 @@ namespace Halcyon.Api.Features.Users.SearchUsers
             [AsParameters] SearchUsersRequest request,
             HalcyonDbContext dbContext)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var query = dbContext.Users
                 .AsNoTracking()
                 .AsQueryable();

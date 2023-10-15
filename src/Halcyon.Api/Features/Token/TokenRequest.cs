@@ -1,16 +1,15 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Api.Features.Token
 {
     public class TokenRequest
     {
-        [DisplayName("Email Address")]
+        [Display(Name = "Email Address")]
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("Password")]
+        [Display(Name = "Password")]
         [Required]
         public string Password { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile
@@ -25,6 +26,12 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users

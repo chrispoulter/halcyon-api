@@ -2,6 +2,7 @@
 using Halcyon.Api.Services.Email;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
@@ -22,6 +23,12 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
             HalcyonDbContext dbContext,
             IBus bus)
         {
+            var (isValid, errors) = await MiniValidator.TryValidateAsync(request);
+            if (!isValid)
+            {
+                return Results.ValidationProblem(errors);
+            }
+
             var user = await dbContext.Users
                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

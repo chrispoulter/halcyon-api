@@ -1,29 +1,28 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Filters;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Halcyon.Api.Features.Users.UpdateUser
 {
     public class UpdateUserRequest : UpdateRequest
     {
-        [DisplayName("Email Address")]
+        [Display(Name = "Email Address")]
         [Required]
         [EmailAddress]
         [MaxLength(255)]
         public string EmailAddress { get; set; }
 
-        [DisplayName("First Name")]
+        [Display(Name = "First Name")]
         [Required]
         [MaxLength(50)]
         public string FirstName { get; set; }
 
-        [DisplayName("Last Name")]
+        [Display(Name = "Last Name")]
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        [DisplayName("Date Of Birth")]
+        [Display(Name = "Date Of Birth")]
         [Required]
         [Past]
         public DateOnly? DateOfBirth { get; set; }
