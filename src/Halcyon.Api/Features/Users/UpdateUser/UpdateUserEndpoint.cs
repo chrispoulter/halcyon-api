@@ -10,7 +10,7 @@ namespace Halcyon.Api.Features.Users.UpdateUser
         public static WebApplication MapUpdateUserEndpoint(this WebApplication app)
         {
             app.MapPut("/user/{id}", HandleAsync)
-                .RequireAuthorization("IsUserAdministrator")
+                .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

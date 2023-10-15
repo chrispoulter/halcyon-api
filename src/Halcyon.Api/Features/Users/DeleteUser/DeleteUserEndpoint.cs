@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Users.DeleteUser
         public static WebApplication MapDeleteUserEndpoint(this WebApplication app)
         {
             app.MapDelete("/user/{id}", HandleAsync)
-                .RequireAuthorization("IsUserAdministrator")
+                .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

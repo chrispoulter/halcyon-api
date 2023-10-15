@@ -67,7 +67,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("IsUserAdministrator", policy =>
+    .AddPolicy("UserAdministratorPolicy", policy =>
         policy.RequireRole(new[] 
         { 
             Role.SYSTEM_ADMINISTRATOR, 
@@ -149,6 +149,7 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+//app.UseExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>

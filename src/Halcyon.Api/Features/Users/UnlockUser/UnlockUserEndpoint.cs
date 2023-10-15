@@ -10,7 +10,7 @@ namespace Halcyon.Api.Features.Users.UnlockUser
         public static WebApplication MapUnlockUserEndpoint(this WebApplication app)
         {
             app.MapPut("/user/{id}/unlock", HandleAsync)
-                .RequireAuthorization("IsUserAdministrator")
+                .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)

@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Users.LockUser
         public static WebApplication MapLockUserEndpoint(this WebApplication app)
         {
             app.MapPut("/user/{id}/lock", HandleAsync)
-                .RequireAuthorization("IsUserAdministrator")
+                .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

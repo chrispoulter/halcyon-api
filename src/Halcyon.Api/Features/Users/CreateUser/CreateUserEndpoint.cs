@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
         public static WebApplication MapCreateUserEndpoint(this WebApplication app)
         {
             app.MapPost("/user", HandleAsync)
-                .RequireAuthorization("IsUserAdministrator")
+                .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
