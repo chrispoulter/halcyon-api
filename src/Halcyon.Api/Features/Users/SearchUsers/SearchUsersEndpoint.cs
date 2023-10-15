@@ -2,6 +2,7 @@
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Users.SearchUsers
 {
@@ -11,6 +12,7 @@ namespace Halcyon.Api.Features.Users.SearchUsers
         {
             app.MapGet("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
+                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<SearchUsersResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -23,12 +25,6 @@ namespace Halcyon.Api.Features.Users.SearchUsers
             IValidator<SearchUsersRequest> validator,
             HalcyonDbContext dbContext)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var query = dbContext.Users
                 .AsNoTracking()
                 .AsQueryable();

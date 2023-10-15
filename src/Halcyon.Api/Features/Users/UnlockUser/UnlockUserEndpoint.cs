@@ -3,6 +3,7 @@ using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Users.UnlockUser
 {
@@ -12,6 +13,7 @@ namespace Halcyon.Api.Features.Users.UnlockUser
         {
             app.MapPut("/user/{id}/unlock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
+                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
@@ -26,12 +28,6 @@ namespace Halcyon.Api.Features.Users.UnlockUser
             IValidator<UpdateRequest> validator,
             HalcyonDbContext dbContext)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var user = await dbContext.Users
                   .FirstOrDefaultAsync(u => u.Id == id);
 

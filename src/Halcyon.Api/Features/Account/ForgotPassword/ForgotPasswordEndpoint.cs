@@ -1,8 +1,8 @@
-﻿using FluentValidation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Email;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
@@ -11,6 +11,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
         public static WebApplication MapForgotPasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/account/forgot-password", HandleAsync)
+                .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -20,16 +21,9 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
 
         public static async Task<IResult> HandleAsync(
             ForgotPasswordRequest request,
-            IValidator<ForgotPasswordRequest> validator,
             HalcyonDbContext dbContext,
             IBus bus)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var user = await dbContext.Users
                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

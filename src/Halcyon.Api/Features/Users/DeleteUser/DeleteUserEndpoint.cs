@@ -3,6 +3,7 @@ using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.DeleteUser
@@ -13,6 +14,7 @@ namespace Halcyon.Api.Features.Users.DeleteUser
         {
             app.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
+                .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -29,12 +31,6 @@ namespace Halcyon.Api.Features.Users.DeleteUser
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users

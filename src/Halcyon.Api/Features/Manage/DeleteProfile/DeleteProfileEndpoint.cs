@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using FluentValidation;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
@@ -13,6 +14,7 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
         {
             app.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()
+                .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
@@ -27,12 +29,6 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext)
         {
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            }
-
             var currentUserId = currentUser.GetUserId();
 
             var user = await dbContext.Users
