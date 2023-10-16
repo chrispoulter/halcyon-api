@@ -29,7 +29,7 @@ namespace Halcyon.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateToken(CreateTokenRequest request)
         {
