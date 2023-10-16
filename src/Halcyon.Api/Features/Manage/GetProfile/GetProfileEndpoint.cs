@@ -12,7 +12,7 @@ namespace Halcyon.Api.Features.Manage.GetProfile
             app.MapGet("/manage", HandleAsync)
                 .RequireAuthorization()
                 .WithTags("Manage")
-                .Produces<GetProfileResponse>(StatusCodes.Status200OK)
+                .Produces<GetProfileResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
             return app;

@@ -13,8 +13,8 @@ namespace Halcyon.Api.Features.Token
             app.MapPost("/token", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Token")
-                .Produces<Services.Jwt.Token>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .Produces<Services.Jwt.Token>()
+                .ProducesValidationProblem();
 
             return app;
         }

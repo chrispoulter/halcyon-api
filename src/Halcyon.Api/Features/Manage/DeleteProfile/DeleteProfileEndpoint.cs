@@ -13,7 +13,7 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
             app.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()
                 .WithTags("Manage")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
+                .Produces<UpdateResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 

@@ -12,7 +12,7 @@ namespace Halcyon.Api.Features.Seed
         {
             app.MapGet("/seed", HandleAsync)
                 .WithTags("Seed")
-                .Produces<string>(StatusCodes.Status200OK, "text/plain");
+                .Produces<string>(contentType: "text/plain");
 
             return app;
         }

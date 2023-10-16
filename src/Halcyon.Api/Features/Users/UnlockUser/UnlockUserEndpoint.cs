@@ -12,7 +12,7 @@ namespace Halcyon.Api.Features.Users.UnlockUser
             app.MapPut("/user/{id}/unlock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
+                .Produces<UpdateResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 

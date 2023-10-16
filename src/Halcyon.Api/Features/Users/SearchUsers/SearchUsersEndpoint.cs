@@ -13,8 +13,8 @@ namespace Halcyon.Api.Features.Users.SearchUsers
                 .RequireAuthorization("UserAdministratorPolicy")
                 .AddFluentValidationAutoValidation()
                 .WithTags("Users")
-                .Produces<SearchUsersResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .Produces<SearchUsersResponse>()
+                .ProducesValidationProblem();
 
             return app;
         }

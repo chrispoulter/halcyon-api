@@ -15,8 +15,8 @@ namespace Halcyon.Api.Features.Users.CreateUser
                 .RequireAuthorization("UserAdministratorPolicy")
                 .AddFluentValidationAutoValidation()
                 .WithTags("Users")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .Produces<UpdateResponse>()
+                .ProducesValidationProblem();
 
             return app;
         }

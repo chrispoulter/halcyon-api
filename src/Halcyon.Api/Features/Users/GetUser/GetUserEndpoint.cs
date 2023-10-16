@@ -11,7 +11,7 @@ namespace Halcyon.Api.Features.Users.GetUser
             app.MapGet("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
-                .Produces<GetUserResponse>(StatusCodes.Status200OK)
+                .Produces<GetUserResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
             return app;

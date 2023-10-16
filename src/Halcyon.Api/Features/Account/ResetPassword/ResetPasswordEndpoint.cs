@@ -12,8 +12,8 @@ namespace Halcyon.Api.Features.Account.ResetPassword
             app.MapPut("/account/reset-password", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .Produces<UpdateResponse>()
+                .ProducesValidationProblem();
 
             return app;
         }

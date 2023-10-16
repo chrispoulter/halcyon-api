@@ -13,8 +13,8 @@ namespace Halcyon.Api.Features.Users.LockUser
             app.MapPut("/user/{id}/lock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
-                .Produces<UpdateResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .Produces<UpdateResponse>()
+                .ProducesValidationProblem()
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
