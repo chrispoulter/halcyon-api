@@ -55,6 +55,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsUserAdministrator", policy =>
+          policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
+});
+
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -62,15 +69,21 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddMassTransit(options =>
+builder.Services.AddCors(options =>
 {
-    options.AddConsumers(Assembly.GetExecutingAssembly());
-
-    options.UsingInMemory((context, cfg) =>
-    {
-        cfg.ConfigureEndpoints(context);
-    });
+    options.AddDefaultPolicy(
+        policy => policy
+            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
+            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+    );
 });
+
+builder.Services.AddProblemDetails();
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<HalcyonDbContext>();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -106,26 +119,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddFluentValidationAutoValidation(options =>
+builder.Services.AddMassTransit(options =>
 {
-    options.DisableDataAnnotationsValidation = true;
-});
+    options.AddConsumers(Assembly.GetExecutingAssembly());
 
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddFluentValidationRulesToSwagger();
-
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>();
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        policy => policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
-    );
+    options.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
 });
 
 TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
@@ -141,7 +142,18 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapHealthChecks("/health");
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -151,11 +163,5 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapHealthChecks("/health");
-
-app.UseCors();
 app.MapControllers();
 app.Run();
