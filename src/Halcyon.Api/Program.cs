@@ -82,6 +82,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddFluentValidationAutoValidation(options =>
+{
+    options.DisableDataAnnotationsValidation = true;
+});
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationRulesToSwagger();
+
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
 
