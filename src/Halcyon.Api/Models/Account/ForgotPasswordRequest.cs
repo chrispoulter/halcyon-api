@@ -1,19 +1,23 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Halcyon.Api.Filters;
+using FluentValidation;
+using Halcyon.Api.Validators;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Options;
 
 namespace Halcyon.Api.Models.Account
 {
     public class ForgotPasswordRequest
     {
-        [DisplayName("Email Address")]
-        [Required]
-        [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("Site Url")]
-        [Required]
-        [RedirectUrl]
         public string SiteUrl { get; set; }
+    }
+
+    public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>
+    {
+        public ForgotPasswordRequestValidator(IOptions<CorsOptions> corsOptions)
+        {
+            RuleFor(x => x.EmailAddress).NotEmpty().EmailAddress().WithName("Email Address");
+            RuleFor(x => x.SiteUrl).NotEmpty().ReturnUrl(corsOptions).WithName("Site Url");
+        }
     }
 }

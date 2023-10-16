@@ -11,15 +11,15 @@ namespace Halcyon.Api.Services.Jwt
 {
     public class JwtService : IJwtService
     {
-        private readonly IDateService _dateService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         private readonly JwtSettings _jwtSettings;
 
         public JwtService(
-            IDateService dateService, 
+            IDateTimeProvider dateTimeProvider, 
             IOptions<JwtSettings> jwtSettings)
         {
-            _dateService = dateService;
+            _dateTimeProvider = dateTimeProvider;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -46,7 +46,7 @@ namespace Halcyon.Api.Services.Jwt
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 claims: claims,
-                expires: _dateService.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
+                expires: _dateTimeProvider.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
 
             return new JwtToken

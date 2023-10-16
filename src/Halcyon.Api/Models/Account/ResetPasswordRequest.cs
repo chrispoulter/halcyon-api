@@ -1,23 +1,23 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using FluentValidation;
 
 namespace Halcyon.Api.Models.Account
 {
     public class ResetPasswordRequest
     {
-        [DisplayName("Token")]
-        [Required]
         public Guid Token { get; set; }
 
-        [DisplayName("Email Address")]
-        [Required]
-        [EmailAddress]
         public string EmailAddress { get; set; }
 
-        [DisplayName("New Password")]
-        [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
         public string NewPassword { get; set; }
+    }
+
+    public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequest>
+    {
+        public ResetPasswordRequestValidator()
+        {
+            RuleFor(x => x.Token).NotEmpty();
+            RuleFor(x => x.EmailAddress).NotEmpty().EmailAddress().WithName("Email Address");
+            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).MaximumLength(50).WithName("New Password");
+        }
     }
 }

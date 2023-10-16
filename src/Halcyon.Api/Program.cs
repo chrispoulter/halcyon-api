@@ -1,3 +1,4 @@
+using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Hash;
@@ -5,11 +6,13 @@ using Halcyon.Api.Services.Jwt;
 using Halcyon.Api.Settings;
 using Mapster;
 using MassTransit;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -78,6 +81,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddFluentValidationAutoValidation(options =>
+{
+    options.DisableBuiltInModelValidation = true;
+});
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationRulesToSwagger();
+
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
 
@@ -131,7 +141,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(Email
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
-builder.Services.AddSingleton<IDateService, DateService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddSingleton<IHashService, HashService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
