@@ -58,7 +58,6 @@ builder.Services.AddAuthorization(options =>
           policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
 });
 
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
