@@ -1,5 +1,5 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Filters.Validation;
+using Halcyon.Api.Filters;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

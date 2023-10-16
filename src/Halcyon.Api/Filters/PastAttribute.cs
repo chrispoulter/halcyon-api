@@ -1,7 +1,7 @@
 ﻿using Halcyon.Api.Services.Date;
 using System.ComponentModel.DataAnnotations;
 
-namespace Halcyon.Api.Filters.Validation
+namespace Halcyon.Api.Filters
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class PastAttribute : ValidationAttribute

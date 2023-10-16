@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Halcyon.Api.Filters.Validation
+namespace Halcyon.Api.Filters
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class RedirectUrlAttribute : ValidationAttribute
