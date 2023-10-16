@@ -169,14 +169,5 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-var endpoints = Assembly.GetExecutingAssembly()
-    .DefinedTypes
-    .Where(t => t.GetInterfaces().Contains(typeof(IEndpoint)));
-
-foreach (var type in endpoints)
-{
-    var item = (IEndpoint)Activator.CreateInstance(type);
-    item.MapEndpoint(app);
-}
-
+app.MapEndpoints();
 app.Run();
