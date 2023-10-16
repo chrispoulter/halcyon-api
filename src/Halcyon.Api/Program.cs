@@ -77,6 +77,8 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddProblemDetails();
+
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
 
@@ -137,7 +139,12 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseCors();
 app.UseAuthentication();
