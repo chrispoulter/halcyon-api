@@ -85,7 +85,7 @@ builder.Services.AddFluentValidationAutoValidation(options =>
 {
     options.DisableBuiltInModelValidation = true;
 });
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks()
