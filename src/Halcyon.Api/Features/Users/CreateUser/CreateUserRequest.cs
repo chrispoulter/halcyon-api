@@ -1,6 +1,4 @@
-﻿using Halcyon.Api.Data;
-
-namespace Halcyon.Api.Features.Users.CreateUser
+﻿namespace Halcyon.Api.Features.Users.CreateUser
 {
     public class CreateUserRequest
     {
@@ -14,6 +12,6 @@ namespace Halcyon.Api.Features.Users.CreateUser
 
         public DateOnly? DateOfBirth { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

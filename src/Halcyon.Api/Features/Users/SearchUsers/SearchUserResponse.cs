@@ -1,6 +1,4 @@
-﻿using Halcyon.Api.Data;
-
-namespace Halcyon.Api.Features.Users.SearchUsers
+﻿namespace Halcyon.Api.Features.Users.SearchUsers
 {
     public class SearchUserResponse
     {
@@ -14,6 +12,6 @@ namespace Halcyon.Api.Features.Users.SearchUsers
 
         public bool IsLockedOut { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

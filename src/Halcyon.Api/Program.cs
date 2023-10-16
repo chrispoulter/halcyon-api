@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -37,13 +38,6 @@ builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
         .UseNpgsql(connectionString, builder => builder.EnableRetryOnFailure())
         .UseSnakeCaseNamingConvention();
 });
-
-builder.Services.ConfigureHttpJsonOptions(options => {
-    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-
-builder.Services.AddProblemDetails();
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -68,26 +62,39 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("UserAdministratorPolicy", policy =>
-        policy.RequireRole(new[] 
-        { 
-            Role.SYSTEM_ADMINISTRATOR, 
-            Role.USER_ADMINISTRATOR 
-        }
-        .Select(r => r.ToString())
-    )
-);
-
-builder.Services.AddMassTransit(options =>
+builder.Services.AddAuthorization(options =>
 {
-    options.AddConsumers(Assembly.GetExecutingAssembly());
-
-    options.UsingInMemory((context, cfg) =>
-    {
-        cfg.ConfigureEndpoints(context);
-    });
+    options.AddPolicy("UserAdministratorPolicy", policy =>
+          policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
 });
+
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy => policy
+            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
+            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+    );
+});
+
+builder.Services.AddProblemDetails();
+
+builder.Services.AddFluentValidationAutoValidation(options =>
+{
+    options.DisableBuiltInModelValidation = true;
+});
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationRulesToSwagger();
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<HalcyonDbContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -124,21 +131,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddFluentValidationRulesToSwagger();
-
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>();
-
-builder.Services.AddCors(options =>
+builder.Services.AddMassTransit(options =>
 {
-    options.AddDefaultPolicy(
-        policy => policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
-    );
+    options.AddConsumers(Assembly.GetExecutingAssembly());
+
+    options.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
 });
 
 TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
@@ -154,11 +154,18 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseExceptionHandler();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler();
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapHealthChecks("/health");
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -167,12 +174,6 @@ app.UseSwaggerUI(options =>
     options.DocumentTitle = "Halcyon API";
     options.RoutePrefix = string.Empty;
 });
-
-app.MapHealthChecks("/health");
-
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapAccountEndpoints();
 app.MapManageEndpoints();

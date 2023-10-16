@@ -1,6 +1,4 @@
-﻿using Halcyon.Api.Data;
-
-namespace Halcyon.Api.Features.Users.GetUser
+﻿namespace Halcyon.Api.Features.Users.GetUser
 {
     public class GetUserResponse
     {
@@ -16,7 +14,7 @@ namespace Halcyon.Api.Features.Users.GetUser
 
         public bool IsLockedOut { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
 
         public uint Version { get; set; }
     }
