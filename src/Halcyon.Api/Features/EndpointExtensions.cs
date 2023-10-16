@@ -2,6 +2,11 @@
 
 namespace Halcyon.Api.Features
 {
+    public interface IEndpoint
+    {
+        WebApplication MapEndpoint(WebApplication app);
+    }
+
     public static class EndpointExtensions
     {
         public static WebApplication MapEndpoints(this WebApplication app)
