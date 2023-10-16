@@ -2,6 +2,7 @@
 using Halcyon.Api.Services.Email;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
@@ -10,7 +11,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
         public static WebApplication MapForgotPasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/account/forgot-password", HandleAsync)
-                .AddValidationFilter<ForgotPasswordRequest>()
+                .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

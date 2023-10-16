@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ResetPassword
 {
@@ -9,7 +10,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
         public static WebApplication MapResetPasswordEndpoint(this WebApplication app)
         {
             app.MapPut("/account/reset-password", HandleAsync)
-                .AddValidationFilter<ResetPasswordRequest>()
+                .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest);

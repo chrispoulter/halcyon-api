@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
@@ -11,7 +12,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
         {
             app.MapPut("/manage/change-password", HandleAsync)
                 .RequireAuthorization()
-                .AddValidationFilter<ChangePasswordRequest>()
+                .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

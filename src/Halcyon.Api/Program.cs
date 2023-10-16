@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -86,10 +86,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddFluentValidationAutoValidation(options =>
-{
-    options.DisableBuiltInModelValidation = true;
-});
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationRulesToSwagger();
 

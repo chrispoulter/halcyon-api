@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile
@@ -11,7 +12,7 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
         {
             app.MapPut("/manage", HandleAsync)
                 .RequireAuthorization()
-                .AddValidationFilter<UpdateProfileRequest>()
+                .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
