@@ -5,9 +5,9 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ResetPassword
 {
-    public static class ResetPasswordEndpoint
+    public class ResetPasswordEndpoint : IEndpoint
     {
-        public static WebApplication MapResetPasswordEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/account/reset-password", HandleAsync)
                 .AddFluentValidationAutoValidation()

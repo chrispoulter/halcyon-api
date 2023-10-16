@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.UnlockUser
 {
-    public static class UnlockUserEndpoint
+    public class UnlockUserEndpoint : IEndpoint
     {
-        public static WebApplication MapUnlockUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/user/{id}/unlock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

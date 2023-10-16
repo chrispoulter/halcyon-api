@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.DeleteUser
 {
-    public static class DeleteUserEndpoint
+    public class DeleteUserEndpoint : IEndpoint
     {
-        public static WebApplication MapDeleteUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

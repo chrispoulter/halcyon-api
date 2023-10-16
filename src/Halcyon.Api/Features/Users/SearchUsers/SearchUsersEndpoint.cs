@@ -5,9 +5,9 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Users.SearchUsers
 {
-    public static class SearchUsersEndpoint
+    public class SearchUsersEndpoint : IEndpoint
     {
-        public static WebApplication MapSearchUsersEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapGet("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

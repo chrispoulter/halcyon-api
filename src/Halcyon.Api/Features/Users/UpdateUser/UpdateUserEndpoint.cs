@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.UpdateUser
 {
-    public static class UpdateUserEndpoint
+    public class UpdateUserEndpoint : IEndpoint
     {
-        public static WebApplication MapUpdateUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

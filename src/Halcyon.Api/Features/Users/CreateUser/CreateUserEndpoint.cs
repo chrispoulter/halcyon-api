@@ -7,9 +7,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.CreateUser
 {
-    public static class CreateUserEndpoint
+    public class CreateUserEndpoint : IEndpoint
     {
-        public static WebApplication MapCreateUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPost("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

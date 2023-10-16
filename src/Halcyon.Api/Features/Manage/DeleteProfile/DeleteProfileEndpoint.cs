@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
-    public static class DeleteProfileEndpoint
+    public class DeleteProfileEndpoint : IEndpoint
     {
-        public static WebApplication MapDeleteProfileEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()

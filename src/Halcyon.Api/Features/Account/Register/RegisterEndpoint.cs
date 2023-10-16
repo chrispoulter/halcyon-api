@@ -6,9 +6,9 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.Register
 {
-    public static class RegisterEndpoint
+    public class RegisterEndpoint : IEndpoint
     {
-        public static WebApplication MapRegisterEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPost("/account/register", HandleAsync)
                 .AddFluentValidationAutoValidation()

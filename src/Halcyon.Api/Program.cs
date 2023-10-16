@@ -1,10 +1,7 @@
 using FluentValidation;
 using Halcyon.Api.Data;
-using Halcyon.Api.Features.Account;
-using Halcyon.Api.Features.Manage;
+using Halcyon.Api.Features;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Features.Token;
-using Halcyon.Api.Features.Users;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -87,7 +84,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddProblemDetails();
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks()
@@ -172,10 +169,14 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapAccountEndpoints();
-app.MapManageEndpoints();
-app.MapSeedEndpoint();
-app.MapTokenEndpoint();
-app.MapUserEndpoints();
+var endpoints = Assembly.GetExecutingAssembly()
+    .DefinedTypes
+    .Where(t => t.GetInterfaces().Contains(typeof(IEndpoint)));
+
+foreach (var type in endpoints)
+{
+    var item = (IEndpoint)Activator.CreateInstance(type);
+    item.MapEndpoint(app);
+}
 
 app.Run();

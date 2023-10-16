@@ -6,9 +6,9 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
-    public static class ForgotPasswordEndpoint
+    public class ForgotPasswordEndpoint : IEndpoint
     {
-        public static WebApplication MapForgotPasswordEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/account/forgot-password", HandleAsync)
                 .AddFluentValidationAutoValidation()

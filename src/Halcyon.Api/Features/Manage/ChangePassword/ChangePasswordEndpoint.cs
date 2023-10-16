@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword
 {
-    public static class ChangePasswordEndpoint
+    public class ChangePasswordEndpoint : IEndpoint
     {
-        public static WebApplication MapChangePasswordEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/manage/change-password", HandleAsync)
                 .RequireAuthorization()

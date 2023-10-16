@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile
 {
-    public static class UpdateProfileEndpoint
+    public class UpdateProfileEndpoint : IEndpoint
     {
-        public static WebApplication MapUpdateProfileEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/manage", HandleAsync)
                 .RequireAuthorization()

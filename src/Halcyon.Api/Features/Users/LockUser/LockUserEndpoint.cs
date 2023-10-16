@@ -6,9 +6,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.LockUser
 {
-    public static class LockUserEndpoint
+    public class LockUserEndpoint : IEndpoint
     {
-        public static WebApplication MapLockUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPut("/user/{id}/lock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

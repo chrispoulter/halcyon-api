@@ -6,9 +6,9 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Token
 {
-    public static class TokenEndpoint
+    public class TokenEndpoint : IEndpoint
     {
-        public static WebApplication MapTokenEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapPost("/token", HandleAsync)
                 .AddFluentValidationAutoValidation()

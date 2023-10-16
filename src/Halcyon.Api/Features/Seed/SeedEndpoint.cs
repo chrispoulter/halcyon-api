@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace Halcyon.Api.Features.Seed
 {
-    public static class SeedEndpoint
+    public class SeedEndpoint : IEndpoint
     {
-        public static WebApplication MapSeedEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapGet("/seed", HandleAsync)
                 .WithTags("Seed")

@@ -5,9 +5,9 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.GetProfile
 {
-    public static class GetProfileEndpoint
+    public class GetProfileEndpoint : IEndpoint
     {
-        public static WebApplication MapGetProfileEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapGet("/manage", HandleAsync)
                 .RequireAuthorization()

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.GetUser
 {
-    public static class GetUserEndpoint
+    public class GetUserEndpoint : IEndpoint
     {
-        public static WebApplication MapGetUserEndpoint(this WebApplication app)
+        public WebApplication MapEndpoint(WebApplication app)
         {
             app.MapGet("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
