@@ -23,7 +23,7 @@ namespace Halcyon.Api.Services.Jwt
             _jwtSettings = jwtSettings.Value;
         }
 
-        public Token CreateToken(User user)
+        public JwtToken CreateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey));
 
@@ -49,7 +49,7 @@ namespace Halcyon.Api.Services.Jwt
                 expires: _dateService.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
 
-            return new Token
+            return new JwtToken
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 ExpiresIn = _jwtSettings.ExpiresIn,

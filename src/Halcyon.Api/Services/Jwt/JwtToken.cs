@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Api.Services.Jwt
 {
-    public class Token
+    public class JwtToken
     {
         public string AccessToken { get; set; }
 
