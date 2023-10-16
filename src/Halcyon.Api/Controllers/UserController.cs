@@ -111,8 +111,8 @@ namespace Halcyon.Api.Controllers
                 );
             }
 
-            var password = _hashService.GenerateHash(request.Password);
-            var user = (request, password).Adapt<User>();
+            var user = request.Adapt<User>();
+            user.Password = _hashService.GenerateHash(request.Password);
 
             _context.Users.Add(user);
 
