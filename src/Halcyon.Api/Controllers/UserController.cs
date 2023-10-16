@@ -12,7 +12,7 @@ namespace Halcyon.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Policy = "IsUserAdministrator")]
+    [Authorize(Policy = "UserAdministratorPolicy")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]

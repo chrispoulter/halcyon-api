@@ -57,10 +57,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("IsUserAdministrator", policy =>
+    options.AddPolicy("UserAdministratorPolicy", policy =>
           policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
 });
-
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
