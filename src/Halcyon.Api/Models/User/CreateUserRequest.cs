@@ -1,5 +1,4 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Api.Filters;
+﻿using Halcyon.Api.Filters;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -34,6 +33,6 @@ namespace Halcyon.Api.Models.User
         [Past]
         public DateOnly? DateOfBirth { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

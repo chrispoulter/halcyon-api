@@ -1,6 +1,4 @@
-﻿using Halcyon.Api.Data;
-
-namespace Halcyon.Api.Settings
+﻿namespace Halcyon.Api.Settings
 {
     public class SeedSettings
     {
@@ -21,6 +19,6 @@ namespace Halcyon.Api.Settings
 
         public DateOnly DateOfBirth { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

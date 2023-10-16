@@ -1,9 +1,9 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Filters;
 using Halcyon.Api.Models;
 using Halcyon.Api.Models.User;
 using Halcyon.Api.Services.Hash;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,7 @@ namespace Halcyon.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [AuthorizeRole(Role.SYSTEM_ADMINISTRATOR, Role.USER_ADMINISTRATOR)]
+    [Authorize(Policy = "IsUserAdministrator")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]

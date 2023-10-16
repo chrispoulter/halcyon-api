@@ -18,7 +18,7 @@
 
         public bool IsLockedOut { get; set; }
 
-        public List<Role> Roles { get; set; }
+        public List<string> Roles { get; set; }
 
         public uint Version { get; }
 
