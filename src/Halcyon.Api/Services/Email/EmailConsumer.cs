@@ -1,8 +1,9 @@
 using Halcyon.Api.Services.Email;
+using MailKit.Net.Smtp;
 using MassTransit;
 using Microsoft.Extensions.Options;
-using System.Net;
-using System.Net.Mail;
+using MimeKit;
+using MimeKit.Text;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -29,30 +30,24 @@ namespace Halcyon.Api.Consumers.Email
             var subject = ReplaceData(title, message.Data);
             var body = ReplaceData(template, message.Data);
 
-            var from = string.IsNullOrEmpty(message.From)
-                ? _emailSettings.NoReplyAddress
-                : message.From;
-
-            var mailMessage = new MailMessage(from, message.To)
-            {
-                Subject = subject,
-                IsBodyHtml = true,
-                Body = body,
-            };
+            var email = new MimeMessage(
+                new[] { MailboxAddress.Parse(_emailSettings.NoReplyAddress) },
+                new[] { MailboxAddress.Parse(message.To) },
+                subject,
+                new TextPart(TextFormat.Html)
+                {
+                    Text = body
+                });
 
             try
             {
-                using var client = new SmtpClient
-                {
-                    Host = _emailSettings.SmtpServer,
-                    Port = _emailSettings.SmtpPort,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword)
-                };
-
-                await client.SendMailAsync(mailMessage);
+                using var client = new SmtpClient();
+                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort);
+                await client.AuthenticateAsync(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword);
+                await client.SendAsync(email);
+                await client.DisconnectAsync(true);
             }
-            catch (SmtpException error)
+            catch (Exception error)
             {
                 _logger.LogError(error, "Email Send Failed");
             }
