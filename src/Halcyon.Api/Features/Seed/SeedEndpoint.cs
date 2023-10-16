@@ -44,8 +44,8 @@ namespace Halcyon.Api.Features.Seed
                         dbContext.Users.Add(user);
                     }
 
-                    var password = hashService.GenerateHash(seedUser.Password);
-                    (seedUser, password).Adapt(user);
+                    seedUser.Adapt(user);
+                    user.Password = hashService.GenerateHash(seedUser.Password);
                 }
             }
 

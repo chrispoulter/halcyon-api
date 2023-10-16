@@ -40,8 +40,8 @@ namespace Halcyon.Api.Features.Users.CreateUser
                 );
             }
 
-            var password = hashService.GenerateHash(request.Password);
-            var user = (request, password).Adapt<User>();
+            var user = request.Adapt<User>();
+            user.Password = hashService.GenerateHash(request.Password);
 
             dbContext.Users.Add(user);
 
