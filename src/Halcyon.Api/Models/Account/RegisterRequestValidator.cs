@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using Halcyon.Api.Extensions;
 using Halcyon.Api.Services.Date;
-using Halcyon.Api.Validators;
 
 namespace Halcyon.Api.Models.Account
 {

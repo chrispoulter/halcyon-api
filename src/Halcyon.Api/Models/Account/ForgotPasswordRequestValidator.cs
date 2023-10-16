@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Halcyon.Api.Validators;
+using Halcyon.Api.Extensions;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
