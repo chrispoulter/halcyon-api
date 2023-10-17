@@ -8,9 +8,9 @@ namespace Halcyon.Api.Features.Users.UpdateUser
 {
     public class UpdateUserEndpoint : IEndpoint
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
         {
-            builder.MapPut("/user/{id}", HandleAsync)
+            endpoints.MapPut("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .AddFluentValidationAutoValidation()
                 .WithTags("Users")
@@ -19,7 +19,7 @@ namespace Halcyon.Api.Features.Users.UpdateUser
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return builder;
+            return endpoints;
         }
 
         public static async Task<IResult> HandleAsync(

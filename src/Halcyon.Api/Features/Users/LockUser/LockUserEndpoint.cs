@@ -8,9 +8,9 @@ namespace Halcyon.Api.Features.Users.LockUser
 {
     public class LockUserEndpoint : IEndpoint
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
         {
-            builder.MapPut("/user/{id}/lock", HandleAsync)
+            endpoints.MapPut("/user/{id}/lock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>()
@@ -18,7 +18,7 @@ namespace Halcyon.Api.Features.Users.LockUser
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return builder;
+            return endpoints;
         }
 
         public static async Task<IResult> HandleAsync(

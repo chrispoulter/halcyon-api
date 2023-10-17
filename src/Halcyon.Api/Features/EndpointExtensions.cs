@@ -4,24 +4,24 @@ namespace Halcyon.Api.Features
 {
     public interface IEndpoint
     {
-        static abstract IEndpointRouteBuilder Map(IEndpointRouteBuilder builder);
+        static abstract IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints);
     }
 
     public static class EndpointExtensions
     {
-        public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            var endpoints = Assembly.GetExecutingAssembly()
+            var mappers = Assembly.GetExecutingAssembly()
                 .DefinedTypes
                 .Where(t => t.GetInterfaces().Contains(typeof(IEndpoint)));
 
-            foreach (var type in endpoints)
+            foreach (var type in mappers)
             {
                 type.GetMethod(nameof(IEndpoint.Map))
-                    .Invoke(null, new object[] { builder });
+                    .Invoke(null, new object[] { endpoints });
             }
 
-            return builder;
+            return endpoints;
         }
     }
 }

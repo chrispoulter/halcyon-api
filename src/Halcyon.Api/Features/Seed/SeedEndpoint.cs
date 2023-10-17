@@ -8,13 +8,13 @@ namespace Halcyon.Api.Features.Seed
 {
     public class SeedEndpoint : IEndpoint
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
         {
-            builder.MapGet("/seed", HandleAsync)
+            endpoints.MapGet("/seed", HandleAsync)
                 .WithTags("Seed")
                 .Produces<string>(contentType: "text/plain");
 
-            return builder;
+            return endpoints;
         }
 
         public static async Task<IResult> HandleAsync(
