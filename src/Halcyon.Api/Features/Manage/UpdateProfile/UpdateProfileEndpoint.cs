@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
 {
     public class UpdateProfileEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/manage", HandleAsync)
                 .RequireAuthorization()

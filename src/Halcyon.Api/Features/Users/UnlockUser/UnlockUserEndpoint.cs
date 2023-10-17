@@ -7,7 +7,7 @@ namespace Halcyon.Api.Features.Users.UnlockUser
 {
     public class UnlockUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/user/{id}/unlock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

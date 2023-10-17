@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Token
 {
     public class TokenEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPost("/token", HandleAsync)
                 .AddFluentValidationAutoValidation()

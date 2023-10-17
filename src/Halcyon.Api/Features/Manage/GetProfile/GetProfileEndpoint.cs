@@ -7,7 +7,7 @@ namespace Halcyon.Api.Features.Manage.GetProfile
 {
     public class GetProfileEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapGet("/manage", HandleAsync)
                 .RequireAuthorization()

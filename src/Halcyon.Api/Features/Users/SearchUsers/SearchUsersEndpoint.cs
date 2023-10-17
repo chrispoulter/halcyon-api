@@ -7,7 +7,7 @@ namespace Halcyon.Api.Features.Users.SearchUsers
 {
     public class SearchUsersEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapGet("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

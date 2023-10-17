@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Account.Register
 {
     public class RegisterEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPost("/account/register", HandleAsync)
                 .AddFluentValidationAutoValidation()

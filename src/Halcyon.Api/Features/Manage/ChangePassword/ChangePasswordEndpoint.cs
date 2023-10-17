@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
 {
     public class ChangePasswordEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/manage/change-password", HandleAsync)
                 .RequireAuthorization()

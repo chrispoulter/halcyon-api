@@ -9,7 +9,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
 {
     public class ForgotPasswordEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/account/forgot-password", HandleAsync)
                 .AddFluentValidationAutoValidation()

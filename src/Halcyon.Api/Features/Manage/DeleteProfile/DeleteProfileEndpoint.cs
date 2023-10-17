@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
     public class DeleteProfileEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()

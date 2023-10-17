@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Users.LockUser
 {
     public class LockUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/user/{id}/lock", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

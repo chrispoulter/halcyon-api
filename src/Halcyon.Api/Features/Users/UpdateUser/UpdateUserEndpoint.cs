@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Users.UpdateUser
 {
     public class UpdateUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

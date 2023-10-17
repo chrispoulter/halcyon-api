@@ -7,7 +7,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
 {
     public class ResetPasswordEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPut("/account/reset-password", HandleAsync)
                 .AddFluentValidationAutoValidation()

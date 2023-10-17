@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Users.DeleteUser
 {
     public class DeleteUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

@@ -9,7 +9,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
 {
     public class CreateUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapPost("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

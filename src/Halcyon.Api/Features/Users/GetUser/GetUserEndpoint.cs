@@ -6,7 +6,7 @@ namespace Halcyon.Api.Features.Users.GetUser
 {
     public class GetUserEndpoint : IEndpoint
     {
-        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
             builder.MapGet("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")

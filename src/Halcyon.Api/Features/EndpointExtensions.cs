@@ -4,7 +4,7 @@ namespace Halcyon.Api.Features
 {
     public interface IEndpoint
     {
-        IEndpointRouteBuilder Map(IEndpointRouteBuilder builder);
+        static abstract IEndpointRouteBuilder Map(IEndpointRouteBuilder builder);
     }
 
     public static class EndpointExtensions
@@ -17,8 +17,8 @@ namespace Halcyon.Api.Features
 
             foreach (var type in endpoints)
             {
-                var item = (IEndpoint)Activator.CreateInstance(type);
-                item.Map(builder);
+                type.GetMethod(nameof(IEndpoint.Map))
+                    .Invoke(null, new object[] { builder });
             }
 
             return builder;
