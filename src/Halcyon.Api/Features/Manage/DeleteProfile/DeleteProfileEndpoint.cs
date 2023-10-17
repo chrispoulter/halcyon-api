@@ -8,16 +8,16 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile
 {
     public class DeleteProfileEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapDelete("/manage", HandleAsync)
+            builder.MapDelete("/manage", HandleAsync)
                 .RequireAuthorization()
                 .WithTags("Manage")
                 .Produces<UpdateResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

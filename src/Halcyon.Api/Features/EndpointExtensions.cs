@@ -4,12 +4,12 @@ namespace Halcyon.Api.Features
 {
     public interface IEndpoint
     {
-        WebApplication MapEndpoint(WebApplication app);
+        IEndpointRouteBuilder Map(IEndpointRouteBuilder builder);
     }
 
     public static class EndpointExtensions
     {
-        public static WebApplication MapEndpoints(this WebApplication app)
+        public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
         {
             var endpoints = Assembly.GetExecutingAssembly()
                 .DefinedTypes
@@ -18,10 +18,10 @@ namespace Halcyon.Api.Features
             foreach (var type in endpoints)
             {
                 var item = (IEndpoint)Activator.CreateInstance(type);
-                item.MapEndpoint(app);
+                item.Map(builder);
             }
 
-            return app;
+            return builder;
         }
     }
 }

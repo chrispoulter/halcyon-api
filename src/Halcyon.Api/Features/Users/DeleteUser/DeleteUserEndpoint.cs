@@ -8,9 +8,9 @@ namespace Halcyon.Api.Features.Users.DeleteUser
 {
     public class DeleteUserEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapDelete("/user/{id}", HandleAsync)
+            builder.MapDelete("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<UpdateResponse>()
@@ -18,7 +18,7 @@ namespace Halcyon.Api.Features.Users.DeleteUser
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

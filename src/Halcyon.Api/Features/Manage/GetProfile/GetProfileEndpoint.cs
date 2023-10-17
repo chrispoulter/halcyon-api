@@ -7,15 +7,15 @@ namespace Halcyon.Api.Features.Manage.GetProfile
 {
     public class GetProfileEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapGet("/manage", HandleAsync)
+            builder.MapGet("/manage", HandleAsync)
                 .RequireAuthorization()
                 .WithTags("Manage")
                 .Produces<GetProfileResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

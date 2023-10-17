@@ -8,15 +8,15 @@ namespace Halcyon.Api.Features.Account.Register
 {
     public class RegisterEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPost("/account/register", HandleAsync)
+            builder.MapPost("/account/register", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces<UpdateResponse>()
                 .ProducesValidationProblem();
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

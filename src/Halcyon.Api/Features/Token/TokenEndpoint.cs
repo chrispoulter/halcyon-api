@@ -8,15 +8,15 @@ namespace Halcyon.Api.Features.Token
 {
     public class TokenEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPost("/token", HandleAsync)
+            builder.MapPost("/token", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Token")
                 .Produces<JwtToken>()
                 .ProducesValidationProblem();
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

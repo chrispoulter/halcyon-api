@@ -9,16 +9,16 @@ namespace Halcyon.Api.Features.Users.CreateUser
 {
     public class CreateUserEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPost("/user", HandleAsync)
+            builder.MapPost("/user", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .AddFluentValidationAutoValidation()
                 .WithTags("Users")
                 .Produces<UpdateResponse>()
                 .ProducesValidationProblem();
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

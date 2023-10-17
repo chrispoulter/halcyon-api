@@ -8,9 +8,9 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
 {
     public class UpdateProfileEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPut("/manage", HandleAsync)
+            builder.MapPut("/manage", HandleAsync)
                 .RequireAuthorization()
                 .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
@@ -19,7 +19,7 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

@@ -7,15 +7,15 @@ namespace Halcyon.Api.Features.Account.ResetPassword
 {
     public class ResetPasswordEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPut("/account/reset-password", HandleAsync)
+            builder.MapPut("/account/reset-password", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces<UpdateResponse>()
                 .ProducesValidationProblem();
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

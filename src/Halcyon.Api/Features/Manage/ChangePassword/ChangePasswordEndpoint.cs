@@ -8,9 +8,9 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
 {
     public class ChangePasswordEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapPut("/manage/change-password", HandleAsync)
+            builder.MapPut("/manage/change-password", HandleAsync)
                 .RequireAuthorization()
                 .AddFluentValidationAutoValidation()
                 .WithTags("Manage")
@@ -19,7 +19,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(

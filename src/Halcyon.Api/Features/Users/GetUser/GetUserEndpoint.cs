@@ -6,15 +6,15 @@ namespace Halcyon.Api.Features.Users.GetUser
 {
     public class GetUserEndpoint : IEndpoint
     {
-        public WebApplication MapEndpoint(WebApplication app)
+        public IEndpointRouteBuilder Map(IEndpointRouteBuilder builder)
         {
-            app.MapGet("/user/{id}", HandleAsync)
+            builder.MapGet("/user/{id}", HandleAsync)
                 .RequireAuthorization("UserAdministratorPolicy")
                 .WithTags("Users")
                 .Produces<GetUserResponse>()
                 .ProducesProblem(StatusCodes.Status404NotFound);
 
-            return app;
+            return builder;
         }
 
         public static async Task<IResult> HandleAsync(
