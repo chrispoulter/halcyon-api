@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Services.Email
+﻿namespace Halcyon.Api.Services.Email.Templates
 {
     public enum EmailTemplate
     {

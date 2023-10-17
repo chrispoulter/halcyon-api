@@ -1,5 +1,6 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Services.Email;
+using Halcyon.Api.Services.Email.Templates;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
