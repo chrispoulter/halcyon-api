@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Halcyon.Api.Services.Date;
+using Halcyon.Api.Validators;
 
 namespace Halcyon.Api.Features.Users.UpdateUser
 {

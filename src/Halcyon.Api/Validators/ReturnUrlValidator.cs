@@ -1,18 +1,12 @@
 ﻿using FluentValidation;
-using Halcyon.Api.Services.Date;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 
-namespace Halcyon.Api.Features
+namespace Halcyon.Api.Validators
 {
-    public static class ValidationExtensions
+    public static class ReturnUrlValidator
     {
-        public static IRuleBuilderOptions<T, DateOnly?> InThePast<T>(this IRuleBuilder<T, DateOnly?> ruleBuilder, IDateTimeProvider dateTimeProvider)
-            => ruleBuilder
-                .LessThan(DateOnly.FromDateTime(dateTimeProvider.UtcNow))
-                .WithMessage("'{PropertyName}' must be in the past.");
-
         public static IRuleBuilderOptions<T, string> ReturnUrl<T>(this IRuleBuilder<T, string> ruleBuilder, IOptions<CorsOptions> corsOptions)
             => ruleBuilder
                 .Must(url =>
