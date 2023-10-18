@@ -12,7 +12,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
         public string SiteUrl { get; set; }
     }
 
-    public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>, IValidator<ForgotPasswordRequest>
+    public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>
     {
         public ForgotPasswordRequestValidator(IOptions<CorsOptions> corsOptions)
         {
