@@ -20,8 +20,6 @@ namespace Halcyon.Api.Features.Users.DeleteUser
         [Tags("User")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

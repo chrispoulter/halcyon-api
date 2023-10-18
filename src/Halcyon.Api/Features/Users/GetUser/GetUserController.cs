@@ -20,8 +20,6 @@ namespace Halcyon.Api.Features.Users.GetUser
         [Tags("User")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Index(int id)
         {

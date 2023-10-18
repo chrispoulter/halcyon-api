@@ -21,8 +21,6 @@ namespace Halcyon.Api.Features.Users.SearchUsers
         [Produces("application/json")]
         [ProducesResponseType(typeof(SearchUsersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Index([FromQuery] SearchUsersRequest request)
         {
             var query = _context.Users

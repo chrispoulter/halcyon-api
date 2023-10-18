@@ -25,8 +25,6 @@ namespace Halcyon.Api.Features.Users.CreateUser
         [Produces("application/json")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Index(CreateUserRequest request)
         {
             var existing = await _context.Users

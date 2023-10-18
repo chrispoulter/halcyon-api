@@ -21,7 +21,6 @@ namespace Halcyon.Api.Features.Manage.UpdateProfile
         [Produces("application/json")]
         [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Index(UpdateProfileRequest request)

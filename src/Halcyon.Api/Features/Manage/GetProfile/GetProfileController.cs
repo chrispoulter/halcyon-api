@@ -20,7 +20,6 @@ namespace Halcyon.Api.Features.Manage.GetProfile
         [Tags("Manage")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetProfileResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Index()
         {
