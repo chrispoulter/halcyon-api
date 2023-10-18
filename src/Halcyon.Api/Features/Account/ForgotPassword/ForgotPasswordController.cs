@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword
 {
-    public class ForgotPasswordController : ControllerBase
+    public class ForgotPasswordController : BaseController
     {
         private readonly HalcyonDbContext _context;
 

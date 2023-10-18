@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.Register
 {
-    public class RegisterController : ControllerBase
+    public class RegisterController : BaseController
     {
         private readonly HalcyonDbContext _context;
 

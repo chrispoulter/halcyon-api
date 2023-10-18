@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Token
 {
-    public class TokenController : ControllerBase
+    public class TokenController : BaseController
     {
         private readonly HalcyonDbContext _context;
 

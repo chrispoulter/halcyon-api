@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Halcyon.Api.Features.Seed
 {
-    public class SeedController : ControllerBase
+    public class SeedController : BaseController
     {
         private readonly HalcyonDbContext _context;
 

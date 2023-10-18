@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ResetPassword
 {
-    public class ResetPasswordController : ControllerBase
+    public class ResetPasswordController : BaseController
     {
         private readonly HalcyonDbContext _context;
 
