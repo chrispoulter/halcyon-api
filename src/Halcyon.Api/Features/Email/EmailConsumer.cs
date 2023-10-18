@@ -1,4 +1,4 @@
-using Halcyon.Api.Services.Email;
+using Halcyon.Api.Features.Email;
 using MailKit.Net.Smtp;
 using MassTransit;
 using Microsoft.Extensions.Options;

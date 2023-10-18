@@ -25,7 +25,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
             CreateUserRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
-            IHashService hashService)
+            IPasswordHasher passwordHasher)
         {
             var currentUserId = currentUser.GetUserId();
 
@@ -41,7 +41,7 @@ namespace Halcyon.Api.Features.Users.CreateUser
             }
 
             var user = request.Adapt<User>();
-            user.Password = hashService.GenerateHash(request.Password);
+            user.Password = passwordHasher.GenerateHash(request.Password);
 
             dbContext.Users.Add(user);
 

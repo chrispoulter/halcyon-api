@@ -13,7 +13,7 @@ namespace Halcyon.Api.Features.Token
             endpoints.MapPost("/token", HandleAsync)
                 .AddFluentValidationAutoValidation()
                 .WithTags("Token")
-                .Produces<JwtToken>()
+                .Produces<string>(contentType: "text/plain")
                 .ProducesValidationProblem();
 
             return endpoints;
@@ -22,8 +22,8 @@ namespace Halcyon.Api.Features.Token
         public static async Task<IResult> HandleAsync(
             TokenRequest request,
             HalcyonDbContext dbContext,
-            IHashService hashService,
-            IJwtService jwtService)
+            IPasswordHasher passwordHasher,
+            IJwtTokenGenerator jwtTokenGenerator)
         {
             var user = await dbContext.Users
                 .AsNoTracking()
@@ -37,7 +37,7 @@ namespace Halcyon.Api.Features.Token
                 );
             }
 
-            var verified = hashService.VerifyHash(request.Password, user.Password);
+            var verified = passwordHasher.VerifyHash(request.Password, user.Password);
 
             if (!verified)
             {
@@ -55,9 +55,9 @@ namespace Halcyon.Api.Features.Token
                 );
             }
 
-            var result = jwtService.CreateToken(user);
+            var result = jwtTokenGenerator.GenerateToken(user);
 
-            return Results.Ok(result);
+            return Results.Content(result);
         }
     }
 }

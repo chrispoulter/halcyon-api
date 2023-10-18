@@ -22,7 +22,7 @@ namespace Halcyon.Api.Features.Account.Register
         public static async Task<IResult> HandleAsync(
             RegisterRequest request,
             HalcyonDbContext dbContext,
-            IHashService hashService)
+            IPasswordHasher passwordHasher)
         {
             var existing = await dbContext.Users
                  .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
@@ -36,7 +36,7 @@ namespace Halcyon.Api.Features.Account.Register
             }
 
             var user = request.Adapt<User>();
-            user.Password = hashService.GenerateHash(request.Password);
+            user.Password = passwordHasher.GenerateHash(request.Password);
 
             dbContext.Users.Add(user);
 

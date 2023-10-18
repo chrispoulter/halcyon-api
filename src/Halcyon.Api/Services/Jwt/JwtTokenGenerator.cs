@@ -8,13 +8,13 @@ using System.Text;
 
 namespace Halcyon.Api.Services.Jwt
 {
-    public class JwtService : IJwtService
+    public class JwtTokenGenerator : IJwtTokenGenerator
     {
         private readonly IDateTimeProvider _dateTimeProvider;
 
         private readonly JwtSettings _jwtSettings;
 
-        public JwtService(
+        public JwtTokenGenerator(
             IDateTimeProvider dateTimeProvider, 
             IOptions<JwtSettings> jwtSettings)
         {
@@ -22,7 +22,7 @@ namespace Halcyon.Api.Services.Jwt
             _jwtSettings = jwtSettings.Value;
         }
 
-        public JwtToken CreateToken(User user)
+        public string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey));
 
@@ -48,12 +48,7 @@ namespace Halcyon.Api.Services.Jwt
                 expires: _dateTimeProvider.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
                 signingCredentials: credentials);
 
-            return new JwtToken
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                ExpiresIn = _jwtSettings.ExpiresIn,
-                TokenType = "Bearer"
-            };
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

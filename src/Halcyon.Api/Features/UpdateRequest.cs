@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Features
+namespace Halcyon.Api.Features
 {
     public class UpdateRequest
     {

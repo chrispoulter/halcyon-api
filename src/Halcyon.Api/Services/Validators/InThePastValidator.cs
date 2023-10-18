@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Halcyon.Api.Services.Date;
 
-namespace Halcyon.Api.Validators
+namespace Halcyon.Api.Services.Validators
 {
     public static class InThePastValidator
     {

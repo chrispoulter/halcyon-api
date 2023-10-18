@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Services.Email.Templates;
+﻿using Halcyon.Api.Features.Email.Templates;
 
-namespace Halcyon.Api.Services.Email
+namespace Halcyon.Api.Features.Email
 {
     public class EmailEvent
     {

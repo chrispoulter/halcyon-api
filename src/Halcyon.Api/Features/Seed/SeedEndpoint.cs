@@ -19,7 +19,7 @@ namespace Halcyon.Api.Features.Seed
 
         public static async Task<IResult> HandleAsync(
             HalcyonDbContext dbContext,
-            IHashService hashService,
+            IPasswordHasher passwordHasher,
             IOptions<SeedSettings> seedSettings)
         {
             await dbContext.Database.MigrateAsync();
@@ -45,7 +45,7 @@ namespace Halcyon.Api.Features.Seed
                     }
 
                     seedUser.Adapt(user);
-                    user.Password = hashService.GenerateHash(seedUser.Password);
+                    user.Password = passwordHasher.GenerateHash(seedUser.Password);
                 }
             }
 

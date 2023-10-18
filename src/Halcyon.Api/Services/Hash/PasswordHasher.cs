@@ -2,7 +2,7 @@
 
 namespace Halcyon.Api.Services.Hash
 {
-    public class HashService : IHashService
+    public class PasswordHasher : IPasswordHasher
     {
         private const int SaltSize = 16;
 

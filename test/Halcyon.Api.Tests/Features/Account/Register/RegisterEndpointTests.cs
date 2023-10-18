@@ -15,12 +15,12 @@ namespace Halcyon.Api.Tests.Features.Account.Register
 
         private readonly List<User> _storedUsers;
 
-        private readonly Mock<IHashService> _mockHashService;
+        private readonly Mock<IPasswordHasher> _mockPasswordHasher;
 
         public RegisterEndpointTests()
         {
             _mockDbContext = new Mock<HalcyonDbContext>();
-            _mockHashService = new Mock<IHashService>();
+            _mockPasswordHasher = new Mock<IPasswordHasher>();
             _storedUsers = new List<User>();
 
             _mockDbContext.Setup(m => m.Users)
@@ -49,7 +49,7 @@ namespace Halcyon.Api.Tests.Features.Account.Register
             var result = await RegisterEndpoint.HandleAsync(
                 request,
                 _mockDbContext.Object,
-                _mockHashService.Object
+                _mockPasswordHasher.Object
             );
 
             var response = Assert.IsType<ProblemHttpResult>(result);
@@ -64,7 +64,7 @@ namespace Halcyon.Api.Tests.Features.Account.Register
             var result = await RegisterEndpoint.HandleAsync(
                 request,
                 _mockDbContext.Object,
-                _mockHashService.Object
+                _mockPasswordHasher.Object
             );
 
             var response = Assert.IsType<Ok<UpdateResponse>>(result);

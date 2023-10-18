@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 
-namespace Halcyon.Api.Validators
+namespace Halcyon.Api.Services.Validators
 {
     public static class ReturnUrlValidator
     {

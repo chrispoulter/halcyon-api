@@ -26,7 +26,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
             ChangePasswordRequest request,
             ClaimsPrincipal currentUser,
             HalcyonDbContext dbContext,
-            IHashService hashService)
+            IPasswordHasher passwordHasher)
         {
             var currentUserId = currentUser.GetUserId();
 
@@ -57,7 +57,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
                 );
             }
 
-            var verified = hashService.VerifyHash(request.CurrentPassword, user.Password);
+            var verified = passwordHasher.VerifyHash(request.CurrentPassword, user.Password);
 
             if (!verified)
             {
@@ -67,7 +67,7 @@ namespace Halcyon.Api.Features.Manage.ChangePassword
                 );
             }
 
-            user.Password = hashService.GenerateHash(request.NewPassword);
+            user.Password = passwordHasher.GenerateHash(request.NewPassword);
             user.PasswordResetToken = null;
 
             await dbContext.SaveChangesAsync();

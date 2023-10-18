@@ -1,9 +1,9 @@
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
+using Halcyon.Api.Features.Email;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Date;
-using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Mapster;
@@ -142,8 +142,8 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSett
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-builder.Services.AddSingleton<IHashService, HashService>();
-builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
 var app = builder.Build();
 

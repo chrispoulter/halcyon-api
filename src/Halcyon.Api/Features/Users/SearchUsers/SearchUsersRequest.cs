@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Halcyon.Api.Features.Users.SearchUsers
 {

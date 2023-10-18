@@ -21,7 +21,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
         public static async Task<IResult> HandleAsync(
             ResetPasswordRequest request,
             HalcyonDbContext dbContext,
-            IHashService hashService)
+            IPasswordHasher passwordHasher)
         {
             var user = await dbContext.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
@@ -37,7 +37,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
               );
             }
 
-            user.Password = hashService.GenerateHash(request.NewPassword);
+            user.Password = passwordHasher.GenerateHash(request.NewPassword);
             user.PasswordResetToken = null;
 
             await dbContext.SaveChangesAsync();
