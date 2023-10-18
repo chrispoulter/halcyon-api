@@ -13,7 +13,7 @@ namespace Halcyon.Api.Features.Account.ResetPassword
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces<UpdateResponse>()
-                .ProducesValidationProblem();
+                .ProducesProblem(StatusCodes.Status400BadRequest);
 
             return endpoints;
         }

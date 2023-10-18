@@ -14,7 +14,7 @@ namespace Halcyon.Api.Features.Token
                 .AddFluentValidationAutoValidation()
                 .WithTags("Token")
                 .Produces<string>(contentType: "text/plain")
-                .ProducesValidationProblem();
+                .ProducesProblem(StatusCodes.Status400BadRequest);
 
             return endpoints;
         }

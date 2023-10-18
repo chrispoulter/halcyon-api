@@ -15,7 +15,7 @@ namespace Halcyon.Api.Features.Account.ForgotPassword
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces(StatusCodes.Status200OK)
-                .ProducesValidationProblem();
+                .ProducesProblem(StatusCodes.Status400BadRequest);
 
             return endpoints;
         }

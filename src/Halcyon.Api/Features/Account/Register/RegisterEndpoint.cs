@@ -14,7 +14,7 @@ namespace Halcyon.Api.Features.Account.Register
                 .AddFluentValidationAutoValidation()
                 .WithTags("Account")
                 .Produces<UpdateResponse>()
-                .ProducesValidationProblem();
+                .ProducesProblem(StatusCodes.Status400BadRequest);
 
             return endpoints;
         }
