@@ -1,7 +1,6 @@
-﻿namespace Halcyon.Api.Services.Jwt
+﻿namespace Halcyon.Api.Services.Jwt;
+
+public class JwtClaimNames
 {
-    public class JwtClaimNames
-    {
-        public const string Roles = "roles";
-    }
+    public const string Roles = "roles";
 }

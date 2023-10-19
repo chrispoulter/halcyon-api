@@ -4,53 +4,52 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Halcyon.Api.Features.Manage.DeleteProfile
+namespace Halcyon.Api.Features.Manage.DeleteProfile;
+
+public class DeleteProfileEndpoint : IEndpoint
 {
-    public class DeleteProfileEndpoint : IEndpoint
+    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapDelete("/manage", HandleAsync)
-                .RequireAuthorization()
-                .WithTags("Manage")
-                .Produces<UpdateResponse>()
-                .ProducesProblem(StatusCodes.Status404NotFound)
-                .ProducesProblem(StatusCodes.Status409Conflict);
+        endpoints.MapDelete("/manage", HandleAsync)
+            .RequireAuthorization()
+            .WithTags("Manage")
+            .Produces<UpdateResponse>()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
 
-            return endpoints;
+        return endpoints;
+    }
+
+    public static async Task<IResult> HandleAsync(
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+        ClaimsPrincipal currentUser,
+        HalcyonDbContext dbContext)
+    {
+        var currentUserId = currentUser.GetUserId();
+
+        var user = await dbContext.Users
+        .FirstOrDefaultAsync(u => u.Id == currentUserId);
+
+        if (user is null || user.IsLockedOut)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "User not found."
+            );
         }
 
-        public static async Task<IResult> HandleAsync(
-            [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
-            ClaimsPrincipal currentUser,
-            HalcyonDbContext dbContext)
+        if (request?.Version is not null && request.Version != user.Version)
         {
-            var currentUserId = currentUser.GetUserId();
-
-            var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUserId);
-
-            if (user is null || user.IsLockedOut)
-            {
-                return Results.Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "User not found."
-                );
-            }
-
-            if (request?.Version is not null && request.Version != user.Version)
-            {
-                return Results.Problem(
-                    statusCode: StatusCodes.Status409Conflict,
-                    title: "Data has been modified since entities were loaded."
-                );
-            }
-
-            dbContext.Users.Remove(user);
-
-            await dbContext.SaveChangesAsync();
-
-            return Results.Ok(new UpdateResponse { Id = user.Id });
+            return Results.Problem(
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Data has been modified since entities were loaded."
+            );
         }
+
+        dbContext.Users.Remove(user);
+
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok(new UpdateResponse { Id = user.Id });
     }
 }

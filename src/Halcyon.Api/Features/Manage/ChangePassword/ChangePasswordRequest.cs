@@ -1,20 +1,19 @@
 ﻿using FluentValidation;
 
-namespace Halcyon.Api.Features.Manage.ChangePassword
+namespace Halcyon.Api.Features.Manage.ChangePassword;
+
+public class ChangePasswordRequest : UpdateRequest
 {
-    public class ChangePasswordRequest : UpdateRequest
-    {
-        public string CurrentPassword { get; set; }
+    public string CurrentPassword { get; set; }
 
-        public string NewPassword { get; set; }
-    }
+    public string NewPassword { get; set; }
+}
 
-    public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
+public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
+{
+    public ChangePasswordRequestValidator()
     {
-        public ChangePasswordRequestValidator()
-        {
-            RuleFor(x => x.CurrentPassword).NotEmpty().WithName("Current Password");
-            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).MaximumLength(50).WithName("New Password");
-        }
+        RuleFor(x => x.CurrentPassword).NotEmpty().WithName("Current Password");
+        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).MaximumLength(50).WithName("New Password");
     }
 }

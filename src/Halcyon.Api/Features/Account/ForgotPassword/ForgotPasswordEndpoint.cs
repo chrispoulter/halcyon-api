@@ -1,54 +1,48 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Features.Email;
-using Halcyon.Api.Features.Email.Templates;
+using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
-namespace Halcyon.Api.Features.Account.ForgotPassword
+namespace Halcyon.Api.Features.Account.ForgotPassword;
+
+public class ForgotPasswordEndpoint : IEndpoint
 {
-    public class ForgotPasswordEndpoint : IEndpoint
+    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+        endpoints.MapPut("/account/forgot-password", HandleAsync)
+            .AddFluentValidationAutoValidation()
+            .WithTags("Account")
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        return endpoints;
+    }
+
+    public static async Task<IResult> HandleAsync(
+        ForgotPasswordRequest request,
+        HalcyonDbContext dbContext,
+        IBus bus)
+    {
+        var user = await dbContext.Users
+           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+
+        if (user is not null && !user.IsLockedOut)
         {
-            endpoints.MapPut("/account/forgot-password", HandleAsync)
-                .AddFluentValidationAutoValidation()
-                .WithTags("Account")
-                .Produces(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+            user.PasswordResetToken = Guid.NewGuid();
 
-            return endpoints;
-        }
+            await dbContext.SaveChangesAsync();
 
-        public static async Task<IResult> HandleAsync(
-            ForgotPasswordRequest request,
-            HalcyonDbContext dbContext,
-            IBus bus)
-        {
-            var user = await dbContext.Users
-               .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
-
-            if (user is not null && !user.IsLockedOut)
+            var message = new SendResetPasswordEmailEvent
             {
-                user.PasswordResetToken = Guid.NewGuid();
+                To = user.EmailAddress,
+                PasswordResetToken = user.PasswordResetToken,
+                SiteUrl = request.SiteUrl,
+            };
 
-                await dbContext.SaveChangesAsync();
-
-                var message = new EmailEvent
-                {
-                    Template = EmailTemplate.RESET_PASSWORD,
-                    To = user.EmailAddress,
-                    Data = new()
-                    {
-                        { "SiteUrl", request.SiteUrl },
-                        { "PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}" }
-                    }
-                };
-
-                await bus.Publish(message);
-            }
-
-            return Results.Ok();
+            await bus.Publish(message);
         }
+
+        return Results.Ok();
     }
 }

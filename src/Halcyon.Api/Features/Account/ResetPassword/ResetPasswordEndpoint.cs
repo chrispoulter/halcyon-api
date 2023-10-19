@@ -3,46 +3,45 @@ using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
-namespace Halcyon.Api.Features.Account.ResetPassword
+namespace Halcyon.Api.Features.Account.ResetPassword;
+
+public class ResetPasswordEndpoint : IEndpoint
 {
-    public class ResetPasswordEndpoint : IEndpoint
+    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapPut("/account/reset-password", HandleAsync)
-                .AddFluentValidationAutoValidation()
-                .WithTags("Account")
-                .Produces<UpdateResponse>()
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+        endpoints.MapPut("/account/reset-password", HandleAsync)
+            .AddFluentValidationAutoValidation()
+            .WithTags("Account")
+            .Produces<UpdateResponse>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
 
-            return endpoints;
+        return endpoints;
+    }
+
+    public static async Task<IResult> HandleAsync(
+        ResetPasswordRequest request,
+        HalcyonDbContext dbContext,
+        IPasswordHasher passwordHasher)
+    {
+        var user = await dbContext.Users
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+
+        if (
+            user is null
+            || user.IsLockedOut
+            || request.Token != user.PasswordResetToken)
+        {
+            return Results.Problem(
+              statusCode: StatusCodes.Status400BadRequest,
+              title: "Invalid token."
+          );
         }
 
-        public static async Task<IResult> HandleAsync(
-            ResetPasswordRequest request,
-            HalcyonDbContext dbContext,
-            IPasswordHasher passwordHasher)
-        {
-            var user = await dbContext.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+        user.Password = passwordHasher.HashPassword(request.NewPassword);
+        user.PasswordResetToken = null;
 
-            if (
-                user is null
-                || user.IsLockedOut
-                || request.Token != user.PasswordResetToken)
-            {
-                return Results.Problem(
-                  statusCode: StatusCodes.Status400BadRequest,
-                  title: "Invalid token."
-              );
-            }
+        await dbContext.SaveChangesAsync();
 
-            user.Password = passwordHasher.GenerateHash(request.NewPassword);
-            user.PasswordResetToken = null;
-
-            await dbContext.SaveChangesAsync();
-
-            return Results.Ok(new UpdateResponse { Id = user.Id });
-        }
+        return Results.Ok(new UpdateResponse { Id = user.Id });
     }
 }

@@ -1,9 +1,9 @@
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
-using Halcyon.Api.Features.Email;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Date;
+using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Mapster;
@@ -20,19 +20,21 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
-var version = Assembly.GetEntryAssembly()
+var assembly = Assembly.GetExecutingAssembly();
+
+var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
     .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
+var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
 builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
 {
     options
         .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-        .UseNpgsql(connectionString, builder => builder.EnableRetryOnFailure())
+        .UseNpgsql(dbConnectionString, builder => builder.EnableRetryOnFailure())
         .UseSnakeCaseNamingConvention();
 });
 
@@ -84,8 +86,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddProblemDetails();
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
+
+builder.Services.AddMassTransit(options =>
+{
+    options.AddConsumers(assembly);
+
+    options.UsingInMemory((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
@@ -125,25 +137,19 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddMassTransit(options =>
-{
-    options.AddConsumers(Assembly.GetExecutingAssembly());
-
-    options.UsingInMemory((context, cfg) =>
-    {
-        cfg.ConfigureEndpoints(context);
-    });
-});
-
-TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
-
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
-builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
+TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
+
+builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
 var app = builder.Build();
 

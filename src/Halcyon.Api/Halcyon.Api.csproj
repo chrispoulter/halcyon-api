@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Features\Email\Templates\*.html" />
+	  <EmbeddedResource Include="Features\**\*.html" />
 	</ItemGroup>
 
 </Project>

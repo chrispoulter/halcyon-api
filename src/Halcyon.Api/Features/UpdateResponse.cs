@@ -1,7 +1,6 @@
-﻿namespace Halcyon.Api.Features
+﻿namespace Halcyon.Api.Features;
+
+public class UpdateResponse
 {
-    public class UpdateResponse
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }

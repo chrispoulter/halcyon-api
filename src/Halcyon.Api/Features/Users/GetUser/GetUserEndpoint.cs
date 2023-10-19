@@ -2,40 +2,39 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Users.GetUser
+namespace Halcyon.Api.Features.Users.GetUser;
+
+public class GetUserEndpoint : IEndpoint
 {
-    public class GetUserEndpoint : IEndpoint
+    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapGet("/user/{id}", HandleAsync)
-                .RequireAuthorization("UserAdministratorPolicy")
-                .WithTags("Users")
-                .Produces<GetUserResponse>()
-                .ProducesProblem(StatusCodes.Status404NotFound);
+        endpoints.MapGet("/user/{id}", HandleAsync)
+            .RequireAuthorization("UserAdministratorPolicy")
+            .WithTags("Users")
+            .Produces<GetUserResponse>()
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
-            return endpoints;
+        return endpoints;
+    }
+
+    public static async Task<IResult> HandleAsync(
+        int id,
+        HalcyonDbContext dbContext)
+    {
+        var user = await dbContext.Users
+           .AsNoTracking()
+           .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user is null)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "User not found."
+            );
         }
 
-        public static async Task<IResult> HandleAsync(
-            int id,
-            HalcyonDbContext dbContext)
-        {
-            var user = await dbContext.Users
-               .AsNoTracking()
-               .FirstOrDefaultAsync(u => u.Id == id);
+        var result = user.Adapt<GetUserResponse>();
 
-            if (user is null)
-            {
-                return Results.Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "User not found."
-                );
-            }
-
-            var result = user.Adapt<GetUserResponse>();
-
-            return Results.Ok(result);
-        }
+        return Results.Ok(result);
     }
 }

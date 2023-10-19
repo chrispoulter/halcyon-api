@@ -7,69 +7,68 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Moq.EntityFrameworkCore;
 
-namespace Halcyon.Api.Tests.Features.Account.Register
+namespace Halcyon.Api.Tests.Features.Account.Register;
+
+public class RegisterEndpointTests
 {
-    public class RegisterEndpointTests
+    private readonly Mock<HalcyonDbContext> _mockDbContext;
+
+    private readonly List<User> _storedUsers;
+
+    private readonly Mock<IPasswordHasher> _mockPasswordHasher;
+
+    public RegisterEndpointTests()
     {
-        private readonly Mock<HalcyonDbContext> _mockDbContext;
+        _mockDbContext = new Mock<HalcyonDbContext>();
+        _mockPasswordHasher = new Mock<IPasswordHasher>();
+        _storedUsers = new List<User>();
 
-        private readonly List<User> _storedUsers;
+        _mockDbContext.Setup(m => m.Users)
+            .ReturnsDbSet(_storedUsers);
 
-        private readonly Mock<IPasswordHasher> _mockPasswordHasher;
+        _mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
+            .Callback<User>(_storedUsers.Add);
 
-        public RegisterEndpointTests()
+        _mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .Callback(() => _storedUsers.ForEach(user => user.Id = _storedUsers.IndexOf(user) + 1));
+    }
+
+    [Fact]
+    public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
+    {
+        var request = new RegisterRequest
         {
-            _mockDbContext = new Mock<HalcyonDbContext>();
-            _mockPasswordHasher = new Mock<IPasswordHasher>();
-            _storedUsers = new List<User>();
+            EmailAddress = "test@example.com"
+        };
 
-            _mockDbContext.Setup(m => m.Users)
-                .ReturnsDbSet(_storedUsers);
-
-            _mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-                .Callback<User>(_storedUsers.Add);
-
-            _mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Callback(() => _storedUsers.ForEach(user => user.Id = _storedUsers.IndexOf(user) + 1));
-        }
-
-        [Fact]
-        public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
+        _storedUsers.Add(new User
         {
-            var request = new RegisterRequest
-            {
-                EmailAddress = "test@example.com"
-            };
+            EmailAddress = request.EmailAddress
+        });
 
-            _storedUsers.Add(new User
-            {
-                EmailAddress = request.EmailAddress
-            });
+        var result = await RegisterEndpoint.HandleAsync(
+            request,
+            _mockDbContext.Object,
+            _mockPasswordHasher.Object
+        );
 
-            var result = await RegisterEndpoint.HandleAsync(
-                request,
-                _mockDbContext.Object,
-                _mockPasswordHasher.Object
-            );
+        var response = Assert.IsType<ProblemHttpResult>(result);
+        Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
+    }
 
-            var response = Assert.IsType<ProblemHttpResult>(result);
-            Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
-        }
+    [Fact]
+    public async Task Register_WhenRequestValid_ShouldCreateNewUser()
+    {
+        var request = new RegisterRequest();
 
-        [Fact]
-        public async Task Register_WhenRequestValid_ShouldCreateNewUser()
-        {
-            var request = new RegisterRequest();
+        var result = await RegisterEndpoint.HandleAsync(
+            request,
+            _mockDbContext.Object,
+            _mockPasswordHasher.Object
+        );
 
-            var result = await RegisterEndpoint.HandleAsync(
-                request,
-                _mockDbContext.Object,
-                _mockPasswordHasher.Object
-            );
-
-            var response = Assert.IsType<Ok<UpdateResponse>>(result);
-            Assert.NotNull(response.Value);
-            Assert.Equal(1, response.Value.Id);
-        }
+        var response = Assert.IsType<Ok<UpdateResponse>>(result);
+        Assert.NotNull(response.Value);
+        Assert.Equal(1, response.Value.Id);
     }
 }

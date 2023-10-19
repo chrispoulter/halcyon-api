@@ -5,49 +5,48 @@ using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Security.Claims;
 
-namespace Halcyon.Api.Features.Users.CreateUser
+namespace Halcyon.Api.Features.Users.CreateUser;
+
+public class CreateUserEndpoint : IEndpoint
 {
-    public class CreateUserEndpoint : IEndpoint
+    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
     {
-        public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapPost("/user", HandleAsync)
-                .RequireAuthorization("UserAdministratorPolicy")
-                .AddFluentValidationAutoValidation()
-                .WithTags("Users")
-                .Produces<UpdateResponse>()
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+        endpoints.MapPost("/user", HandleAsync)
+            .RequireAuthorization("UserAdministratorPolicy")
+            .AddFluentValidationAutoValidation()
+            .WithTags("Users")
+            .Produces<UpdateResponse>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
 
-            return endpoints;
+        return endpoints;
+    }
+
+    public static async Task<IResult> HandleAsync(
+        CreateUserRequest request,
+        ClaimsPrincipal currentUser,
+        HalcyonDbContext dbContext,
+        IPasswordHasher passwordHasher)
+    {
+        var currentUserId = currentUser.GetUserId();
+
+        var existing = await dbContext.Users
+           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+
+        if (existing is not null)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "User name is already taken."
+            );
         }
 
-        public static async Task<IResult> HandleAsync(
-            CreateUserRequest request,
-            ClaimsPrincipal currentUser,
-            HalcyonDbContext dbContext,
-            IPasswordHasher passwordHasher)
-        {
-            var currentUserId = currentUser.GetUserId();
+        var user = request.Adapt<User>();
+        user.Password = passwordHasher.HashPassword(request.Password);
 
-            var existing = await dbContext.Users
-               .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+        dbContext.Users.Add(user);
 
-            if (existing is not null)
-            {
-                return Results.Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "User name is already taken."
-                );
-            }
+        await dbContext.SaveChangesAsync();
 
-            var user = request.Adapt<User>();
-            user.Password = passwordHasher.GenerateHash(request.Password);
-
-            dbContext.Users.Add(user);
-
-            await dbContext.SaveChangesAsync();
-
-            return Results.Ok(new UpdateResponse { Id = user.Id });
-        }
+        return Results.Ok(new UpdateResponse { Id = user.Id });
     }
 }
