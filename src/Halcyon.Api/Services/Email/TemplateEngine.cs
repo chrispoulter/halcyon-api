@@ -5,11 +5,10 @@ namespace Halcyon.Api.Services.Email;
 
 public partial class TemplateEngine : ITemplateEngine
 {
-    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, object data)
+    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, dynamic model)
     {
         var resource = await ReadEmbeddedResourceAsStringAsync(template);
-        var tokenReplacements = ObjectToDictionary(data);
-        var html = ReplaceTokensInHtml(resource, tokenReplacements);
+        var html = Render(resource, model);
         var title = GetHtmlTitle(html);
 
         return new(html, title);
@@ -28,6 +27,17 @@ public partial class TemplateEngine : ITemplateEngine
         return await reader.ReadToEndAsync();
     }
 
+    public static string Render(string html, dynamic model)
+    {
+        var pattern = @"\{{(.+?)\}}";
+
+        return Regex.Replace(html, pattern, match =>
+        {
+            var key = match.Groups[1].Value.Trim();
+            return model.GetType().GetProperty(key).GetValue(model, null).ToString();
+        });
+    }
+
     private static string GetHtmlTitle(string html)
     {
         var pattern = @"<title\b[^>]*>(.*?)</title>";
@@ -36,28 +46,5 @@ public partial class TemplateEngine : ITemplateEngine
         return match.Success
             ? match.Groups[1].Value
             : string.Empty;
-    }
-
-    public static string ReplaceTokensInHtml(string html, IDictionary<string, string> tokenReplacements)
-    {
-        foreach (var (token, replacement) in tokenReplacements)
-        {
-            var pattern = Regex.Escape($"{{{{ {token} }}}}");
-            html = Regex.Replace(html, pattern, replacement);
-        }
-
-        return html;
-    }
-
-    public static IDictionary<string, string> ObjectToDictionary(object obj)
-    {
-        var result = new Dictionary<string, string>();
-
-        foreach (var property in obj.GetType().GetProperties())
-        {
-            result[property.Name] = property.GetValue(obj).ToString();
-        }
-
-        return result;
     }
 }

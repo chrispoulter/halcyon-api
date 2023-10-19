@@ -2,5 +2,5 @@
 
 public interface ITemplateEngine
 {
-    Task<Tuple<string, string>> RenderTemplateAsync(string template, object data);
+    Task<Tuple<string, string>> RenderTemplateAsync(string template, dynamic model);
 }

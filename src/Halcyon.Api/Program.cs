@@ -19,7 +19,9 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
-var version = Assembly.GetEntryAssembly()
+var assembly = Assembly.GetExecutingAssembly();
+
+var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
     .InformationalVersion;
 
@@ -86,7 +88,7 @@ builder.Services.AddFluentValidationAutoValidation(options =>
 {
     options.DisableBuiltInModelValidation = true;
 });
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks()
@@ -128,7 +130,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddMassTransit(options =>
 {
-    options.AddConsumers(Assembly.GetExecutingAssembly());
+    options.AddConsumers(assembly);
 
     options.UsingInMemory((context, cfg) =>
     {
@@ -136,7 +138,7 @@ builder.Services.AddMassTransit(options =>
     });
 });
 
-TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
