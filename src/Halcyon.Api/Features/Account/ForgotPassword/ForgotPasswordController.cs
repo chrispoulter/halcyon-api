@@ -1,6 +1,5 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Features.Email;
-using Halcyon.Api.Features.Email.Templates;
+using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,15 +36,11 @@ public class ForgotPasswordController : BaseController
 
             await _context.SaveChangesAsync();
 
-            var message = new EmailEvent
+            var message = new SendResetPasswordEmailEvent
             {
-                Template = EmailTemplate.RESET_PASSWORD,
                 To = user.EmailAddress,
-                Data = new()
-                {
-                    { "SiteUrl", request.SiteUrl },
-                    { "PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}" }
-                }
+                PasswordResetToken = user.PasswordResetToken,
+                SiteUrl = request.SiteUrl,
             };
 
             await _bus.Publish(message);

@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Features.Email;
+﻿namespace Halcyon.Api.Services.Email;
 
 public class EmailSettings
 {

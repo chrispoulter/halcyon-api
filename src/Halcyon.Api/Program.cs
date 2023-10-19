@@ -1,10 +1,10 @@
 using FluentValidation;
+using Halcyon.Api.Data;
+using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Date;
+using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
-using Halcyon.Api.Data;
-using Halcyon.Api.Features.Email;
-using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -144,6 +144,7 @@ builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSe
 
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
 var app = builder.Build();

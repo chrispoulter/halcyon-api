@@ -1,34 +1,31 @@
-using Halcyon.Api.Features.Email;
-using MailKit.Net.Smtp;
-using MassTransit;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Halcyon.Api.Consumers.Email;
+namespace Halcyon.Api.Services.Email;
 
-public partial class EmailConsumer : IConsumer<EmailEvent>
+public partial class EmailSender : IEmailSender
 {
     private readonly EmailSettings _emailSettings;
 
-    private readonly ILogger<EmailConsumer> _logger;
+    private readonly ILogger<EmailSender> _logger;
 
-    public EmailConsumer(IOptions<EmailSettings> emailSettings, ILogger<EmailConsumer> logger)
+    public EmailSender(IOptions<EmailSettings> emailSettings, ILogger<EmailSender> logger)
     {
         _emailSettings = emailSettings.Value;
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<EmailEvent> context)
+    public async Task SendEmailAsync(EmailMessage message)
     {
-        var message = context.Message;
-        var template = ReadResource($"{message.Template}.html");
-        var title = GetTitle(template);
+        var resource = ReadResource($"{message.Template}.html");
+        var title = GetTitle(message.Template);
 
         var subject = ReplaceData(title, message.Data);
-        var body = ReplaceData(template, message.Data);
+        var body = ReplaceData(resource, message.Data);
 
         var email = new MimeMessage(
             new[] { MailboxAddress.Parse(_emailSettings.NoReplyAddress) },
@@ -51,7 +48,6 @@ public partial class EmailConsumer : IConsumer<EmailEvent>
         {
             _logger.LogError(error, "Email Send Failed");
         }
-
     }
 
     private string ReadResource(string resource)
@@ -76,7 +72,7 @@ public partial class EmailConsumer : IConsumer<EmailEvent>
             : string.Empty;
     }
 
-    private string ReplaceData(string template, Dictionary<string, string> data)
+    private string ReplaceData(string template, IDictionary<string, string> data)
     {
         foreach (var entry in data)
         {
