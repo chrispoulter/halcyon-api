@@ -144,6 +144,7 @@ builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSe
 
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 

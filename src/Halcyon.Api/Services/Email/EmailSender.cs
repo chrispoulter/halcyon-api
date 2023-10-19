@@ -2,39 +2,36 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace Halcyon.Api.Services.Email;
 
-public partial class EmailSender : IEmailSender
+public class EmailSender : IEmailSender
 {
+    private readonly ITemplateEngine _templateEngine;
+
     private readonly EmailSettings _emailSettings;
 
     private readonly ILogger<EmailSender> _logger;
 
-    public EmailSender(IOptions<EmailSettings> emailSettings, ILogger<EmailSender> logger)
+    public EmailSender(
+        ITemplateEngine templateEngine,
+        IOptions<EmailSettings> emailSettings,
+        ILogger<EmailSender> logger)
     {
+        _templateEngine = templateEngine;
         _emailSettings = emailSettings.Value;
         _logger = logger;
     }
 
     public async Task SendEmailAsync(EmailMessage message)
     {
-        var resource = ReadResource($"{message.Template}.html");
-        var title = GetTitle(message.Template);
-
-        var subject = ReplaceData(title, message.Data);
-        var body = ReplaceData(resource, message.Data);
+        var (body, subject) = await _templateEngine.RenderTemplateAsync(message.Template, message.Data);
 
         var email = new MimeMessage(
             new[] { MailboxAddress.Parse(_emailSettings.NoReplyAddress) },
             new[] { MailboxAddress.Parse(message.To) },
             subject,
-            new TextPart(TextFormat.Html)
-            {
-                Text = body
-            });
+            new TextPart(TextFormat.Html) { Text = body });
 
         try
         {
@@ -49,39 +46,4 @@ public partial class EmailSender : IEmailSender
             _logger.LogError(error, "Email Send Failed");
         }
     }
-
-    private string ReadResource(string resource)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-
-        var name = assembly.GetManifestResourceNames()
-            .Single(str => str.EndsWith(resource));
-
-        using var stream = assembly.GetManifestResourceStream(name);
-        using var reader = new StreamReader(stream);
-
-        return reader.ReadToEnd();
-    }
-
-    private string GetTitle(string template)
-    {
-        var match = TitleRegex().Match(template);
-
-        return match.Success
-            ? match.Groups[1].Value
-            : string.Empty;
-    }
-
-    private string ReplaceData(string template, IDictionary<string, string> data)
-    {
-        foreach (var entry in data)
-        {
-            template = template.Replace($"{{{{ {entry.Key} }}}}", entry.Value);
-        }
-
-        return template;
-    }
-
-    [GeneratedRegex("<title>\\s*(.+?)\\s*</title>")]
-    private static partial Regex TitleRegex();
 }

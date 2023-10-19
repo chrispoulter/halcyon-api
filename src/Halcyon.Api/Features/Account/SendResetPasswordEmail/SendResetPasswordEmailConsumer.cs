@@ -18,11 +18,11 @@ public class SendResetPasswordEmailConsumer : IConsumer<SendResetPasswordEmailEv
 
         var email = new EmailMessage
         {
+            Template = "ResetPasswordEmail.html",
             To = message.To,
-            Template = "RESET_PASSWORD",
             Data = new()
             {
-                { "ResetPasswordUrl", $"{message.SiteUrl}/reset-password/{message.PasswordResetToken}" },
+                { "PasswordResetToken", message.PasswordResetToken },
                 { "SiteUrl", message.SiteUrl }
             }
         };
