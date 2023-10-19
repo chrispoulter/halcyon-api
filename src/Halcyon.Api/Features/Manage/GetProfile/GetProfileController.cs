@@ -4,40 +4,39 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Manage.GetProfile
+namespace Halcyon.Api.Features.Manage.GetProfile;
+
+public class GetProfileController : BaseController
 {
-    public class GetProfileController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    public GetProfileController(HalcyonDbContext context)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+    }
 
-        public GetProfileController(HalcyonDbContext context)
+    [HttpGet("/manage")]
+    [Authorize]
+    [Tags("Manage")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(GetProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
+
+        if (user is null || user.IsLockedOut)
         {
-            _context = context;
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "User not found."
+            );
         }
 
-        [HttpGet("/manage")]
-        [Authorize]
-        [Tags("Manage")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(GetProfileResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Index()
-        {
-            var user = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
+        var result = user.Adapt<GetProfileResponse>();
 
-            if (user is null || user.IsLockedOut)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "User not found."
-                );
-            }
-
-            var result = user.Adapt<GetProfileResponse>();
-
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }

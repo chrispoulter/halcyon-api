@@ -1,27 +1,26 @@
-﻿namespace Halcyon.Api.Data
+﻿namespace Halcyon.Api.Data;
+
+public class User
 {
-    public class User
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string EmailAddress { get; set; }
+    public string EmailAddress { get; set; }
 
-        public string Password { get; set; }
+    public string Password { get; set; }
 
-        public Guid? PasswordResetToken { get; set; }
+    public Guid? PasswordResetToken { get; set; }
 
-        public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-        public string LastName { get; set; }
+    public string LastName { get; set; }
 
-        public DateOnly DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 
-        public bool IsLockedOut { get; set; }
+    public bool IsLockedOut { get; set; }
 
-        public List<string> Roles { get; set; }
+    public List<string> Roles { get; set; }
 
-        public uint Version { get; }
+    public uint Version { get; }
 
-        public string Search { get; }
-    }
+    public string Search { get; }
 }

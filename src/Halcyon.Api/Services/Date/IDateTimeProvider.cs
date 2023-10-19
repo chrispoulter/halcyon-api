@@ -1,7 +1,6 @@
-﻿namespace Halcyon.Api.Services.Date
+﻿namespace Halcyon.Api.Services.Date;
+
+public interface IDateTimeProvider
 {
-    public interface IDateTimeProvider
-    {
-        public DateTime UtcNow { get; }
-    }
+    public DateTime UtcNow { get; }
 }

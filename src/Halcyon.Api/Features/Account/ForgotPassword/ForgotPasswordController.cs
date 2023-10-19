@@ -5,53 +5,52 @@ using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Account.ForgotPassword
+namespace Halcyon.Api.Features.Account.ForgotPassword;
+
+public class ForgotPasswordController : BaseController
 {
-    public class ForgotPasswordController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    private readonly IBus _bus;
+
+    public ForgotPasswordController(
+        HalcyonDbContext context,
+        IBus bus)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+        _bus = bus;
+    }
 
-        private readonly IBus _bus;
+    [HttpPut("/account/forgot-password")]
+    [Tags("Account")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Index(ForgotPasswordRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-        public ForgotPasswordController(
-            HalcyonDbContext context,
-            IBus bus)
+        if (user is not null && !user.IsLockedOut)
         {
-            _context = context;
-            _bus = bus;
-        }
+            user.PasswordResetToken = Guid.NewGuid();
 
-        [HttpPut("/account/forgot-password")]
-        [Tags("Account")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Index(ForgotPasswordRequest request)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+            await _context.SaveChangesAsync();
 
-            if (user is not null && !user.IsLockedOut)
+            var message = new EmailEvent
             {
-                user.PasswordResetToken = Guid.NewGuid();
-
-                await _context.SaveChangesAsync();
-
-                var message = new EmailEvent
+                Template = EmailTemplate.RESET_PASSWORD,
+                To = user.EmailAddress,
+                Data = new()
                 {
-                    Template = EmailTemplate.RESET_PASSWORD,
-                    To = user.EmailAddress,
-                    Data = new()
-                    {
-                        { "SiteUrl", request.SiteUrl },
-                        { "PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}" }
-                    }
-                };
+                    { "SiteUrl", request.SiteUrl },
+                    { "PasswordResetUrl", $"{request.SiteUrl}/reset-password/{user.PasswordResetToken}" }
+                }
+            };
 
-                await _bus.Publish(message);
-            }
-
-            return Ok();
+            await _bus.Publish(message);
         }
+
+        return Ok();
     }
 }

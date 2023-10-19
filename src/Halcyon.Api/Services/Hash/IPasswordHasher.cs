@@ -1,9 +1,8 @@
-﻿namespace Halcyon.Api.Services.Hash
-{
-    public interface IPasswordHasher
-    {
-        string GenerateHash(string str);
+﻿namespace Halcyon.Api.Services.Hash;
 
-        bool VerifyHash(string str, string hash);
-    }
+public interface IPasswordHasher
+{
+    string GenerateHash(string str);
+
+    bool VerifyHash(string str, string hash);
 }

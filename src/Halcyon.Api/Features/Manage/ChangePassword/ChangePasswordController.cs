@@ -4,73 +4,72 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Manage.ChangePassword
+namespace Halcyon.Api.Features.Manage.ChangePassword;
+
+public class ChangePasswordController : BaseController
 {
-    public class ChangePasswordController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    private readonly IPasswordHasher _passwordHasher;
+
+    public ChangePasswordController(HalcyonDbContext context, IPasswordHasher passwordHasher)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+        _passwordHasher = passwordHasher;
+    }
 
-        private readonly IPasswordHasher _passwordHasher;
+    [HttpPut("/manage/change-password")]
+    [Authorize]
+    [Tags("Manage")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Index(ChangePasswordRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
-        public ChangePasswordController(HalcyonDbContext context, IPasswordHasher passwordHasher)
+        if (user is null || user.IsLockedOut)
         {
-            _context = context;
-            _passwordHasher = passwordHasher;
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "User not found."
+            );
         }
 
-        [HttpPut("/manage/change-password")]
-        [Authorize]
-        [Tags("Manage")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Index(ChangePasswordRequest request)
+        if (request.Version is not null && request.Version != user.Version)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
-
-            if (user is null || user.IsLockedOut)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "User not found."
-                );
-            }
-
-            if (request.Version is not null && request.Version != user.Version)
-            {
-                return Problem(
-                     statusCode: StatusCodes.Status409Conflict,
-                     title: "Data has been modified since entities were loaded."
-                 );
-            }
-
-            if (user.Password is null)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Incorrect password."
-                );
-            }
-
-            var verified = _passwordHasher.VerifyHash(request.CurrentPassword, user.Password);
-
-            if (!verified)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Incorrect password."
-                );
-            }
-
-            user.Password = _passwordHasher.GenerateHash(request.NewPassword);
-            user.PasswordResetToken = null;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new UpdateResponse { Id = user.Id });
+            return Problem(
+                 statusCode: StatusCodes.Status409Conflict,
+                 title: "Data has been modified since entities were loaded."
+             );
         }
+
+        if (user.Password is null)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Incorrect password."
+            );
+        }
+
+        var verified = _passwordHasher.VerifyHash(request.CurrentPassword, user.Password);
+
+        if (!verified)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Incorrect password."
+            );
+        }
+
+        user.Password = _passwordHasher.GenerateHash(request.NewPassword);
+        user.PasswordResetToken = null;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new UpdateResponse { Id = user.Id });
     }
 }

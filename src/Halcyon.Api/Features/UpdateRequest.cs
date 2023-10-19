@@ -1,7 +1,6 @@
-namespace Halcyon.Api.Features
+namespace Halcyon.Api.Features;
+
+public class UpdateRequest
 {
-    public class UpdateRequest
-    {
-        public uint? Version { get; set; }
-    }
+    public uint? Version { get; set; }
 }

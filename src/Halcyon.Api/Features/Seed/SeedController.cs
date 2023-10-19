@@ -5,62 +5,61 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Halcyon.Api.Features.Seed
+namespace Halcyon.Api.Features.Seed;
+
+public class SeedController : BaseController
 {
-    public class SeedController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    private readonly IPasswordHasher _passwordHasher;
+
+    private readonly SeedSettings _seedSettings;
+
+    public SeedController(
+        HalcyonDbContext context,
+        IPasswordHasher passwordHasher,
+        IOptions<SeedSettings> seedSettings)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+        _passwordHasher = passwordHasher;
+        _seedSettings = seedSettings.Value;
+    }
 
-        private readonly IPasswordHasher _passwordHasher;
+    [HttpGet("/seed")]
+    [Tags("Seed")]
+    [Produces("text/plain")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Index()
+    {
+        await _context.Database.MigrateAsync();
 
-        private readonly SeedSettings _seedSettings;
-
-        public SeedController(
-            HalcyonDbContext context,
-            IPasswordHasher passwordHasher,
-            IOptions<SeedSettings> seedSettings)
+        if (_seedSettings.Users != null)
         {
-            _context = context;
-            _passwordHasher = passwordHasher;
-            _seedSettings = seedSettings.Value;
-        }
+            var emailAddresses = _seedSettings.Users
+                .Select(u => u.EmailAddress);
 
-        [HttpGet("/seed")]
-        [Tags("Seed")]
-        [Produces("text/plain")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Index()
-        {
-            await _context.Database.MigrateAsync();
+            var users = await _context.Users
+                .Where(u => emailAddresses.Contains(u.EmailAddress))
+                .ToListAsync();
 
-            if (_seedSettings.Users != null)
+            foreach (var seedUser in _seedSettings.Users)
             {
-                var emailAddresses = _seedSettings.Users
-                    .Select(u => u.EmailAddress);
+                var user = users.FirstOrDefault(u => u.EmailAddress == seedUser.EmailAddress);
 
-                var users = await _context.Users
-                    .Where(u => emailAddresses.Contains(u.EmailAddress))
-                    .ToListAsync();
-
-                foreach (var seedUser in _seedSettings.Users)
+                if (user is null)
                 {
-                    var user = users.FirstOrDefault(u => u.EmailAddress == seedUser.EmailAddress);
+                    user = new();
 
-                    if (user is null)
-                    {
-                        user = new();
-
-                        _context.Users.Add(user);
-                    }
-
-                    seedUser.Adapt(user);
-                    user.Password = _passwordHasher.GenerateHash(seedUser.Password);
+                    _context.Users.Add(user);
                 }
+
+                seedUser.Adapt(user);
+                user.Password = _passwordHasher.GenerateHash(seedUser.Password);
             }
-
-            await _context.SaveChangesAsync();
-
-            return Content("Environment seeded.");
         }
+
+        await _context.SaveChangesAsync();
+
+        return Content("Environment seeded.");
     }
 }

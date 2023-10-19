@@ -4,48 +4,47 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Account.Register
+namespace Halcyon.Api.Features.Account.Register;
+
+public class RegisterController : BaseController
 {
-    public class RegisterController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    private readonly IPasswordHasher _passwordHasher;
+
+    public RegisterController(
+        HalcyonDbContext context,
+        IPasswordHasher passwordHasher)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+        _passwordHasher = passwordHasher;
+    }
 
-        private readonly IPasswordHasher _passwordHasher;
+    [HttpPost("/account/register")]
+    [Tags("Account")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Index(RegisterRequest request)
+    {
+        var existing = await _context.Users
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-        public RegisterController(
-            HalcyonDbContext context,
-            IPasswordHasher passwordHasher)
+        if (existing is not null)
         {
-            _context = context;
-            _passwordHasher = passwordHasher;
+            return Problem(
+              statusCode: StatusCodes.Status400BadRequest,
+              title: "User name is already taken."
+          );
         }
 
-        [HttpPost("/account/register")]
-        [Tags("Account")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(UpdateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Index(RegisterRequest request)
-        {
-            var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+        var user = request.Adapt<User>();
+        user.Password = _passwordHasher.GenerateHash(request.Password);
 
-            if (existing is not null)
-            {
-                return Problem(
-                  statusCode: StatusCodes.Status400BadRequest,
-                  title: "User name is already taken."
-              );
-            }
+        _context.Users.Add(user);
 
-            var user = request.Adapt<User>();
-            user.Password = _passwordHasher.GenerateHash(request.Password);
+        await _context.SaveChangesAsync();
 
-            _context.Users.Add(user);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new UpdateResponse { Id = user.Id });
-        }
+        return Ok(new UpdateResponse { Id = user.Id });
     }
 }

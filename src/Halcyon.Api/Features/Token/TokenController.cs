@@ -4,66 +4,65 @@ using Halcyon.Api.Services.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Token
+namespace Halcyon.Api.Features.Token;
+
+public class TokenController : BaseController
 {
-    public class TokenController : BaseController
+    private readonly HalcyonDbContext _context;
+
+    private readonly IPasswordHasher _passwordHasher;
+
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+
+    public TokenController(
+        HalcyonDbContext context,
+        IPasswordHasher passwordHasher,
+        IJwtTokenGenerator jwtTokenGenerator)
     {
-        private readonly HalcyonDbContext _context;
+        _context = context;
+        _passwordHasher = passwordHasher;
+        _jwtTokenGenerator = jwtTokenGenerator;
+    }
 
-        private readonly IPasswordHasher _passwordHasher;
+    [HttpPost("/token")]
+    [Tags("Token")]
+    [Produces("text/plain")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Index(TokenRequest request)
+    {
+        var user = await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
-        public TokenController(
-            HalcyonDbContext context,
-            IPasswordHasher passwordHasher,
-            IJwtTokenGenerator jwtTokenGenerator)
+        if (user is null || user.Password is null)
         {
-            _context = context;
-            _passwordHasher = passwordHasher;
-            _jwtTokenGenerator = jwtTokenGenerator;
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "The credentials provided were invalid."
+            );
         }
 
-        [HttpPost("/token")]
-        [Tags("Token")]
-        [Produces("text/plain")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Index(TokenRequest request)
+        var verified = _passwordHasher.VerifyHash(request.Password, user.Password);
+
+        if (!verified)
         {
-            var user = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
-
-            if (user is null || user.Password is null)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "The credentials provided were invalid."
-                );
-            }
-
-            var verified = _passwordHasher.VerifyHash(request.Password, user.Password);
-
-            if (!verified)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "The credentials provided were invalid."
-                );
-            }
-
-            if (user.IsLockedOut)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "This account has been locked out, please try again later."
-                );
-            }
-
-            var result = _jwtTokenGenerator.GenerateToken(user);
-
-            return Content(result);
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "The credentials provided were invalid."
+            );
         }
+
+        if (user.IsLockedOut)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "This account has been locked out, please try again later."
+            );
+        }
+
+        var result = _jwtTokenGenerator.GenerateToken(user);
+
+        return Content(result);
     }
 }

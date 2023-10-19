@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Halcyon.Api.Features
+namespace Halcyon.Api.Features;
+
+[ApiController]
+public abstract class BaseController : ControllerBase
 {
-    [ApiController]
-    public abstract class BaseController : ControllerBase
-    {
-        protected int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
-    }
+    protected int CurrentUserId => int.Parse(HttpContext.User.Identity.Name);
 }

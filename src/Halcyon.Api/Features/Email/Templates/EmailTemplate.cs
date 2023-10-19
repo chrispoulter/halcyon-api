@@ -1,7 +1,6 @@
-﻿namespace Halcyon.Api.Features.Email.Templates
+﻿namespace Halcyon.Api.Features.Email.Templates;
+
+public enum EmailTemplate
 {
-    public enum EmailTemplate
-    {
-        RESET_PASSWORD
-    }
+    RESET_PASSWORD
 }
