@@ -33,7 +33,7 @@ public partial class TemplateEngine : ITemplateEngine
         var pattern = @"<title\b[^>]*>(.*?)</title>";
         var match = Regex.Match(html, pattern, RegexOptions.IgnoreCase);
 
-        return match.Success 
+        return match.Success
             ? match.Groups[1].Value
             : string.Empty;
     }
@@ -42,7 +42,7 @@ public partial class TemplateEngine : ITemplateEngine
     {
         foreach (var (token, replacement) in tokenReplacements)
         {
-            var pattern = $"{{{{ {token} }}}}";
+            var pattern = Regex.Escape($"{{{{ {token} }}}}");
             html = Regex.Replace(html, pattern, replacement);
         }
 
