@@ -43,7 +43,7 @@ public class TokenController : BaseController
             );
         }
 
-        var verified = _passwordHasher.VerifyHash(request.Password, user.Password);
+        var verified = _passwordHasher.VerifyPassword(request.Password, user.Password);
 
         if (!verified)
         {
@@ -61,7 +61,7 @@ public class TokenController : BaseController
             );
         }
 
-        var result = _jwtTokenGenerator.GenerateToken(user);
+        var result = _jwtTokenGenerator.GenerateJwtToken(user);
 
         return Content(result);
     }

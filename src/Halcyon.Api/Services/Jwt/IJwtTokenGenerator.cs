@@ -4,5 +4,5 @@ namespace Halcyon.Api.Services.Jwt;
 
 public interface IJwtTokenGenerator
 {
-    public string GenerateToken(User user);
+    public string GenerateJwtToken(User user);
 }

@@ -39,7 +39,7 @@ public class RegisterController : BaseController
         }
 
         var user = request.Adapt<User>();
-        user.Password = _passwordHasher.GenerateHash(request.Password);
+        user.Password = _passwordHasher.HashPassword(request.Password);
 
         _context.Users.Add(user);
 

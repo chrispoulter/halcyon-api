@@ -54,7 +54,7 @@ public class SeedController : BaseController
                 }
 
                 seedUser.Adapt(user);
-                user.Password = _passwordHasher.GenerateHash(seedUser.Password);
+                user.Password = _passwordHasher.HashPassword(seedUser.Password);
             }
         }
 

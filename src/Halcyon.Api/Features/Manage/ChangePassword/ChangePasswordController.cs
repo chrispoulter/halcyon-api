@@ -55,7 +55,7 @@ public class ChangePasswordController : BaseController
             );
         }
 
-        var verified = _passwordHasher.VerifyHash(request.CurrentPassword, user.Password);
+        var verified = _passwordHasher.VerifyPassword(request.CurrentPassword, user.Password);
 
         if (!verified)
         {
@@ -65,7 +65,7 @@ public class ChangePasswordController : BaseController
             );
         }
 
-        user.Password = _passwordHasher.GenerateHash(request.NewPassword);
+        user.Password = _passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
         await _context.SaveChangesAsync();

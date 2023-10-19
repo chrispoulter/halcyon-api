@@ -10,10 +10,10 @@ public class PasswordHasher : IPasswordHasher
 
     private const int Iterations = 10000;
 
-    public string GenerateHash(string str)
+    public string HashPassword(string password)
     {
         using var algorithm = new Rfc2898DeriveBytes(
-           str,
+           password,
            SaltSize,
            Iterations,
            HashAlgorithmName.SHA256);
@@ -24,14 +24,14 @@ public class PasswordHasher : IPasswordHasher
         return $"{salt}.{key}";
     }
 
-    public bool VerifyHash(string str, string hash)
+    public bool VerifyPassword(string password, string hashedPassword)
     {
-        var parts = hash.Split('.', 2);
+        var parts = hashedPassword.Split('.', 2);
         var salt = Convert.FromBase64String(parts[0]);
         var key = Convert.FromBase64String(parts[1]);
 
         using var algorithm = new Rfc2898DeriveBytes(
-          str,
+          password,
           salt,
           Iterations,
           HashAlgorithmName.SHA256);

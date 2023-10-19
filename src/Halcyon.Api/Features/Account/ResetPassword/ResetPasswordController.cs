@@ -40,7 +40,7 @@ public class ResetPasswordController : BaseController
           );
         }
 
-        user.Password = _passwordHasher.GenerateHash(request.NewPassword);
+        user.Password = _passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
         await _context.SaveChangesAsync();

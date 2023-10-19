@@ -5,11 +5,11 @@ namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
 public class SendResetPasswordEmailConsumer : IConsumer<SendResetPasswordEmailEvent>
 {
-    private readonly IEmailSender _emailService;
+    private readonly IEmailSender _emailSender;
 
-    public SendResetPasswordEmailConsumer(IEmailSender emailService)
+    public SendResetPasswordEmailConsumer(IEmailSender emailSender)
     {
-        _emailService = emailService;
+        _emailSender = emailSender;
     }
 
     public async Task Consume(ConsumeContext<SendResetPasswordEmailEvent> context)
@@ -20,13 +20,9 @@ public class SendResetPasswordEmailConsumer : IConsumer<SendResetPasswordEmailEv
         {
             Template = "ResetPasswordEmail.html",
             To = message.To,
-            Data = new()
-            {
-                { "PasswordResetToken", message.PasswordResetToken },
-                { "SiteUrl", message.SiteUrl }
-            }
+            Data = new { message.PasswordResetToken, message.SiteUrl }
         };
 
-        await _emailService.SendEmailAsync(email);
+        await _emailSender.SendEmailAsync(email);
     }
 }

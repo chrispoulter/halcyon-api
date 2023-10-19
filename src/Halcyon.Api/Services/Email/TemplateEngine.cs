@@ -5,21 +5,17 @@ namespace Halcyon.Api.Services.Email;
 
 public partial class TemplateEngine : ITemplateEngine
 {
-    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, IDictionary<string, object> data)
+    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, object data)
     {
-        var html = await ReadResourceAsync(template);
+        var resource = await ReadEmbeddedResourceAsStringAsync(template);
+        var tokenReplacements = ObjectToDictionary(data);
+        var html = ReplaceTokensInHtml(resource, tokenReplacements);
         var title = GetHtmlTitle(html);
-
-        foreach (var entry in data)
-        {
-            html = html.Replace($"{{{{ {entry.Key} }}}}", entry.Value.ToString());
-            title = title.Replace($"{{{{ {entry.Key} }}}}", entry.Value.ToString());
-        }
 
         return new(html, title);
     }
 
-    private async Task<string> ReadResourceAsync(string resource)
+    private static async Task<string> ReadEmbeddedResourceAsStringAsync(string resource)
     {
         var assembly = Assembly.GetExecutingAssembly();
 
@@ -32,15 +28,36 @@ public partial class TemplateEngine : ITemplateEngine
         return await reader.ReadToEndAsync();
     }
 
-    private string GetHtmlTitle(string html)
+    private static string GetHtmlTitle(string html)
     {
-        var match = HtmlTitleRegex().Match(html);
+        var pattern = @"<title\b[^>]*>(.*?)</title>";
+        var match = Regex.Match(html, pattern, RegexOptions.IgnoreCase);
 
-        return match.Success
+        return match.Success 
             ? match.Groups[1].Value
             : string.Empty;
     }
 
-    [GeneratedRegex("<title>\\s*(.+?)\\s*</title>")]
-    private static partial Regex HtmlTitleRegex();
+    public static string ReplaceTokensInHtml(string html, IDictionary<string, string> tokenReplacements)
+    {
+        foreach (var (token, replacement) in tokenReplacements)
+        {
+            var pattern = $"{{{{ {token} }}}}";
+            html = Regex.Replace(html, pattern, replacement);
+        }
+
+        return html;
+    }
+
+    public static IDictionary<string, string> ObjectToDictionary(object obj)
+    {
+        var result = new Dictionary<string, string>();
+
+        foreach (var property in obj.GetType().GetProperties())
+        {
+            result[property.Name] = property.GetValue(obj).ToString();
+        }
+
+        return result;
+    }
 }
