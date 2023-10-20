@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
-var assembly = Assembly.GetExecutingAssembly();
+var assembly = typeof(Program).Assembly;
 
 var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()

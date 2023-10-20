@@ -22,7 +22,7 @@ public class ForgotPasswordEndpoint : IEndpoint
     public static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
         HalcyonDbContext dbContext,
-        IBus bus)
+        IPublishEndpoint publishEndpoint)
     {
         var user = await dbContext.Users
            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
@@ -40,7 +40,7 @@ public class ForgotPasswordEndpoint : IEndpoint
                 SiteUrl = request.SiteUrl,
             };
 
-            await bus.Publish(message);
+            await publishEndpoint.Publish(message);
         }
 
         return Results.Ok();

@@ -7,25 +7,31 @@ namespace Halcyon.Api.Services.Email;
 
 public class EmailSender : IEmailSender
 {
+    private readonly ITemplateEngine _templateEngine;
+
     private readonly EmailSettings _emailSettings;
 
     private readonly ILogger<EmailSender> _logger;
 
     public EmailSender(
+        ITemplateEngine templateEngine,
         IOptions<EmailSettings> emailSettings,
         ILogger<EmailSender> logger)
     {
         _emailSettings = emailSettings.Value;
+        _templateEngine = templateEngine;
         _logger = logger;
     }
 
     public async Task SendEmailAsync(EmailMessage message)
     {
+        var (body, subject) = await _templateEngine.RenderTemplateAsync(message.Template, message.Data);
+
         var email = new MimeMessage(
             new[] { MailboxAddress.Parse(_emailSettings.NoReplyAddress) },
             new[] { MailboxAddress.Parse(message.To) },
-            message.Subject,
-            new TextPart(TextFormat.Html) { Text = message.Body });
+            subject,
+            new TextPart(TextFormat.Html) { Text = body });
 
         try
         {
