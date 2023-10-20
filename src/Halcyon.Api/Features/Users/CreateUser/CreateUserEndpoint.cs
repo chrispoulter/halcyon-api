@@ -1,4 +1,5 @@
 ﻿using Carter;
+using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;

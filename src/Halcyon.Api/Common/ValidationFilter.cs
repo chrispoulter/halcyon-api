@@ -1,7 +1,7 @@
 ﻿using Carter.ModelBinding;
 using FluentValidation;
 
-namespace Halcyon.Api.Features;
+namespace Halcyon.Api.Common;
 
 public class ValidationFilter : IEndpointFilter
 {

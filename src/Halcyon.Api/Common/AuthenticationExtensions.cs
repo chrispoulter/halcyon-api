@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Halcyon.Api.Features;
+namespace Halcyon.Api.Common;
 
 public static class AuthenticationExtensions
 {
