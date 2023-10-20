@@ -22,7 +22,6 @@ public class ValidationFilter : IEndpointFilter
                 {
                     { string.Empty, new [] { "A non-empty request body is required." } }
                 });
-
             }
 
             var argumentType = argument.GetType();
