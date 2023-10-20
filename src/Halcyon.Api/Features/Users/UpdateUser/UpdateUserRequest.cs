@@ -1,4 +1,5 @@
 using FluentValidation;
+using Halcyon.Api.Common;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Validators;
 

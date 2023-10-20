@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Halcyon.Api.Common;
+using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Halcyon.Api.Common;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;

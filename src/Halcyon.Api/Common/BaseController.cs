@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Halcyon.Api.Features;
+namespace Halcyon.Api.Common;
 
 [ApiController]
 public abstract class BaseController : ControllerBase

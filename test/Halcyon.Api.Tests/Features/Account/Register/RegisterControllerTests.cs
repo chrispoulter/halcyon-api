@@ -1,5 +1,5 @@
+using Halcyon.Api.Common;
 using Halcyon.Api.Data;
-using Halcyon.Api.Features;
 using Halcyon.Api.Features.Account.Register;
 using Halcyon.Api.Services.Hash;
 using Microsoft.AspNetCore.Http;
