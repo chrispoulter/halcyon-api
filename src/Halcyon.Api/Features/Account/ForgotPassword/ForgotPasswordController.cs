@@ -8,16 +8,16 @@ namespace Halcyon.Api.Features.Account.ForgotPassword;
 
 public class ForgotPasswordController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    private readonly IBus _bus;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     public ForgotPasswordController(
-        HalcyonDbContext context,
-        IBus bus)
+        HalcyonDbContext dbContext,
+        IPublishEndpoint publishEndpoint)
     {
-        _context = context;
-        _bus = bus;
+        _dbContext = dbContext;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpPut("/account/forgot-password")]
@@ -27,14 +27,14 @@ public class ForgotPasswordController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Index(ForgotPasswordRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
         if (user is not null && !user.IsLockedOut)
         {
             user.PasswordResetToken = Guid.NewGuid();
 
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             var message = new SendResetPasswordEmailEvent
             {
@@ -43,7 +43,7 @@ public class ForgotPasswordController : BaseController
                 SiteUrl = request.SiteUrl,
             };
 
-            await _bus.Publish(message);
+            await _publishEndpoint.Publish(message);
         }
 
         return Ok();

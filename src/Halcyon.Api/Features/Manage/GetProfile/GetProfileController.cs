@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Manage.GetProfile;
 
 public class GetProfileController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public GetProfileController(HalcyonDbContext context)
+    public GetProfileController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpGet("/manage")]
@@ -23,7 +23,7 @@ public class GetProfileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Index()
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 

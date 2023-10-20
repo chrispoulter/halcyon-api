@@ -9,18 +9,18 @@ namespace Halcyon.Api.Features.Seed;
 
 public class SeedController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
     private readonly IPasswordHasher _passwordHasher;
 
     private readonly SeedSettings _seedSettings;
 
     public SeedController(
-        HalcyonDbContext context,
+        HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IOptions<SeedSettings> seedSettings)
     {
-        _context = context;
+        _dbContext = dbContext;
         _passwordHasher = passwordHasher;
         _seedSettings = seedSettings.Value;
     }
@@ -31,14 +31,14 @@ public class SeedController : BaseController
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> Index()
     {
-        await _context.Database.MigrateAsync();
+        await _dbContext.Database.MigrateAsync();
 
         if (_seedSettings.Users != null)
         {
             var emailAddresses = _seedSettings.Users
                 .Select(u => u.EmailAddress);
 
-            var users = await _context.Users
+            var users = await _dbContext.Users
                 .Where(u => emailAddresses.Contains(u.EmailAddress))
                 .ToListAsync();
 
@@ -50,7 +50,7 @@ public class SeedController : BaseController
                 {
                     user = new();
 
-                    _context.Users.Add(user);
+                    _dbContext.Users.Add(user);
                 }
 
                 seedUser.Adapt(user);
@@ -58,7 +58,7 @@ public class SeedController : BaseController
             }
         }
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Content("Environment seeded.");
     }

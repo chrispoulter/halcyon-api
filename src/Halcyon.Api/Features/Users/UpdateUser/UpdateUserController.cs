@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.UpdateUser;
 
 public class UpdateUserController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public UpdateUserController(HalcyonDbContext context)
+    public UpdateUserController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpPut("/user/{id}")]
@@ -25,7 +25,7 @@ public class UpdateUserController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index(int id, UpdateUserRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user is null)
@@ -46,7 +46,7 @@ public class UpdateUserController : BaseController
 
         if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
         {
-            var existing = await _context.Users
+            var existing = await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
             if (existing is not null)
@@ -60,7 +60,7 @@ public class UpdateUserController : BaseController
 
         request.Adapt(user);
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

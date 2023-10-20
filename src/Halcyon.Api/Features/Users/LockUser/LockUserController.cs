@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.LockUser;
 
 public class LockUserController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public LockUserController(HalcyonDbContext context)
+    public LockUserController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpPut("/user/{id}/lock")]
@@ -25,7 +25,7 @@ public class LockUserController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user is null)
@@ -54,7 +54,7 @@ public class LockUserController : BaseController
 
         user.IsLockedOut = true;
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

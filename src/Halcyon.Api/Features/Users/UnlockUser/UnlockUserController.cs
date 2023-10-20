@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.SearchUsers;
 
 public class UnlockUserController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public UnlockUserController(HalcyonDbContext context)
+    public UnlockUserController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpPut("/user/{id}/unlock")]
@@ -24,7 +24,7 @@ public class UnlockUserController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
              .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user is null)
@@ -45,7 +45,7 @@ public class UnlockUserController : BaseController
 
         user.IsLockedOut = false;
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

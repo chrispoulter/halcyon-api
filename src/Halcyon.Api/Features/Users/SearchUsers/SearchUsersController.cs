@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.SearchUsers;
 
 public class SearchUsersController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public SearchUsersController(HalcyonDbContext context)
+    public SearchUsersController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpGet("/user")]
@@ -23,7 +23,7 @@ public class SearchUsersController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Index([FromQuery] SearchUsersRequest request)
     {
-        var query = _context.Users
+        var query = _dbContext.Users
             .AsNoTracking()
             .AsQueryable();
 

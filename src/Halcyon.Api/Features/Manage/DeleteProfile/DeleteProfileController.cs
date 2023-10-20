@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Manage.DeleteProfile;
 
 public class DeleteProfileController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public DeleteProfileController(HalcyonDbContext context)
+    public DeleteProfileController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpDelete("/manage")]
@@ -24,7 +24,7 @@ public class DeleteProfileController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
         if (user is null || user.IsLockedOut)
@@ -43,9 +43,9 @@ public class DeleteProfileController : BaseController
             );
         }
 
-        _context.Users.Remove(user);
+        _dbContext.Users.Remove(user);
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

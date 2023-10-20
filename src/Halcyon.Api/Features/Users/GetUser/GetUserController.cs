@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.GetUser;
 
 public class GetUserController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public GetUserController(HalcyonDbContext context)
+    public GetUserController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpGet("/user/{id}")]
@@ -23,7 +23,7 @@ public class GetUserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Index(int id)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id);
 

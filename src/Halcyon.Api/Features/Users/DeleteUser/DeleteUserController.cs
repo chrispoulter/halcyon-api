@@ -8,11 +8,11 @@ namespace Halcyon.Api.Features.Users.DeleteUser;
 
 public class DeleteUserController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
-    public DeleteUserController(HalcyonDbContext context)
+    public DeleteUserController(HalcyonDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     [HttpDelete("/user/{id}")]
@@ -25,7 +25,7 @@ public class DeleteUserController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
            .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user is null)
@@ -52,9 +52,9 @@ public class DeleteUserController : BaseController
             );
         }
 
-        _context.Users.Remove(user);
+        _dbContext.Users.Remove(user);
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

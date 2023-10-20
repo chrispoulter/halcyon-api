@@ -8,13 +8,13 @@ namespace Halcyon.Api.Features.Manage.ChangePassword;
 
 public class ChangePasswordController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
     private readonly IPasswordHasher _passwordHasher;
 
-    public ChangePasswordController(HalcyonDbContext context, IPasswordHasher passwordHasher)
+    public ChangePasswordController(HalcyonDbContext dbContext, IPasswordHasher passwordHasher)
     {
-        _context = context;
+        _dbContext = dbContext;
         _passwordHasher = passwordHasher;
     }
 
@@ -28,7 +28,7 @@ public class ChangePasswordController : BaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Index(ChangePasswordRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
         if (user is null || user.IsLockedOut)
@@ -68,7 +68,7 @@ public class ChangePasswordController : BaseController
         user.Password = _passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }

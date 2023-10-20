@@ -8,18 +8,18 @@ namespace Halcyon.Api.Features.Token;
 
 public class TokenController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
     private readonly IPasswordHasher _passwordHasher;
 
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
     public TokenController(
-        HalcyonDbContext context,
+        HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator)
     {
-        _context = context;
+        _dbContext = dbContext;
         _passwordHasher = passwordHasher;
         _jwtTokenGenerator = jwtTokenGenerator;
     }
@@ -31,7 +31,7 @@ public class TokenController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Index(TokenRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

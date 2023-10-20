@@ -7,15 +7,15 @@ namespace Halcyon.Api.Features.Account.ResetPassword;
 
 public class ResetPasswordController : BaseController
 {
-    private readonly HalcyonDbContext _context;
+    private readonly HalcyonDbContext _dbContext;
 
     private readonly IPasswordHasher _passwordHasher;
 
     public ResetPasswordController(
-        HalcyonDbContext context,
+        HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher)
     {
-        _context = context;
+        _dbContext = dbContext;
         _passwordHasher = passwordHasher;
     }
 
@@ -26,7 +26,7 @@ public class ResetPasswordController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Index(ResetPasswordRequest request)
     {
-        var user = await _context.Users
+        var user = await _dbContext.Users
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
         if (
@@ -43,7 +43,7 @@ public class ResetPasswordController : BaseController
         user.Password = _passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return Ok(new UpdateResponse { Id = user.Id });
     }
