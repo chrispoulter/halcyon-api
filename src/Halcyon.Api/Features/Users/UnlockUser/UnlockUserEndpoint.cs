@@ -1,7 +1,6 @@
 ﻿using Carter;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.UnlockUser;
@@ -20,7 +19,7 @@ public class UnlockUserEndpoint : ICarterModule
 
     public static async Task<IResult> HandleAsync(
         int id,
-        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+        [FromBody] UpdateRequest request,
         HalcyonDbContext dbContext)
     {
         var user = await dbContext.Users

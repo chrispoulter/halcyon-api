@@ -1,7 +1,6 @@
 ﻿using Carter;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -22,10 +21,11 @@ public class LockUserEndpoint : ICarterModule
 
     public static async Task<IResult> HandleAsync(
         int id,
-        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+        [FromBody] UpdateRequest request,
         ClaimsPrincipal currentUser,
         HalcyonDbContext dbContext)
-    {var currentUserId = currentUser.GetUserId();
+    {
+        var currentUserId = currentUser.GetUserId();
 
         var user = await dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == id);

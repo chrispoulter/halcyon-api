@@ -1,7 +1,6 @@
 ﻿using Carter;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -20,7 +19,7 @@ public class DeleteProfileEndpoint : ICarterModule
     }
 
     public static async Task<IResult> HandleAsync(
-        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] UpdateRequest request,
+        [FromBody] UpdateRequest request,
         ClaimsPrincipal currentUser,
         HalcyonDbContext dbContext)
     {
