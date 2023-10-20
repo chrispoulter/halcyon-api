@@ -2,6 +2,7 @@
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -24,11 +25,9 @@ public class UpdateUserEndpoint : ICarterModule
     public static async Task<IResult> HandleAsync(
         int id,
         UpdateUserRequest request,
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var user = await dbContext.Users
            .FirstOrDefaultAsync(u => u.Id == id);
 

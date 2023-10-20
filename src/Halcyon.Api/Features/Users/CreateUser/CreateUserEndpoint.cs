@@ -3,6 +3,7 @@ using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -22,12 +23,10 @@ public class CreateUserEndpoint : ICarterModule
 
     public static async Task<IResult> HandleAsync(
         CreateUserRequest request,
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var existing = await dbContext.Users
            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 

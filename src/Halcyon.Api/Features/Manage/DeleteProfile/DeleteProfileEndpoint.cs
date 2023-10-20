@@ -21,13 +21,11 @@ public class DeleteProfileEndpoint : ICarterModule
 
     public static async Task<IResult> HandleAsync(
         [FromBody] UpdateRequest request,
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var user = await dbContext.Users
-        .FirstOrDefaultAsync(u => u.Id == currentUserId);
+        .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
 
         if (user is null || user.IsLockedOut)
         {

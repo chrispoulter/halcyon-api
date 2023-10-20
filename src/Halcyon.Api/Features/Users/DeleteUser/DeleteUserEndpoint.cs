@@ -23,11 +23,9 @@ public class DeleteUserEndpoint : ICarterModule
     public static async Task<IResult> HandleAsync(
         int id,
         [FromBody] UpdateRequest request,
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var user = await dbContext.Users
            .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -47,7 +45,7 @@ public class DeleteUserEndpoint : ICarterModule
             );
         }
 
-        if (user.Id == currentUserId)
+        if (user.Id == currentUser.Id)
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status400BadRequest,

@@ -3,7 +3,6 @@ using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
 
@@ -23,14 +22,12 @@ public class ChangePasswordEndpoint : ICarterModule
 
     public static async Task<IResult> HandleAsync(
         ChangePasswordRequest request,
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUserId);
+            .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
 
         if (user is null || user.IsLockedOut)
         {

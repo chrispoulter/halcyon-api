@@ -2,6 +2,7 @@
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -19,14 +20,12 @@ public class GetProfileEndpoint : ICarterModule
     }
 
     public static async Task<IResult> HandleAsync(
-        ClaimsPrincipal currentUser,
+        CurrentUser currentUser,
         HalcyonDbContext dbContext)
     {
-        var currentUserId = currentUser.GetUserId();
-
         var user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == currentUserId);
+            .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
 
         if (user is null || user.IsLockedOut)
         {
