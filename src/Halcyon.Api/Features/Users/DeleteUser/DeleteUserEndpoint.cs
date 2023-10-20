@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -6,19 +7,17 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.DeleteUser;
 
-public class DeleteUserEndpoint : IEndpoint
+public class DeleteUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapDelete("/user/{id}", HandleAsync)
+        app.MapDelete("/user/{id}", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .WithTags("Users")
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

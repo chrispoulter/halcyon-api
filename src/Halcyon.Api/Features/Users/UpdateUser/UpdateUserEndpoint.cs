@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -6,11 +7,11 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.UpdateUser;
 
-public class UpdateUserEndpoint : IEndpoint
+public class UpdateUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPut("/user/{id}", HandleAsync)
+        app.MapPut("/user/{id}", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddFluentValidationAutoValidation()
             .WithTags("Users")
@@ -18,8 +19,6 @@ public class UpdateUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

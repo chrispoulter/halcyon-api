@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
@@ -6,17 +7,15 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Token;
 
-public class TokenEndpoint : IEndpoint
+public class TokenEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPost("/token", HandleAsync)
+        app.MapPost("/token", HandleAsync)
             .AddFluentValidationAutoValidation()
             .WithTags("Token")
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

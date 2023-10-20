@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -6,19 +7,17 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.LockUser;
 
-public class LockUserEndpoint : IEndpoint
+public class LockUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPut("/user/{id}/lock", HandleAsync)
+        app.MapPut("/user/{id}/lock", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .WithTags("Users")
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

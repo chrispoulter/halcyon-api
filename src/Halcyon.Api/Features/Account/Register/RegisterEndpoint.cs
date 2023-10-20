@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -6,17 +7,15 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.Register;
 
-public class RegisterEndpoint : IEndpoint
+public class RegisterEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPost("/account/register", HandleAsync)
-            .AddFluentValidationAutoValidation()
-            .WithTags("Account")
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
-
-        return endpoints;
+        app.MapPost("/account/register", HandleAsync)
+             .AddFluentValidationAutoValidation()
+             .WithTags("Account")
+             .Produces<UpdateResponse>()
+             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
     public static async Task<IResult> HandleAsync(

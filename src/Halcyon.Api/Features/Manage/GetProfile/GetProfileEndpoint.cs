@@ -1,21 +1,20 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.GetProfile;
 
-public class GetProfileEndpoint : IEndpoint
+public class GetProfileEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapGet("/manage", HandleAsync)
+        app.MapGet("/manage", HandleAsync)
             .RequireAuthorization()
             .WithTags("Manage")
             .Produces<GetProfileResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -6,17 +7,15 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword;
 
-public class ForgotPasswordEndpoint : IEndpoint
+public class ForgotPasswordEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPut("/account/forgot-password", HandleAsync)
+        app.MapPut("/account/forgot-password", HandleAsync)
             .AddFluentValidationAutoValidation()
             .WithTags("Account")
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

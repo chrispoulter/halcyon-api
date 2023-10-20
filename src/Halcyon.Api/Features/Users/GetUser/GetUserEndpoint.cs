@@ -1,20 +1,19 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.GetUser;
 
-public class GetUserEndpoint : IEndpoint
+public class GetUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapGet("/user/{id}", HandleAsync)
+        app.MapGet("/user/{id}", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .WithTags("Users")
             .Produces<GetUserResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

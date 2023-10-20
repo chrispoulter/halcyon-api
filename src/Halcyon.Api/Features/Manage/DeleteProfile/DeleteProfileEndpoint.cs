@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -6,18 +7,16 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile;
 
-public class DeleteProfileEndpoint : IEndpoint
+public class DeleteProfileEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapDelete("/manage", HandleAsync)
+        app.MapDelete("/manage", HandleAsync)
             .RequireAuthorization()
             .WithTags("Manage")
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

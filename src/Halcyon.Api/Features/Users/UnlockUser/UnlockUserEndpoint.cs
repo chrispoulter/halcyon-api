@@ -1,22 +1,21 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.UnlockUser;
 
-public class UnlockUserEndpoint : IEndpoint
+public class UnlockUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPut("/user/{id}/unlock", HandleAsync)
+        app.MapPut("/user/{id}/unlock", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .WithTags("Users")
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

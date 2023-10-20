@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -6,11 +7,11 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
 
-public class ChangePasswordEndpoint : IEndpoint
+public class ChangePasswordEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPut("/manage/change-password", HandleAsync)
+        app.MapPut("/manage/change-password", HandleAsync)
             .RequireAuthorization()
             .AddFluentValidationAutoValidation()
             .WithTags("Manage")
@@ -18,8 +19,6 @@ public class ChangePasswordEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

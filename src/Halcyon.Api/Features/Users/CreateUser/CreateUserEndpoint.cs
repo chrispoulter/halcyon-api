@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -7,18 +8,16 @@ using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
 
-public class CreateUserEndpoint : IEndpoint
+public class CreateUserEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapPost("/user", HandleAsync)
+        app.MapPost("/user", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddFluentValidationAutoValidation()
             .WithTags("Users")
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

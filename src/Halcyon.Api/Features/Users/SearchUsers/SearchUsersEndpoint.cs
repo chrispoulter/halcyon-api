@@ -1,22 +1,21 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Halcyon.Api.Features.Users.SearchUsers;
 
-public class SearchUsersEndpoint : IEndpoint
+public class SearchUsersEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapGet("/user", HandleAsync)
+        app.MapGet("/user", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddFluentValidationAutoValidation()
             .WithTags("Users")
             .Produces<SearchUsersResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(

@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data;
+﻿using Carter;
+using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -6,15 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace Halcyon.Api.Features.Seed;
 
-public class SeedEndpoint : IEndpoint
+public class SeedEndpoint : ICarterModule
 {
-    public static IEndpointRouteBuilder Map(IEndpointRouteBuilder endpoints)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        endpoints.MapGet("/seed", HandleAsync)
+        app.MapGet("/seed", HandleAsync)
             .WithTags("Seed")
             .Produces<string>(contentType: "text/plain");
-
-        return endpoints;
     }
 
     public static async Task<IResult> HandleAsync(
