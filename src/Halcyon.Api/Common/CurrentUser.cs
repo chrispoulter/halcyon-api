@@ -1,7 +1,9 @@
 ﻿namespace Halcyon.Api.Common;
 
-public record CurrentUser(int Id)
+public class CurrentUser
 {
+    public int Id { get; set; }
+ 
     public static ValueTask<CurrentUser> BindAsync(HttpContext httpContext)
     {
         if (!int.TryParse(httpContext.User.Identity.Name, out var id))
@@ -9,6 +11,6 @@ public record CurrentUser(int Id)
             return ValueTask.FromResult<CurrentUser>(null);
         }
 
-        return ValueTask.FromResult(new CurrentUser(id));
+        return ValueTask.FromResult(new CurrentUser { Id = id });
     }
 }
