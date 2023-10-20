@@ -3,7 +3,6 @@ using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.DeleteUser;
 

@@ -2,9 +2,7 @@
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Halcyon.Api.Features.Users.UpdateUser;
 
