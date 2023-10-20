@@ -99,10 +99,10 @@ builder.Services.AddMassTransit(options =>
     });
 });
 
-builder.Services.AddCarter();
-
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
+
+builder.Services.AddCarter();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
