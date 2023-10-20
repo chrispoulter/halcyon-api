@@ -4,7 +4,11 @@ public record CurrentUser(int Id)
 {
     public static ValueTask<CurrentUser> BindAsync(HttpContext httpContext)
     {
-        var id = int.Parse(httpContext.User.Identity.Name);
+        if (!int.TryParse(httpContext.User.Identity.Name, out var id))
+        { 
+            return ValueTask.FromResult<CurrentUser>(null);
+        }
+
         return ValueTask.FromResult(new CurrentUser(id));
     }
 }
