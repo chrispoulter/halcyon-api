@@ -18,10 +18,10 @@ public class ValidationFilter : IEndpointFilter
         {
             if (argument is null)
             {
-                return Results.ValidationProblem(new Dictionary<string, string[]>
-                {
-                    { string.Empty, new [] { "A non-empty request body is required." } }
-                });
+                return Results.Problem(
+                   statusCode: StatusCodes.Status400BadRequest,
+                   title: "A non-empty request body is required."
+               );
             }
 
             var argumentType = argument.GetType();

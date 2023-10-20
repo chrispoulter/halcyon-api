@@ -38,6 +38,7 @@ Create a `appsettings.Development.json` file in the web project directory.
                 "Password": "change-me-0987654321",
                 "FirstName": "System",
                 "LastName": "Administrator",
+                "DateOfBirth": "1970-01-01",
                 "Roles": [ "SYSTEM_ADMINISTRATOR" ]
             }
         ]
