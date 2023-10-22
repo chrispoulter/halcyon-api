@@ -1,54 +1,46 @@
-﻿using Halcyon.Api.Common;
+﻿using Carter;
+using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Token;
 
-public class TokenController : BaseController
+public class TokenEndpoint : ICarterModule
 {
-    private readonly HalcyonDbContext _dbContext;
+    public void AddRoutes(IEndpointRouteBuilder app)
+    {
+        app.MapPost("/token", HandleAsync)
+            .AddEndpointFilter<ValidationFilter>()
+            .WithTags("Token")
+            .Produces<string>(contentType: "text/plain")
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+    }
 
-    private readonly IPasswordHasher _passwordHasher;
-
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
-    public TokenController(
+    public static async Task<IResult> HandleAsync(
+        TokenRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator)
     {
-        _dbContext = dbContext;
-        _passwordHasher = passwordHasher;
-        _jwtTokenGenerator = jwtTokenGenerator;
-    }
-
-    [HttpPost("/token")]
-    [Tags("Token")]
-    [Produces("text/plain")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Index(TokenRequest request)
-    {
-        var user = await _dbContext.Users
+        var user = await dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
 
         if (user is null || user.Password is null)
         {
-            return Problem(
+            return Results.Problem(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "The credentials provided were invalid."
             );
         }
 
-        var verified = _passwordHasher.VerifyPassword(request.Password, user.Password);
+        var verified = passwordHasher.VerifyPassword(request.Password, user.Password);
 
         if (!verified)
         {
-            return Problem(
+            return Results.Problem(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "The credentials provided were invalid."
             );
@@ -56,14 +48,14 @@ public class TokenController : BaseController
 
         if (user.IsLockedOut)
         {
-            return Problem(
+            return Results.Problem(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "This account has been locked out, please try again later."
             );
         }
 
-        var result = _jwtTokenGenerator.GenerateJwtToken(user);
+        var result = jwtTokenGenerator.GenerateJwtToken(user);
 
-        return Content(result);
+        return Results.Content(result);
     }
 }

@@ -1,3 +1,4 @@
+using Carter;
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Seed;
@@ -13,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -58,18 +58,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserAdministratorPolicy", policy =>
           policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
 });
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddCors(options =>
 {
@@ -84,10 +84,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddFluentValidationAutoValidation(options =>
-{
-    options.DisableBuiltInModelValidation = true;
-});
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
 
@@ -104,6 +100,9 @@ builder.Services.AddMassTransit(options =>
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
 
+builder.Services.AddCarter();
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc(version, new OpenApiInfo
@@ -176,5 +175,5 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapControllers();
+app.MapCarter();
 app.Run();

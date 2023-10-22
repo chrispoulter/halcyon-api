@@ -3,13 +3,13 @@ using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
 using Halcyon.Api.Services.Hash;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Moq.EntityFrameworkCore;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterControllerTests
+public class RegisterEndpointTests
 {
     private readonly Mock<HalcyonDbContext> _mockDbContext;
 
@@ -17,9 +17,7 @@ public class RegisterControllerTests
 
     private readonly Mock<IPasswordHasher> _mockPasswordHasher;
 
-    private readonly RegisterController _accountController;
-
-    public RegisterControllerTests()
+    public RegisterEndpointTests()
     {
         _mockDbContext = new Mock<HalcyonDbContext>();
         _mockPasswordHasher = new Mock<IPasswordHasher>();
@@ -33,10 +31,6 @@ public class RegisterControllerTests
 
         _mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .Callback(() => _storedUsers.ForEach(user => user.Id = _storedUsers.IndexOf(user) + 1));
-
-        _accountController = new RegisterController(
-            _mockDbContext.Object,
-            _mockPasswordHasher.Object);
     }
 
     [Fact]
@@ -52,11 +46,14 @@ public class RegisterControllerTests
             EmailAddress = request.EmailAddress
         });
 
-        var result = await _accountController.Index(request);
+        var result = await RegisterEndpoint.HandleAsync(
+            request,
+            _mockDbContext.Object,
+            _mockPasswordHasher.Object
+        );
 
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var response = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status400BadRequest, response.Status);
+        var response = Assert.IsType<ProblemHttpResult>(result);
+        Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -64,10 +61,14 @@ public class RegisterControllerTests
     {
         var request = new RegisterRequest();
 
-        var result = await _accountController.Index(request);
+        var result = await RegisterEndpoint.HandleAsync(
+            request,
+            _mockDbContext.Object,
+            _mockPasswordHasher.Object
+        );
 
-        var objectResult = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<UpdateResponse>(objectResult.Value);
-        Assert.Equal(1, response.Id);
+        var response = Assert.IsType<Ok<UpdateResponse>>(result);
+        Assert.NotNull(response.Value);
+        Assert.Equal(1, response.Value.Id);
     }
 }

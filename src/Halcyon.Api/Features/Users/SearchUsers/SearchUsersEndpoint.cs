@@ -1,30 +1,28 @@
-﻿using Halcyon.Api.Common;
+﻿using Carter;
+using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.SearchUsers;
 
-public class SearchUsersController : BaseController
+public class SearchUsersEndpoint : ICarterModule
 {
-    private readonly HalcyonDbContext _dbContext;
-
-    public SearchUsersController(HalcyonDbContext dbContext)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        _dbContext = dbContext;
+        app.MapGet("/user", HandleAsync)
+            .RequireAuthorization("UserAdministratorPolicy")
+            .AddEndpointFilter<ValidationFilter>()
+            .WithTags("Users")
+            .Produces<SearchUsersResponse>()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    [HttpGet("/user")]
-    [Authorize(Policy = "UserAdministratorPolicy")]
-    [Tags("User")]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(SearchUsersResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Index([FromQuery] SearchUsersRequest request)
+    public static async Task<IResult> HandleAsync(
+        [AsParameters] SearchUsersRequest request,
+        HalcyonDbContext dbContext)
     {
-        var query = _dbContext.Users
+        var query = dbContext.Users
             .AsNoTracking()
             .AsQueryable();
 
@@ -56,7 +54,7 @@ public class SearchUsersController : BaseController
 
         var pageCount = (count + request.Size - 1) / request.Size;
 
-        return Ok(new SearchUsersResponse()
+        return Results.Ok(new SearchUsersResponse()
         {
             Items = users,
             HasNextPage = request.Page < pageCount,
