@@ -30,7 +30,7 @@ public class SeedEndpoint : ICarterModule
 
             var users = await dbContext.Users
                 .Where(u => emailAddresses.Contains(u.EmailAddress))
-            .ToListAsync();
+                .ToListAsync();
 
             foreach (var seedUser in seedSettings.Value.Users)
             {
