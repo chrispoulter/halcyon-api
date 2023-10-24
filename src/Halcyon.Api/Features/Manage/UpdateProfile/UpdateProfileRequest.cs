@@ -13,7 +13,7 @@ public class UpdateProfileRequest : UpdateRequest
 
     public string LastName { get; set; }
 
-    public DateOnly? DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 }
 
 public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>

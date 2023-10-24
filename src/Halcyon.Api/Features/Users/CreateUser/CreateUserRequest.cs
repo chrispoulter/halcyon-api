@@ -14,7 +14,7 @@ public class CreateUserRequest
 
     public string LastName { get; set; }
 
-    public DateOnly? DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 
     public List<string> Roles { get; set; }
 }
