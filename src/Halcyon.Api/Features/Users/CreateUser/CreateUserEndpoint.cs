@@ -26,9 +26,9 @@ public class CreateUserEndpoint : ICarterModule
         IPasswordHasher passwordHasher)
     {
         var existing = await dbContext.Users
-           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+           .AnyAsync(u => u.EmailAddress == request.EmailAddress);
 
-        if (existing is not null)
+        if (existing)
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status400BadRequest,
