@@ -28,7 +28,7 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.Sources.Add(new AzureAppSettingsConfigurationSource());
+builder.Configuration.AddAzureVariables();
 
 var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 

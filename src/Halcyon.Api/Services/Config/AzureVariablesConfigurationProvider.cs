@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace Halcyon.Api.Services.Config;
 
-public class AzureAppSettingsConfigurationProvider : EnvironmentVariablesConfigurationProvider
+public class AzureVariablesConfigurationProvider : EnvironmentVariablesConfigurationProvider
 {
     public override bool TryGet(string key, out string value)
     {
