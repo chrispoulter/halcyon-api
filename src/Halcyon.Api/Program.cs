@@ -28,7 +28,7 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddAzureVariables();
+builder.Configuration.AddAzureEnvironmentVariables();
 
 var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
@@ -60,8 +60,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
     });
-
-builder.Services.AddAuthorization();
 
 builder.Services.AddAuthorization(options =>
 {
