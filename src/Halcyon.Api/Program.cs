@@ -2,7 +2,7 @@ using Carter;
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Services.Config;
+//using Halcyon.Api.Services.Config;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -29,7 +29,7 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddAzureEnvironmentVariables();
+//builder.Configuration.AddAzureEnvironmentVariables();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
