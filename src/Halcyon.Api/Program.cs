@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -29,6 +30,12 @@ var version = assembly
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddAzureEnvironmentVariables();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
