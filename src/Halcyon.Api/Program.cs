@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Formatting.Compact;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -32,7 +33,11 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Configuration.AddAzureEnvironmentVariables();
 
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Debug(new CompactJsonFormatter())
+    .WriteTo.AzureApp()
+    //.ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
 builder.Host.UseSerilog();
