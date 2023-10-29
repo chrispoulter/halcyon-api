@@ -2,7 +2,7 @@ using Carter;
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Seed;
-//using Halcyon.Api.Services.Config;
+using Halcyon.Api.Services.Config;
 using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -16,7 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Formatting.Compact;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -30,14 +29,10 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Configuration.AddAzureEnvironmentVariables();
+builder.Configuration.AddAzureEnvironmentVariables();
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .Enrich.FromLogContext()
-    .WriteTo.Debug(new CompactJsonFormatter())
-    .WriteTo.AzureApp()
-    //.ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
 builder.Host.UseSerilog();
