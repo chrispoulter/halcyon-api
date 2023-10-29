@@ -27,110 +27,114 @@ var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
     .InformationalVersion;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddAzureEnvironmentVariables();
-
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-builder.Host.UseSerilog();
-
-var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
-
-builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
+try
 {
-    options
-        .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-        .UseNpgsql(dbConnectionString, builder => builder.EnableRetryOnFailure())
-        .UseSnakeCaseNamingConvention();
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+    builder.Configuration.AddAzureEnvironmentVariables();
 
-var jwtSettings = new JwtSettings();
-builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
+    builder.Host.UseSerilog((context, services, configuration)
+        => configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
+
+    builder.Services.AddDbContext<HalcyonDbContext>((provider, options) =>
     {
-        options.TokenValidationParameters = new()
+        options
+            .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
+            .UseNpgsql(dbConnectionString, builder => builder.EnableRetryOnFailure())
+            .UseSnakeCaseNamingConvention();
+    });
+
+    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+    var jwtSettings = new JwtSettings();
+    builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            NameClaimType = JwtRegisteredClaimNames.Sub,
-            RoleClaimType = JwtClaimNames.Roles,
-            ValidateIssuerSigningKey = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
-        };
+            options.TokenValidationParameters = new()
+            {
+                NameClaimType = JwtRegisteredClaimNames.Sub,
+                RoleClaimType = JwtClaimNames.Roles,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
+            };
+        });
+
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("UserAdministratorPolicy", policy =>
+              policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("UserAdministratorPolicy", policy =>
-          policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR"));
-});
-
-builder.Services.ConfigureHttpJsonOptions(options => {
-    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        policy => policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
-    );
-});
-
-builder.Services.AddProblemDetails();
-
-builder.Services.AddValidatorsFromAssembly(assembly);
-builder.Services.AddFluentValidationRulesToSwagger();
-
-builder.Services.AddMassTransit(options =>
-{
-    options.AddConsumers(assembly);
-
-    options.UsingInMemory((context, cfg) =>
+    builder.Services.ConfigureHttpJsonOptions(options =>
     {
-        cfg.ConfigureEndpoints(context);
-    });
-});
-
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>();
-
-builder.Services.AddCarter();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc(version, new OpenApiInfo
-    {
-        Version = version,
-        Title = "Halcyon API",
-        Description = "A web api template."
+        options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    builder.Services.AddCors(options =>
     {
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Scheme = "bearer",
-        Description = "Please insert JWT token into field"
+        options.AddDefaultPolicy(
+            policy => policy
+                .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
+                .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+        );
     });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    builder.Services.AddProblemDetails();
+
+    builder.Services.AddValidatorsFromAssembly(assembly);
+    builder.Services.AddFluentValidationRulesToSwagger();
+
+    builder.Services.AddMassTransit(options =>
     {
+        options.AddConsumers(assembly);
+
+        options.UsingInMemory((context, cfg) =>
+        {
+            cfg.ConfigureEndpoints(context);
+        });
+    });
+
+    builder.Services.AddHealthChecks()
+        .AddDbContextCheck<HalcyonDbContext>();
+
+    builder.Services.AddCarter();
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc(version, new OpenApiInfo
+        {
+            Version = version,
+            Title = "Halcyon API",
+            Description = "A web api template."
+        });
+
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Scheme = "bearer",
+            Description = "Please insert JWT token into field"
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
         {
             new OpenApiSecurityScheme
             {
@@ -142,46 +146,55 @@ builder.Services.AddSwaggerGen(options =>
             },
             Array.Empty<string>()
         }
+        });
     });
-});
 
-TypeAdapterConfig.GlobalSettings.Scan(assembly);
+    TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
-builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+    builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
-builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+    builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
+    builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+    builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
-builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
+    builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(EmailSettings.SectionName));
+    builder.Services.AddSingleton<IEmailSender, EmailSender>();
+    builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
 
-builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
+    builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection(SeedSettings.SectionName));
 
-var app = builder.Build();
+    var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseExceptionHandler();
+    app.UseHttpsRedirection();
+    app.UseExceptionHandler();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseCors();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapHealthChecks("/health");
+
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
+        options.DocumentTitle = "Halcyon API";
+        options.RoutePrefix = string.Empty;
+    });
+
+    app.MapCarter();
+    app.Run();
 }
-
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapHealthChecks("/health");
-
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+catch (Exception ex)
 {
-    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
-    options.DocumentTitle = "Halcyon API";
-    options.RoutePrefix = string.Empty;
-});
-
-app.MapCarter();
-app.Run();
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
