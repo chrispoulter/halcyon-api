@@ -173,6 +173,8 @@ try
         app.UseDeveloperExceptionPage();
     }
 
+    app.UseSerilogRequestLogging();
+
     app.UseCors();
     app.UseAuthentication();
     app.UseAuthorization();
