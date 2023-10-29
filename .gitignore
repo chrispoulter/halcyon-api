@@ -1,7 +1,6 @@
 .vs
 bin
 obj
-logs
 PublishProfiles
 ServiceDependencies*
 appsettings.Development.json
