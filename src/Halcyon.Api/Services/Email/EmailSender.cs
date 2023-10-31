@@ -25,7 +25,7 @@ public class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(EmailMessage message)
     {
-        _logger.LogInformation("Sending Email to {To} with template {Template}", message.To, message.Template);
+        _logger.LogInformation("Sending email to {To} with template {Template}", message.To, message.Template);
 
         var (body, subject) = await _templateEngine.RenderTemplateAsync(message.Template, message.Data);
 
@@ -45,7 +45,7 @@ public class EmailSender : IEmailSender
         }
         catch (Exception error)
         {
-            _logger.LogError(error, "Email Send Failed");
+            _logger.LogError(error, "Email send failed");
         }
     }
 }
