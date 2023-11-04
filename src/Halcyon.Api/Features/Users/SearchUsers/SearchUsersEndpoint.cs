@@ -18,7 +18,7 @@ public class SearchUsersEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         [AsParameters] SearchUsersRequest request,
         HalcyonDbContext dbContext)
     {

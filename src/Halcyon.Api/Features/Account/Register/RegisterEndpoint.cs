@@ -18,7 +18,7 @@ public class RegisterEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         RegisterRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher)

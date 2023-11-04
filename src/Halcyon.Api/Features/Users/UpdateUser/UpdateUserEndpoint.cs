@@ -20,7 +20,7 @@ public class UpdateUserEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         int id,
         UpdateUserRequest request,
         CurrentUser currentUser,

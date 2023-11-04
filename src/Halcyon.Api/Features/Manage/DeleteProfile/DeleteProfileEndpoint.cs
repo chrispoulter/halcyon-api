@@ -18,7 +18,7 @@ public class DeleteProfileEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext)

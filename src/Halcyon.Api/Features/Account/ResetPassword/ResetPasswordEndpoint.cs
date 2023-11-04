@@ -17,7 +17,7 @@ public class ResetPasswordEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         ResetPasswordRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher)

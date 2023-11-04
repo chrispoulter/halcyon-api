@@ -16,7 +16,7 @@ public class GetUserEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         int id,
         HalcyonDbContext dbContext)
     {

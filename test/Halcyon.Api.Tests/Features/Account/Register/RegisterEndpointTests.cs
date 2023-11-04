@@ -54,6 +54,7 @@ public class RegisterEndpointTests
 
         var response = Assert.IsType<ProblemHttpResult>(result);
         Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
+        Assert.Equal("User name is already taken.", response.ProblemDetails.Title);
     }
 
     [Fact]

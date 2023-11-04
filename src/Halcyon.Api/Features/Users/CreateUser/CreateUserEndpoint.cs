@@ -19,7 +19,7 @@ public class CreateUserEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         CreateUserRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,

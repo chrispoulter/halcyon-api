@@ -18,7 +18,7 @@ public class TokenEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         TokenRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,

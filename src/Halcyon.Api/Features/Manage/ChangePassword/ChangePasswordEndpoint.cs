@@ -20,7 +20,7 @@ public class ChangePasswordEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         ChangePasswordRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,

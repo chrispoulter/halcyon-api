@@ -16,7 +16,7 @@ public class SeedEndpoint : ICarterModule
             .Produces<string>(contentType: "text/plain");
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IOptions<SeedSettings> seedSettings)

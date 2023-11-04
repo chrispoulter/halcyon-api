@@ -17,7 +17,7 @@ public class GetProfileEndpoint : ICarterModule
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
-    public static async Task<IResult> HandleAsync(
+    internal static async Task<IResult> HandleAsync(
         CurrentUser currentUser,
         HalcyonDbContext dbContext)
     {

@@ -26,7 +26,7 @@ public partial class TemplateEngine : ITemplateEngine
         return await reader.ReadToEndAsync();
     }
 
-    public static string Render(string html, dynamic model)
+    private static string Render(string html, dynamic model)
     {
         var pattern = @"\{{(.+?)\}}";
 

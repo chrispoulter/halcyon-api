@@ -34,4 +34,8 @@
 	  <EmbeddedResource Include="Features\**\*.html" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Halcyon.Api.Tests" />
+	</ItemGroup>
+
 </Project>
