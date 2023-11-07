@@ -1,12 +1,10 @@
-﻿using System.Reflection;
-
-namespace Halcyon.Api.Common;
+﻿namespace Halcyon.Api.Common;
 
 public static class EndpointExtensions
 {
     public static WebApplication MapEndpoints(this WebApplication app)
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        var assembly = typeof(EndpointExtensions).Assembly;
 
         var interfaceType = typeof(IEndpoint);
 
