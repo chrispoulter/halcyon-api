@@ -1,5 +1,4 @@
-﻿using Carter.ModelBinding;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Halcyon.Api.Common;
 
@@ -37,7 +36,13 @@ public class ValidationFilter : IEndpointFilter
 
             if (!result.IsValid)
             {
-                var errors = result.GetValidationProblems();
+                var errors = result.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        k => k.Key,
+                        v => v.Select(e => e.ErrorMessage).ToArray()
+                    );
+
                 return Results.ValidationProblem(errors);
             }
         }

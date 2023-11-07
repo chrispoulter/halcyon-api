@@ -1,14 +1,13 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.LockUser;
 
-public class LockUserEndpoint : ICarterModule
+public class LockUserEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/lock", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")

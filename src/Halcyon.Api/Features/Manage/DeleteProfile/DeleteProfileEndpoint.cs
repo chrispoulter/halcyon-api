@@ -1,14 +1,13 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile;
 
-public class DeleteProfileEndpoint : ICarterModule
+public class DeleteProfileEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapDelete("/manage", HandleAsync)
             .RequireAuthorization()

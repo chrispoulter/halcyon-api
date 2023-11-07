@@ -1,14 +1,13 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
 
-public class ChangePasswordEndpoint : ICarterModule
+public class ChangePasswordEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/manage/change-password", HandleAsync)
             .RequireAuthorization()

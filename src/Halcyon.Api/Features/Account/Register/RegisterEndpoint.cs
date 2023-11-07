@@ -1,5 +1,4 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
@@ -7,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.Register;
 
-public class RegisterEndpoint : ICarterModule
+public class RegisterEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/register", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()

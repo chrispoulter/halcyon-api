@@ -1,14 +1,13 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.GetProfile;
 
-public class GetProfileEndpoint : ICarterModule
+public class GetProfileEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/manage", HandleAsync)
             .RequireAuthorization()

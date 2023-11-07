@@ -1,14 +1,13 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
 
-public class ResetPasswordEndpoint : ICarterModule
+public class ResetPasswordEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/reset-password", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()

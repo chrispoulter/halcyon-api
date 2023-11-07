@@ -1,5 +1,4 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
@@ -7,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword;
 
-public class ForgotPasswordEndpoint : ICarterModule
+public class ForgotPasswordEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/forgot-password", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()

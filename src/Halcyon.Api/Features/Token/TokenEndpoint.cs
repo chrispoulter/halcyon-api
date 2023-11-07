@@ -1,5 +1,4 @@
-﻿using Carter;
-using Halcyon.Api.Common;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
@@ -7,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Token;
 
-public class TokenEndpoint : ICarterModule
+public class TokenEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/token", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()

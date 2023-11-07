@@ -1,13 +1,13 @@
-﻿using Carter;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.GetUser;
 
-public class GetUserEndpoint : ICarterModule
+public class GetUserEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user/{id}", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")

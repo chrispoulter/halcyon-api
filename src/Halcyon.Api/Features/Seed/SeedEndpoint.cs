@@ -1,4 +1,4 @@
-﻿using Carter;
+﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Hash;
 using Mapster;
@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 
 namespace Halcyon.Api.Features.Seed;
 
-public class SeedEndpoint : ICarterModule
+public class SeedEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/seed", HandleAsync)
             .WithTags("Seed")

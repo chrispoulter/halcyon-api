@@ -1,5 +1,5 @@
-using Carter;
 using FluentValidation;
+using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Date;
@@ -106,8 +106,6 @@ builder.Services.AddMassTransit(options =>
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<HalcyonDbContext>();
 
-builder.Services.AddCarter();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -183,5 +181,5 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapCarter();
+app.MapEndpoints();
 app.Run();
