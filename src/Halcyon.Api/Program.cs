@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -54,8 +55,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            NameClaimType = JwtRegisteredClaimNames.Sub,
-            RoleClaimType = JwtClaimNames.Roles,
+            NameClaimType = ClaimTypes.NameIdentifier,
+            RoleClaimType = ClaimTypes.Role,
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
             ValidateAudience = true,
