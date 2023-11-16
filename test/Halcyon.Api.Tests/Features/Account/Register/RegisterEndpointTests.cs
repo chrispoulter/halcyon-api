@@ -11,26 +11,26 @@ namespace Halcyon.Api.Tests.Features.Account.Register;
 
 public class RegisterEndpointTests
 {
-    private readonly Mock<HalcyonDbContext> _mockDbContext;
+    private readonly Mock<HalcyonDbContext> mockDbContext;
 
-    private readonly List<User> _storedUsers;
+    private readonly List<User> storedUsers;
 
-    private readonly Mock<IPasswordHasher> _mockPasswordHasher;
+    private readonly Mock<IPasswordHasher> mockPasswordHasher;
 
     public RegisterEndpointTests()
     {
-        _mockDbContext = new Mock<HalcyonDbContext>();
-        _mockPasswordHasher = new Mock<IPasswordHasher>();
-        _storedUsers = new List<User>();
+        mockDbContext = new Mock<HalcyonDbContext>();
+        mockPasswordHasher = new Mock<IPasswordHasher>();
+        storedUsers = [];
 
-        _mockDbContext.Setup(m => m.Users)
-            .ReturnsDbSet(_storedUsers);
+        mockDbContext.Setup(m => m.Users)
+            .ReturnsDbSet(storedUsers);
 
-        _mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-            .Callback<User>(_storedUsers.Add);
+        mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
+            .Callback<User>(storedUsers.Add);
 
-        _mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Callback(() => _storedUsers.ForEach(user => user.Id = _storedUsers.IndexOf(user) + 1));
+        mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .Callback(() => storedUsers.ForEach(user => user.Id = storedUsers.IndexOf(user) + 1));
     }
 
     [Fact]
@@ -41,15 +41,15 @@ public class RegisterEndpointTests
             EmailAddress = "test@example.com"
         };
 
-        _storedUsers.Add(new User
+        storedUsers.Add(new User
         {
             EmailAddress = request.EmailAddress
         });
 
         var result = await RegisterEndpoint.HandleAsync(
             request,
-            _mockDbContext.Object,
-            _mockPasswordHasher.Object
+            mockDbContext.Object,
+            mockPasswordHasher.Object
         );
 
         var response = Assert.IsType<ProblemHttpResult>(result);
@@ -64,8 +64,8 @@ public class RegisterEndpointTests
 
         var result = await RegisterEndpoint.HandleAsync(
             request,
-            _mockDbContext.Object,
-            _mockPasswordHasher.Object
+            mockDbContext.Object,
+            mockPasswordHasher.Object
         );
 
         var response = Assert.IsType<Ok<UpdateResponse>>(result);

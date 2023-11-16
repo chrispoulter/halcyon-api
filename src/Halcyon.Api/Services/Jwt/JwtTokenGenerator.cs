@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Services.Date;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,21 +9,21 @@ namespace Halcyon.Api.Services.Jwt;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
-    private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly TimeProvider timeProvider;
 
-    private readonly JwtSettings _jwtSettings;
+    private readonly JwtSettings jwtSettings;
 
     public JwtTokenGenerator(
-        IDateTimeProvider dateTimeProvider, 
+        TimeProvider timeProvider, 
         IOptions<JwtSettings> jwtSettings)
     {
-        _dateTimeProvider = dateTimeProvider;
-        _jwtSettings = jwtSettings.Value;
+        this.timeProvider = timeProvider;
+        this.jwtSettings = jwtSettings.Value;
     }
 
     public string GenerateJwtToken(User user)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
 
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -43,10 +42,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         }
 
         var token = new JwtSecurityToken(
-            _jwtSettings.Issuer,
-            _jwtSettings.Audience,
+            jwtSettings.Issuer,
+            jwtSettings.Audience,
             claims: claims,
-            expires: _dateTimeProvider.UtcNow.AddSeconds(_jwtSettings.ExpiresIn),
+            expires: timeProvider.GetUtcNow().AddSeconds(jwtSettings.ExpiresIn).UtcDateTime,
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

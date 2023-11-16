@@ -4,11 +4,11 @@ namespace Halcyon.Api.Common;
 
 public class ValidationFilter : IEndpointFilter
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider serviceProvider;
 
     public ValidationFilter(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
+        this.serviceProvider = serviceProvider;
     }
 
     public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -27,7 +27,7 @@ public class ValidationFilter : IEndpointFilter
 
             var validatorType = typeof(IValidator<>).MakeGenericType(argumentType);
 
-            if (_serviceProvider.GetService(validatorType) is not IValidator validator)
+            if (serviceProvider.GetService(validatorType) is not IValidator validator)
             {
                 continue;
             }
