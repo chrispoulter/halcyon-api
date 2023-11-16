@@ -11,18 +11,14 @@ namespace Halcyon.Api.Tests.Features.Account.Register;
 
 public class RegisterEndpointTests
 {
-    private readonly Mock<HalcyonDbContext> mockDbContext;
+    private readonly Mock<HalcyonDbContext> mockDbContext = new();
 
-    private readonly List<User> storedUsers;
+    private readonly List<User> storedUsers = [];
 
-    private readonly Mock<IPasswordHasher> mockPasswordHasher;
+    private readonly Mock<IPasswordHasher> mockPasswordHasher = new();
 
     public RegisterEndpointTests()
     {
-        mockDbContext = new Mock<HalcyonDbContext>();
-        mockPasswordHasher = new Mock<IPasswordHasher>();
-        storedUsers = [];
-
         mockDbContext.Setup(m => m.Users)
             .ReturnsDbSet(storedUsers);
 
