@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Halcyon.Api.Services.Email;
 
@@ -15,7 +16,7 @@ public partial class TemplateEngine : ITemplateEngine
 
     private static async Task<string> ReadEmbeddedResourceAsStringAsync(string resource)
     {
-        var assembly = typeof(TemplateEngine).Assembly;
+        var assembly = Assembly.GetExecutingAssembly();
 
         var name = assembly.GetManifestResourceNames()
             .Single(str => str.EndsWith(resource));

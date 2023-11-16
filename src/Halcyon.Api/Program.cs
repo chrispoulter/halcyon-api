@@ -2,7 +2,6 @@ using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Services.Date;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
@@ -143,8 +142,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
-
-builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();

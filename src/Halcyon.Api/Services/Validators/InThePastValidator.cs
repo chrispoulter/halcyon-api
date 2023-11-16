@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
-using Halcyon.Api.Services.Date;
 
 namespace Halcyon.Api.Services.Validators;
 
 public static class InThePastValidator
 {
-    public static IRuleBuilderOptions<T, DateOnly> InThePast<T>(this IRuleBuilder<T, DateOnly> ruleBuilder, IDateTimeProvider dateTimeProvider)
+    public static IRuleBuilderOptions<T, DateOnly> InThePast<T>(this IRuleBuilder<T, DateOnly> ruleBuilder, TimeProvider timeProvider)
         => ruleBuilder
-            .LessThan(DateOnly.FromDateTime(dateTimeProvider.UtcNow))
+            .LessThan(DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime))
             .WithMessage("'{PropertyName}' must be in the past.");
 }
