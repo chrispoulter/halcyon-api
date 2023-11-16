@@ -3,15 +3,9 @@ using MassTransit;
 
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
-public class SendResetPasswordEmailConsumer : IConsumer<SendResetPasswordEmailEvent>
+public class SendResetPasswordEmailConsumer(IEmailSender emailSender)
+    : IConsumer<SendResetPasswordEmailEvent>
 {
-    private readonly IEmailSender emailSender;
-
-    public SendResetPasswordEmailConsumer(IEmailSender emailSender)
-    {
-        this.emailSender = emailSender;
-    }
-
     public async Task Consume(ConsumeContext<SendResetPasswordEmailEvent> context)
     {
         var message = context.Message;

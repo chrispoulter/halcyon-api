@@ -7,19 +7,10 @@ using System.Text;
 
 namespace Halcyon.Api.Services.Jwt;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> jwtSettings)
+    : IJwtTokenGenerator
 {
-    private readonly TimeProvider timeProvider;
-
-    private readonly JwtSettings jwtSettings;
-
-    public JwtTokenGenerator(
-        TimeProvider timeProvider, 
-        IOptions<JwtSettings> jwtSettings)
-    {
-        this.timeProvider = timeProvider;
-        this.jwtSettings = jwtSettings.Value;
-    }
+    private readonly JwtSettings jwtSettings = jwtSettings.Value;
 
     public string GenerateJwtToken(User user)
     {

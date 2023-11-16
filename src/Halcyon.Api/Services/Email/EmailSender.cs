@@ -5,23 +5,13 @@ using MimeKit.Text;
 
 namespace Halcyon.Api.Services.Email;
 
-public class EmailSender : IEmailSender
+public class EmailSender(
+    ITemplateEngine templateEngine,
+    IOptions<EmailSettings> emailSettings,
+    ILogger<EmailSender> logger)
+    : IEmailSender
 {
-    private readonly ITemplateEngine templateEngine;
-
-    private readonly EmailSettings emailSettings;
-
-    private readonly ILogger<EmailSender> logger;
-
-    public EmailSender(
-        ITemplateEngine templateEngine,
-        IOptions<EmailSettings> emailSettings,
-        ILogger<EmailSender> logger)
-    {
-        this.templateEngine = templateEngine;
-        this.emailSettings = emailSettings.Value;
-        this.logger = logger;
-    }
+    private readonly EmailSettings emailSettings = emailSettings.Value;
 
     public async Task SendEmailAsync(EmailMessage message)
     {

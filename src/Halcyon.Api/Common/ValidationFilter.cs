@@ -2,15 +2,9 @@
 
 namespace Halcyon.Api.Common;
 
-public class ValidationFilter : IEndpointFilter
+public class ValidationFilter(IServiceProvider serviceProvider)
+    : IEndpointFilter
 {
-    private readonly IServiceProvider serviceProvider;
-
-    public ValidationFilter(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
     public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         foreach (var argument in context.Arguments)
