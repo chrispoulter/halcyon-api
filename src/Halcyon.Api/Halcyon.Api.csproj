@@ -9,8 +9,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="EFCore.NamingConventions" Version="8.0.0-rc.2" />
-		<PackageReference Include="FluentValidation" Version="11.8.0" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+		<PackageReference Include="FluentValidation" Version="11.8.1" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
 		<PackageReference Include="MailKit" Version="4.3.0" />
 		<PackageReference Include="MassTransit" Version="8.1.2" />
 		<PackageReference Include="Mapster" Version="7.4.0" />
@@ -23,7 +23,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.0" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.2" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
