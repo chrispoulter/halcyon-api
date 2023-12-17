@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62A0DCB9-F97D-48C8-964B-792D12FF324E}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		.config\dotnet-tools.json = .config\dotnet-tools.json
-		GitVersion.yml = GitVersion.yml
 		global.json = global.json
-		README.md = README.md
 		.github\workflows\main.yml = .github\workflows\main.yml
 		.github\workflows\preview.yml = .github\workflows\preview.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C1C1C1DC-3157-4566-984D-571A6CB8B1B4}"
