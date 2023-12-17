@@ -34,6 +34,8 @@ jobs:
                   push: true
                   tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
                   file: ./src/Halcyon.Api/Dockerfile
+                  build-args: |
+                      VERSION=${{ github.sha }}
 
     deploy:
         runs-on: ubuntu-latest
