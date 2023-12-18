@@ -29,6 +29,7 @@ jobs:
               uses: gittools/actions/gitversion/execute@v0
               with:
                   useConfigFile: true
+                  additionalArguments: '/updateprojectfiles'
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -46,14 +47,13 @@ jobs:
             - name: Build and push container image to registry
               uses: docker/build-push-action@v5
               with:
-                  push: true
-                  provenance: false
+                  file: ./src/Halcyon.Api/Dockerfile
                   tags: |
                       ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
                       ghcr.io/${{ env.REPO }}:latest
-                  file: ./src/Halcyon.Api/Dockerfile
-                  build-args: |
-                      VERSION=${{ steps.gitversion.outputs.semVer }}
+                  context: .
+                  push: true
+                  provenance: false
 
     deploy:
         runs-on: ubuntu-latest
