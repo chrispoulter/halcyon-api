@@ -1,4 +1,5 @@
 mode: Mainline
+assembly-informational-format: '{SemVer}'
 branches:
     master:
         regex: ^master$|^main$

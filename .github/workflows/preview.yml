@@ -29,6 +29,7 @@ jobs:
               uses: gittools/actions/gitversion/execute@v0
               with:
                   useConfigFile: true
+                  updateAssemblyInfo: true
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -50,8 +51,6 @@ jobs:
                   provenance: false
                   tags: ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
                   file: ./src/Halcyon.Api/Dockerfile
-                  build-args: |
-                      VERSION=${{ steps.gitversion.outputs.semVer }}
 
     deploy:
         runs-on: ubuntu-latest
