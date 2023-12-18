@@ -47,13 +47,13 @@ jobs:
             - name: Build and push container image to registry
               uses: docker/build-push-action@v5
               with:
-                  context: .
-                  push: true
-                  provenance: false
+                  file: ./src/Halcyon.Api/Dockerfile
                   tags: |
                       ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
                       ghcr.io/${{ env.REPO }}:latest
-                  file: ./src/Halcyon.Api/Dockerfile
+                  context: .
+                  push: true
+                  provenance: false
 
     deploy:
         runs-on: ubuntu-latest
