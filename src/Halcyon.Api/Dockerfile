@@ -13,7 +13,7 @@ RUN dotnet test
 
 FROM build AS publish
 ARG VERSION=1.0.0
-RUN dotnet publish "./src/Halcyon.Api/Halcyon.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false -p:Version="1.0.0+${VERSION}"
+RUN dotnet publish "./src/Halcyon.Api/Halcyon.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false -p:Version=${VERSION}
 
 FROM base AS final
 WORKDIR /app

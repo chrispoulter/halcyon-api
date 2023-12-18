@@ -24,6 +24,7 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/appsettings.Development.json
+GitVersion.yml
 LICENSE
 README.md
 !**/.gitignore
