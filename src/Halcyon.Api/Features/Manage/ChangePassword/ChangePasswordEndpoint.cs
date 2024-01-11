@@ -23,10 +23,11 @@ public class ChangePasswordEndpoint : IEndpoint
         ChangePasswordRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
+            .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
 
         if (user is null || user.IsLockedOut)
         {
@@ -65,7 +66,7 @@ public class ChangePasswordEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

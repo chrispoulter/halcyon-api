@@ -21,11 +21,12 @@ public class TokenEndpoint : IEndpoint
         TokenRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtTokenGenerator jwtTokenGenerator,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
         if (user is null || user.Password is null)
         {

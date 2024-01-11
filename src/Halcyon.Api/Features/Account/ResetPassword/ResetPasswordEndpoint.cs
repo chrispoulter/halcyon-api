@@ -19,10 +19,11 @@ public class ResetPasswordEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         ResetPasswordRequest request,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
         if (
             user is null
@@ -38,7 +39,7 @@ public class ResetPasswordEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

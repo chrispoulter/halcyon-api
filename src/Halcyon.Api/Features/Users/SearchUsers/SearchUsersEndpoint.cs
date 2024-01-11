@@ -19,7 +19,8 @@ public class SearchUsersEndpoint : IEndpoint
 
     internal static async Task<IResult> HandleAsync(
         [AsParameters] SearchUsersRequest request,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var query = dbContext.Users
             .AsNoTracking()
@@ -30,7 +31,7 @@ public class SearchUsersEndpoint : IEndpoint
             query = query.Where(u => EF.Functions.ILike(u.Search, $"%{request.Search}%"));
         }
 
-        var count = await query.CountAsync();
+        var count = await query.CountAsync(cancellationToken);
 
         query = request.Sort switch
         {
@@ -49,7 +50,7 @@ public class SearchUsersEndpoint : IEndpoint
 
         var users = await query
             .ProjectToType<SearchUserResponse>()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var pageCount = (count + request.Size - 1) / request.Size;
 

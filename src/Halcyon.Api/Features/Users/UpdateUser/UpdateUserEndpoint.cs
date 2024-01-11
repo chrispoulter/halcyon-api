@@ -23,10 +23,11 @@ public class UpdateUserEndpoint : IEndpoint
         int id,
         UpdateUserRequest request,
         CurrentUser currentUser,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-           .FirstOrDefaultAsync(u => u.Id == id);
+           .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {
@@ -47,7 +48,7 @@ public class UpdateUserEndpoint : IEndpoint
         if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
         {
             var existing = await dbContext.Users
-                .AnyAsync(u => u.EmailAddress == request.EmailAddress);
+                .AnyAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
             if (existing)
             {
@@ -60,7 +61,7 @@ public class UpdateUserEndpoint : IEndpoint
 
         request.Adapt(user);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

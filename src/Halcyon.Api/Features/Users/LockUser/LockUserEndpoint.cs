@@ -22,10 +22,11 @@ public class LockUserEndpoint : IEndpoint
         int id,
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {
@@ -53,7 +54,7 @@ public class LockUserEndpoint : IEndpoint
 
         user.IsLockedOut = true;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }
