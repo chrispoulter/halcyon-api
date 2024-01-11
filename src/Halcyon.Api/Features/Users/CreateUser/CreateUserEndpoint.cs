@@ -22,10 +22,11 @@ public class CreateUserEndpoint : IEndpoint
         CreateUserRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        CancellationToken cancellationToken = default)
     {
         var existing = await dbContext.Users
-           .AnyAsync(u => u.EmailAddress == request.EmailAddress);
+           .AnyAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
         if (existing)
         {
@@ -40,7 +41,7 @@ public class CreateUserEndpoint : IEndpoint
 
         dbContext.Users.Add(user);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

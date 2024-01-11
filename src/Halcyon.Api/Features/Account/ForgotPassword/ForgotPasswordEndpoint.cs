@@ -20,16 +20,18 @@ public class ForgotPasswordEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
         HalcyonDbContext dbContext,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        CancellationToken cancellationToken = default
+        )
     {
         var user = await dbContext.Users
-           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress);
+           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
         if (user is not null && !user.IsLockedOut)
         {
             user.PasswordResetToken = Guid.NewGuid();
 
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             var message = new SendResetPasswordEmailEvent
             {
@@ -38,7 +40,7 @@ public class ForgotPasswordEndpoint : IEndpoint
                 SiteUrl = request.SiteUrl,
             };
 
-            await publishEndpoint.Publish(message);
+            await publishEndpoint.Publish(message, cancellationToken);
         }
 
         return Results.Ok();

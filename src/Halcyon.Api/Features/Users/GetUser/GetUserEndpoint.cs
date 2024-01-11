@@ -18,11 +18,12 @@ public class GetUserEndpoint : IEndpoint
 
     internal static async Task<IResult> HandleAsync(
         int id,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
            .AsNoTracking()
-           .FirstOrDefaultAsync(u => u.Id == id);
+           .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {

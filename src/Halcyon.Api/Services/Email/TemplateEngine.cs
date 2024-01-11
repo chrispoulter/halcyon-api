@@ -5,16 +5,16 @@ namespace Halcyon.Api.Services.Email;
 
 public partial class TemplateEngine : ITemplateEngine
 {
-    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, dynamic model)
+    public async Task<Tuple<string, string>> RenderTemplateAsync(string template, dynamic model, CancellationToken cancellationToken = default)
     {
-        var resource = await ReadEmbeddedResourceAsStringAsync(template);
+        var resource = await ReadEmbeddedResourceAsStringAsync(template, cancellationToken);
         var html = Render(resource, model);
         var title = GetHtmlTitle(html);
 
         return new(html, title);
     }
 
-    private static async Task<string> ReadEmbeddedResourceAsStringAsync(string resource)
+    private static async Task<string> ReadEmbeddedResourceAsStringAsync(string resource, CancellationToken cancellationToken)
     {
         var assembly = Assembly.GetExecutingAssembly();
 
@@ -24,7 +24,7 @@ public partial class TemplateEngine : ITemplateEngine
         using var stream = assembly.GetManifestResourceStream(name);
         using var reader = new StreamReader(stream);
 
-        return await reader.ReadToEndAsync();
+        return await reader.ReadToEndAsync(cancellationToken);
     }
 
     private static string Render(string html, dynamic model)

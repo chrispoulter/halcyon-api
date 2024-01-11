@@ -19,9 +19,10 @@ public class SeedEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        IOptions<SeedSettings> seedSettings)
+        IOptions<SeedSettings> seedSettings,
+        CancellationToken cancellationToken = default)
     {
-        await dbContext.Database.MigrateAsync();
+        await dbContext.Database.MigrateAsync(cancellationToken);
 
         if (seedSettings.Value.Users != null)
         {
@@ -30,7 +31,7 @@ public class SeedEndpoint : IEndpoint
 
             var users = await dbContext.Users
                 .Where(u => emailAddresses.Contains(u.EmailAddress))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             foreach (var seedUser in seedSettings.Value.Users)
             {
@@ -48,7 +49,7 @@ public class SeedEndpoint : IEndpoint
             }
         }
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Content("Environment seeded.");
     }

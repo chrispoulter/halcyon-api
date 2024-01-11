@@ -22,10 +22,11 @@ public class UpdateProfileEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         UpdateProfileRequest request,
         CurrentUser currentUser,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-              .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
+              .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
 
         if (user is null || user.IsLockedOut)
         {
@@ -46,7 +47,7 @@ public class UpdateProfileEndpoint : IEndpoint
         if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
         {
             var existing = await dbContext.Users
-                .AnyAsync(u => u.EmailAddress == request.EmailAddress);
+                .AnyAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
             if (existing)
             {
@@ -59,7 +60,7 @@ public class UpdateProfileEndpoint : IEndpoint
 
         request.Adapt(user);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

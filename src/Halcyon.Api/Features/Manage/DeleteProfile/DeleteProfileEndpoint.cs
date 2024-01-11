@@ -20,10 +20,11 @@ public class DeleteProfileEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
-        HalcyonDbContext dbContext)
+        HalcyonDbContext dbContext,
+        CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
-        .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
+            .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
 
         if (user is null || user.IsLockedOut)
         {
@@ -43,7 +44,7 @@ public class DeleteProfileEndpoint : IEndpoint
 
         dbContext.Users.Remove(user);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }
