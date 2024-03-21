@@ -1,71 +1,78 @@
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
-using Halcyon.Api.Services.Hash;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Moq;
-using Moq.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterEndpointTests
+public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    private readonly Mock<HalcyonDbContext> mockDbContext = new();
+    private readonly WebApplicationFactory<Program> factory;
+    private readonly HttpClient client;
 
-    private readonly List<User> storedUsers = [];
-
-    private readonly Mock<IPasswordHasher> mockPasswordHasher = new();
-
-    public RegisterEndpointTests()
+    public RegisterEndpointTests(CustomWebApplicationFactory<Program> factory)
     {
-        mockDbContext.Setup(m => m.Users)
-            .ReturnsDbSet(storedUsers);
-
-        mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-            .Callback<User>(storedUsers.Add);
-
-        mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Callback(() => storedUsers.ForEach(user => user.Id = storedUsers.IndexOf(user) + 1));
+        this.factory = factory;
+        this.client = factory.CreateClient();
     }
 
     [Fact]
     public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
     {
-        var request = new RegisterRequest
+        using var scope = factory.Services.CreateScope();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<HalcyonDbContext>();
+
+        var user = new User
         {
-            EmailAddress = "test@example.com"
+            EmailAddress = $"{Guid.NewGuid()}@example.com",
+            Password = "password",
+            FirstName = "Test",
+            LastName = "User",
+            DateOfBirth = new DateOnly(2000, 1, 1)
         };
 
-        storedUsers.Add(new User
+        dbContext.Users.Add(user);
+
+        await dbContext.SaveChangesAsync();
+
+        var request = new RegisterRequest
         {
-            EmailAddress = request.EmailAddress
-        });
+            EmailAddress = user.EmailAddress,
+            Password = user.Password,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            DateOfBirth = user.DateOfBirth
+        };
 
-        var result = await RegisterEndpoint.HandleAsync(
-            request,
-            mockDbContext.Object,
-            mockPasswordHasher.Object
-        );
+        var response = await client.PostAsJsonAsync("/account/register", request);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var response = Assert.IsType<ProblemHttpResult>(result);
-        Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
-        Assert.Equal("User name is already taken.", response.ProblemDetails.Title);
+        var result = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        Assert.NotNull(result);
+        Assert.Equal("User name is already taken.", result.Title);
     }
 
     [Fact]
     public async Task Register_WhenRequestValid_ShouldCreateNewUser()
     {
-        var request = new RegisterRequest();
+        var request = new RegisterRequest
+        {
+            EmailAddress = $"{Guid.NewGuid()}@example.com",
+            Password = "password",
+            FirstName = "Test",
+            LastName = "User",
+            DateOfBirth = new DateOnly(2000, 1, 1)
+        };
 
-        var result = await RegisterEndpoint.HandleAsync(
-            request,
-            mockDbContext.Object,
-            mockPasswordHasher.Object
-        );
+        var response = await client.PostAsJsonAsync("/account/register", request);
+        response.EnsureSuccessStatusCode();
 
-        var response = Assert.IsType<Ok<UpdateResponse>>(result);
-        Assert.NotNull(response.Value);
-        Assert.Equal(1, response.Value.Id);
+        var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
+        Assert.NotNull(result);
+        Assert.NotEqual(0, result.Id);
     }
 }
