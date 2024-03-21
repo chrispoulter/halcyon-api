@@ -54,7 +54,7 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
 
         var result = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         result.Should().NotBeNull();
-        result.Title.Should().Be("User name is already taken.");
+        result!.Title.Should().Be("User name is already taken.");
     }
 
     [Fact]
@@ -74,6 +74,6 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
 
         var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
         result.Should().NotBeNull();
-        result.Id.Should().BeGreaterThan(0);
+        result!.Id.Should().BeGreaterThan(0);
     }
 }
