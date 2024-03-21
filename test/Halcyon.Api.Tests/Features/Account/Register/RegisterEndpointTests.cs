@@ -4,6 +4,7 @@ using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
@@ -27,7 +28,7 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
 
         var client = factory.CreateClient();
         var response = await client.PostAsJsonAsync(RequestUri, request);
-        Assert.False(response.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
         var result = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         Assert.NotNull(result);
@@ -41,7 +42,7 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
 
         var client = factory.CreateClient();
         var response = await client.PostAsJsonAsync(RequestUri, request);
-        Assert.True(response.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
         Assert.NotNull(result);
