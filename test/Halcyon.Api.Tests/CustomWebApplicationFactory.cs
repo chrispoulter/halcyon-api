@@ -23,7 +23,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             }
 
             services.AddDbContext<HalcyonDbContext>(
-                options => options.UseInMemoryDatabase("TestDatabase")
+                options => options.UseInMemoryDatabase("HalcyonTestDatabase")
             );
 
             var serviceProvider = services.BuildServiceProvider();
