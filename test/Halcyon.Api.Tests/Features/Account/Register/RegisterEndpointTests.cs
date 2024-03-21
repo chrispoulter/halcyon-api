@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Mail;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
@@ -14,11 +16,13 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
 {
     private readonly WebApplicationFactory<Program> factory;
     private readonly HttpClient client;
+    private readonly Fixture fixture;
 
     public RegisterEndpointTests(CustomWebApplicationFactory<Program> factory)
     {
         this.factory = factory;
         this.client = factory.CreateClient();
+        this.fixture = new Fixture();
     }
 
     [Fact]
@@ -27,27 +31,23 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
         using var scope = factory.Services.CreateScope();
         using var dbContext = scope.ServiceProvider.GetRequiredService<HalcyonDbContext>();
 
-        var user = new User
-        {
-            EmailAddress = $"{Guid.NewGuid()}@example.com",
-            Password = "password",
-            FirstName = "Test",
-            LastName = "User",
-            DateOfBirth = new DateOnly(2000, 1, 1)
-        };
+        var emailAddress = fixture.Create<MailAddress>().Address;
+
+        var user = fixture
+            .Build<User>()
+            .With(p => p.EmailAddress, emailAddress)
+            .With(p => p.DateOfBirth, new DateOnly(1970, 1, 1))
+            .Create();
 
         dbContext.Users.Add(user);
 
         await dbContext.SaveChangesAsync();
 
-        var request = new RegisterRequest
-        {
-            EmailAddress = user.EmailAddress,
-            Password = user.Password,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            DateOfBirth = user.DateOfBirth
-        };
+        var request = fixture
+            .Build<RegisterRequest>()
+            .With(p => p.EmailAddress, user.EmailAddress)
+            .With(p => p.DateOfBirth, user.DateOfBirth)
+            .Create();
 
         var response = await client.PostAsJsonAsync("/account/register", request);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -60,14 +60,13 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
     [Fact]
     public async Task Register_WhenRequestValid_ShouldCreateNewUser()
     {
-        var request = new RegisterRequest
-        {
-            EmailAddress = $"{Guid.NewGuid()}@example.com",
-            Password = "password",
-            FirstName = "Test",
-            LastName = "User",
-            DateOfBirth = new DateOnly(2000, 1, 1)
-        };
+        var emailAddress = fixture.Create<MailAddress>().Address;
+
+        var request = fixture
+            .Build<RegisterRequest>()
+            .With(p => p.EmailAddress, emailAddress)
+            .With(p => p.DateOfBirth, new DateOnly(1970, 1, 1))
+            .Create();
 
         var response = await client.PostAsJsonAsync("/account/register", request);
         response.EnsureSuccessStatusCode();
