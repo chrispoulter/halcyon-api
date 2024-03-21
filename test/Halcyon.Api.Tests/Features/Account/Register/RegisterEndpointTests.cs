@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
@@ -49,11 +50,11 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
         };
 
         var response = await client.PostAsJsonAsync("/account/register", request);
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         var result = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        Assert.NotNull(result);
-        Assert.Equal("User name is already taken.", result.Title);
+        result.Should().NotBeNull();
+        result.Title.Should().Be("User name is already taken.");
     }
 
     [Fact]
@@ -72,7 +73,7 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
-        Assert.NotNull(result);
-        Assert.NotEqual(0, result.Id);
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
     }
 }
