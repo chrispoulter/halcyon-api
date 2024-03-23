@@ -1,21 +1,19 @@
 using Halcyon.Api.Common;
-using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<Program>>
+public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory<Program>>
 {
     private const string RequestUri = "/account/register";
 
     private readonly WebApplicationFactory<Program> factory;
 
-    public RegisterEndpointTests(CustomWebApplicationFactory<Program> factory)
+    public RegisterEndpointTests(TestWebApplicationFactory<Program> factory)
     {
         this.factory = factory;
     }
@@ -23,7 +21,7 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
     [Fact]
     public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
     {
-        var user = await CreateTestUser();
+        var user = await factory.CreateTestUserAsync();
         var request = CreateRegisterRequest(user.EmailAddress);
 
         var client = factory.CreateClient();
@@ -58,22 +56,4 @@ public class RegisterEndpointTests : IClassFixture<CustomWebApplicationFactory<P
             LastName = "User",
             DateOfBirth = new DateOnly(1070, 1, 1)
         };
-
-    private async Task<User> CreateTestUser()
-    {
-        var user = new User
-        {
-            EmailAddress = $"{Guid.NewGuid()}@example.com",
-            FirstName = "Test",
-            LastName = "User",
-            DateOfBirth = new DateOnly(1070, 1, 1)
-        };
-
-        using var scope = factory.Services.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetRequiredService<HalcyonDbContext>();
-        dbContext.Users.Add(user);
-        await dbContext.SaveChangesAsync();
-
-        return user;
-    }
 }

@@ -1,14 +1,12 @@
 ﻿using Halcyon.Api.Data;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Halcyon.Api.Tests;
 
-public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
+public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
     where TProgram : class
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -24,14 +22,11 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 services.Remove(dbContextDescriptor);
             }
 
-            services.AddDbContext<HalcyonDbContext>(
-                options => options.UseInMemoryDatabase("HalcyonTestDatabase")
-            );
-
-            var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<HalcyonDbContext>();
-            dbContext.Database.EnsureCreated();
+            services
+                .AddDbContext<HalcyonDbContext>(
+                    options => options.UseInMemoryDatabase("HalcyonTestDatabase")
+                )
+                .EnsureDatabaseCreated();
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
