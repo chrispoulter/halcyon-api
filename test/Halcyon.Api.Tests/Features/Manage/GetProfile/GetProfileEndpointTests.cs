@@ -1,6 +1,5 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Api.Features.Manage.GetProfile;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -33,6 +32,8 @@ public class GetProfileEndpointTests : IClassFixture<CustomWebApplicationFactory
         var user = await CreateTestUser();
 
         var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Add(TestAuthenticationHandler.UserId, user.Id.ToString());
+
         var response = await client.GetAsync(RequestUri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
