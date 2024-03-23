@@ -18,8 +18,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
         IOptionsMonitor<TestAuthenticationOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder
-    )
-        : base(options, logger, encoder) { }
+    ) : base(options, logger, encoder) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
