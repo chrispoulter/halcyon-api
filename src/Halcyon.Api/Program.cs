@@ -181,3 +181,5 @@ app.UseSwaggerUI(options =>
 
 app.MapEndpoints();
 app.Run();
+
+public partial class Program { }

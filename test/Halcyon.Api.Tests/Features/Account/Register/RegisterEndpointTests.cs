@@ -1,71 +1,59 @@
 using Halcyon.Api.Common;
-using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.Register;
-using Halcyon.Api.Services.Hash;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Moq;
-using Moq.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterEndpointTests
+public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory<Program>>
 {
-    private readonly Mock<HalcyonDbContext> mockDbContext = new();
+    private const string RequestUri = "/account/register";
 
-    private readonly List<User> storedUsers = [];
+    private readonly WebApplicationFactory<Program> factory;
 
-    private readonly Mock<IPasswordHasher> mockPasswordHasher = new();
-
-    public RegisterEndpointTests()
+    public RegisterEndpointTests(TestWebApplicationFactory<Program> factory)
     {
-        mockDbContext.Setup(m => m.Users)
-            .ReturnsDbSet(storedUsers);
-
-        mockDbContext.Setup(m => m.Users.Add(It.IsAny<User>()))
-            .Callback<User>(storedUsers.Add);
-
-        mockDbContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .Callback(() => storedUsers.ForEach(user => user.Id = storedUsers.IndexOf(user) + 1));
+        this.factory = factory;
     }
 
     [Fact]
     public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
     {
-        var request = new RegisterRequest
-        {
-            EmailAddress = "test@example.com"
-        };
+        var user = await factory.CreateTestUserAsync();
+        var request = CreateRegisterRequest(user.EmailAddress);
 
-        storedUsers.Add(new User
-        {
-            EmailAddress = request.EmailAddress
-        });
+        var client = factory.CreateClient();
+        var response = await client.PostAsJsonAsync(RequestUri, request);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var result = await RegisterEndpoint.HandleAsync(
-            request,
-            mockDbContext.Object,
-            mockPasswordHasher.Object
-        );
-
-        var response = Assert.IsType<ProblemHttpResult>(result);
-        Assert.Equal(StatusCodes.Status400BadRequest, response.StatusCode);
-        Assert.Equal("User name is already taken.", response.ProblemDetails.Title);
+        var result = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        Assert.NotNull(result);
+        Assert.Equal("User name is already taken.", result.Title);
     }
 
     [Fact]
     public async Task Register_WhenRequestValid_ShouldCreateNewUser()
     {
-        var request = new RegisterRequest();
+        var request = CreateRegisterRequest();
 
-        var result = await RegisterEndpoint.HandleAsync(
-            request,
-            mockDbContext.Object,
-            mockPasswordHasher.Object
-        );
+        var client = factory.CreateClient();
+        var response = await client.PostAsJsonAsync(RequestUri, request);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var response = Assert.IsType<Ok<UpdateResponse>>(result);
-        Assert.NotNull(response.Value);
-        Assert.Equal(1, response.Value.Id);
+        var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
+        Assert.NotNull(result);
+        Assert.NotEqual(0, result.Id);
     }
+
+    private static RegisterRequest CreateRegisterRequest(string? emailAddress = null) =>
+        new()
+        {
+            EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
+            Password = "password",
+            FirstName = "Test",
+            LastName = "User",
+            DateOfBirth = new DateOnly(1070, 1, 1)
+        };
 }
