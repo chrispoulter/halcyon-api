@@ -20,20 +20,20 @@ public class ResetPasswordEndpoint : IEndpoint
         ResetPasswordRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(
+            u => u.EmailAddress == request.EmailAddress,
+            cancellationToken
+        );
 
-        if (
-            user is null
-            || user.IsLockedOut
-            || request.Token != user.PasswordResetToken)
+        if (user is null || user.IsLockedOut || request.Token != user.PasswordResetToken)
         {
             return Results.Problem(
-              statusCode: StatusCodes.Status400BadRequest,
-              title: "Invalid token."
-          );
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid token."
+            );
         }
 
         user.Password = passwordHasher.HashPassword(request.NewPassword);

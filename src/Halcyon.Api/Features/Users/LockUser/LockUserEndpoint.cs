@@ -23,10 +23,10 @@ public class LockUserEndpoint : IEndpoint
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {
@@ -47,9 +47,9 @@ public class LockUserEndpoint : IEndpoint
         if (user.Id == currentUser.Id)
         {
             return Results.Problem(
-                 statusCode: StatusCodes.Status400BadRequest,
-                 title: "Cannot lock currently logged in user."
-             );
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Cannot lock currently logged in user."
+            );
         }
 
         user.IsLockedOut = true;

@@ -1,9 +1,9 @@
+using System.Net;
+using System.Net.Http.Json;
 using Halcyon.Api.Common;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net;
-using System.Net.Http.Json;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 

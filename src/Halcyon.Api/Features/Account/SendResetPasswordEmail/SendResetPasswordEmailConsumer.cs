@@ -10,12 +10,14 @@ public class SendResetPasswordEmailConsumer(IEmailSender emailSender)
     {
         var message = context.Message;
 
-        await emailSender.SendEmailAsync(new()
-        {
-            To = message.To,
-            Template = "ResetPasswordEmail.html",
-            Data = new { message.PasswordResetToken, message.SiteUrl }
-        },
-        context.CancellationToken);
+        await emailSender.SendEmailAsync(
+            new()
+            {
+                To = message.To,
+                Template = "ResetPasswordEmail.html",
+                Data = new { message.PasswordResetToken, message.SiteUrl }
+            },
+            context.CancellationToken
+        );
     }
 }

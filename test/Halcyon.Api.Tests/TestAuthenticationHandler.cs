@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
 
 namespace Halcyon.Api.Tests;
 
@@ -18,7 +18,8 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
         IOptionsMonitor<TestAuthenticationOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder
-    ) : base(options, logger, encoder) { }
+    )
+        : base(options, logger, encoder) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

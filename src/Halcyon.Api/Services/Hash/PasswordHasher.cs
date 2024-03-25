@@ -13,10 +13,11 @@ public class PasswordHasher : IPasswordHasher
     public string HashPassword(string password)
     {
         using var algorithm = new Rfc2898DeriveBytes(
-           password,
-           SaltSize,
-           Iterations,
-           HashAlgorithmName.SHA256);
+            password,
+            SaltSize,
+            Iterations,
+            HashAlgorithmName.SHA256
+        );
 
         var key = Convert.ToBase64String(algorithm.GetBytes(KeySize));
         var salt = Convert.ToBase64String(algorithm.Salt);
@@ -31,10 +32,11 @@ public class PasswordHasher : IPasswordHasher
         var key = Convert.FromBase64String(parts[1]);
 
         using var algorithm = new Rfc2898DeriveBytes(
-          password,
-          salt,
-          Iterations,
-          HashAlgorithmName.SHA256);
+            password,
+            salt,
+            Iterations,
+            HashAlgorithmName.SHA256
+        );
 
         var keyToCheck = algorithm.GetBytes(KeySize);
         var verified = keyToCheck.SequenceEqual(key);

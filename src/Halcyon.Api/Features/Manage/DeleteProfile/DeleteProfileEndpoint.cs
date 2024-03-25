@@ -21,10 +21,13 @@ public class DeleteProfileEndpoint : IEndpoint
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(
+            u => u.Id == currentUser.Id,
+            cancellationToken
+        );
 
         if (user is null || user.IsLockedOut)
         {

@@ -13,8 +13,8 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
     {
         builder.ConfigureServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<HalcyonDbContext>)
+            var dbContextDescriptor = services.SingleOrDefault(d =>
+                d.ServiceType == typeof(DbContextOptions<HalcyonDbContext>)
             );
 
             if (dbContextDescriptor is not null)
@@ -23,8 +23,8 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             }
 
             services
-                .AddDbContext<HalcyonDbContext>(
-                    options => options.UseInMemoryDatabase("HalcyonTestDatabase")
+                .AddDbContext<HalcyonDbContext>(options =>
+                    options.UseInMemoryDatabase("HalcyonTestDatabase")
                 )
                 .EnsureDatabaseCreated();
 

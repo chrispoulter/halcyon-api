@@ -10,7 +10,8 @@ public static class EndpointExtensions
 
         var interfaceType = typeof(IEndpoint);
 
-        var types = assembly.GetTypes()
+        var types = assembly
+            .GetTypes()
             .Where(t => interfaceType.IsAssignableFrom(t) && !t.IsInterface);
 
         foreach (var type in types)

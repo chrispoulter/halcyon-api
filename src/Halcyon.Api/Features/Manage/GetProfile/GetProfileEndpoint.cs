@@ -19,10 +19,11 @@ public class GetProfileEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-            .AsNoTracking()
+        var user = await dbContext
+            .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
 
         if (user is null || user.IsLockedOut)

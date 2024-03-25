@@ -1,14 +1,17 @@
-﻿using FluentValidation;
+﻿using System.Text.RegularExpressions;
+using FluentValidation;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
-using System.Text.RegularExpressions;
 
 namespace Halcyon.Api.Services.Validators;
 
 public static class ReturnUrlValidator
 {
-    public static IRuleBuilderOptions<T, string> ReturnUrl<T>(this IRuleBuilder<T, string> ruleBuilder, IOptions<CorsOptions> corsOptions)
-        => ruleBuilder
+    public static IRuleBuilderOptions<T, string> ReturnUrl<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        IOptions<CorsOptions> corsOptions
+    ) =>
+        ruleBuilder
             .Must(url =>
             {
                 if (string.IsNullOrEmpty(url))
@@ -29,9 +32,13 @@ public static class ReturnUrlValidator
                     return true;
                 }
 
-                var isAllowed = corsPolicy
-                    .Origins
-                    .Any(pattern => Regex.IsMatch(origin, Regex.Escape(pattern).Replace("\\*", "(.+)"), RegexOptions.IgnoreCase));
+                var isAllowed = corsPolicy.Origins.Any(pattern =>
+                    Regex.IsMatch(
+                        origin,
+                        Regex.Escape(pattern).Replace("\\*", "(.+)"),
+                        RegexOptions.IgnoreCase
+                    )
+                );
 
                 if (!isAllowed)
                 {

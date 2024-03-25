@@ -20,17 +20,17 @@ public class SeedEndpoint : IEndpoint
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IOptions<SeedSettings> seedSettings,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         await dbContext.Database.MigrateAsync(cancellationToken);
 
         if (seedSettings.Value.Users != null)
         {
-            var emailAddresses = seedSettings.Value.Users
-                .Select(u => u.EmailAddress);
+            var emailAddresses = seedSettings.Value.Users.Select(u => u.EmailAddress);
 
-            var users = await dbContext.Users
-                .Where(u => emailAddresses.Contains(u.EmailAddress))
+            var users = await dbContext
+                .Users.Where(u => emailAddresses.Contains(u.EmailAddress))
                 .ToListAsync(cancellationToken);
 
             foreach (var seedUser in seedSettings.Value.Users)

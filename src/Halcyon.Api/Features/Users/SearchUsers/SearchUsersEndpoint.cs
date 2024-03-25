@@ -20,11 +20,10 @@ public class SearchUsersEndpoint : IEndpoint
     internal static async Task<IResult> HandleAsync(
         [AsParameters] SearchUsersRequest request,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var query = dbContext.Users
-            .AsNoTracking()
-            .AsQueryable();
+        var query = dbContext.Users.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Search))
         {
@@ -48,17 +47,17 @@ public class SearchUsersEndpoint : IEndpoint
 
         query = query.Take(request.Size);
 
-        var users = await query
-            .ProjectToType<SearchUserResponse>()
-            .ToListAsync(cancellationToken);
+        var users = await query.ProjectToType<SearchUserResponse>().ToListAsync(cancellationToken);
 
         var pageCount = (count + request.Size - 1) / request.Size;
 
-        return Results.Ok(new SearchUsersResponse()
-        {
-            Items = users,
-            HasNextPage = request.Page < pageCount,
-            HasPreviousPage = request.Page > 1
-        });
+        return Results.Ok(
+            new SearchUsersResponse()
+            {
+                Items = users,
+                HasNextPage = request.Page < pageCount,
+                HasPreviousPage = request.Page > 1
+            }
+        );
     }
 }

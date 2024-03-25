@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Features.Manage.GetProfile;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
+using Halcyon.Api.Features.Manage.GetProfile;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 

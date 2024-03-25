@@ -1,9 +1,9 @@
-﻿using Halcyon.Api.Data;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Halcyon.Api.Data;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Halcyon.Api.Services.Jwt;
 
@@ -37,7 +37,8 @@ public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> 
             jwtSettings.Audience,
             claims: claims,
             expires: timeProvider.GetUtcNow().AddSeconds(jwtSettings.ExpiresIn).UtcDateTime,
-            signingCredentials: credentials);
+            signingCredentials: credentials
+        );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

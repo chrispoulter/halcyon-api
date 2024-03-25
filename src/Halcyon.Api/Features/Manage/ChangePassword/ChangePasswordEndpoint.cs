@@ -24,10 +24,13 @@ public class ChangePasswordEndpoint : IEndpoint
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(
+            u => u.Id == currentUser.Id,
+            cancellationToken
+        );
 
         if (user is null || user.IsLockedOut)
         {
@@ -40,9 +43,9 @@ public class ChangePasswordEndpoint : IEndpoint
         if (request.Version is not null && request.Version != user.Version)
         {
             return Results.Problem(
-                 statusCode: StatusCodes.Status409Conflict,
-                 title: "Data has been modified since entities were loaded."
-             );
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Data has been modified since entities were loaded."
+            );
         }
 
         if (user.Password is null)

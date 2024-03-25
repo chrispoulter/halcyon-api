@@ -21,10 +21,10 @@ public class UnlockUserEndpoint : IEndpoint
         int id,
         [FromBody] UpdateRequest request,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-              .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {

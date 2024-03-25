@@ -23,10 +23,13 @@ public class UpdateProfileEndpoint : IEndpoint
         UpdateProfileRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var user = await dbContext.Users
-              .FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(
+            u => u.Id == currentUser.Id,
+            cancellationToken
+        );
 
         if (user is null || user.IsLockedOut)
         {
@@ -44,10 +47,17 @@ public class UpdateProfileEndpoint : IEndpoint
             );
         }
 
-        if (!request.EmailAddress.Equals(user.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
+        if (
+            !request.EmailAddress.Equals(
+                user.EmailAddress,
+                StringComparison.InvariantCultureIgnoreCase
+            )
+        )
         {
-            var existing = await dbContext.Users
-                .AnyAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
+            var existing = await dbContext.Users.AnyAsync(
+                u => u.EmailAddress == request.EmailAddress,
+                cancellationToken
+            );
 
             if (existing)
             {

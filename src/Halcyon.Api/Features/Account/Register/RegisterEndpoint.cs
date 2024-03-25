@@ -21,10 +21,13 @@ public class RegisterEndpoint : IEndpoint
         RegisterRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var existing = await dbContext.Users
-             .AnyAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
+        var existing = await dbContext.Users.AnyAsync(
+            u => u.EmailAddress == request.EmailAddress,
+            cancellationToken
+        );
 
         if (existing)
         {

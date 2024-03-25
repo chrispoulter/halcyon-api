@@ -22,10 +22,12 @@ public class ForgotPasswordEndpoint : IEndpoint
         HalcyonDbContext dbContext,
         IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
-        )
+    )
     {
-        var user = await dbContext.Users
-           .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(
+            u => u.EmailAddress == request.EmailAddress,
+            cancellationToken
+        );
 
         if (user is not null && !user.IsLockedOut)
         {
