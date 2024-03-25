@@ -19,7 +19,7 @@ public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory<Pro
     }
 
     [Fact]
-    public async Task Register_WhenDuplicateEmailAddress_ShouldReturnBadRequest()
+    public async Task Register_ShouldReturnBadRequest_WhenDuplicateEmailAddress()
     {
         var user = await factory.CreateTestUserAsync();
         var request = CreateRegisterRequest(user.EmailAddress);
@@ -34,7 +34,7 @@ public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory<Pro
     }
 
     [Fact]
-    public async Task Register_WhenRequestValid_ShouldCreateNewUser()
+    public async Task Register_ShouldCreateNewUser_WhenRequestValid()
     {
         var request = CreateRegisterRequest();
 

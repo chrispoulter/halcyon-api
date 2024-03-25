@@ -17,7 +17,7 @@ public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<P
     }
 
     [Fact]
-    public async Task GetProfile_WhenNotAuthorized_ShouldReturnUnauthorized()
+    public async Task GetProfile_ShouldReturnUnauthorized_WhenNotAuthorized()
     {
         var client = factory.CreateClient();
         var response = await client.GetAsync(RequestUri);
@@ -25,7 +25,7 @@ public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<P
     }
 
     [Fact]
-    public async Task GetProfile_WhenAuthorized_ShouldReturnProfile()
+    public async Task GetProfile_ShouldReturnProfile_WhenAuthorized()
     {
         var user = await factory.CreateTestUserAsync();
 
