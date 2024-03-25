@@ -3,17 +3,16 @@ using System.Net.Http.Json;
 using Halcyon.Api.Common;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory<Program>>
+public class RegisterEndpointTests : IClassFixture<TestWebApplicationFactory>
 {
     private const string RequestUri = "/account/register";
 
-    private readonly WebApplicationFactory<Program> factory;
+    private readonly TestWebApplicationFactory factory;
 
-    public RegisterEndpointTests(TestWebApplicationFactory<Program> factory)
+    public RegisterEndpointTests(TestWebApplicationFactory factory)
     {
         this.factory = factory;
     }

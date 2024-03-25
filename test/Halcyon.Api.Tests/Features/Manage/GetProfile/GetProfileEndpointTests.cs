@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 
-public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<Program>>
+public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory>
 {
     private const string RequestUri = "/manage";
 
     private readonly WebApplicationFactory<Program> factory;
 
-    public GetProfileEndpointTests(TestWebApplicationFactory<Program> factory)
+    public GetProfileEndpointTests(TestWebApplicationFactory factory)
     {
         this.factory = factory;
     }
