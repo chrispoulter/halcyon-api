@@ -30,7 +30,7 @@ public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<P
         var user = await factory.CreateTestUserAsync();
 
         var client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add(TestAuthenticationHandler.UserId, user.Id.ToString());
+        client.SetTestAuth(user);
 
         var response = await client.GetAsync(RequestUri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
