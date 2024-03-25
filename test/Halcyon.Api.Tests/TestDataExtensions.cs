@@ -6,14 +6,6 @@ namespace Halcyon.Api.Tests;
 
 public static class TestDataExtensions
 {
-    public static bool EnsureDatabaseCreated(this IServiceCollection services)
-    {
-        var serviceProvider = services.BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetRequiredService<HalcyonDbContext>();
-        return dbContext.Database.EnsureCreated();
-    }
-
     public static async Task<User> CreateTestUserAsync(this WebApplicationFactory<Program> factory)
     {
         var user = new User

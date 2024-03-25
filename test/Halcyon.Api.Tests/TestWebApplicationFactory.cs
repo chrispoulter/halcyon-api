@@ -19,8 +19,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             services
                 .AddDbContext<HalcyonDbContext>(options =>
                     options.UseInMemoryDatabase("HalcyonTestDatabase")
-                )
-                .EnsureDatabaseCreated();
+                );
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
