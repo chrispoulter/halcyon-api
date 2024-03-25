@@ -49,8 +49,8 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 var jwtSettings = new JwtSettings();
 builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
-builder
-    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new()
@@ -84,12 +84,18 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-        policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+    options.AddDefaultPolicy(
+        policy =>
+            policy
+                .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .WithMethods(
+                    HttpMethods.Get,
+                    HttpMethods.Post,
+                    HttpMethods.Put,
+                    HttpMethods.Options
+                )
+                .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
     );
 });
 
@@ -106,6 +112,7 @@ builder.Services.AddMassTransit(options =>
         (context, cfg) =>
         {
             cfg.ConfigureEndpoints(context);
+            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );
 });
