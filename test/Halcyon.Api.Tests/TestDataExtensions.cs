@@ -31,4 +31,7 @@ public static class TestDataExtensions
 
         return user;
     }
+
+    public static void SetTestAuth(this HttpClient client, User user) =>
+        client.DefaultRequestHeaders.Add(TestAuthenticationHandler.UserId, user.Id.ToString());
 }

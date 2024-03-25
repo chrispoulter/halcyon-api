@@ -1,26 +1,20 @@
 ﻿using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Halcyon.Api.Tests;
 
-public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
-    where TProgram : class
+public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<HalcyonDbContext>)
-            );
-
-            if (dbContextDescriptor is not null)
-            {
-                services.Remove(dbContextDescriptor);
-            }
+            services.RemoveAll(typeof(DbContextOptions<HalcyonDbContext>));
 
             services
                 .AddDbContext<HalcyonDbContext>(options =>
@@ -35,7 +29,5 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
                     options => { }
                 );
         });
-
-        builder.UseEnvironment("Development");
     }
 }

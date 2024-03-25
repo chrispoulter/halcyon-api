@@ -1,17 +1,16 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Halcyon.Api.Features.Manage.GetProfile;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 
-public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<Program>>
+public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory>
 {
     private const string RequestUri = "/manage";
 
-    private readonly WebApplicationFactory<Program> factory;
+    private readonly TestWebApplicationFactory factory;
 
-    public GetProfileEndpointTests(TestWebApplicationFactory<Program> factory)
+    public GetProfileEndpointTests(TestWebApplicationFactory factory)
     {
         this.factory = factory;
     }
@@ -30,7 +29,7 @@ public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory<P
         var user = await factory.CreateTestUserAsync();
 
         var client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add(TestAuthenticationHandler.UserId, user.Id.ToString());
+        client.SetTestAuth(user);
 
         var response = await client.GetAsync(RequestUri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
