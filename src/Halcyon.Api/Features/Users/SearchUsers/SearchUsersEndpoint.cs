@@ -36,7 +36,8 @@ public class SearchUsersEndpoint : IEndpoint
         {
             UserSort.EMAIL_ADDRESS_DESC => query.OrderByDescending(r => r.EmailAddress),
             UserSort.EMAIL_ADDRESS_ASC => query.OrderBy(r => r.EmailAddress),
-            UserSort.NAME_DESC => query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName),
+            UserSort.NAME_DESC
+                => query.OrderByDescending(r => r.FirstName).ThenByDescending(r => r.LastName),
             _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName),
         };
 
