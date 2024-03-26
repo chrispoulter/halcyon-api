@@ -1,12 +1,11 @@
 ﻿using Halcyon.Api.Data;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Halcyon.Api.Tests;
 
 public static class TestDataExtensions
 {
-    public static async Task<User> CreateTestUserAsync(this WebApplicationFactory<Program> factory)
+    public static async Task<User> CreateTestUserAsync(this TestWebApplicationFactory factory)
     {
         var user = new User
         {
