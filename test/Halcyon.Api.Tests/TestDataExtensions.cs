@@ -1,12 +1,22 @@
 ﻿using Halcyon.Api.Data;
-using Microsoft.AspNetCore.Mvc.Testing;
+using MassTransit;
+using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Halcyon.Api.Tests;
 
 public static class TestDataExtensions
 {
-    public static async Task<User> CreateTestUserAsync(this WebApplicationFactory<Program> factory)
+    public static IConsumerTestHarness<T> GetConsumerTestHarness<T>(
+        this TestWebApplicationFactory factory
+    )
+        where T : class, IConsumer
+    {
+        var testHarness = factory.Services.GetTestHarness();
+        return testHarness.GetConsumerHarness<T>();
+    }
+
+    public static async Task<User> CreateTestUserAsync(this TestWebApplicationFactory factory)
     {
         var user = new User
         {

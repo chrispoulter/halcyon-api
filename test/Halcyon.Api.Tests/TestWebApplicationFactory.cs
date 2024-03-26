@@ -1,4 +1,5 @@
 ﻿using Halcyon.Api.Data;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -16,10 +17,11 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll(typeof(DbContextOptions<HalcyonDbContext>));
 
-            services
-                .AddDbContext<HalcyonDbContext>(options =>
-                    options.UseInMemoryDatabase("HalcyonTestDatabase")
-                );
+            services.AddDbContext<HalcyonDbContext>(options =>
+                options.UseInMemoryDatabase("HalcyonTestDatabase")
+            );
+
+            services.AddMassTransitTestHarness();
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
