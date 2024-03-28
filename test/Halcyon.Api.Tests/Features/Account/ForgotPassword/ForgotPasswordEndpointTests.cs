@@ -20,11 +20,10 @@ public class ForgotPasswordEndpointTests : BaseTest
         var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        var eventConsumed = await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
-            c.Context.Message.To == request.EmailAddress
+        var eventPublished = await _testHarness.Published.Any<SendResetPasswordEmailEvent>(filter =>
+            filter.Context.Message.To == request.EmailAddress
         );
-        Assert.False(eventConsumed, $"{nameof(SendResetPasswordEmailEvent)} consumed");
+        Assert.False(eventPublished, $"{nameof(SendResetPasswordEmailEvent)} published");
     }
 
     [Fact]
@@ -36,11 +35,10 @@ public class ForgotPasswordEndpointTests : BaseTest
         var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        var eventConsumed = await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
-            c.Context.Message.To == request.EmailAddress
+        var eventPublished = await _testHarness.Published.Any<SendResetPasswordEmailEvent>(filter =>
+            filter.Context.Message.To == request.EmailAddress
         );
-        Assert.True(eventConsumed, $"{nameof(SendResetPasswordEmailEvent)} not consumed");
+        Assert.True(eventPublished, $"{nameof(SendResetPasswordEmailEvent)} not published");
     }
 
     private static ForgotPasswordRequest CreateForgotPasswordRequest(string? emailAddress = null) =>
