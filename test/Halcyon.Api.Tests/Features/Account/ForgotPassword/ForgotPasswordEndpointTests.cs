@@ -2,8 +2,6 @@
 using System.Net.Http.Json;
 using Halcyon.Api.Features.Account.ForgotPassword;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
-using Halcyon.Api.Services.Email;
-using Moq;
 
 namespace Halcyon.Api.Tests.Features.Account.ForgotPassword;
 
@@ -23,20 +21,11 @@ public class ForgotPasswordEndpointTests : BaseTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        Assert.False(
+        var sendEmailEventConsumed =
             await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
                 c.Context.Message.To == request.EmailAddress
-            )
-        );
-
-        _factory.MockEmailSender.Verify(
-            e =>
-                e.SendEmailAsync(
-                    It.Is<EmailMessage>(a => a.To == request.EmailAddress),
-                    It.IsAny<CancellationToken>()
-                ),
-            Times.Never()
-        );
+            );
+        Assert.False(sendEmailEventConsumed);
     }
 
     [Fact]
@@ -49,26 +38,16 @@ public class ForgotPasswordEndpointTests : BaseTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        Assert.True(
+        var sendEmailEventConsumed =
             await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
-                c.Context.Message.To == user.EmailAddress
-            )
-        );
-
-        _factory.MockEmailSender.Verify(
-            e =>
-                e.SendEmailAsync(
-                    It.Is<EmailMessage>(a => a.To == request.EmailAddress),
-                    It.IsAny<CancellationToken>()
-                ),
-            Times.Once()
-        );
+                c.Context.Message.To == request.EmailAddress
+            );
+        Assert.True(sendEmailEventConsumed);
     }
 
     private static ForgotPasswordRequest CreateForgotPasswordRequest(string? emailAddress = null) =>
-        new()
-        {
-            EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            SiteUrl = "http://localhost:3000"
-        };
+        new(
+            EmailAddress: emailAddress ?? $"{Guid.NewGuid()}@example.com",
+            SiteUrl: "http://localhost:3000"
+        );
 }

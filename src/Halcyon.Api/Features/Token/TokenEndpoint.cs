@@ -55,8 +55,7 @@ public class TokenEndpoint : IEndpoint
             );
         }
 
-        var result = jwtTokenGenerator.GenerateJwtToken(user);
-
-        return Results.Content(result);
+        var response = jwtTokenGenerator.GenerateJwtToken(user);
+        return Results.Content(response);
     }
 }

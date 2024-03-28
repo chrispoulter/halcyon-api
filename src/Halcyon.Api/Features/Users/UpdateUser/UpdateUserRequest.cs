@@ -4,18 +4,14 @@ using Halcyon.Api.Services.Validators;
 
 namespace Halcyon.Api.Features.Users.UpdateUser;
 
-public class UpdateUserRequest : UpdateRequest
-{
-    public string EmailAddress { get; set; }
-
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
-
-    public DateOnly DateOfBirth { get; set; }
-
-    public List<string> Roles { get; set; }
-}
+public record UpdateUserRequest(
+    uint? Version,
+    string EmailAddress,
+    string FirstName,
+    string LastName,
+    DateOnly DateOfBirth,
+    List<string> Roles
+) : UpdateRequest(Version);
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {

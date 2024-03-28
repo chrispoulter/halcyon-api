@@ -34,8 +34,7 @@ public class GetProfileEndpoint : IEndpoint
             );
         }
 
-        var result = user.Adapt<GetProfileResponse>();
-
-        return Results.Ok(result);
+        var response = user.Adapt<GetProfileResponse>();
+        return Results.Ok(response);
     }
 }

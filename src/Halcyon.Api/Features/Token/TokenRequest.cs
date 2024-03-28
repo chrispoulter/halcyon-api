@@ -2,12 +2,7 @@
 
 namespace Halcyon.Api.Features.Token;
 
-public class TokenRequest
-{
-    public string EmailAddress { get; set; }
-
-    public string Password { get; set; }
-}
+public record TokenRequest(string EmailAddress, string Password);
 
 public class TokenRequestValidator : AbstractValidator<TokenRequest>
 {

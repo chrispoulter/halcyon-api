@@ -1,8 +1,6 @@
 ﻿namespace Halcyon.Api.Features.Seed;
 
-public class SeedSettings
+public record SeedSettings(List<SeedUser> Users)
 {
     public static string SectionName { get; } = "Seed";
-
-    public List<SeedUser> Users { get; set; }
 }

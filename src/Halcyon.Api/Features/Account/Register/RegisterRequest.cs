@@ -3,18 +3,13 @@ using Halcyon.Api.Services.Validators;
 
 namespace Halcyon.Api.Features.Account.Register;
 
-public class RegisterRequest
-{
-    public string EmailAddress { get; set; }
-
-    public string Password { get; set; }
-
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
-
-    public DateOnly DateOfBirth { get; set; }
-}
+public record RegisterRequest(
+    string EmailAddress,
+    string Password,
+    string FirstName,
+    string LastName,
+    DateOnly DateOfBirth
+);
 
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {

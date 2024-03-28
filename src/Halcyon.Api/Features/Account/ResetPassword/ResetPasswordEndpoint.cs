@@ -41,6 +41,7 @@ public class ResetPasswordEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Results.Ok(new UpdateResponse { Id = user.Id });
+        var response = new UpdateResponse(user.Id);
+        return Results.Ok(response);
     }
 }

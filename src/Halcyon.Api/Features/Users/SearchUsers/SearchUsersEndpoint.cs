@@ -49,16 +49,8 @@ public class SearchUsersEndpoint : IEndpoint
         query = query.Take(request.Size);
 
         var users = await query.ProjectToType<SearchUserResponse>().ToListAsync(cancellationToken);
-
         var pageCount = (count + request.Size - 1) / request.Size;
-
-        return Results.Ok(
-            new SearchUsersResponse()
-            {
-                Items = users,
-                HasNextPage = request.Page < pageCount,
-                HasPreviousPage = request.Page > 1
-            }
-        );
+        var response = new SearchUsersResponse(users, request.Page < pageCount, request.Page > 1);
+        return Results.Ok(response);
     }
 }

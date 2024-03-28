@@ -1,25 +1,16 @@
 ﻿namespace Halcyon.Api.Features.Users.SearchUsers;
 
-public class SearchUsersResponse
-{
-    public List<SearchUserResponse> Items { get; set; }
+public record SearchUsersResponse(
+    List<SearchUserResponse> Items,
+    bool HasNextPage,
+    bool HasPreviousPage
+);
 
-    public bool HasNextPage { get; set; }
-
-    public bool HasPreviousPage { get; set; }
-}
-
-public class SearchUserResponse
-{
-    public int Id { get; set; }
-
-    public string EmailAddress { get; set; }
-
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
-
-    public bool IsLockedOut { get; set; }
-
-    public List<string> Roles { get; set; }
-}
+public record SearchUserResponse(
+    int Id,
+    string EmailAddress,
+    string FirstName,
+    string LastName,
+    bool IsLockedOut,
+    List<string> Roles
+);

@@ -3,12 +3,8 @@ using Halcyon.Api.Common;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
 
-public class ChangePasswordRequest : UpdateRequest
-{
-    public string CurrentPassword { get; set; }
-
-    public string NewPassword { get; set; }
-}
+public record ChangePasswordRequest(uint? Version, string CurrentPassword, string NewPassword)
+    : UpdateRequest(Version);
 
 public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
 {
