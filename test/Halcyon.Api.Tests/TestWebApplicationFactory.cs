@@ -13,6 +13,8 @@ namespace Halcyon.Api.Tests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public readonly Mock<IEmailSender> MockEmailSender = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
@@ -34,7 +36,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                     options => { }
                 );
 
-            services.AddScoped((_) => new Mock<IEmailSender>().Object);
+            services.AddScoped((_) => MockEmailSender.Object);
         });
     }
 }
