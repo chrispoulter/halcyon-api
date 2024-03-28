@@ -21,11 +21,10 @@ public class ForgotPasswordEndpointTests : BaseTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        Assert.False(
-            await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
-                c.Context.Message.To == request.EmailAddress
-            )
+        var eventConsumed = await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
+            c.Context.Message.To == request.EmailAddress
         );
+        Assert.False(eventConsumed, $"{nameof(SendResetPasswordEmailEvent)} consumed");
     }
 
     [Fact]
@@ -38,11 +37,10 @@ public class ForgotPasswordEndpointTests : BaseTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
-        Assert.True(
-            await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
-                c.Context.Message.To == user.EmailAddress
-            )
+        var eventConsumed = await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
+            c.Context.Message.To == request.EmailAddress
         );
+        Assert.True(eventConsumed, $"{nameof(SendResetPasswordEmailEvent)} not consumed");
     }
 
     private static ForgotPasswordRequest CreateForgotPasswordRequest(string? emailAddress = null) =>
