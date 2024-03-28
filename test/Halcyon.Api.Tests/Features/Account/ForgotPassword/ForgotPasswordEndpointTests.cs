@@ -7,27 +7,22 @@ using Moq;
 
 namespace Halcyon.Api.Tests.Features.Account.ForgotPassword;
 
-public class ForgotPasswordEndpointTests : IClassFixture<TestWebApplicationFactory>
+public class ForgotPasswordEndpointTests : BaseTest
 {
     private const string _requestUri = "/account/forgot-password";
 
-    private readonly TestWebApplicationFactory _factory;
-
     public ForgotPasswordEndpointTests(TestWebApplicationFactory factory)
-    {
-        _factory = factory;
-    }
+        : base(factory) { }
 
     [Fact]
     public async Task ForgotPassword_ShouldNotSendForgotPasswordEmail_WhenUserNotFound()
     {
         var request = CreateForgotPasswordRequest();
 
-        var client = _factory.CreateClient();
-        var response = await client.PutAsJsonAsync(_requestUri, request);
+        var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var consumerTestHarness = _factory.GetConsumerTestHarness<SendResetPasswordEmailConsumer>();
+        var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
         Assert.False(
             await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
                 c.Context.Message.To == request.EmailAddress
@@ -47,14 +42,13 @@ public class ForgotPasswordEndpointTests : IClassFixture<TestWebApplicationFacto
     [Fact]
     public async Task ForgotPassword_SendResetPasswordEmail_WhenUserFound()
     {
-        var user = await _factory.CreateTestUserAsync();
+        var user = await CreateTestUserAsync();
         var request = CreateForgotPasswordRequest(user.EmailAddress);
 
-        var client = _factory.CreateClient();
-        var response = await client.PutAsJsonAsync(_requestUri, request);
+        var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var consumerTestHarness = _factory.GetConsumerTestHarness<SendResetPasswordEmailConsumer>();
+        var consumerTestHarness = _testHarness.GetConsumerHarness<SendResetPasswordEmailConsumer>();
         Assert.True(
             await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
                 c.Context.Message.To == user.EmailAddress
