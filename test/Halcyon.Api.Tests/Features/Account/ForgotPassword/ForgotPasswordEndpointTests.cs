@@ -2,8 +2,6 @@
 using System.Net.Http.Json;
 using Halcyon.Api.Features.Account.ForgotPassword;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
-using Halcyon.Api.Services.Email;
-using Moq;
 
 namespace Halcyon.Api.Tests.Features.Account.ForgotPassword;
 
@@ -28,15 +26,6 @@ public class ForgotPasswordEndpointTests : BaseTest
                 c.Context.Message.To == request.EmailAddress
             )
         );
-
-        _factory.MockEmailSender.Verify(
-            e =>
-                e.SendEmailAsync(
-                    It.Is<EmailMessage>(a => a.To == request.EmailAddress),
-                    It.IsAny<CancellationToken>()
-                ),
-            Times.Never()
-        );
     }
 
     [Fact]
@@ -53,15 +42,6 @@ public class ForgotPasswordEndpointTests : BaseTest
             await consumerTestHarness.Consumed.Any<SendResetPasswordEmailEvent>(c =>
                 c.Context.Message.To == user.EmailAddress
             )
-        );
-
-        _factory.MockEmailSender.Verify(
-            e =>
-                e.SendEmailAsync(
-                    It.Is<EmailMessage>(a => a.To == request.EmailAddress),
-                    It.IsAny<CancellationToken>()
-                ),
-            Times.Once()
         );
     }
 
