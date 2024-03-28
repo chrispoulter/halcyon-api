@@ -43,9 +43,9 @@ public class CreateUserEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.Password);
 
         dbContext.Users.Add(user);
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var response = new UpdateResponse(user.Id);
-        return Results.Ok(response);
+        return Results.Ok(new UpdateResponse { Id = user.Id });
     }
 }

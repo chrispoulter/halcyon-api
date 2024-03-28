@@ -32,13 +32,15 @@ public class ForgotPasswordEndpoint : IEndpoint
         if (user is not null && !user.IsLockedOut)
         {
             user.PasswordResetToken = Guid.NewGuid();
+
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            var message = new SendResetPasswordEmailEvent(
-                user.EmailAddress,
-                user.PasswordResetToken,
-                request.SiteUrl
-            );
+            var message = new SendResetPasswordEmailEvent
+            {
+                To = user.EmailAddress,
+                PasswordResetToken = user.PasswordResetToken,
+                SiteUrl = request.SiteUrl,
+            };
 
             await publishEndpoint.Publish(message, cancellationToken);
         }

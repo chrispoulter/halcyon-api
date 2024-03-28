@@ -72,7 +72,6 @@ public class UpdateProfileEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var response = new UpdateResponse(user.Id);
-        return Results.Ok(response);
+        return Results.Ok(new UpdateResponse { Id = user.Id });
     }
 }

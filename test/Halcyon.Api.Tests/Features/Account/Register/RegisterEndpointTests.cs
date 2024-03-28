@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Net.Mail;
 using Halcyon.Api.Common;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
@@ -42,11 +41,12 @@ public class RegisterEndpointTests : BaseTest
     }
 
     private static RegisterRequest CreateRegisterRequest(string? emailAddress = null) =>
-        new(
-            EmailAddress: emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            Password: "password",
-            FirstName: "Test",
-            LastName: "User",
-            DateOfBirth: new DateOnly(1070, 1, 1)
-        );
+        new()
+        {
+            EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
+            Password = "password",
+            FirstName = "Test",
+            LastName = "User",
+            DateOfBirth = new DateOnly(1070, 1, 1)
+        };
 }

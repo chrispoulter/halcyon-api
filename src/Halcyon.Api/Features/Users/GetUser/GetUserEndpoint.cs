@@ -34,7 +34,8 @@ public class GetUserEndpoint : IEndpoint
             );
         }
 
-        var response = user.Adapt<GetUserResponse>();
-        return Results.Ok(response);
+        var result = user.Adapt<GetUserResponse>();
+
+        return Results.Ok(result);
     }
 }

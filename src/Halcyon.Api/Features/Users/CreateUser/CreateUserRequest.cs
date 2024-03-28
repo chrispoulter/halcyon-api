@@ -3,14 +3,20 @@ using Halcyon.Api.Services.Validators;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
 
-public record CreateUserRequest(
-    string EmailAddress,
-    string Password,
-    string FirstName,
-    string LastName,
-    DateOnly DateOfBirth,
-    List<string> Roles
-);
+public class CreateUserRequest
+{
+    public string EmailAddress { get; set; }
+
+    public string Password { get; set; }
+
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public DateOnly DateOfBirth { get; set; }
+
+    public List<string> Roles { get; set; }
+}
 
 public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {

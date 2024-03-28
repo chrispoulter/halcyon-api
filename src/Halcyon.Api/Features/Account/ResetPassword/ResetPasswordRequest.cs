@@ -2,7 +2,14 @@
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
 
-public record ResetPasswordRequest(Guid Token, string EmailAddress, string NewPassword);
+public class ResetPasswordRequest
+{
+    public Guid Token { get; set; }
+
+    public string EmailAddress { get; set; }
+
+    public string NewPassword { get; set; }
+}
 
 public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequest>
 {

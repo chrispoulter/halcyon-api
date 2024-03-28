@@ -1,3 +1,6 @@
 ﻿namespace Halcyon.Api.Common;
 
-public record UpdateResponse(int Id);
+public class UpdateResponse
+{
+    public int Id { get; set; }
+}

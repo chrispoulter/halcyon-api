@@ -1,12 +1,20 @@
 ﻿namespace Halcyon.Api.Features.Users.GetUser;
 
-public record GetUserResponse(
-    int Id,
-    string EmailAddress,
-    string FirstName,
-    string LastName,
-    DateOnly DateOfBirth,
-    bool IsLockedOut,
-    List<string> Roles,
-    uint Version
-);
+public class GetUserResponse
+{
+    public int Id { get; set; }
+
+    public string EmailAddress { get; set; }
+
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public DateOnly DateOfBirth { get; set; }
+
+    public bool IsLockedOut { get; set; }
+
+    public List<string> Roles { get; set; }
+
+    public uint Version { get; set; }
+}

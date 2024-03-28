@@ -1,3 +1,6 @@
 namespace Halcyon.Api.Common;
 
-public record UpdateRequest(uint? Version);
+public class UpdateRequest
+{
+    public uint? Version { get; set; }
+}
