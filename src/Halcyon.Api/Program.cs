@@ -44,6 +44,41 @@ builder.Services.AddDbContext<HalcyonDbContext>(
     }
 );
 
+builder.Services.Configure<RabbitMqTransportOptions>(builder.Configuration.GetSection("RabbitMQ"));
+
+builder.Services.AddMassTransit(options =>
+{
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("halcyon"));
+    options.AddConsumers(assembly);
+
+    //options.UsingInMemory(
+    //    (context, cfg) =>
+    //    {
+    //        cfg.ConfigureEndpoints(context);
+    //        cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+    //    }
+    //);
+
+    options.UsingRabbitMq(
+        (context, cfg) =>
+        {
+            cfg.ConfigureEndpoints(context);
+            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+        }
+    );
+
+    //var serviceBusConnectionString = builder.Configuration.GetConnectionString("HalcyonServiceBus");
+
+    //options.UsingAzureServiceBus(
+    //    (context, cfg) =>
+    //    {
+    //        cfg.Host(serviceBusConnectionString);
+    //        cfg.ConfigureEndpoints(context);
+    //        cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+    //    }
+    //);
+});
+
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var jwtSettings = new JwtSettings();
@@ -94,25 +129,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddProblemDetails();
-
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
 
-builder.Services.AddMassTransit(options =>
-{
-    options.AddConsumers(assembly);
-
-    options.UsingInMemory(
-        (context, cfg) =>
-        {
-            cfg.ConfigureEndpoints(context);
-            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-        }
-    );
-});
-
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

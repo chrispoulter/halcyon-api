@@ -6,32 +6,32 @@ namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 
 public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory>
 {
-    private const string RequestUri = "/manage";
+    private const string _requestUri = "/manage";
 
-    private readonly TestWebApplicationFactory factory;
+    private readonly TestWebApplicationFactory _factory;
 
     public GetProfileEndpointTests(TestWebApplicationFactory factory)
     {
-        this.factory = factory;
+        _factory = factory;
     }
 
     [Fact]
     public async Task GetProfile_ShouldReturnUnauthorized_WhenNotAuthorized()
     {
-        var client = factory.CreateClient();
-        var response = await client.GetAsync(RequestUri);
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync(_requestUri);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
     public async Task GetProfile_ShouldReturnProfile_WhenAuthorized()
     {
-        var user = await factory.CreateTestUserAsync();
+        var user = await _factory.CreateTestUserAsync();
 
-        var client = factory.CreateClient();
+        var client = _factory.CreateClient();
         client.SetTestAuth(user);
 
-        var response = await client.GetAsync(RequestUri);
+        var response = await client.GetAsync(_requestUri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var result = await response.Content.ReadFromJsonAsync<GetProfileResponse>();
