@@ -10,6 +10,7 @@ using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
+using Halcyon.Api.Services.Messaging;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -44,39 +45,47 @@ builder.Services.AddDbContext<HalcyonDbContext>(
     }
 );
 
-builder.Services.Configure<RabbitMqTransportOptions>(builder.Configuration.GetSection("RabbitMQ"));
+var messagingSettings = new MessagingSettings();
+builder.Configuration.Bind(MessagingSettings.SectionName, messagingSettings);
 
 builder.Services.AddMassTransit(options =>
 {
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("halcyon"));
-    options.AddConsumers(assembly);
-
-    //options.UsingInMemory(
-    //    (context, cfg) =>
-    //    {
-    //        cfg.ConfigureEndpoints(context);
-    //        cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-    //    }
-    //);
-
-    options.UsingRabbitMq(
-        (context, cfg) =>
-        {
-            cfg.ConfigureEndpoints(context);
-            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-        }
+    options.SetEndpointNameFormatter(
+        new KebabCaseEndpointNameFormatter(messagingSettings.EndpointPrefix)
     );
 
-    //var serviceBusConnectionString = builder.Configuration.GetConnectionString("HalcyonServiceBus");
+    options.AddConfigureEndpointsCallback(
+        (_, cfg) => cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)))
+    );
 
-    //options.UsingAzureServiceBus(
-    //    (context, cfg) =>
-    //    {
-    //        cfg.Host(serviceBusConnectionString);
-    //        cfg.ConfigureEndpoints(context);
-    //        cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-    //    }
-    //);
+    options.AddConsumers(assembly);
+
+    switch (messagingSettings.Provider)
+    {
+        case MessagingProvider.RabbitMQ:
+            options.UsingRabbitMq(
+                (context, cfg) =>
+                {
+                    cfg.Host(messagingSettings.ConnectionString);
+                    cfg.ConfigureEndpoints(context);
+                }
+            );
+            break;
+
+        case MessagingProvider.AzureServiceBus:
+            options.UsingAzureServiceBus(
+                (context, cfg) =>
+                {
+                    cfg.Host(messagingSettings.ConnectionString);
+                    cfg.ConfigureEndpoints(context);
+                }
+            );
+            break;
+
+        default:
+            options.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+            break;
+    }
 });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -199,11 +208,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapHealthChecks("/health");
 
 app.UseSwagger();
