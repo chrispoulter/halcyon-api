@@ -50,15 +50,11 @@ builder.Configuration.Bind(MessagingSettings.SectionName, messagingSettings);
 
 builder.Services.AddMassTransit(options =>
 {
-    options.SetEndpointNameFormatter(
-        new KebabCaseEndpointNameFormatter(messagingSettings.EndpointPrefix)
-    );
-
+    options.AddConsumers(assembly);
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(messagingSettings.Prefix));
     options.AddConfigureEndpointsCallback(
         (_, cfg) => cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)))
     );
-
-    options.AddConsumers(assembly);
 
     switch (messagingSettings.Provider)
     {
@@ -68,6 +64,12 @@ builder.Services.AddMassTransit(options =>
                 {
                     cfg.Host(messagingSettings.ConnectionString);
                     cfg.ConfigureEndpoints(context);
+                    cfg.MessageTopology.SetEntityNameFormatter(
+                        new PrefixEntityNameFormatter(
+                            cfg.MessageTopology.EntityNameFormatter,
+                            $"{messagingSettings.Prefix}:"
+                        )
+                    );
                 }
             );
             break;
@@ -78,6 +80,12 @@ builder.Services.AddMassTransit(options =>
                 {
                     cfg.Host(messagingSettings.ConnectionString);
                     cfg.ConfigureEndpoints(context);
+                    cfg.MessageTopology.SetEntityNameFormatter(
+                        new PrefixEntityNameFormatter(
+                            cfg.MessageTopology.EntityNameFormatter,
+                            $"{messagingSettings.Prefix}-"
+                        )
+                    );
                 }
             );
             break;
