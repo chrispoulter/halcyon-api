@@ -17,7 +17,7 @@ public class SearchUsersEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         [AsParameters] SearchUsersRequest request,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default

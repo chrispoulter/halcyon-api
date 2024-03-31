@@ -4,34 +4,27 @@ using Halcyon.Api.Features.Manage.GetProfile;
 
 namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 
-public class GetProfileEndpointTests : IClassFixture<TestWebApplicationFactory>
+public class GetProfileEndpointTests : BaseTest
 {
     private const string _requestUri = "/manage";
 
-    private readonly TestWebApplicationFactory _factory;
-
     public GetProfileEndpointTests(TestWebApplicationFactory factory)
-    {
-        _factory = factory;
-    }
+        : base(factory) { }
 
     [Fact]
     public async Task GetProfile_ShouldReturnUnauthorized_WhenNotAuthorized()
     {
-        var client = _factory.CreateClient();
-        var response = await client.GetAsync(_requestUri);
+        var response = await _client.GetAsync(_requestUri);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
     public async Task GetProfile_ShouldReturnProfile_WhenAuthorized()
     {
-        var user = await _factory.CreateTestUserAsync();
+        var user = await CreateTestUserAsync();
+        SetTestAuth(user);
 
-        var client = _factory.CreateClient();
-        client.SetTestAuth(user);
-
-        var response = await client.GetAsync(_requestUri);
+        var response = await _client.GetAsync(_requestUri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var result = await response.Content.ReadFromJsonAsync<GetProfileResponse>();

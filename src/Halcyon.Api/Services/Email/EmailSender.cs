@@ -58,7 +58,12 @@ public class EmailSender(
         }
         catch (Exception error)
         {
-            logger.LogError(error, "Email send failed");
+            logger.LogError(
+                error,
+                "An error occurred while sending email to {To} with template {Template}",
+                message.To,
+                message.Template
+            );
         }
     }
 }

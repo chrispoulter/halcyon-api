@@ -17,7 +17,7 @@ public class UnlockUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         int id,
         [FromBody] UpdateRequest request,
         HalcyonDbContext dbContext,

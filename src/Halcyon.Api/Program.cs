@@ -10,6 +10,7 @@ using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
+using Halcyon.Api.Services.Migrations;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -29,20 +30,34 @@ var version = assembly
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
-
 builder.Host.UseSerilog();
 
-var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
-builder.Services.AddDbContext<HalcyonDbContext>(
-    (provider, options) =>
-    {
-        options
-            .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-            .UseNpgsql(dbConnectionString, builder => builder.EnableRetryOnFailure())
-            .UseSnakeCaseNamingConvention();
-    }
-);
+builder
+    .Services.AddDbContext<HalcyonDbContext>(
+        (provider, options) =>
+        {
+            options
+                .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
+                .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
+                .UseSnakeCaseNamingConvention();
+        }
+    )
+    .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
+
+builder.Services.AddMassTransit(options =>
+{
+    options.AddConsumers(assembly);
+
+    options.UsingInMemory(
+        (context, cfg) =>
+        {
+            cfg.ConfigureEndpoints(context);
+            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+        }
+    );
+});
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -83,36 +98,20 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddCors(options =>
-{
     options.AddDefaultPolicy(policy =>
         policy
             .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
             .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
             .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
-    );
-});
+    )
+);
 
 builder.Services.AddProblemDetails();
-
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
 
-builder.Services.AddMassTransit(options =>
-{
-    options.AddConsumers(assembly);
-
-    options.UsingInMemory(
-        (context, cfg) =>
-        {
-            cfg.ConfigureEndpoints(context);
-            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-        }
-    );
-});
-
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -179,11 +178,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapHealthChecks("/health");
 
 app.UseSwagger();
