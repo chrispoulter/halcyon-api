@@ -10,7 +10,7 @@ using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
 using Halcyon.Api.Services.Jwt;
-using Halcyon.Api.Services.Messaging;
+using Halcyon.Api.Services.Migrations;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -30,10 +30,9 @@ var version = assembly
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
-
 builder.Host.UseSerilog();
 
-var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
 builder
     .Services.AddDbContext<HalcyonDbContext>(
@@ -41,67 +40,23 @@ builder
         {
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-                .UseNpgsql(
-                    dbConnectionString,
-                    builder =>
-                        builder
-                            .MigrationsHistoryTable("ef_migrations_history")
-                            .EnableRetryOnFailure()
-                )
+                .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
                 .UseSnakeCaseNamingConvention();
         }
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
-var messagingSettings = new MessagingSettings();
-builder.Configuration.Bind(MessagingSettings.SectionName, messagingSettings);
-
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumers(assembly);
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(messagingSettings.Prefix));
-    options.AddConfigureEndpointsCallback(
-        (_, cfg) => cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)))
+
+    options.UsingInMemory(
+        (context, cfg) =>
+        {
+            cfg.ConfigureEndpoints(context);
+            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+        }
     );
-
-    switch (messagingSettings.Provider)
-    {
-        case MessagingProvider.RabbitMQ:
-            options.UsingRabbitMq(
-                (context, cfg) =>
-                {
-                    cfg.Host(messagingSettings.ConnectionString);
-                    cfg.ConfigureEndpoints(context);
-                    cfg.MessageTopology.SetEntityNameFormatter(
-                        new PrefixEntityNameFormatter(
-                            cfg.MessageTopology.EntityNameFormatter,
-                            $"{messagingSettings.Prefix}:"
-                        )
-                    );
-                }
-            );
-            break;
-
-        case MessagingProvider.AzureServiceBus:
-            options.UsingAzureServiceBus(
-                (context, cfg) =>
-                {
-                    cfg.Host(messagingSettings.ConnectionString);
-                    cfg.ConfigureEndpoints(context);
-                    cfg.MessageTopology.SetEntityNameFormatter(
-                        new PrefixEntityNameFormatter(
-                            cfg.MessageTopology.EntityNameFormatter,
-                            $"{messagingSettings.Prefix}-"
-                        )
-                    );
-                }
-            );
-            break;
-
-        default:
-            options.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
-            break;
-    }
 });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
