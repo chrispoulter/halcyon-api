@@ -18,7 +18,7 @@ public class CreateUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,

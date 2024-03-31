@@ -19,7 +19,7 @@ public class UpdateUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         int id,
         UpdateUserRequest request,
         CurrentUser currentUser,

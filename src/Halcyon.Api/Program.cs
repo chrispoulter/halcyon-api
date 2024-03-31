@@ -35,15 +35,23 @@ builder.Host.UseSerilog();
 
 var dbConnectionString = builder.Configuration.GetConnectionString("HalcyonDatabase");
 
-builder.Services.AddDbContext<HalcyonDbContext>(
-    (provider, options) =>
-    {
-        options
-            .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-            .UseNpgsql(dbConnectionString, builder => builder.EnableRetryOnFailure())
-            .UseSnakeCaseNamingConvention();
-    }
-);
+builder
+    .Services.AddDbContext<HalcyonDbContext>(
+        (provider, options) =>
+        {
+            options
+                .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
+                .UseNpgsql(
+                    dbConnectionString,
+                    builder =>
+                        builder
+                            .MigrationsHistoryTable("ef_migrations_history")
+                            .EnableRetryOnFailure()
+                )
+                .UseSnakeCaseNamingConvention();
+        }
+    )
+    .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
 var messagingSettings = new MessagingSettings();
 builder.Configuration.Bind(MessagingSettings.SectionName, messagingSettings);
@@ -135,15 +143,14 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddCors(options =>
-{
     options.AddDefaultPolicy(policy =>
         policy
             .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
             .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
             .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
-    );
-});
+    )
+);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssembly(assembly);

@@ -19,7 +19,7 @@ public class UpdateProfileEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         UpdateProfileRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
