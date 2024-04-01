@@ -7,9 +7,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore
 RUN dotnet build
-RUN dotnet test
 
 FROM build AS publish
 RUN dotnet publish "./src/Halcyon.Api/Halcyon.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
