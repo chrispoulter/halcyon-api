@@ -19,7 +19,7 @@ jobs:
               run: |
                   dotnet restore
                   dotnet build --no-restore
-                  dotnet test --no-build
+                  dotnet test --no-build --verbosity normal
 
     build-docker:
         runs-on: ubuntu-latest
