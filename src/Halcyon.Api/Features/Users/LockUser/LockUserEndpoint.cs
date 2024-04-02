@@ -18,7 +18,7 @@ public class LockUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         int id,
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,

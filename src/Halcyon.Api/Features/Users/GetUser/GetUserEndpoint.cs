@@ -16,7 +16,7 @@ public class GetUserEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         int id,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default

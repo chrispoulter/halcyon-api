@@ -1,39 +1,41 @@
 ﻿using Halcyon.Api.Data;
+using Halcyon.Api.Services.Email;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Moq;
 using Testcontainers.PostgreSql;
 
 namespace Halcyon.Api.Tests;
 
-public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder().Build();
 
+    public readonly Mock<IEmailSender> MockEmailSender = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<HalcyonDbContext>)
+            services.RemoveAll(typeof(DbContextOptions<HalcyonDbContext>));
+
+            services.AddDbContext<HalcyonDbContext>(
+                (provider, options) =>
+                {
+                    options
+                        .UseNpgsql(dbContainer.GetConnectionString())
+                        .UseSnakeCaseNamingConvention();
+                }
             );
 
-            if (dbContextDescriptor is not null)
-            {
-                services.Remove(dbContextDescriptor);
-            }
-
-            services
-                .AddDbContext<HalcyonDbContext>(
-                    (provider, options) =>
-                    {
-                        options
-                            .UseNpgsql(dbContainer.GetConnectionString())
-                            .UseSnakeCaseNamingConvention();
-                    }
-                )
-                .EnsureDatabaseCreated();
+            services.AddMassTransitTestHarness(cfg =>
+                cfg.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(3))
+            );
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
@@ -41,18 +43,12 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
                     TestAuthenticationHandler.AuthenticationScheme,
                     options => { }
                 );
+
+            services.AddScoped((_) => MockEmailSender.Object);
         });
-
-        builder.UseEnvironment("Development");
     }
 
-    public Task InitializeAsync()
-    {
-        return dbContainer.StartAsync();
-    }
+    public Task InitializeAsync() => dbContainer.StartAsync();
 
-    public new Task DisposeAsync()
-    {
-        return dbContainer.DisposeAsync().AsTask();
-    }
+    public new Task DisposeAsync() => dbContainer.DisposeAsync().AsTask();
 }

@@ -17,7 +17,7 @@ public class ForgotPasswordEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
-    internal static async Task<IResult> HandleAsync(
+    private static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
         HalcyonDbContext dbContext,
         IPublishEndpoint publishEndpoint,
