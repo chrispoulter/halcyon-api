@@ -12,7 +12,7 @@ using Testcontainers.PostgreSql;
 
 namespace Halcyon.Api.Tests;
 
-public class TestWebApplicationFactory : WebApplicationFactory<Program>
+public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder().Build();
 
