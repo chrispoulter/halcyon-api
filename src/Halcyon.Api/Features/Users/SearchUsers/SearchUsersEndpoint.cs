@@ -12,7 +12,7 @@ public class SearchUsersEndpoint : IEndpoint
         app.MapGet("/user", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Users")
+            .WithTags(Tags.Users)
             .Produces<SearchUsersResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

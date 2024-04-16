@@ -12,7 +12,7 @@ public class SeedEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/seed", HandleAsync)
-            .WithTags("Seed")
+            .WithTags(Tags.Seed)
             .Produces<string>(contentType: "text/plain");
     }
 

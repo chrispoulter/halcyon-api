@@ -12,7 +12,7 @@ public class UpdateUserEndpoint : IEndpoint
         app.MapPut("/user/{id}", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Users")
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)

@@ -13,7 +13,7 @@ public class CreateUserEndpoint : IEndpoint
         app.MapPost("/user", HandleAsync)
             .RequireAuthorization("UserAdministratorPolicy")
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Users")
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
