@@ -12,7 +12,7 @@ public class TokenEndpoint : IEndpoint
     {
         app.MapPost("/token", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Token")
+            .WithTags(Tags.Token)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

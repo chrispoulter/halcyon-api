@@ -11,7 +11,7 @@ public class GetProfileEndpoint : IEndpoint
     {
         app.MapGet("/manage", HandleAsync)
             .RequireAuthorization()
-            .WithTags("Manage")
+            .WithTags(Tags.Manage)
             .Produces<GetProfileResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
     }

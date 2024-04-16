@@ -12,7 +12,7 @@ public class RegisterEndpoint : IEndpoint
     {
         app.MapPost("/account/register", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Account")
+            .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
