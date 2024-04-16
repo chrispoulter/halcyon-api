@@ -27,7 +27,7 @@ public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> 
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        foreach (var role in user.Roles)
+        foreach (var role in user.Roles ?? [])
         {
             claims.Add(new(JwtClaimNames.Roles, role.ToString()));
         }
