@@ -39,16 +39,19 @@ public class SearchUsersEndpoint : IEndpoint
                     .OrderByDescending(r => r.EmailAddress)
                     .ThenByDescending(r => r.FirstName)
                     .ThenByDescending(r => r.LastName),
+
             UserSort.EMAIL_ADDRESS_ASC
                 => query
                     .OrderBy(r => r.EmailAddress)
                     .ThenBy(r => r.FirstName)
                     .ThenBy(r => r.LastName),
+
             UserSort.NAME_DESC
                 => query
                     .OrderByDescending(r => r.FirstName)
                     .ThenByDescending(r => r.LastName)
                     .ThenByDescending(r => r.EmailAddress),
+
             _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName).ThenBy(r => r.EmailAddress)
         };
 
