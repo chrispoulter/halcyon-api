@@ -44,7 +44,7 @@ public class RegisterEndpointTests : BaseTest
         new()
         {
             EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            Password = "password",
+            Password = Guid.NewGuid().ToString(),
             FirstName = "Test",
             LastName = "User",
             DateOfBirth = new DateOnly(1070, 1, 1)
