@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
+using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -15,6 +16,7 @@ using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -107,6 +109,9 @@ builder.Services.AddCors(options =>
     )
 );
 
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
@@ -191,6 +196,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+app.MapHub<MessagingHub>("/hub");
 app.MapEndpoints();
 app.Run();
 
