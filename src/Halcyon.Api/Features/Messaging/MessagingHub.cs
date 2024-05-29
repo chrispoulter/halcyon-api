@@ -6,12 +6,19 @@ namespace Halcyon.Api.Features.Messaging;
 //[Authorize]
 public class MessagingHub : Hub<IMessagingClient>
 {
-    public async Task SendMessage(string message) =>
-        await Clients.All.ReceiveMessage(message);
+    private static readonly List<UserMessage> MessageHistory = [];
 
-    public async Task SendMessageToCaller(string message) =>
-        await Clients.Caller.ReceiveMessage(message);
+    public async Task PostMessage(string content)
+    {
+        var senderId = Context.ConnectionId;
 
-    public async Task SendMessageToUserAdministrators(string message) =>
-        await Clients.Group("USER_ADMINISTRATOR").ReceiveMessage(message);
+        var userMessage = new UserMessage(senderId, content, DateTime.UtcNow);
+
+        MessageHistory.Add(userMessage);
+
+        await Clients.Others.ReceiveMessage(senderId, content, userMessage.SentTime);
+    }
+
+    public async Task RetrieveMessageHistory() =>
+        await Clients.Caller.MessageHistory(MessageHistory);
 }

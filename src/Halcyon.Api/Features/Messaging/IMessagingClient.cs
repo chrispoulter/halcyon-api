@@ -2,5 +2,7 @@
 
 public interface IMessagingClient
 {
-    Task ReceiveMessage(string content);
+    Task ReceiveMessage(string senderId, string content, DateTime sentTime);
+
+    Task MessageHistory(List<UserMessage> messageHistory);
 }
