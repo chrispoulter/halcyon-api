@@ -105,7 +105,14 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
             .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+            .WithHeaders(
+                HeaderNames.Authorization,
+                HeaderNames.ContentType,
+                HeaderNames.AccessControlAllowCredentials,
+                HeaderNames.XRequestedWith,
+                CustomHeaders.SignalRUserAgent
+            )
+            .AllowCredentials()
     )
 );
 
