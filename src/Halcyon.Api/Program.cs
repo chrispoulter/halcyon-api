@@ -110,7 +110,7 @@ builder.Services.AddCors(options =>
                 HeaderNames.ContentType,
                 HeaderNames.AccessControlAllowCredentials,
                 HeaderNames.XRequestedWith,
-                CustomHeaders.SignalRUserAgent
+                CustomHeaders.XSignalRUserAgent
             )
             .AllowCredentials()
     )

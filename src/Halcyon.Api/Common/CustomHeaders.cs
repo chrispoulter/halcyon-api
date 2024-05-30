@@ -2,5 +2,5 @@
 
 public static class CustomHeaders
 {
-    public const string SignalRUserAgent = "x-signalr-user-agent";
+    public const string XSignalRUserAgent = "x-signalr-user-agent";
 }
