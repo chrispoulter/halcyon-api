@@ -203,7 +203,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessagingHub>("/hub");
+app.MapHub<MessageHub>("/hub");
 app.MapEndpoints();
 app.Run();
 
