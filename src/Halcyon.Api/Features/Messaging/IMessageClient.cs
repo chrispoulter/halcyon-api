@@ -2,5 +2,5 @@
 
 public interface IMessageClient
 {
-    void ReceiveMessage(MessageEvent message, CancellationToken cancellationToken);
+    Task ReceiveMessage(MessageEvent message, CancellationToken cancellationToken);
 }

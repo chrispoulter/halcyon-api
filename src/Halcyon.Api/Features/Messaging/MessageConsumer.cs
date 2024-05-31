@@ -19,6 +19,8 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
             $"USER_{message.Id}"
         };
 
-        messageHubContext.Clients.Groups(groups).ReceiveMessage(message, context.CancellationToken);
+        await messageHubContext
+            .Clients.Groups(groups)
+            .ReceiveMessage(message, context.CancellationToken);
     }
 }
