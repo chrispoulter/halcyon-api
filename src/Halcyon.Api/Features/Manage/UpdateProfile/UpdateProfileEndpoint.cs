@@ -1,8 +1,6 @@
 ﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
-using Halcyon.Api.Features.Messaging;
 using Mapster;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile;
@@ -25,7 +23,6 @@ public class UpdateProfileEndpoint : IEndpoint
         UpdateProfileRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -74,11 +71,6 @@ public class UpdateProfileEndpoint : IEndpoint
         request.Adapt(user);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publishEndpoint.Publish(
-            new MessageEvent { Type = MessageType.UserUpdated, Id = user.Id },
-            cancellationToken
-        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

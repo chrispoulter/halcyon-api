@@ -1,9 +1,7 @@
 ﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
-using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Services.Hash;
 using Mapster;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.Register;
@@ -23,7 +21,6 @@ public class RegisterEndpoint : IEndpoint
         RegisterRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -46,11 +43,6 @@ public class RegisterEndpoint : IEndpoint
         dbContext.Users.Add(user);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publishEndpoint.Publish(
-            new MessageEvent { Type = MessageType.UserCreated, Id = user.Id },
-            cancellationToken
-        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

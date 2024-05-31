@@ -1,9 +1,6 @@
 ﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
-using Halcyon.Api.Features.Messaging;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.DeleteProfile;
@@ -24,7 +21,6 @@ public class DeleteProfileEndpoint : IEndpoint
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -52,11 +48,6 @@ public class DeleteProfileEndpoint : IEndpoint
         dbContext.Users.Remove(user);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publishEndpoint.Publish(
-            new MessageEvent { Type = MessageType.UserDeleted, Id = user.Id },
-            cancellationToken
-        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }
