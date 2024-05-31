@@ -78,8 +78,8 @@ public class UpdateProfileEndpoint : IEndpoint
 
         var groups = new string[]
         {
-            "SYSTEM_ADMINISTRATOR",
-            "USER_ADMINISTRATOR",
+            Role.SystemAdministrator,
+            Role.UserAdministrator,
             $"USER_{user.Id}"
         };
 

@@ -12,7 +12,7 @@ public class UpdateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
@@ -76,8 +76,8 @@ public class UpdateUserEndpoint : IEndpoint
 
         var groups = new string[]
         {
-            "SYSTEM_ADMINISTRATOR",
-            "USER_ADMINISTRATOR",
+            Role.SystemAdministrator,
+            Role.UserAdministrator,
             $"USER_{user.Id}"
         };
 

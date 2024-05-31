@@ -13,7 +13,7 @@ public class CreateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/user", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
@@ -52,8 +52,8 @@ public class CreateUserEndpoint : IEndpoint
 
         var groups = new string[]
         {
-            "SYSTEM_ADMINISTRATOR",
-            "USER_ADMINISTRATOR",
+            Role.SystemAdministrator,
+            Role.UserAdministrator,
             $"USER_{user.Id}"
         };
 

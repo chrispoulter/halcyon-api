@@ -12,7 +12,7 @@ public class LockUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/lock", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -62,8 +62,8 @@ public class LockUserEndpoint : IEndpoint
 
         var groups = new string[]
         {
-            "SYSTEM_ADMINISTRATOR",
-            "USER_ADMINISTRATOR",
+            Role.SystemAdministrator,
+            Role.UserAdministrator,
             $"USER_{user.Id}"
         };
 

@@ -12,7 +12,7 @@ public class UnlockUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/unlock", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -53,8 +53,8 @@ public class UnlockUserEndpoint : IEndpoint
 
         var groups = new string[]
         {
-            "SYSTEM_ADMINISTRATOR",
-            "USER_ADMINISTRATOR",
+            Role.SystemAdministrator,
+            Role.UserAdministrator,
             $"USER_{user.Id}"
         };
 
