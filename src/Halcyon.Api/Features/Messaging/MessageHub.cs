@@ -17,7 +17,7 @@ public class MessageHub : Hub<IMessageClient>
 
             foreach (var role in roles)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, role.Value);
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"ROLE_{role.Value}");
             }
         }
 

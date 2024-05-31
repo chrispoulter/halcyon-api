@@ -14,8 +14,8 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
 
         var groups = new string[]
         {
-            Role.SystemAdministrator,
-            Role.UserAdministrator,
+            $"ROLE_{Role.SystemAdministrator}",
+            $"ROLE_{Role.UserAdministrator}",
             $"USER_{message.Id}"
         };
 
