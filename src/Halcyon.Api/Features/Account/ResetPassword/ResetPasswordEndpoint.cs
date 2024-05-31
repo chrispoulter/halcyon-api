@@ -2,7 +2,7 @@
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Services.Hash;
-using Microsoft.AspNetCore.SignalR;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
@@ -22,8 +22,7 @@ public class ResetPasswordEndpoint : IEndpoint
         ResetPasswordRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        IHubContext<MessageHub, IMessageClient> messageHubContext,
-        TimeProvider timeProvider,
+        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -45,21 +44,10 @@ public class ResetPasswordEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var groups = new string[]
-        {
-            Role.SystemAdministrator,
-            Role.UserAdministrator,
-            $"USER_{user.Id}"
-        };
-
-        var message = new Message
-        {
-            Content = $"User {user.EmailAddress} has reset password.",
-            CreatedAt = timeProvider.GetUtcNow(),
-            CreatedBy = user.Id,
-        };
-
-        messageHubContext.Clients.Groups(groups).ReceiveMessage(message, cancellationToken);
+        await publishEndpoint.Publish(
+            new MessageEvent { Type = MessageType.UserUpdated, Id = user.Id },
+            cancellationToken
+        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

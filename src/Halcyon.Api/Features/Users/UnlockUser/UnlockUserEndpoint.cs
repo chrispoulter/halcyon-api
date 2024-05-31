@@ -1,8 +1,8 @@
 ﻿using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.UnlockUser;
@@ -22,10 +22,8 @@ public class UnlockUserEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         int id,
         [FromBody] UpdateRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IHubContext<MessageHub, IMessageClient> messageHubContext,
-        TimeProvider timeProvider,
+        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -51,21 +49,10 @@ public class UnlockUserEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var groups = new string[]
-        {
-            Role.SystemAdministrator,
-            Role.UserAdministrator,
-            $"USER_{user.Id}"
-        };
-
-        var message = new Message
-        {
-            Content = $"User {user.EmailAddress} has been unlocked.",
-            CreatedAt = timeProvider.GetUtcNow(),
-            CreatedBy = currentUser.Id,
-        };
-
-        messageHubContext.Clients.Groups(groups).ReceiveMessage(message, cancellationToken);
+        await publishEndpoint.Publish(
+            new MessageEvent { Type = MessageType.UserUpdated, Id = user.Id },
+            cancellationToken
+        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

@@ -3,7 +3,7 @@ using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Services.Hash;
 using Mapster;
-using Microsoft.AspNetCore.SignalR;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
@@ -22,11 +22,9 @@ public class CreateUserEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
-        IHubContext<MessageHub, IMessageClient> messageHubContext,
-        TimeProvider timeProvider,
+        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -50,21 +48,10 @@ public class CreateUserEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var groups = new string[]
-        {
-            Role.SystemAdministrator,
-            Role.UserAdministrator,
-            $"USER_{user.Id}"
-        };
-
-        var message = new Message
-        {
-            Content = $"User {user.EmailAddress} has been created.",
-            CreatedAt = timeProvider.GetUtcNow(),
-            CreatedBy = currentUser.Id,
-        };
-
-        messageHubContext.Clients.Groups(groups).ReceiveMessage(message, cancellationToken);
+        await publishEndpoint.Publish(
+            new MessageEvent { Type = MessageType.UserCreated, Id = user.Id },
+            cancellationToken
+        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }

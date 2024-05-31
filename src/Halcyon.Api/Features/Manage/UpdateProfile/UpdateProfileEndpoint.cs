@@ -2,7 +2,7 @@
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
 using Mapster;
-using Microsoft.AspNetCore.SignalR;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.UpdateProfile;
@@ -25,8 +25,7 @@ public class UpdateProfileEndpoint : IEndpoint
         UpdateProfileRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IHubContext<MessageHub, IMessageClient> messageHubContext,
-        TimeProvider timeProvider,
+        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -76,21 +75,10 @@ public class UpdateProfileEndpoint : IEndpoint
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var groups = new string[]
-        {
-            Role.SystemAdministrator,
-            Role.UserAdministrator,
-            $"USER_{user.Id}"
-        };
-
-        var message = new Message
-        {
-            Content = $"User {user.EmailAddress} has updated profile.",
-            CreatedAt = timeProvider.GetUtcNow(),
-            CreatedBy = currentUser.Id,
-        };
-
-        messageHubContext.Clients.Groups(groups).ReceiveMessage(message, cancellationToken);
+        await publishEndpoint.Publish(
+            new MessageEvent { Type = MessageType.UserUpdated, Id = user.Id },
+            cancellationToken
+        );
 
         return Results.Ok(new UpdateResponse { Id = user.Id });
     }
