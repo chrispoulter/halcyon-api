@@ -1,6 +1,8 @@
-﻿namespace Halcyon.Api.Features.Messaging;
+﻿using Halcyon.Api.Data;
+
+namespace Halcyon.Api.Features.Messaging;
 
 public interface IMessageClient
 {
-    Task ReceiveMessage(MessageEvent message, CancellationToken cancellationToken);
+    Task ReceiveMessage(EntityChangedEvent message, CancellationToken cancellationToken);
 }

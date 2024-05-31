@@ -1,5 +1,4 @@
-﻿using Halcyon.Api.Features.Messaging;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -17,7 +16,27 @@ public class HalcyonDbContext : DbContext
     )
         : base(options)
     {
-        this.publishEndpoint = publishEndpoint;
+        ChangeTracker.StateChanged += (sender, args) =>
+        {
+            if (args.OldState == EntityState.Unchanged)
+            {
+                return;
+            }
+
+            if (args.Entry.Entity is not IEntityWithId identifiableEntity)
+            {
+                return;
+            }
+
+            var message = new EntityChangedEvent
+            {
+                Id = identifiableEntity.Id,
+                ChangeType = args.OldState,
+                Entity = args.Entry.Entity.GetType().Name
+            };
+
+            publishEndpoint.Publish(message).GetAwaiter().GetResult();
+        };
     }
 
     public virtual DbSet<User> Users { get; set; }
@@ -48,54 +67,5 @@ public class HalcyonDbContext : DbContext
             .HasIndex(u => u.Search)
             .HasMethod("gin")
             .HasOperators("gin_trgm_ops");
-    }
-
-    public override int SaveChanges()
-    {
-        var messages = GetMessageEvents();
-
-        var result = base.SaveChanges();
-
-        publishEndpoint.PublishBatch(messages).GetAwaiter().GetResult();
-
-        return result;
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        var messages = GetMessageEvents();
-
-        var result = await base.SaveChangesAsync(cancellationToken);
-
-        await publishEndpoint.PublishBatch(messages, cancellationToken: cancellationToken);
-
-        return result;
-    }
-
-    private List<MessageEvent> GetMessageEvents() =>
-        ChangeTracker
-            .Entries()
-            .Where(e =>
-                e.State == EntityState.Added
-                || e.State == EntityState.Modified
-                || e.State == EntityState.Deleted
-            )
-            .SelectMany(GetMessageEvent)
-            .ToList();
-
-    private IEnumerable<MessageEvent> GetMessageEvent(EntityEntry entry)
-    {
-        switch (entry.Entity)
-        {
-            case User user:
-                yield return new MessageEvent
-                {
-                    Id = user.Id, //TODO: FIX THIS
-                    ChangeType = entry.State.ToString(),
-                    Entity = nameof(User),
-                };
-
-                break;
-        }
     }
 }
