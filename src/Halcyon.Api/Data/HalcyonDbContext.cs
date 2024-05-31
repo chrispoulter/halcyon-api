@@ -52,27 +52,27 @@ public class HalcyonDbContext : DbContext
 
     public override int SaveChanges()
     {
-        var changedEntries = GetChangedEntries();
+        var messages = GetMessageEvents();
 
         var result = base.SaveChanges();
 
-        PublishEvents(changedEntries).GetAwaiter().GetResult();
+        publishEndpoint.PublishBatch(messages).GetAwaiter().GetResult();
 
         return result;
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var changedEntries = GetChangedEntries();
+        var messages = GetMessageEvents();
 
         var result = await base.SaveChangesAsync(cancellationToken);
 
-        await PublishEvents(changedEntries);
+        await publishEndpoint.PublishBatch(messages, cancellationToken: cancellationToken);
 
         return result;
     }
 
-    private List<ChangedEntry> GetChangedEntries() =>
+    private List<MessageEvent> GetMessageEvents() =>
         ChangeTracker
             .Entries()
             .Where(e =>
@@ -80,33 +80,22 @@ public class HalcyonDbContext : DbContext
                 || e.State == EntityState.Modified
                 || e.State == EntityState.Deleted
             )
-            .Select(e => new ChangedEntry { Entity = e.Entity, State = e.State })
+            .SelectMany(GetMessageEvent)
             .ToList();
 
-    private async Task PublishEvents(List<ChangedEntry> changedEntries)
+    private IEnumerable<MessageEvent> GetMessageEvent(EntityEntry entry)
     {
-        foreach (var entry in changedEntries)
+        switch (entry.Entity)
         {
-            switch (entry.Entity)
-            {
-                case User user:
-                    var message = new MessageEvent
-                    {
-                        Id = user.Id,
-                        ChangeType = entry.State.ToString(),
-                        Entity = nameof(User)
-                    };
+            case User user:
+                yield return new MessageEvent
+                {
+                    Id = user.Id, //TODO: FIX THIS
+                    ChangeType = entry.State.ToString(),
+                    Entity = nameof(User),
+                };
 
-                    await publishEndpoint.Publish(message);
-                    break;
-            }
+                break;
         }
-    }
-
-    private class ChangedEntry
-    {
-        public object Entity { get; set; }
-
-        public EntityState State { get; set; }
     }
 }
