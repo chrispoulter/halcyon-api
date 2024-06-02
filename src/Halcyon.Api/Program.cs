@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
+using Halcyon.Api.Features;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -86,8 +87,8 @@ builder
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
-        "UserAdministratorPolicy",
-        policy => policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR")
+        nameof(Policy.IsUserAdministrator),
+        policy => policy.RequireRole(Policy.IsUserAdministrator)
     );
 });
 
