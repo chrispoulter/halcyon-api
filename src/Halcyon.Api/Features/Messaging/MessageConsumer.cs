@@ -15,7 +15,7 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
         switch (message.Entity)
         {
             case nameof(User):
-                var userGroups = new[]
+                var groups = new[]
                 {
                     MessageHub.GetGroupForRole(Role.SystemAdministrator),
                     MessageHub.GetGroupForRole(Role.UserAdministrator),
@@ -23,7 +23,7 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
                 };
 
                 await messageHubContext
-                    .Clients.Groups(userGroups)
+                    .Clients.Groups(groups)
                     .ReceiveMessage(message, context.CancellationToken);
 
                 break;
