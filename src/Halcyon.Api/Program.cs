@@ -17,7 +17,6 @@ using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -92,7 +91,7 @@ builder
                 var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
 
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hub"))
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
                 {
                     context.Token = accessToken;
                 }
@@ -102,19 +101,27 @@ builder
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(
+builder
+    .Services.AddAuthorizationBuilder()
+    .AddPolicy(
         nameof(Policy.IsUserAdministrator),
         policy => policy.RequireRole(Policy.IsUserAdministrator)
     );
-});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+builder
+    .Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
@@ -132,15 +139,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials()
     )
 );
-
-builder
-    .Services.AddSignalR()
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
-        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssembly(assembly);
@@ -226,7 +224,14 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/hub");
+app.MapHub<MessageHub>(
+    "/messages",
+    options =>
+    {
+        //options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+    }
+);
+
 app.MapEndpoints();
 app.Run();
 
