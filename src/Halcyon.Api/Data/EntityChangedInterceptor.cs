@@ -14,10 +14,8 @@ public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveCh
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var entry in eventData.Context.ChangeTracker.Entries())
-        {
-            changedEntities.Add((entry.Entity, entry.State));
-        }
+        var entries = eventData.Context.ChangeTracker.Entries();
+        changedEntities.AddRange(entries.Select(entry => (entry.Entity, entry.State)));
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
