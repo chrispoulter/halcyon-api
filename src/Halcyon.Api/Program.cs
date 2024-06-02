@@ -84,13 +84,12 @@ builder
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(
+builder
+    .Services.AddAuthorizationBuilder()
+    .AddPolicy(
         nameof(Policy.IsUserAdministrator),
         policy => policy.RequireRole(Policy.IsUserAdministrator)
     );
-});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
