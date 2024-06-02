@@ -1,48 +1,9 @@
-﻿using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Data;
 
-public class HalcyonDbContext : DbContext
+public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbContext(options)
 {
-    private readonly IPublishEndpoint publishEndpoint;
-
-    public HalcyonDbContext() { }
-
-    public HalcyonDbContext(
-        DbContextOptions<HalcyonDbContext> options,
-        IPublishEndpoint publishEndpoint
-    )
-        : base(options)
-    {
-        this.publishEndpoint = publishEndpoint;
-
-        ChangeTracker.StateChanged += StateChanged;
-    }
-
-    private void StateChanged(object sender, EntityStateChangedEventArgs e)
-    {
-        if (e.OldState == EntityState.Unchanged)
-        {
-            return;
-        }
-
-        if (e.Entry.Entity is not IEntityWithId entity)
-        {
-            return;
-        }
-
-        var message = new EntityChangedEvent
-        {
-            Id = entity.Id,
-            ChangeType = e.OldState,
-            Entity = entity.GetType().Name
-        };
-
-        publishEndpoint.Publish(message).GetAwaiter().GetResult();
-    }
-
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

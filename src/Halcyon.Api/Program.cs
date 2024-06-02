@@ -43,7 +43,8 @@ builder
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention();
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>());
         }
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
@@ -185,6 +186,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
+
+builder.Services.AddScoped<EntityChangedInterceptor>();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
