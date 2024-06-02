@@ -6,6 +6,8 @@ namespace Halcyon.Api.Data;
 
 public class HalcyonDbContext : DbContext
 {
+    private readonly IPublishEndpoint publishEndpoint;
+
     public HalcyonDbContext() { }
 
     public HalcyonDbContext(
@@ -14,27 +16,31 @@ public class HalcyonDbContext : DbContext
     )
         : base(options)
     {
-        ChangeTracker.StateChanged += (sender, args) =>
+        this.publishEndpoint = publishEndpoint;
+
+        ChangeTracker.StateChanged += StateChanged;
+    }
+
+    private void StateChanged(object sender, EntityStateChangedEventArgs e)
+    {
+        if (e.OldState == EntityState.Unchanged)
         {
-            if (args.OldState == EntityState.Unchanged)
-            {
-                return;
-            }
+            return;
+        }
 
-            if (args.Entry.Entity is not IEntityWithId identifiableEntity)
-            {
-                return;
-            }
+        if (e.Entry.Entity is not IEntityWithId entity)
+        {
+            return;
+        }
 
-            var message = new EntityChangedEvent
-            {
-                Id = identifiableEntity.Id,
-                ChangeType = args.OldState,
-                Entity = args.Entry.Entity.GetType().Name
-            };
-
-            publishEndpoint.Publish(message).GetAwaiter().GetResult();
+        var message = new EntityChangedEvent
+        {
+            Id = entity.Id,
+            ChangeType = e.OldState,
+            Entity = entity.GetType().Name
         };
+
+        publishEndpoint.Publish(message).GetAwaiter().GetResult();
     }
 
     public virtual DbSet<User> Users { get; set; }
