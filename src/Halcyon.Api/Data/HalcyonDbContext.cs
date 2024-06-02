@@ -6,8 +6,6 @@ namespace Halcyon.Api.Data;
 
 public class HalcyonDbContext : DbContext
 {
-    private readonly IPublishEndpoint publishEndpoint;
-
     public HalcyonDbContext() { }
 
     public HalcyonDbContext(
