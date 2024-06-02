@@ -11,16 +11,20 @@ public class MessageHub : Hub<IMessageClient>
 
         if (user.Identity.IsAuthenticated)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"USER_{user.Identity.Name}");
+            await Groups.AddToGroupAsync(Context.ConnectionId, GetGroupForUser(user.Identity.Name));
 
             var roles = user.FindAll(ClaimTypes.Role);
 
             foreach (var role in roles)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"ROLE_{role.Value}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, GetGroupForRole(role.Value));
             }
         }
 
         await base.OnConnectedAsync();
     }
+
+    public static string GetGroupForUser(object id) => $"MESSAGE_USER_{id}";
+
+    public static string GetGroupForRole(string role) => $"MESSAGE_ROLE_{role}";
 }

@@ -17,9 +17,9 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
             case nameof(User):
                 var userGroups = new[]
                 {
-                    $"ROLE_{Role.SystemAdministrator}",
-                    $"ROLE_{Role.UserAdministrator}",
-                    $"USER_{message.Id}"
+                    MessageHub.GetGroupForRole(Role.SystemAdministrator),
+                    MessageHub.GetGroupForRole(Role.UserAdministrator),
+                    MessageHub.GetGroupForUser(message.Id)
                 };
 
                 await messageHubContext
