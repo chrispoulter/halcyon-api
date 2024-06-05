@@ -18,7 +18,6 @@ using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -97,13 +96,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+var corsPolicySettings = new CorsPolicySettings();
+builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
+
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+            .WithOrigins(corsPolicySettings.AllowedOrigins)
+            .WithMethods(corsPolicySettings.AllowedMethods)
+            .WithHeaders(corsPolicySettings.AllowedHeaders)
     )
 );
 
