@@ -124,19 +124,16 @@ builder
         options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+var corsPolicySettings = new CorsPolicySettings();
+builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
+
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(
-                HeaderNames.Authorization,
-                HeaderNames.ContentType,
-                HeaderNames.AccessControlAllowCredentials,
-                HeaderNames.XRequestedWith,
-                CustomHeaders.XSignalRUserAgent
-            )
+            .WithOrigins(corsPolicySettings.AllowedOrigins)
+            .WithMethods(corsPolicySettings.AllowedMethods)
+            .WithHeaders(corsPolicySettings.AllowedHeaders)
             .AllowCredentials()
     )
 );
