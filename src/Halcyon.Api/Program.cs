@@ -224,14 +224,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>(
-    "/messages",
-    options =>
-    {
-        //options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
-    }
-);
-
+app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 
