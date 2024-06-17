@@ -7,6 +7,7 @@ using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
+using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Halcyon.Api.Services.Email;
 using Halcyon.Api.Services.Hash;
@@ -41,7 +42,8 @@ builder
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention();
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>());
         }
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
@@ -81,6 +83,22 @@ builder
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             )
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder
@@ -96,6 +114,15 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder
+    .Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 var corsPolicySettings = new CorsPolicySettings();
 builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
 
@@ -106,6 +133,7 @@ builder.Services.AddCors(options =>
             .WithOrigins(corsPolicySettings.AllowedOrigins)
             .WithMethods(corsPolicySettings.AllowedMethods)
             .WithHeaders(corsPolicySettings.AllowedHeaders)
+            .AllowCredentials()
     )
 );
 
@@ -155,6 +183,8 @@ builder.Services.AddSwaggerGen(options =>
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
+builder.Services.AddScoped<EntityChangedInterceptor>();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -193,6 +223,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 

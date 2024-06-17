@@ -20,7 +20,6 @@ public class CreateUserEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default

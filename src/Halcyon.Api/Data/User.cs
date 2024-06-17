@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Api.Data;
 
-public class User
+public class User : IEntityWithId
 {
     public int Id { get; set; }
 

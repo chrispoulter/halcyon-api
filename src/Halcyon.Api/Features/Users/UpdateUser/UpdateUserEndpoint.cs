@@ -22,7 +22,6 @@ public class UpdateUserEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         int id,
         UpdateUserRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )
