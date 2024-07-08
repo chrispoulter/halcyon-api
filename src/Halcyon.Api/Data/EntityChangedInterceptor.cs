@@ -15,7 +15,14 @@ public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveCh
     )
     {
         var entries = eventData.Context.ChangeTracker.Entries();
-        changedEntities.AddRange(entries.Select(entry => (entry.Entity, entry.State)));
+
+        var changes = entries
+            .Where(entry =>
+                entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted
+            )
+            .Select(entry => (entry.Entity, entry.State));
+
+        changedEntities.AddRange(changes);
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
