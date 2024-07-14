@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using StackExchange.Redis;
 
 var assembly = typeof(Program).Assembly;
 
@@ -48,9 +49,14 @@ builder
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
+var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
+
 builder.Services.AddMassTransit(options =>
 {
+    var prefix = "halcyon-";
+
     options.AddConsumers(assembly);
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(prefix));
 
     options.UsingInMemory(
         (context, cfg) =>
@@ -59,6 +65,21 @@ builder.Services.AddMassTransit(options =>
             cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );
+
+    if (string.IsNullOrEmpty(rabbitMqConnectionString))
+    {
+        options.UsingRabbitMq(
+            (context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+                cfg.MessageTopology.SetEntityNameFormatter(
+                    new PrefixEntityNameFormatter(cfg.MessageTopology.EntityNameFormatter, prefix)
+                );
+                cfg.Host(new Uri(rabbitMqConnectionString));
+            }
+        );
+    }
 });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -114,7 +135,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-builder
+var signalRBuilder = builder
     .Services.AddSignalR()
     .AddJsonProtocol(options =>
     {
@@ -122,6 +143,17 @@ builder
             JsonIgnoreCondition.WhenWritingNull;
         options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    var prefix = $"halcyon-{version}";
+
+    signalRBuilder.AddStackExchangeRedis(
+        redisConnectionString,
+        options => options.Configuration.ChannelPrefix = RedisChannel.Literal(prefix)
+    );
+}
 
 var corsPolicySettings = new CorsPolicySettings();
 builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
