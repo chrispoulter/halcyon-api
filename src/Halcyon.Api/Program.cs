@@ -25,6 +25,8 @@ using StackExchange.Redis;
 
 var assembly = typeof(Program).Assembly;
 
+var environment = "preview";
+
 var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
     .InformationalVersion;
@@ -53,10 +55,8 @@ var rabbitMqConnectionString = builder.Configuration.GetConnectionString("Rabbit
 
 builder.Services.AddMassTransit(options =>
 {
-    var prefix = "halcyon-";
-
     options.AddConsumers(assembly);
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(prefix));
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter($"halcyon-{environment}"));
 
     options.UsingInMemory(
         (context, cfg) =>
@@ -147,11 +147,10 @@ var signalRBuilder = builder
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 if (!string.IsNullOrEmpty(redisConnectionString))
 {
-    var prefix = $"halcyon-{version}";
-
     signalRBuilder.AddStackExchangeRedis(
         redisConnectionString,
-        options => options.Configuration.ChannelPrefix = RedisChannel.Literal(prefix)
+        options =>
+            options.Configuration.ChannelPrefix = RedisChannel.Literal($"halcyon-{environment}")
     );
 }
 
