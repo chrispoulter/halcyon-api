@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
@@ -31,7 +32,7 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-var environmentPrefix = builder.Configuration["EnvironmentPrefix"];
+var tenant = builder.Configuration["Tenant"];
 
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
@@ -53,25 +54,71 @@ builder
 
 builder.Services.AddMassTransit(options =>
 {
-    options.AddConsumers(assembly);
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(environmentPrefix));
+    var namePrefix = $"{Regex.Replace(tenant, "[^A-Za-z0-9]", "-")}-";
 
-    // <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
+    options.AddConsumers(assembly);
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
+
     var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
+    var azureServiceBusConnectionString = builder.Configuration.GetConnectionString(
+        "AzureServiceBus"
+    );
+
     if (!string.IsNullOrEmpty(rabbitMqConnectionString))
     {
+        // MassTransit.RabbitMQ
+        options.AddConfigureEndpointsCallback(
+            (_, cfg) =>
+            {
+                if (cfg is IRabbitMqReceiveEndpointConfigurator rmq)
+                {
+                    rmq.ConfigureDeadLetterQueueDeadLetterTransport();
+                    rmq.ConfigureDeadLetterQueueErrorTransport();
+                }
+            }
+        );
+
         options.UsingRabbitMq(
             (context, cfg) =>
             {
+                cfg.Host(new Uri(rabbitMqConnectionString));
                 cfg.ConfigureEndpoints(context);
                 cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.MessageTopology.SetEntityNameFormatter(
                     new PrefixEntityNameFormatter(
                         cfg.MessageTopology.EntityNameFormatter,
-                        environmentPrefix
+                        namePrefix
                     )
                 );
-                cfg.Host(new Uri(rabbitMqConnectionString));
+            }
+        );
+    }
+    else if (!string.IsNullOrEmpty(azureServiceBusConnectionString))
+    {
+        // MassTransit.Azure.ServiceBus.Core
+        options.AddConfigureEndpointsCallback(
+            (_, cfg) =>
+            {
+                if (cfg is IServiceBusReceiveEndpointConfigurator sb)
+                {
+                    sb.ConfigureDeadLetterQueueDeadLetterTransport();
+                    sb.ConfigureDeadLetterQueueErrorTransport();
+                }
+            }
+        );
+
+        options.UsingAzureServiceBus(
+            (context, cfg) =>
+            {
+                cfg.Host(azureServiceBusConnectionString);
+                cfg.ConfigureEndpoints(context);
+                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+                cfg.MessageTopology.SetEntityNameFormatter(
+                    new PrefixEntityNameFormatter(
+                        cfg.MessageTopology.EntityNameFormatter,
+                        namePrefix
+                    )
+                );
             }
         );
     }
@@ -96,13 +143,28 @@ var signalRBuilder = builder
         options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-// <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.7" />
+var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR");
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-if (!string.IsNullOrEmpty(redisConnectionString))
+
+if (!string.IsNullOrEmpty(signalRConnectionString))
 {
+    var applicationName = Regex.Replace(tenant, "[^A-Za-z0-9]", "_");
+
+    // Microsoft.Azure.SignalR
+    signalRBuilder.AddAzureSignalR(configure =>
+    {
+        configure.ConnectionString = signalRConnectionString;
+        configure.ApplicationName = applicationName;
+    });
+}
+else if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    var channelPrefix = $"{Regex.Replace(tenant, "[^A-Za-z0-9]", "-")}-";
+
+    // Microsoft.AspNetCore.SignalR.StackExchangeRedis
     signalRBuilder.AddStackExchangeRedis(
         redisConnectionString,
-        options => options.Configuration.ChannelPrefix = RedisChannel.Literal(environmentPrefix)
+        options => options.Configuration.ChannelPrefix = RedisChannel.Literal(channelPrefix)
     );
 }
 
