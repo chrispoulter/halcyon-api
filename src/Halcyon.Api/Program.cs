@@ -25,13 +25,13 @@ using StackExchange.Redis;
 
 var assembly = typeof(Program).Assembly;
 
-var environment = "preview";
-
 var version = assembly
     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
     .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var environmentPrefix = builder.Configuration["EnvironmentPrefix"];
 
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
@@ -51,22 +51,14 @@ builder
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
-var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
-
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumers(assembly);
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter($"halcyon-{environment}"));
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(environmentPrefix));
 
-    options.UsingInMemory(
-        (context, cfg) =>
-        {
-            cfg.ConfigureEndpoints(context);
-            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-        }
-    );
-
-    if (string.IsNullOrEmpty(rabbitMqConnectionString))
+    // <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
+    var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
+    if (!string.IsNullOrEmpty(rabbitMqConnectionString))
     {
         options.UsingRabbitMq(
             (context, cfg) =>
@@ -74,13 +66,45 @@ builder.Services.AddMassTransit(options =>
                 cfg.ConfigureEndpoints(context);
                 cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.MessageTopology.SetEntityNameFormatter(
-                    new PrefixEntityNameFormatter(cfg.MessageTopology.EntityNameFormatter, prefix)
+                    new PrefixEntityNameFormatter(
+                        cfg.MessageTopology.EntityNameFormatter,
+                        environmentPrefix
+                    )
                 );
                 cfg.Host(new Uri(rabbitMqConnectionString));
             }
         );
     }
+    else
+    {
+        options.UsingInMemory(
+            (context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+            }
+        );
+    }
 });
+
+var signalRBuilder = builder
+    .Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+// <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.7" />
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    signalRBuilder.AddStackExchangeRedis(
+        redisConnectionString,
+        options => options.Configuration.ChannelPrefix = RedisChannel.Literal(environmentPrefix)
+    );
+}
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -134,25 +158,6 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
-
-var signalRBuilder = builder
-    .Services.AddSignalR()
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
-        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-if (!string.IsNullOrEmpty(redisConnectionString))
-{
-    signalRBuilder.AddStackExchangeRedis(
-        redisConnectionString,
-        options =>
-            options.Configuration.ChannelPrefix = RedisChannel.Literal($"halcyon-{environment}")
-    );
-}
 
 var corsPolicySettings = new CorsPolicySettings();
 builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
