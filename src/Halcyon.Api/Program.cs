@@ -60,9 +60,7 @@ builder.Services.AddMassTransit(options =>
     options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
 
     var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
-    var azureServiceBusConnectionString = builder.Configuration.GetConnectionString(
-        "AzureServiceBus"
-    );
+    var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
 
     if (!string.IsNullOrEmpty(rabbitMqConnectionString))
     {
@@ -93,7 +91,7 @@ builder.Services.AddMassTransit(options =>
             }
         );
     }
-    else if (!string.IsNullOrEmpty(azureServiceBusConnectionString))
+    else if (!string.IsNullOrEmpty(serviceBusConnectionString))
     {
         // MassTransit.Azure.ServiceBus.Core
         options.AddConfigureEndpointsCallback(
@@ -110,7 +108,7 @@ builder.Services.AddMassTransit(options =>
         options.UsingAzureServiceBus(
             (context, cfg) =>
             {
-                cfg.Host(azureServiceBusConnectionString);
+                cfg.Host(serviceBusConnectionString);
                 cfg.ConfigureEndpoints(context);
                 cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.MessageTopology.SetEntityNameFormatter(
