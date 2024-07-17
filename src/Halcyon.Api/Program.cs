@@ -53,7 +53,7 @@ builder
 
 builder.Services.AddMassTransit(options =>
 {
-    var namePrefix = $"{Regex.Replace(tenant, "[^A-Za-z0-9]", "-")}-";
+    var namePrefix = $"{ApplicationNameRegex().Replace(tenant, "-")}-";
 
     options.AddConsumers(assembly);
     options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
@@ -113,7 +113,7 @@ var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR
 
 if (!string.IsNullOrEmpty(signalRConnectionString))
 {
-    var applicationName = Regex.Replace(tenant, "[^A-Za-z0-9]", "_");
+    var applicationName = ApplicationNameRegex().Replace(tenant, "_");
 
     signalRBuilder.AddAzureSignalR(configure =>
     {
@@ -279,4 +279,8 @@ app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+    [GeneratedRegex("[^A-Za-z0-9]")]
+    private static partial Regex ApplicationNameRegex();
+}
