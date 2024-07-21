@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using FluentValidation;
 using Halcyon.Api.Common;
 using Halcyon.Api.Data;
@@ -30,6 +31,8 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
+var tenant = builder.Configuration["Tenant"];
+
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
@@ -50,16 +53,74 @@ builder
 
 builder.Services.AddMassTransit(options =>
 {
-    options.AddConsumers(assembly);
+    var namePrefix = $"{ApplicationNameRegex().Replace(tenant, "-")}-";
 
-    options.UsingInMemory(
-        (context, cfg) =>
-        {
-            cfg.ConfigureEndpoints(context);
-            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-        }
-    );
+    options.AddConsumers(assembly);
+    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
+
+    var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
+
+    if (!string.IsNullOrEmpty(serviceBusConnectionString))
+    {
+        options.AddConfigureEndpointsCallback(
+            (_, cfg) =>
+            {
+                if (cfg is IServiceBusReceiveEndpointConfigurator sb)
+                {
+                    sb.ConfigureDeadLetterQueueDeadLetterTransport();
+                    sb.ConfigureDeadLetterQueueErrorTransport();
+                }
+            }
+        );
+
+        options.UsingAzureServiceBus(
+            (context, cfg) =>
+            {
+                cfg.Host(serviceBusConnectionString);
+                cfg.ConfigureEndpoints(context);
+                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+                cfg.MessageTopology.SetEntityNameFormatter(
+                    new PrefixEntityNameFormatter(
+                        cfg.MessageTopology.EntityNameFormatter,
+                        namePrefix
+                    )
+                );
+            }
+        );
+    }
+    else
+    {
+        options.UsingInMemory(
+            (context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+            }
+        );
+    }
 });
+
+var signalRBuilder = builder
+    .Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR");
+
+if (!string.IsNullOrEmpty(signalRConnectionString))
+{
+    var applicationName = ApplicationNameRegex().Replace(tenant, "_");
+
+    signalRBuilder.AddAzureSignalR(configure =>
+    {
+        configure.ConnectionString = signalRConnectionString;
+        configure.ApplicationName = applicationName;
+    });
+}
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -113,15 +174,6 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
-
-builder
-    .Services.AddSignalR()
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
-        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 var corsPolicySettings = new CorsPolicySettings();
 builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
@@ -227,4 +279,8 @@ app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+    [GeneratedRegex("[^A-Za-z0-9]")]
+    private static partial Regex ApplicationNameRegex();
+}
