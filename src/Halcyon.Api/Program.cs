@@ -36,7 +36,7 @@ var tenant = builder.Configuration["Tenant"];
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
-var databaseConnectionString = builder.Configuration.GetConnectionString("Database")?.Trim('"');
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
 builder
     .Services.AddDbContext<HalcyonDbContext>(
@@ -51,7 +51,7 @@ builder
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
-var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus")?.Trim('"');
+var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
 
 builder.Services.AddMassTransit(options =>
 {
@@ -109,7 +109,7 @@ var signalRBuilder = builder
         options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR")?.Trim('"');
+var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR");
 
 if (!string.IsNullOrEmpty(signalRConnectionString))
 {
