@@ -51,14 +51,14 @@ builder
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
+var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
+
 builder.Services.AddMassTransit(options =>
 {
     var namePrefix = $"{ApplicationNameRegex().Replace(tenant, "-")}-";
 
     options.AddConsumers(assembly);
     options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
-
-    var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
 
     if (!string.IsNullOrEmpty(serviceBusConnectionString))
     {
