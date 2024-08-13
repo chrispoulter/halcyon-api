@@ -1,4 +1,4 @@
-﻿using Castle.Core.Smtp;
+﻿using Halcyon.Api.Core.Email;
 using Halcyon.Api.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
