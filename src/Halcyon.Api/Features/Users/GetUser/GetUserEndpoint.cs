@@ -17,7 +17,7 @@ public class GetUserEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )

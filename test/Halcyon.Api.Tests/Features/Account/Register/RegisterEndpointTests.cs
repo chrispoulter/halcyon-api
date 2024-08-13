@@ -37,7 +37,7 @@ public class RegisterEndpointTests : BaseTest
 
         var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
         Assert.NotNull(result);
-        Assert.NotEqual(0, result.Id);
+        Assert.NotEqual(Guid.Empty, result.Id);
     }
 
     private static RegisterRequest CreateRegisterRequest(string? emailAddress = null) =>

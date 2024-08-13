@@ -19,7 +19,7 @@ public class DeleteUserEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,

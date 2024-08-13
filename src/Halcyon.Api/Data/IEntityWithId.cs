@@ -2,5 +2,5 @@
 
 public interface IEntityWithId
 {
-    public int Id { get; }
+    public Guid Id { get; }
 }

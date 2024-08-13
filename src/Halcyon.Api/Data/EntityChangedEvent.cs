@@ -4,7 +4,7 @@ namespace Halcyon.Api.Data;
 
 public class EntityChangedEvent
 {
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     public EntityState ChangeType { get; set; }
 

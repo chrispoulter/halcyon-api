@@ -18,7 +18,7 @@ public class UnlockUserEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         [FromBody] UpdateRequest request,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
