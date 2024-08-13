@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Data;
+namespace Halcyon.Api.Core.Database;
 
 public class EntityChangedEvent
 {

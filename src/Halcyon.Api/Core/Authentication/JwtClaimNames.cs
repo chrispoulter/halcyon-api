@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Services.Jwt;
+﻿namespace Halcyon.Api.Core.Authentication;
 
 public class JwtClaimNames
 {

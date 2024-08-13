@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Data;
+﻿namespace Halcyon.Api.Core.Database;
 
 public interface IEntityWithId
 {

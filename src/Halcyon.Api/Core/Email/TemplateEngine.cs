@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Halcyon.Api.Services.Email;
+namespace Halcyon.Api.Core.Email;
 
 public partial class TemplateEngine : ITemplateEngine
 {

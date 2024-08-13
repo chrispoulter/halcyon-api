@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Halcyon.Api.Common;
+namespace Halcyon.Api.Core.Web;
 
 public static class EndpointExtensions
 {

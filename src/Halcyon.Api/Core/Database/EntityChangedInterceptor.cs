@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Halcyon.Api.Data;
+namespace Halcyon.Api.Core.Database;
 
 public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveChangesInterceptor
 {

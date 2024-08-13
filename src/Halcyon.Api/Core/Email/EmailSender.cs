@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
-namespace Halcyon.Api.Services.Email;
+namespace Halcyon.Api.Core.Email;
 
 public class EmailSender(
     ITemplateEngine templateEngine,

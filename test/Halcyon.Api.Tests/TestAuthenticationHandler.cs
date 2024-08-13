@@ -8,18 +8,15 @@ namespace Halcyon.Api.Tests;
 
 public class TestAuthenticationOptions : AuthenticationSchemeOptions { }
 
-public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
+public class TestAuthenticationHandler(
+    IOptionsMonitor<TestAuthenticationOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder
+) : AuthenticationHandler<TestAuthenticationOptions>(options, logger, encoder)
 {
     public const string AuthenticationScheme = "TestScheme";
 
     public const string UserId = "UserId";
-
-    public TestAuthenticationHandler(
-        IOptionsMonitor<TestAuthenticationOptions> options,
-        ILoggerFactory logger,
-        UrlEncoder encoder
-    )
-        : base(options, logger, encoder) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

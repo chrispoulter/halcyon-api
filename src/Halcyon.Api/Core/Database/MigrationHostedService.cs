@@ -1,36 +1,27 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Services.Migrations;
+namespace Halcyon.Api.Core.Migrations;
 
-public class MigrationHostedService<TDbContext> : IHostedService
+public class MigrationHostedService<TDbContext>(
+    IServiceProvider serviceProvider,
+    ILogger<MigrationHostedService<TDbContext>> logger
+) : IHostedService
     where TDbContext : DbContext
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<MigrationHostedService<TDbContext>> _logger;
-
-    public MigrationHostedService(
-        IServiceProvider serviceProvider,
-        ILogger<MigrationHostedService<TDbContext>> logger
-    )
-    {
-        _serviceProvider = serviceProvider;
-        _logger = logger;
-    }
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "Migrating database for {DbContext}",
             TypeCache<TDbContext>.ShortName
         );
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
 
         if (!dbContext.Database.IsRelational())
         {
-            _logger.LogWarning(
+            logger.LogWarning(
                 "Cannot apply migrations to non relational database for {DbContext}",
                 TypeCache<TDbContext>.ShortName
             );
@@ -44,7 +35,7 @@ public class MigrationHostedService<TDbContext> : IHostedService
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            logger.LogError(
                 ex,
                 "An error occurred while migrating database for {DbContext}",
                 TypeCache<TDbContext>.ShortName

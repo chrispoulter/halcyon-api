@@ -1,4 +1,4 @@
-using Halcyon.Api.Services.Email;
+using Halcyon.Api.Core.Email;
 using MassTransit;
 
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;

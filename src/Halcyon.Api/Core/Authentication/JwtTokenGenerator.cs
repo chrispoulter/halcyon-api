@@ -5,7 +5,7 @@ using Halcyon.Api.Data;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Halcyon.Api.Services.Jwt;
+namespace Halcyon.Api.Core.Authentication;
 
 public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> jwtSettings)
     : IJwtTokenGenerator

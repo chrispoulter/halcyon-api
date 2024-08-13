@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Services.Hash;
+﻿namespace Halcyon.Api.Core.Authentication;
 
 public interface IPasswordHasher
 {

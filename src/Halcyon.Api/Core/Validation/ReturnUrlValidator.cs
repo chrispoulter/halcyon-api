@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Halcyon.Api.Services.Validators;
+namespace Halcyon.Api.Core.Validation;
 
 public static class ReturnUrlValidator
 {

@@ -1,4 +1,6 @@
-﻿namespace Halcyon.Api.Data;
+﻿using Halcyon.Api.Core.Database;
+
+namespace Halcyon.Api.Data;
 
 public class User : IEntityWithId
 {

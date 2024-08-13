@@ -1,6 +1,6 @@
 using FluentValidation;
-using Halcyon.Api.Common;
-using Halcyon.Api.Services.Validators;
+using Halcyon.Api.Core.Validation;
+using Halcyon.Api.Core.Web;
 
 namespace Halcyon.Api.Features.Users.UpdateUser;
 

@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Common;
+﻿namespace Halcyon.Api.Core.Web;
 
 public class UpdateResponse
 {

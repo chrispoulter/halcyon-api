@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Halcyon.Api.Services.Validators;
+namespace Halcyon.Api.Core.Validation;
 
 public static class InThePastValidator
 {

@@ -4,12 +4,9 @@ using Halcyon.Api.Features.Manage.GetProfile;
 
 namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
 
-public class GetProfileEndpointTests : BaseTest
+public class GetProfileEndpointTests(TestWebApplicationFactory factory) : BaseTest(factory)
 {
     private const string _requestUri = "/manage";
-
-    public GetProfileEndpointTests(TestWebApplicationFactory factory)
-        : base(factory) { }
 
     [Fact]
     public async Task GetProfile_ShouldReturnUnauthorized_WhenNotAuthorized()
