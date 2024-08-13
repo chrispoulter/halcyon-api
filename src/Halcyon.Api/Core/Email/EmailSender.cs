@@ -31,8 +31,8 @@ public class EmailSender(
         );
 
         var email = new MimeMessage(
-            new[] { MailboxAddress.Parse(emailSettings.NoReplyAddress) },
-            new[] { MailboxAddress.Parse(message.To) },
+            [MailboxAddress.Parse(emailSettings.NoReplyAddress)],
+            [MailboxAddress.Parse(message.To)],
             subject,
             new TextPart(TextFormat.Html) { Text = body }
         );
