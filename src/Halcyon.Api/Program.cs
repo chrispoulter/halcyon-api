@@ -5,11 +5,15 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using FluentValidation;
+using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Database;
+using Halcyon.Api.Core.Email;
+using Halcyon.Api.Core.Migrations;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
 using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Core.Database;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -18,10 +22,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Halcyon.Api.Core.Migrations;
-using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Core.Email;
 
 var assembly = typeof(Program).Assembly;
 
