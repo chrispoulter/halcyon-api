@@ -1,6 +1,6 @@
+using Halcyon.Api.Core.Database;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
-using Halcyon.Api.Core.Database;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 
