@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Data;
+﻿using Halcyon.Api.Core.Database;
 
 namespace Halcyon.Api.Features.Messaging;
 

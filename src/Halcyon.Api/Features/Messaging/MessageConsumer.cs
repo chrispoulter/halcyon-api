@@ -1,3 +1,4 @@
+using Halcyon.Api.Core.Database;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Messaging;
 using MassTransit;

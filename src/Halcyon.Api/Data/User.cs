@@ -1,8 +1,10 @@
-﻿namespace Halcyon.Api.Data;
+﻿using Halcyon.Api.Core.Database;
+
+namespace Halcyon.Api.Data;
 
 public class User : IEntityWithId
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string EmailAddress { get; set; }
 

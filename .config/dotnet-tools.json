@@ -7,7 +7,7 @@
       "commands": ["dotnet-csharpier"]
     },
     "dotnet-ef": {
-      "version": "8.0.0",
+      "version": "8.0.7",
       "commands": ["dotnet-ef"]
     }
   }

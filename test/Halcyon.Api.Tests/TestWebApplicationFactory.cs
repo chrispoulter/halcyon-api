@@ -1,5 +1,5 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Api.Services.Email;
+﻿using Halcyon.Api.Core.Email;
+using Halcyon.Api.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
