@@ -3,16 +3,13 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using FluentValidation;
 using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Database;
 using Halcyon.Api.Core.Email;
-using Halcyon.Api.Core.Migrations;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
-using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
@@ -31,8 +28,6 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-var tenant = builder.Configuration["Tenant"];
-
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
@@ -45,82 +40,23 @@ builder
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention()
-                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>());
+                .UseSnakeCaseNamingConvention();
         }
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
-var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
-
 builder.Services.AddMassTransit(options =>
 {
-    var namePrefix = $"{ApplicationNameRegex().Replace(tenant, "-")}-";
-
     options.AddConsumers(assembly);
-    options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(namePrefix));
 
-    if (!string.IsNullOrEmpty(serviceBusConnectionString))
-    {
-        options.AddConfigureEndpointsCallback(
-            (_, cfg) =>
-            {
-                if (cfg is IServiceBusReceiveEndpointConfigurator sb)
-                {
-                    sb.ConfigureDeadLetterQueueDeadLetterTransport();
-                    sb.ConfigureDeadLetterQueueErrorTransport();
-                }
-            }
-        );
-
-        options.UsingAzureServiceBus(
-            (context, cfg) =>
-            {
-                cfg.Host(serviceBusConnectionString);
-                cfg.ConfigureEndpoints(context);
-                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-                cfg.MessageTopology.SetEntityNameFormatter(
-                    new PrefixEntityNameFormatter(
-                        cfg.MessageTopology.EntityNameFormatter,
-                        namePrefix
-                    )
-                );
-            }
-        );
-    }
-    else
-    {
-        options.UsingInMemory(
-            (context, cfg) =>
-            {
-                cfg.ConfigureEndpoints(context);
-                cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
-            }
-        );
-    }
+    options.UsingInMemory(
+        (context, cfg) =>
+        {
+            cfg.ConfigureEndpoints(context);
+            cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+        }
+    );
 });
-
-var signalRBuilder = builder
-    .Services.AddSignalR()
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
-        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-
-var signalRConnectionString = builder.Configuration.GetConnectionString("SignalR");
-
-if (!string.IsNullOrEmpty(signalRConnectionString))
-{
-    var applicationName = ApplicationNameRegex().Replace(tenant, "_");
-
-    signalRBuilder.AddAzureSignalR(configure =>
-    {
-        configure.ConnectionString = signalRConnectionString;
-        configure.ApplicationName = applicationName;
-    });
-}
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -143,22 +79,6 @@ builder
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             )
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
-                var path = context.HttpContext.Request.Path;
-
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
-                {
-                    context.Token = accessToken;
-                }
-
-                return Task.CompletedTask;
-            }
         };
     });
 
@@ -235,8 +155,6 @@ builder.Services.AddSwaggerGen(options =>
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
-builder.Services.AddScoped<EntityChangedInterceptor>();
-
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -275,12 +193,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 
-public partial class Program
-{
-    [GeneratedRegex("[^A-Za-z0-9]")]
-    private static partial Regex ApplicationNameRegex();
-}
+public partial class Program { }

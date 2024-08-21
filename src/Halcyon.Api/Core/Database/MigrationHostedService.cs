@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Core.Migrations;
+namespace Halcyon.Api.Core.Database;
 
 public class MigrationHostedService<TDbContext>(
     IServiceProvider serviceProvider,
