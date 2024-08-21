@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
@@ -11,7 +11,7 @@ public class ResetPasswordEndpoint : IEndpoint
     {
         app.MapPut("/account/reset-password", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Account")
+            .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

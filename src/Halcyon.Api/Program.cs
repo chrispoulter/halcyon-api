@@ -4,20 +4,19 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
-using Halcyon.Api.Common;
+using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Database;
+using Halcyon.Api.Core.Email;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
+using Halcyon.Api.Features;
 using Halcyon.Api.Features.Seed;
-using Halcyon.Api.Services.Email;
-using Halcyon.Api.Services.Hash;
-using Halcyon.Api.Services.Jwt;
-using Halcyon.Api.Services.Migrations;
 using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -83,13 +82,12 @@ builder
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(
-        "UserAdministratorPolicy",
-        policy => policy.RequireRole("SYSTEM_ADMINISTRATOR", "USER_ADMINISTRATOR")
+builder
+    .Services.AddAuthorizationBuilder()
+    .AddPolicy(
+        nameof(Policy.IsUserAdministrator),
+        policy => policy.RequireRole(Policy.IsUserAdministrator)
     );
-});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -97,13 +95,17 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+var corsPolicySettings = new CorsPolicySettings();
+builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
+
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .WithOrigins("http://localhost:3000", "https://*.chrispoulter.com")
             .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Options)
-            .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType)
+            .WithOrigins(corsPolicySettings.AllowedOrigins)
+            .WithMethods(corsPolicySettings.AllowedMethods)
+            .WithHeaders(corsPolicySettings.AllowedHeaders)
+            .AllowCredentials()
     )
 );
 

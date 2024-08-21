@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Hash;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
@@ -12,7 +12,7 @@ public class ChangePasswordEndpoint : IEndpoint
         app.MapPut("/manage/change-password", HandleAsync)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Manage")
+            .WithTags(Tags.Manage)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)

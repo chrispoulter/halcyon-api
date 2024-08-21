@@ -5,12 +5,9 @@ using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
 namespace Halcyon.Api.Tests.Features.Account.ForgotPassword;
 
-public class ForgotPasswordEndpointTests : BaseTest
+public class ForgotPasswordEndpointTests(TestWebApplicationFactory factory) : BaseTest(factory)
 {
     private const string _requestUri = "/account/forgot-password";
-
-    public ForgotPasswordEndpointTests(TestWebApplicationFactory factory)
-        : base(factory) { }
 
     [Fact]
     public async Task ForgotPassword_ShouldNotSendForgotPasswordEmail_WhenUserNotFound()

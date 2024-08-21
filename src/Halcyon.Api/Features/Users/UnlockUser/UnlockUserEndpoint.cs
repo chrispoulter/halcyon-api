@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +10,15 @@ public class UnlockUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/unlock", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
-            .WithTags("Users")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         [FromBody] UpdateRequest request,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default

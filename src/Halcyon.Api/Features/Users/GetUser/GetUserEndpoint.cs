@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -10,14 +10,14 @@ public class GetUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user/{id}", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
-            .WithTags("Users")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
+            .WithTags(Tags.Users)
             .Produces<GetUserResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )

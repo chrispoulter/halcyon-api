@@ -1,17 +1,14 @@
 using System.Net;
 using System.Net.Http.Json;
-using Halcyon.Api.Common;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Halcyon.Api.Tests.Features.Account.Register;
 
-public class RegisterEndpointTests : BaseTest
+public class RegisterEndpointTests(TestWebApplicationFactory factory) : BaseTest(factory)
 {
     private const string _requestUri = "/account/register";
-
-    public RegisterEndpointTests(TestWebApplicationFactory factory)
-        : base(factory) { }
 
     [Fact]
     public async Task Register_ShouldReturnBadRequest_WhenDuplicateEmailAddress()
@@ -37,14 +34,14 @@ public class RegisterEndpointTests : BaseTest
 
         var result = await response.Content.ReadFromJsonAsync<UpdateResponse>();
         Assert.NotNull(result);
-        Assert.NotEqual(0, result.Id);
+        Assert.NotEqual(Guid.Empty, result.Id);
     }
 
     private static RegisterRequest CreateRegisterRequest(string? emailAddress = null) =>
         new()
         {
             EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            Password = "password",
+            Password = Guid.NewGuid().ToString(),
             FirstName = "Test",
             LastName = "User",
             DateOfBirth = new DateOnly(1070, 1, 1)

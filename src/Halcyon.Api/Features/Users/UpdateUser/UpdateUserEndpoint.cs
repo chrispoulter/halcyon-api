@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +10,9 @@ public class UpdateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Users")
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -20,9 +20,8 @@ public class UpdateUserEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         UpdateUserRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )

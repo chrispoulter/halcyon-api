@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +12,7 @@ public class RegisterEndpoint : IEndpoint
     {
         app.MapPost("/account/register", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Account")
+            .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

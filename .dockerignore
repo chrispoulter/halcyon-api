@@ -3,6 +3,7 @@
 **/.env*
 **/.git
 **/.gitignore
+**/.gitattributes
 **/.idea
 **/.project
 **/.settings

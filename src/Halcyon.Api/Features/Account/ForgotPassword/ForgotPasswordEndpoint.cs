@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
@@ -12,7 +12,7 @@ public class ForgotPasswordEndpoint : IEndpoint
     {
         app.MapPut("/account/forgot-password", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Account")
+            .WithTags(Tags.Account)
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

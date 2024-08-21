@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Hash;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,16 +11,15 @@ public class CreateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/user", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Users")
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
     private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
-        CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default

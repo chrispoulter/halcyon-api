@@ -2,13 +2,8 @@
 
 namespace Halcyon.Api.Data;
 
-public class HalcyonDbContext : DbContext
+public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbContext(options)
 {
-    public HalcyonDbContext() { }
-
-    public HalcyonDbContext(DbContextOptions<HalcyonDbContext> options)
-        : base(options) { }
-
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,5 +1,5 @@
 using FluentValidation;
-using Halcyon.Api.Common;
+using Halcyon.Api.Core.Web;
 
 namespace Halcyon.Api.Features.Manage.ChangePassword;
 

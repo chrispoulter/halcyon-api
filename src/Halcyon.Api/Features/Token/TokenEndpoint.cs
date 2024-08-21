@@ -1,7 +1,6 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Hash;
-using Halcyon.Api.Services.Jwt;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Token;
@@ -12,7 +11,7 @@ public class TokenEndpoint : IEndpoint
     {
         app.MapPost("/token", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags("Token")
+            .WithTags(Tags.Token)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Common;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +10,8 @@ public class DeleteUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapDelete("/user/{id}", HandleAsync)
-            .RequireAuthorization("UserAdministratorPolicy")
-            .WithTags("Users")
+            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -19,7 +19,7 @@ public class DeleteUserEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        int id,
+        Guid id,
         [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
