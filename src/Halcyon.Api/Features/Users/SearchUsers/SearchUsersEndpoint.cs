@@ -64,7 +64,7 @@ public class SearchUsersEndpoint : IEndpoint
             {
                 Items = users,
                 HasNextPage = request.Page < pageCount,
-                HasPreviousPage = request.Page > 1
+                HasPreviousPage = request.Page > 1 && request.Page <= pageCount
             }
         );
     }
