@@ -1,8 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
 using Halcyon.Api.Data;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Halcyon.Api.Core.Authentication;
@@ -18,28 +18,29 @@ public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> 
 
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new List<Claim>
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, user.EmailAddress),
-            new(JwtRegisteredClaimNames.GivenName, user.FirstName),
-            new(JwtRegisteredClaimNames.FamilyName, user.LastName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            Subject = new ClaimsIdentity(
+                [
+                    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                    new(JwtRegisteredClaimNames.Email, user.EmailAddress),
+                    new(JwtRegisteredClaimNames.GivenName, user.FirstName),
+                    new(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    .. (user.Roles ?? []).Select(role => new Claim(
+                        JwtClaimNames.Roles,
+                        role.ToString()
+                    ))
+                ]
+            ),
+            Expires = timeProvider.GetUtcNow().AddSeconds(jwtSettings.ExpiresIn).UtcDateTime,
+            SigningCredentials = credentials,
+            Issuer = jwtSettings.Issuer,
+            Audience = jwtSettings.Audience
         };
 
-        foreach (var role in user.Roles ?? [])
-        {
-            claims.Add(new(JwtClaimNames.Roles, role.ToString()));
-        }
+        var handler = new JsonWebTokenHandler();
 
-        var token = new JwtSecurityToken(
-            jwtSettings.Issuer,
-            jwtSettings.Audience,
-            claims: claims,
-            expires: timeProvider.GetUtcNow().AddSeconds(jwtSettings.ExpiresIn).UtcDateTime,
-            signingCredentials: credentials
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return handler.CreateToken(tokenDescriptor);
     }
 }
