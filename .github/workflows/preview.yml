@@ -65,7 +65,9 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   file: ./src/Halcyon.Api/Dockerfile
-                  tags: ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
+                  tags: |
+                      ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
+                      ghcr.io/${{ env.REPO }}:preview
                   context: .
                   push: true
                   provenance: false
