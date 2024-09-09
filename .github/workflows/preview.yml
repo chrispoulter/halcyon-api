@@ -27,8 +27,6 @@ jobs:
         permissions:
             contents: read
             packages: write
-        outputs:
-            semVer: ${{ steps.gitversion.outputs.semVer }}
 
         steps:
             - name: Checkout code
@@ -65,7 +63,9 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   file: ./src/Halcyon.Api/Dockerfile
-                  tags: ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
+                  tags: |
+                      ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
+                      ghcr.io/${{ env.REPO }}:preview
                   context: .
                   push: true
                   provenance: false
@@ -75,17 +75,9 @@ jobs:
         needs: build-docker
         environment:
             name: Preview
-            # url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
             url: ${{ vars.URL }}
 
         steps:
-            - name: Lowercase the repo name and username
-              run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
-            - name: Deploy to Azure Web App
-              id: deploy-to-webapp
-              uses: azure/webapps-deploy@v2
-              with:
-                  app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-                  publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                  images: 'ghcr.io/${{ env.REPO }}:${{ needs.build-docker.outputs.semVer }}'
+            - name: Deploy to Coolify
+              run: |
+                  curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'

@@ -171,7 +171,7 @@ builder.Services.Configure<SeedSettings>(
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
