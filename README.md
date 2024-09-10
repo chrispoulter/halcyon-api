@@ -26,7 +26,7 @@ Create a `appsettings.Development.json` file in the web project directory.
         "NoReplyAddress": "noreply@example.com"
     },
     "Jwt": {
-        "SecurityKey": "change-me-123456789012345678901234567890",
+        "SecurityKey": "super_secret_key_that_should_be_changed",
         "Issuer": "HalcyonApi",
         "Audience": "HalcyonClient",
         "ExpiresIn": 3600
@@ -35,7 +35,7 @@ Create a `appsettings.Development.json` file in the web project directory.
         "Users": [
             {
                 "EmailAddress": "system.administrator@example.com",
-                "Password": "change-me-1234567890",
+                "Password": "super_secret_password_that_should_be_changed",
                 "FirstName": "System",
                 "LastName": "Administrator",
                 "DateOfBirth": "1970-01-01",
