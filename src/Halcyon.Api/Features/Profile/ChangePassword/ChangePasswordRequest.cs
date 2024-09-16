@@ -1,7 +1,7 @@
 using FluentValidation;
 using Halcyon.Api.Core.Web;
 
-namespace Halcyon.Api.Features.Manage.ChangePassword;
+namespace Halcyon.Api.Features.Profile.ChangePassword;
 
 public class ChangePasswordRequest : UpdateRequest
 {

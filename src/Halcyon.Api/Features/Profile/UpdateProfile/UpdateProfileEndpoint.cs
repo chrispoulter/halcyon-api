@@ -1,18 +1,18 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Web;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Manage.ChangePassword;
+namespace Halcyon.Api.Features.Profile.UpdateProfile;
 
-public class ChangePasswordEndpoint : IEndpoint
+public class UpdateProfileEndpoint : IEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapPut("/manage/change-password", HandleAsync)
+        app.MapPut("/profile", HandleAsync)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags(Tags.Manage)
+            .WithTags(Tags.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -20,10 +20,9 @@ public class ChangePasswordEndpoint : IEndpoint
     }
 
     private static async Task<IResult> HandleAsync(
-        ChangePasswordRequest request,
+        UpdateProfileRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
@@ -48,26 +47,28 @@ public class ChangePasswordEndpoint : IEndpoint
             );
         }
 
-        if (user.Password is null)
+        if (
+            !request.EmailAddress.Equals(
+                user.EmailAddress,
+                StringComparison.InvariantCultureIgnoreCase
+            )
+        )
         {
-            return Results.Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Incorrect password."
+            var existing = await dbContext.Users.AnyAsync(
+                u => u.EmailAddress == request.EmailAddress,
+                cancellationToken
             );
+
+            if (existing)
+            {
+                return Results.Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "User name is already taken."
+                );
+            }
         }
 
-        var verified = passwordHasher.VerifyPassword(request.CurrentPassword, user.Password);
-
-        if (!verified)
-        {
-            return Results.Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Incorrect password."
-            );
-        }
-
-        user.Password = passwordHasher.HashPassword(request.NewPassword);
-        user.PasswordResetToken = null;
+        request.Adapt(user);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

@@ -1,26 +1,24 @@
 ﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
-using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Manage.UpdateProfile;
+namespace Halcyon.Api.Features.Profile.DeleteProfile;
 
-public class UpdateProfileEndpoint : IEndpoint
+public class DeleteProfileEndpoint : IEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapPut("/manage", HandleAsync)
+        app.MapDelete("/profile", HandleAsync)
             .RequireAuthorization()
-            .AddEndpointFilter<ValidationFilter>()
-            .WithTags(Tags.Manage)
+            .WithTags(Tags.Profile)
             .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
     private static async Task<IResult> HandleAsync(
-        UpdateProfileRequest request,
+        [FromBody] UpdateRequest request,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
@@ -39,7 +37,7 @@ public class UpdateProfileEndpoint : IEndpoint
             );
         }
 
-        if (request.Version is not null && request.Version != user.Version)
+        if (request?.Version is not null && request.Version != user.Version)
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status409Conflict,
@@ -47,28 +45,7 @@ public class UpdateProfileEndpoint : IEndpoint
             );
         }
 
-        if (
-            !request.EmailAddress.Equals(
-                user.EmailAddress,
-                StringComparison.InvariantCultureIgnoreCase
-            )
-        )
-        {
-            var existing = await dbContext.Users.AnyAsync(
-                u => u.EmailAddress == request.EmailAddress,
-                cancellationToken
-            );
-
-            if (existing)
-            {
-                return Results.Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "User name is already taken."
-                );
-            }
-        }
-
-        request.Adapt(user);
+        dbContext.Users.Remove(user);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
