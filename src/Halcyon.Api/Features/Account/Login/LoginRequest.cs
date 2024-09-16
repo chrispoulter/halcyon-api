@@ -1,17 +1,17 @@
 ﻿using FluentValidation;
 
-namespace Halcyon.Api.Features.Token;
+namespace Halcyon.Api.Features.Account.Login;
 
-public class TokenRequest
+public class LoginRequest
 {
     public string EmailAddress { get; set; }
 
     public string Password { get; set; }
 }
 
-public class TokenRequestValidator : AbstractValidator<TokenRequest>
+public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
-    public TokenRequestValidator()
+    public LoginRequestValidator()
     {
         RuleFor(x => x.EmailAddress)
             .NotEmpty()

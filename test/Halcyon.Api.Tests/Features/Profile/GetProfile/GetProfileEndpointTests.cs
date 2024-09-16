@@ -1,12 +1,12 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Halcyon.Api.Features.Manage.GetProfile;
+using Halcyon.Api.Features.Profile.GetProfile;
 
-namespace Halcyon.Api.Tests.Features.Manage.GetProfile;
+namespace Halcyon.Api.Tests.Features.Profile.GetProfile;
 
 public class GetProfileEndpointTests(TestWebApplicationFactory factory) : BaseTest(factory)
 {
-    private const string _requestUri = "/manage";
+    private const string _requestUri = "/profile";
 
     [Fact]
     public async Task GetProfile_ShouldReturnUnauthorized_WhenNotAuthorized()

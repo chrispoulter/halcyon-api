@@ -3,21 +3,21 @@ using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Token;
+namespace Halcyon.Api.Features.Account.Login;
 
-public class TokenEndpoint : IEndpoint
+public class LoginEndpoint : IEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapPost("/token", HandleAsync)
+        app.MapPost("/account/login", HandleAsync)
             .AddEndpointFilter<ValidationFilter>()
-            .WithTags(Tags.Token)
+            .WithTags(Tags.Account)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
     private static async Task<IResult> HandleAsync(
-        TokenRequest request,
+        LoginRequest request,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator,

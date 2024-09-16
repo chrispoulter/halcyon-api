@@ -2,7 +2,7 @@ using FluentValidation;
 using Halcyon.Api.Core.Validation;
 using Halcyon.Api.Core.Web;
 
-namespace Halcyon.Api.Features.Manage.UpdateProfile;
+namespace Halcyon.Api.Features.Profile.UpdateProfile;
 
 public class UpdateProfileRequest : UpdateRequest
 {

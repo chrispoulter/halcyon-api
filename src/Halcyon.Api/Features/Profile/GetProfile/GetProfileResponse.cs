@@ -1,4 +1,4 @@
-﻿namespace Halcyon.Api.Features.Manage.GetProfile;
+﻿namespace Halcyon.Api.Features.Profile.GetProfile;
 
 public class GetProfileResponse
 {

@@ -3,15 +3,15 @@ using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Features.Manage.GetProfile;
+namespace Halcyon.Api.Features.Profile.GetProfile;
 
 public class GetProfileEndpoint : IEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapGet("/manage", HandleAsync)
+        app.MapGet("/profile", HandleAsync)
             .RequireAuthorization()
-            .WithTags(Tags.Manage)
+            .WithTags(Tags.Profile)
             .Produces<GetProfileResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
     }
