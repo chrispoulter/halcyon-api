@@ -42,8 +42,6 @@ jobs:
             - name: Determine Version
               id: version_step
               uses: gittools/actions/gitversion/execute@v3.0.0
-              with:
-                  additionalArguments: '/updateprojectfiles'
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
