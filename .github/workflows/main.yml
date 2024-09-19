@@ -68,7 +68,6 @@ jobs:
                   provenance: false
                   build-args: |
                       VERSION=${{ steps.version_step.outputs.semVer }}
-                      ASSEMBLEY_VERSION=${{ steps.version_step.outputs.assemblySemVer }}
 
     deploy-azure:
         runs-on: ubuntu-latest

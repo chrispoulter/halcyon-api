@@ -10,8 +10,7 @@ COPY . .
 RUN dotnet restore
 
 ARG VERSION=1.0.0
-ARG ASSEMBLY_VERSION=1.0.0
-RUN dotnet build "./src/Halcyon.Api/Halcyon.Api.csproj" --no-restore -c Release /p:Version=${VERSION} /p:AssemblyVersion=${ASSEMBLY_VERSION}
+RUN dotnet build "./src/Halcyon.Api/Halcyon.Api.csproj" --no-restore -c Release /p:Version=${VERSION}
 
 FROM build AS publish
 RUN dotnet publish "./src/Halcyon.Api/Halcyon.Api.csproj" --no-build -c Release -o /app/publish /p:UseAppHost=false
