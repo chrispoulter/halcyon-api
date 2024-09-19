@@ -1,8 +1,8 @@
 name: Preview Build and Deploy
 
 on:
-    push:
-        branches: ['feature/**', 'bugfix/**']
+    pull_request:
+        branches: ['main']
     workflow_dispatch:
 
 jobs:
