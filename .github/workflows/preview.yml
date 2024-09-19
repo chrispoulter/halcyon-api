@@ -1,8 +1,8 @@
 name: Preview Build and Deploy
 
 on:
-    push:
-        branches: ['feature/**', 'bugfix/**']
+    pull_request:
+        branches: ['main']
     workflow_dispatch:
 
 jobs:
@@ -35,16 +35,13 @@ jobs:
                   fetch-depth: 0
 
             - name: Install GitVersion
-              uses: gittools/actions/gitversion/setup@v0
+              uses: gittools/actions/gitversion/setup@v3.0.0
               with:
-                  versionSpec: '5.x'
+                  versionSpec: '6.x'
 
             - name: Determine Version
-              id: gitversion
-              uses: gittools/actions/gitversion/execute@v0
-              with:
-                  useConfigFile: true
-                  additionalArguments: '/updateprojectfiles'
+              id: version_step
+              uses: gittools/actions/gitversion/execute@v3.0.0
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -64,11 +61,13 @@ jobs:
               with:
                   file: ./src/Halcyon.Api/Dockerfile
                   tags: |
-                      ghcr.io/${{ env.REPO }}:${{ steps.gitversion.outputs.semVer }}
+                      ghcr.io/${{ env.REPO }}:${{ steps.version_step.outputs.semVer }}
                       ghcr.io/${{ env.REPO }}:preview
                   context: .
                   push: true
                   provenance: false
+                  build-args: |
+                      VERSION=${{ steps.version_step.outputs.semVer }}
 
     deploy-azure:
         runs-on: ubuntu-latest
