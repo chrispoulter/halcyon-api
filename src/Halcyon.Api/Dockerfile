@@ -8,7 +8,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
 RUN dotnet restore
-RUN dotnet build "./src/Halcyon.Api/Halcyon.Api.csproj" --no-restore -c Release
+
+ARG VERSION=1.0.0
+ARG ASSEMBLY_VERSION=1.0.0
+RUN dotnet build "./src/Halcyon.Api/Halcyon.Api.csproj" --no-restore -c Release /p:Version=${VERSION} /p:AssemblyVersion=${ASSEMBLY_VERSION}
 
 FROM build AS publish
 RUN dotnet publish "./src/Halcyon.Api/Halcyon.Api.csproj" --no-build -c Release -o /app/publish /p:UseAppHost=false
