@@ -28,7 +28,11 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.WithProperty("Version", version)
+    .CreateLogger();
+
 builder.Host.UseSerilog();
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
