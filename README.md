@@ -1,6 +1,6 @@
 # Halcyon API
 
-A RESTful API project template :construction_worker: with a sense of peace and tranquility :pray:
+A RESTful API project template :construction_worker: with a sense of peace and tranquillity :pray:
 
 ## Features
 
