@@ -1,6 +1,6 @@
 # Halcyon API
 
-A RESTful API project template :construction_worker: with a sense of peace and tranquillity :pray:
+A .NET Core REST API project template with a sense of peace and tranquillity :pray:
 
 ## Features
 
@@ -12,6 +12,8 @@ A RESTful API project template :construction_worker: with a sense of peace and t
   [https://masstransit.io/](https://masstransit.io/)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
+- Mapster
+  [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
 - Serilog
   [https://serilog.net/](https://serilog.net/)
 - Swagger
