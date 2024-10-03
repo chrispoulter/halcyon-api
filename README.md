@@ -45,9 +45,9 @@ Restore NuGet packages:
 dotnet restore
 ```
 
-### Update configuration _(optional)_
+### Update local configuration _(optional)_
 
-Create a `appsettings.Development.json` file in the `src/Halcyon.Api` directory:
+In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
 
 ```
 {
