@@ -1,6 +1,6 @@
 # Halcyon API
 
-A .NET Core REST API project template with a sense of peace and tranquillity :pray:
+A .NET Core REST API project template 👷 Built with a sense of peace and tranquillity 🙏
 
 ## Features
 
@@ -45,7 +45,7 @@ Restore NuGet packages:
 dotnet restore
 ```
 
-### Apply custom configuration _(optional)_
+### Update configuration _(optional)_
 
 Create a `appsettings.Development.json` file in the `src/Halcyon.Api` directory:
 
@@ -94,7 +94,7 @@ Once running, you can explore the API using Swagger UI at http://localhost:5257
 
 ## Testing
 
-To run unit tests:
+This project includes unit tests. To run tests:
 
 ```
 dotnet test
