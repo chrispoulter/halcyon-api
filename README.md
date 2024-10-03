@@ -1,13 +1,13 @@
 # Halcyon API
 
-A RESTful API project template :construction_worker: with a sense of peace and tranquility :pray:
+A RESTful API project template :construction_worker: with a sense of peace and tranquillity :pray:
 
 ## Features
 
 - .NET
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
-  [https://learn.microsoft.com/en-us/ef/](https://learn.microsoft.com/en-us/ef/)
+  [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
 - MassTransit
   [https://masstransit.io/](https://masstransit.io/)
 - FluentValidation
@@ -43,7 +43,7 @@ Restore NuGet packages:
 dotnet restore
 ```
 
-### Apply custom configuration *(optional)*
+### Apply custom configuration _(optional)_
 
 Create a `appsettings.Development.json` file in the `src/Halcyon.Api` directory:
 
