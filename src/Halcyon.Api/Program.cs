@@ -123,7 +123,7 @@ builder.Services.AddSwaggerGen(options =>
         {
             Version = version,
             Title = "Halcyon API",
-            Description = "A web api template."
+            Description = "A RESTful API project template with a sense of peace and tranquillity"
         }
     );
 
