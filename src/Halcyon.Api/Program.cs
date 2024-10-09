@@ -127,7 +127,8 @@ builder.Services.AddSwaggerGen(options =>
         {
             Version = version,
             Title = "Halcyon API",
-            Description = "A .NET Core REST API project template with a sense of peace and tranquillity."
+            Description =
+                "A .NET Core REST API project template. Built with a sense of peace and tranquillity."
         }
     );
 
