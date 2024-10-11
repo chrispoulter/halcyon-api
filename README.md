@@ -38,6 +38,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
 - MailHog
   [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog)
+- Seq
+  [https://datalust.co/seq](https://datalust.co/seq)
 
 ### Install dependencies
 
@@ -53,35 +55,66 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 
 ```
 {
-    "ConnectionStrings": {
-        "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
-        "RabbitMq": "amqp://guest:guest@localhost:5672"
+  "ConnectionStrings": {
+    "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
+    "RabbitMq": "amqp://guest:guest@localhost:5672"
+  },
+  "CorsPolicy": {
+    "AllowedOrigins": [ "http://localhost:3000" ],
+    "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+    "AllowedHeaders": [ "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "X-Requested-With" ]
+  },
+  "Email": {
+    "SmtpServer": "localhost",
+    "SmtpPort": 1025,
+    "SmtpUserName": null,
+    "SmtpPassword": null,
+    "NoReplyAddress": "noreply@example.com"
+  },
+  "Jwt": {
+    "SecurityKey": "super_secret_key_that_should_be_changed",
+    "Issuer": "HalcyonApi",
+    "Audience": "HalcyonClient",
+    "ExpiresIn": 3600
+  },
+  "Seed": {
+    "Users": [
+      {
+        "EmailAddress": "system.administrator@example.com",
+        "Password": "super_secret_password_that_should_be_changed",
+        "FirstName": "System",
+        "LastName": "Administrator",
+        "DateOfBirth": "1970-01-01",
+        "Roles": [ "SYSTEM_ADMINISTRATOR" ]
+      }
+    ]
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning",
+        "Microsoft.Hosting.Lifetime": "Information"
+      }
     },
-    "Email": {
-        "SmtpServer": "localhost",
-        "SmtpPort": 1025,
-        "SmtpUserName": null,
-        "SmtpPassword": null,
-        "NoReplyAddress": "noreply@example.com"
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+    "Properties": {
+      "ApplicationName": "Halcyon.Api"
     },
-    "Jwt": {
-        "SecurityKey": "super_secret_key_that_should_be_changed",
-        "Issuer": "HalcyonApi",
-        "Audience": "HalcyonClient",
-        "ExpiresIn": 3600
-    },
-    "Seed": {
-        "Users": [
-            {
-                "EmailAddress": "system.administrator@example.com",
-                "Password": "super_secret_password_that_should_be_changed",
-                "FirstName": "System",
-                "LastName": "Administrator",
-                "DateOfBirth": "1970-01-01",
-                "Roles": [ "SYSTEM_ADMINISTRATOR" ]
-            }
-        ]
+    "WriteTo": {
+      "Console": {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
+        }
+      },
+      "Seq": {
+        "Name": "Seq",
+        "Args": { "serverUrl": "http://localhost:5341" }
+      }
     }
+  },
+  "AllowedHosts": "*"
 }
 ```
 
