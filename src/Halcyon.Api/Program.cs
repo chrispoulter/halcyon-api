@@ -59,7 +59,7 @@ builder.Services.AddMassTransit(options =>
         (context, cfg) =>
         {
             cfg.Host(rabbitMqConnectionString);
-            cfg.ConfigureEndpoints(context);
+            cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(true));
             cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );

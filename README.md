@@ -34,6 +34,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
+- RabbitMQ
+  [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
 - MailHog
   [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog)
 
@@ -52,7 +54,8 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ```
 {
     "ConnectionStrings": {
-        "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password"
+        "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
+        "RabbitMq": "amqp://guest:guest@localhost:5672"
     },
     "Email": {
         "SmtpServer": "localhost",
