@@ -49,14 +49,17 @@ builder
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
+var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
+
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumers(assembly);
 
-    options.UsingInMemory(
+    options.UsingRabbitMq(
         (context, cfg) =>
         {
-            cfg.ConfigureEndpoints(context);
+            cfg.Host(rabbitMqConnectionString);
+            cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(true));
             cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );
