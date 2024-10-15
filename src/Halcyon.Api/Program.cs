@@ -121,6 +121,7 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
