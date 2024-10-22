@@ -9,7 +9,6 @@
 		<DockerfileContext>..\..</DockerfileContext>
 		<DockerfileTag>halcyon-api</DockerfileTag>
 		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-		<DockerServiceName>halcyon-api</DockerServiceName>
 	</PropertyGroup>
 
 	<ItemGroup>
