@@ -15,8 +15,6 @@ services:
     ports:
       - 5257:8080
       - 7257:8081
-    networks:
-      - halcyon-network
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -33,12 +31,10 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - 5432:5432
-    networks:
-      - halcyon-network
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -49,12 +45,10 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    networks:
-      - halcyon-network
     volumes:
       - rabbitmq:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
+      test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -68,8 +62,6 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
-    networks:
-      - halcyon-network
     volumes:
       - mailhog:/home/mailhog
       # MailHog bcrypt test
@@ -84,22 +76,11 @@ services:
       SEQ_API_CANONICALURI: http://localhost:5341
     ports:
       - 5341:80
-    networks:
-      - halcyon-network
     volumes:
       - seq:/data
 
 volumes:
   postgres:
-    name: halcyon-postgres
   rabbitmq:
-    name: halcyon-rabbitmq
   mailhog:
-    name: halcyon-mailhog
   seq:
-    name: halcyon-seq
-
-networks:
-  halcyon-network:
-    name: halcyon-network
-    driver: bridge
