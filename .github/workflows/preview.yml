@@ -17,9 +17,8 @@ jobs:
 
             - name: Build and test
               run: |
-                  dotnet restore
-                  dotnet build --no-restore
-                  dotnet test --no-build --verbosity normal
+                  dotnet build halcyon-api.sln
+                  dotnet test halcyon-api.sln --verbosity normal
 
     build-docker:
         runs-on: ubuntu-latest
