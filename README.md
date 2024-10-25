@@ -46,7 +46,7 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 Restore NuGet packages:
 
 ```
-dotnet restore
+dotnet restore "halcyon-api.sln"
 ```
 
 ### Update local configuration _(optional)_
@@ -133,7 +133,7 @@ Once running, you can explore the API using Swagger UI at http://localhost:5257
 This project includes unit tests. To run tests:
 
 ```
-dotnet test
+dotnet test "halcyon-api.sln"
 ```
 
 ## Contributing
