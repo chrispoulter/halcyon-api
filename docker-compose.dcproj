@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>cd9d3714-7963-4c74-a6d5-f9138e669a14</ProjectGuid>
-	<DockerComposeProjectName>halcyon-api</DockerComposeProjectName>
+	<DockerComposeProjectName>halcyon</DockerComposeProjectName>
 	<DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>halcyon-api</DockerServiceName>

@@ -1,4 +1,4 @@
-name: halcyon-api
+name: halcyon
 
 services:
     halcyon-api:
