@@ -67,8 +67,11 @@ builder.Services.AddMassTransit(options =>
     );
 });
 
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+
 builder
     .Services.AddSignalR()
+    .AddStackExchangeRedis(redisConnectionString)
     .AddJsonProtocol(options =>
     {
         options.PayloadSerializerOptions.DefaultIgnoreCondition =
