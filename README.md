@@ -10,6 +10,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
 - MassTransit
   [https://masstransit.io/](https://masstransit.io/)
+- SignalR
+  [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - Mapster
@@ -62,7 +64,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
   "CorsPolicy": {
     "AllowedOrigins": [ "http://localhost:3000" ],
     "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
-    "AllowedHeaders": [ "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "X-Requested-With" ]
+    "AllowedHeaders": [ "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "X-Requested-With", "x-signalr-user-agent" ]
   },
   "Email": {
     "SmtpServer": "localhost",

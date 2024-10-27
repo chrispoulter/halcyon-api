@@ -10,6 +10,7 @@ using Halcyon.Api.Core.Email;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
+using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
@@ -44,7 +45,8 @@ builder
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention();
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>());
         }
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
@@ -64,6 +66,15 @@ builder.Services.AddMassTransit(options =>
         }
     );
 });
+
+builder
+    .Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -86,6 +97,20 @@ builder
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             )
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -164,6 +189,8 @@ builder.Services.AddSwaggerGen(options =>
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
+builder.Services.AddScoped<EntityChangedInterceptor>();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -202,6 +229,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+app.MapHub<MessageHub>("/messages");
 app.MapEndpoints();
 app.Run();
 
