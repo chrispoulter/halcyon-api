@@ -1,0 +1,91 @@
+name: halcyon
+
+services:
+    halcyon-api:
+        image: halcyon-api:dev
+        build:
+            context: .
+            dockerfile: src/Halcyon.Api/Dockerfile
+            args:
+                VERSION: 1.0.0-docker
+        environment:
+            ASPNETCORE_ENVIRONMENT: Development
+            ASPNETCORE_HTTP_PORTS: 8080
+            ASPNETCORE_HTTPS_PORTS: 8081
+            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon;Username=postgres;Password=password
+            ConnectionStrings__RabbitMq: amqp://guest:guest@host.docker.internal:5672
+            Email__SmtpServer: host.docker.internal
+            Serilog__MinimumLevel__Override__Microsoft.AspNetCore.DataProtection: Error
+            Serilog__WriteTo__Seq__Args__serverUrl: http://host.docker.internal:5341
+        ports:
+            - 5257:8080
+            - 7257:8081
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+
+    postgres:
+        image: postgres:16.4-alpine
+        user: postgres
+        environment:
+            POSTGRES_PASSWORD: password
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        healthcheck:
+            test: [ 'CMD', 'pg_isready' ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+
+    rabbitmq:
+        image: rabbitmq:3.13.7-management-alpine
+        hostname: local
+        ports:
+            - 5672:5672
+            - 15672:15672
+        volumes:
+            - rabbitmq:/var/lib/rabbitmq
+        healthcheck:
+            test: [ 'CMD', 'rabbitmqctl', 'status' ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+
+    mailhog:
+        image: mailhog/mailhog:v1.0.1
+        environment:
+            MH_STORAGE: maildir
+            MH_MAILDIR_PATH: /home/mailhog
+            # MH_AUTH_FILE: /home/mailhog-auth
+        ports:
+            - 1025:1025
+            - 8025:8025
+        volumes:
+            - mailhog:/home/mailhog
+            # MailHog bcrypt test
+            # - ./mailhog-auth:/home/mailhog-auth
+
+    seq:
+        image: datalust/seq:2024.3
+        environment:
+            ACCEPT_EULA: Y
+            # echo 'password' | docker run --rm -i datalust/seq config hash
+            SEQ_FIRSTRUN_ADMINPASSWORDHASH: QPeG8pGvEJu2fECM8zZ5EDQM/mXBxL4X5+GzwHMfhn8KILjH8Z6sBtIY47FhAWVFZchQC3S6SyBSZmQFzvS2HET+WrTqniK4GEJTL7S3sfqJ
+            SEQ_API_CANONICALURI: http://localhost:5341
+        ports:
+            - 5341:80
+        volumes:
+            - seq:/data
+
+volumes:
+    postgres:
+    rabbitmq:
+    mailhog:
+    seq:
