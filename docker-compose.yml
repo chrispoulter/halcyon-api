@@ -29,6 +29,8 @@ services:
                 condition: service_healthy
             rabbitmq:
                 condition: service_healthy
+            redis:
+                condition: service_healthy
 
     postgres:
         image: postgres:16.4-alpine
@@ -66,6 +68,11 @@ services:
         # command: redis-server --save 60 1 --loglevel warning --requirepass password
         volumes: 
             - redis:/data
+        healthcheck:
+            test: [ 'CMD', 'redis-cli', 'ping' ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
 
     mailhog:
         image: mailhog/mailhog:v1.0.1
