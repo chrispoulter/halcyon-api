@@ -41,13 +41,11 @@ var databaseConnectionString = builder.Configuration.GetConnectionString("Databa
 builder
     .Services.AddDbContext<HalcyonDbContext>(
         (provider, options) =>
-        {
             options
                 .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
                 .UseSnakeCaseNamingConvention()
-                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>());
-        }
+                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
     )
     .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 
