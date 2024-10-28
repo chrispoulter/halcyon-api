@@ -8,8 +8,6 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresExtension("pg_trgm");
-
         modelBuilder.Entity<User>().Property(u => u.EmailAddress).IsRequired();
         modelBuilder.Entity<User>().HasIndex(u => u.EmailAddress).IsUnique();
         modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired();
@@ -21,16 +19,15 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
 
         modelBuilder
             .Entity<User>()
-            .Property(u => u.Search)
-            .HasComputedColumnSql(
-                @"""first_name"" || ' ' || ""last_name"" || ' ' || ""email_address""",
-                stored: true
+            .HasGeneratedTsVectorColumn(
+                u => u.SearchVector,
+                "english",
+                u => new
+                {
+                    u.FirstName,
+                    u.LastName,
+                    u.EmailAddress
+                }
             );
-
-        modelBuilder
-            .Entity<User>()
-            .HasIndex(u => u.Search)
-            .HasMethod("gin")
-            .HasOperators("gin_trgm_ops");
     }
 }
