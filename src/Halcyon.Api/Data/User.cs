@@ -1,6 +1,8 @@
-﻿namespace Halcyon.Api.Data;
+﻿using Halcyon.Api.Core.Database;
 
-public class User
+namespace Halcyon.Api.Data;
+
+public class User : IEntityWithId
 {
     public Guid Id { get; set; }
 
