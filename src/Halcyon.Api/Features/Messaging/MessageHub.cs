@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Halcyon.Api.Features.Messaging;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -12,8 +13,6 @@ namespace Halcyon.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase().Annotation("Npgsql:PostgresExtension:pg_trgm", ",,");
-
             migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
@@ -32,12 +31,13 @@ namespace Halcyon.Api.Migrations
                     ),
                     roles = table.Column<List<string>>(type: "text[]", nullable: true),
                     xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
-                    search = table.Column<string>(
-                        type: "text",
-                        nullable: true,
-                        computedColumnSql: "\"first_name\" || ' ' || \"last_name\" || ' ' || \"email_address\"",
-                        stored: true
-                    )
+                    search_vector = table
+                        .Column<NpgsqlTsVector>(type: "tsvector", nullable: true)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation(
+                            "Npgsql:TsVectorProperties",
+                            new[] { "first_name", "last_name", "email_address" }
+                        )
                 },
                 constraints: table =>
                 {
@@ -53,9 +53,12 @@ namespace Halcyon.Api.Migrations
             );
 
             migrationBuilder
-                .CreateIndex(name: "ix_users_search", table: "users", column: "search")
-                .Annotation("Npgsql:IndexMethod", "gin")
-                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
+                .CreateIndex(
+                    name: "ix_users_search_vector",
+                    table: "users",
+                    column: "search_vector"
+                )
+                .Annotation("Npgsql:IndexMethod", "gin");
         }
 
         /// <inheritdoc />

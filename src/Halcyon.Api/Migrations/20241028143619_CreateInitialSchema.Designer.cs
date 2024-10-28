@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
 namespace Halcyon.Api.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20240813131042_CreateInitialSchema")]
+    [Migration("20241028143619_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -21,10 +22,9 @@ namespace Halcyon.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Halcyon.Api.Data.User", b =>
@@ -71,11 +71,12 @@ namespace Halcyon.Api.Migrations
                         .HasColumnType("text[]")
                         .HasColumnName("roles");
 
-                    b.Property<string>("Search")
+                    b.Property<NpgsqlTsVector>("SearchVector")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("text")
-                        .HasColumnName("search")
-                        .HasComputedColumnSql("\"first_name\" || ' ' || \"last_name\" || ' ' || \"email_address\"", true);
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FirstName", "LastName", "EmailAddress" });
 
                     b.Property<uint>("Version")
                         .IsConcurrencyToken()
@@ -90,11 +91,10 @@ namespace Halcyon.Api.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_users_email_address");
 
-                    b.HasIndex("Search")
-                        .HasDatabaseName("ix_users_search");
+                    b.HasIndex("SearchVector")
+                        .HasDatabaseName("ix_users_search_vector");
 
-                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Search"), "gin");
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Search"), new[] { "gin_trgm_ops" });
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "gin");
 
                     b.ToTable("users", (string)null);
                 });
