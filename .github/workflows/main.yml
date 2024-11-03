@@ -1,4 +1,4 @@
-name: Main Build and Deploy
+name: Main Build and Publish
 
 on:
     push:
@@ -20,7 +20,7 @@ jobs:
                   dotnet build "halcyon-api.sln"
                   dotnet test "halcyon-api.sln"
 
-    build-docker:
+    publish:
         runs-on: ubuntu-latest
         needs: build
         permissions:
@@ -67,15 +67,3 @@ jobs:
                   provenance: false
                   build-args: |
                       VERSION=${{ steps.version_step.outputs.semVer }}
-
-    deploy-azure:
-        runs-on: ubuntu-latest
-        needs: build-docker
-        environment:
-            name: Production
-            url: ${{ vars.URL }}
-
-        steps:
-            - name: Deploy to Coolify
-              run: |
-                  curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
