@@ -17,9 +17,7 @@ using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -138,15 +136,19 @@ builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-    options.AddFixedWindowLimiter(
+    options.AddPolicy(
         policyName: "fixed",
-        options =>
-        {
-            options.PermitLimit = rateLimitingSettings.PermitLimit;
-            options.Window = TimeSpan.FromSeconds(rateLimitingSettings.Window);
-            options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-            options.QueueLimit = rateLimitingSettings.QueueLimit;
-        }
+        partitioner: httpContext =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host,
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = rateLimitingSettings.PermitLimit,
+                    Window = TimeSpan.FromSeconds(rateLimitingSettings.Window),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = rateLimitingSettings.QueueLimit
+                }
+            )
     );
 });
 
@@ -239,10 +241,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseRateLimiter();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapHealthChecks("/health");
 
 app.UseSwagger();
@@ -253,7 +255,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages");
+app.MapHub<MessageHub>("/messages").RequireRateLimiting("fixed");
 app.MapEndpoints();
 app.Run();
 

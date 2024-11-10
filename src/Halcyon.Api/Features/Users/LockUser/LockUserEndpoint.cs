@@ -11,6 +11,7 @@ public class LockUserEndpoint : IEndpoint
     {
         app.MapPut("/user/{id}/lock", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
+            .RequireRateLimiting("fixed")
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
