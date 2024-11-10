@@ -65,9 +65,9 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "Redis": "localhost"
   },
   "RateLimiter": {
-    "PermitLimit": "4",
-    "Window": "12",
-    "QueueLimit": "2"
+    "PermitLimit": 4,
+    "Window": 12,
+    "QueueLimit": 2
   },
   "CorsPolicy": {
     "AllowedOrigins": [ "http://localhost:3000" ],

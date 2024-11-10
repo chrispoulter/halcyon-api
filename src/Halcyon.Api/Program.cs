@@ -129,8 +129,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-var rateLimitingSettings = new RateLimiterSettings();
-builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimitingSettings);
+var rateLimiterSettings = new RateLimiterSettings();
+builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimiterSettings);
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -143,10 +143,10 @@ builder.Services.AddRateLimiter(options =>
                 httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host,
                 _ => new FixedWindowRateLimiterOptions
                 {
-                    PermitLimit = rateLimitingSettings.PermitLimit,
-                    Window = TimeSpan.FromSeconds(rateLimitingSettings.Window),
+                    PermitLimit = rateLimiterSettings.PermitLimit,
+                    Window = TimeSpan.FromSeconds(rateLimiterSettings.Window),
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                    QueueLimit = rateLimitingSettings.QueueLimit
+                    QueueLimit = rateLimiterSettings.QueueLimit
                 }
             )
     );
