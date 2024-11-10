@@ -66,7 +66,8 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
   },
   "RateLimiter": {
     "PermitLimit": "4",
-    "Window": "12"
+    "Window": "12",
+    "QueueLimit": "2"
   },
   "CorsPolicy": {
     "AllowedOrigins": [ "http://localhost:3000" ],
