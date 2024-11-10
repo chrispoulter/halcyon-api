@@ -64,6 +64,10 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "RabbitMq": "amqp://guest:guest@localhost:5672",
     "Redis": "localhost"
   },
+  "RateLimiter": {
+    "PermitLimit": "4",
+    "Window": "12"
+  },
   "CorsPolicy": {
     "AllowedOrigins": [ "http://localhost:3000" ],
     "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],

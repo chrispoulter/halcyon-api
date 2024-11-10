@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using FluentValidation;
 using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Database;
@@ -16,7 +17,9 @@ using Mapster;
 using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -128,6 +131,25 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+var rateLimitingSettings = new RateLimiterSettings();
+builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimitingSettings);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddFixedWindowLimiter(
+        policyName: "fixed",
+        options =>
+        {
+            options.PermitLimit = rateLimitingSettings.PermitLimit;
+            options.Window = TimeSpan.FromSeconds(rateLimitingSettings.Window);
+            options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            options.QueueLimit = rateLimitingSettings.QueueLimit;
+        }
+    );
+});
+
 var corsPolicySettings = new CorsPolicySettings();
 builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
 
@@ -217,6 +239,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
+app.UseRateLimiter();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
