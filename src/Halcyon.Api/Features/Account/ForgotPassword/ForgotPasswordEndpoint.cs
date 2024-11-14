@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Web;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
@@ -11,7 +12,6 @@ public class ForgotPasswordEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/forgot-password", HandleAsync)
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Account)
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -19,11 +19,22 @@ public class ForgotPasswordEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
+        IValidator<ForgotPasswordRequest> validator,
         HalcyonDbContext dbContext,
         IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
+        var validationResult = await validator.ValidateAsync(
+            request ?? new ForgotPasswordRequest(),
+            cancellationToken
+        );
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         var user = await dbContext.Users.FirstOrDefaultAsync(
             u => u.EmailAddress == request.EmailAddress,
             cancellationToken

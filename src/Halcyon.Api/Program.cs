@@ -14,7 +14,6 @@ using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -144,8 +143,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssembly(assembly);
-builder.Services.AddFluentValidationRulesToSwagger();
-
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 builder.Services.AddEndpointsApiExplorer();
