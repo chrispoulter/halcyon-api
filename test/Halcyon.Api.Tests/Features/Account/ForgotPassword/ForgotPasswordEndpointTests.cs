@@ -42,6 +42,6 @@ public class ForgotPasswordEndpointTests(TestWebApplicationFactory factory) : Ba
         new()
         {
             EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            SiteUrl = "http://localhost:3000"
+            SiteUrl = "http://localhost:3000",
         };
 }

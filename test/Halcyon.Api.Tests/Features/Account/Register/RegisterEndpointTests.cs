@@ -44,6 +44,6 @@ public class RegisterEndpointTests(TestWebApplicationFactory factory) : BaseTest
             Password = Guid.NewGuid().ToString(),
             FirstName = "Test",
             LastName = "User",
-            DateOfBirth = new DateOnly(1070, 1, 1)
+            DateOfBirth = new DateOnly(1070, 1, 1),
         };
 }

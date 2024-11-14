@@ -26,7 +26,7 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
                 {
                     u.FirstName,
                     u.LastName,
-                    u.EmailAddress
+                    u.EmailAddress,
                 }
             );
     }

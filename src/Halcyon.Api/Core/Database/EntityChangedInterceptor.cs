@@ -48,7 +48,7 @@ public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveCh
                 {
                     Id = entity is IEntityWithId entityWithId ? entityWithId.Id : null,
                     ChangeType = oldState,
-                    Entity = entity.GetType().Name
+                    Entity = entity.GetType().Name,
                 };
             }
         );

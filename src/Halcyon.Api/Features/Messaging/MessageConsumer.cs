@@ -14,7 +14,7 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
         {
             d.Message.Id,
             d.Message.ChangeType,
-            d.Message.Entity
+            d.Message.Entity,
         });
 
         foreach (var item in batch)
@@ -28,7 +28,7 @@ public class MessageConsumer(IHubContext<MessageHub, IMessageClient> messageHubC
                     {
                         MessageHub.GetGroupForRole(Role.SystemAdministrator),
                         MessageHub.GetGroupForRole(Role.UserAdministrator),
-                        MessageHub.GetGroupForUser(message.Id)
+                        MessageHub.GetGroupForUser(message.Id),
                     };
 
                     await messageHubContext

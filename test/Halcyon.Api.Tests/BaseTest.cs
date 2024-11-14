@@ -32,7 +32,7 @@ public abstract class BaseTest : IClassFixture<TestWebApplicationFactory>, IDisp
             EmailAddress = $"{Guid.NewGuid()}@example.com",
             FirstName = "Test",
             LastName = "User",
-            DateOfBirth = new DateOnly(1070, 1, 1)
+            DateOfBirth = new DateOnly(1070, 1, 1),
         };
 
         _dbContext.Users.Add(user);

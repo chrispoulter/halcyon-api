@@ -7,6 +7,6 @@ public class Policy
     public static readonly string[] IsUserAdministrator =
     [
         Role.SystemAdministrator,
-        Role.UserAdministrator
+        Role.UserAdministrator,
     ];
 }
