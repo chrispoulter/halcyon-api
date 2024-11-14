@@ -11,7 +11,7 @@ public class UpdateUserEndpoint : IEndpoint
     {
         app.MapPut("/user/{id}", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("jwt")
             .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()

@@ -10,7 +10,7 @@ public class LoginEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/login", HandleAsync)
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("jwt")
             .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Account)
             .Produces<string>(contentType: "text/plain")
@@ -25,6 +25,7 @@ public class LoginEndpoint : IEndpoint
         CancellationToken cancellationToken = default
     )
     {
+        return Results.StatusCode(429);
         var user = await dbContext
             .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);

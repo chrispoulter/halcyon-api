@@ -18,6 +18,7 @@ using MassTransit;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -137,18 +138,44 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
     options.AddPolicy(
-        policyName: "fixed",
+        policyName: "jwt",
         partitioner: httpContext =>
-            RateLimitPartition.GetFixedWindowLimiter(
-                httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host,
-                _ => new FixedWindowRateLimiterOptions
+        {
+            var userName = httpContext.User.Identity?.Name ?? string.Empty;
+
+            if (!StringValues.IsNullOrEmpty(userName))
+            {
+                return RateLimitPartition.GetTokenBucketLimiter(
+                    userName,
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = rateLimiterSettings.TokenLimit2,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = rateLimiterSettings.QueueLimit,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(
+                            rateLimiterSettings.ReplenishmentPeriod
+                        ),
+                        TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                        AutoReplenishment = rateLimiterSettings.AutoReplenishment
+                    }
+                );
+            }
+
+            return RateLimitPartition.GetTokenBucketLimiter(
+                "Anon",
+                _ => new TokenBucketRateLimiterOptions
                 {
-                    PermitLimit = rateLimiterSettings.PermitLimit,
-                    Window = TimeSpan.FromSeconds(rateLimiterSettings.Window),
+                    TokenLimit = rateLimiterSettings.TokenLimit,
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                    QueueLimit = rateLimiterSettings.QueueLimit
+                    QueueLimit = rateLimiterSettings.QueueLimit,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(
+                        rateLimiterSettings.ReplenishmentPeriod
+                    ),
+                    TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                    AutoReplenishment = true
                 }
-            )
+            );
+        }
     );
 });
 
@@ -255,7 +282,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages").RequireRateLimiting("fixed");
+app.MapHub<MessageHub>("/messages").RequireRateLimiting("jwt");
 app.MapEndpoints();
 app.Run();
 

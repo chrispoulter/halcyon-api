@@ -11,7 +11,7 @@ public class DeleteUserEndpoint : IEndpoint
     {
         app.MapDelete("/user/{id}", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("jwt")
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)

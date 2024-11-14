@@ -11,7 +11,7 @@ public class SearchUsersEndpoint : IEndpoint
     {
         app.MapGet("/user", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("jwt")
             .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<SearchUsersResponse>()

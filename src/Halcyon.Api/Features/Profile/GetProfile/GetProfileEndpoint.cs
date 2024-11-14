@@ -11,7 +11,7 @@ public class GetProfileEndpoint : IEndpoint
     {
         app.MapGet("/profile", HandleAsync)
             .RequireAuthorization()
-            .RequireRateLimiting("fixed")
+            .RequireRateLimiting("jwt")
             .WithTags(Tags.Profile)
             .Produces<GetProfileResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
