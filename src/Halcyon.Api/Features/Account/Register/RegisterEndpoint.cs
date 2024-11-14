@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Authentication;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
@@ -11,7 +12,6 @@ public class RegisterEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/register", HandleAsync)
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -19,11 +19,22 @@ public class RegisterEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         RegisterRequest request,
+        IValidator<RegisterRequest> validator,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
+        var validationResult = await validator.ValidateAsync(
+            request ?? new RegisterRequest(),
+            cancellationToken
+        );
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         var existing = await dbContext.Users.AnyAsync(
             u => u.EmailAddress == request.EmailAddress,
             cancellationToken
