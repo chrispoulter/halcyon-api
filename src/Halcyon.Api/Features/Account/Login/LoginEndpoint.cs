@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Authentication;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,6 @@ public class LoginEndpoint : IEndpoint
     {
         app.MapPost("/account/login", HandleAsync)
             .RequireRateLimiting("jwt")
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Account)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -19,13 +19,13 @@ public class LoginEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         LoginRequest request,
+        IValidator<LoginRequest> validator,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator,
         CancellationToken cancellationToken = default
     )
     {
-        return Results.StatusCode(429);
         var user = await dbContext
             .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);

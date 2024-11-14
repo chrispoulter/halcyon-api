@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Web;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,6 @@ public class SearchUsersEndpoint : IEndpoint
         app.MapGet("/user", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
             .RequireRateLimiting("jwt")
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<SearchUsersResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -20,10 +20,21 @@ public class SearchUsersEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         [AsParameters] SearchUsersRequest request,
+        IValidator<SearchUsersRequest> validator,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )
     {
+        var validationResult = await validator.ValidateAsync(
+            request ?? new SearchUsersRequest(),
+            cancellationToken
+        );
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         var query = dbContext.Users.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Search))
