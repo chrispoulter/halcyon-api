@@ -14,7 +14,6 @@ using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -144,49 +143,61 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssembly(assembly);
-builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc(
-        version,
-        new OpenApiInfo
-        {
-            Version = version,
-            Title = "Halcyon API",
-            Description =
-                "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
-        }
-    );
-
-    options.AddSecurityDefinition(
-        "Bearer",
-        new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Scheme = "bearer",
-            Description = "Please insert JWT token into field",
-        }
-    );
-
-    options.AddSecurityRequirement(
-        new OpenApiSecurityRequirement
-        {
+builder.Services.AddOpenApi(
+    version,
+    options =>
+    {
+        options.AddDocumentTransformer(
+            (document, context, cancellationToken) =>
             {
-                new OpenApiSecurityScheme
+                document.Info = new()
                 {
-                    Reference = new() { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
-                },
-                Array.Empty<string>()
-            },
-        }
-    );
-});
+                    Version = version,
+                    Title = "Halcyon API",
+                    Description =
+                        "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
+                };
+
+                document.Components ??= new OpenApiComponents();
+
+                document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+                {
+                    ["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        In = ParameterLocation.Header,
+                        BearerFormat = "Json Web Token",
+                    },
+                };
+
+                foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations))
+                {
+                    operation.Value.Security.Add(
+                        new OpenApiSecurityRequirement
+                        {
+                            [
+                                new OpenApiSecurityScheme
+                                {
+                                    Reference = new OpenApiReference
+                                    {
+                                        Id = "Bearer",
+                                        Type = ReferenceType.SecurityScheme,
+                                    },
+                                }
+                            ] = Array.Empty<string>(),
+                        }
+                    );
+                }
+
+                return Task.CompletedTask;
+            }
+        );
+    }
+);
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 
@@ -222,10 +233,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthChecks("/health");
 
-app.UseSwagger();
+app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
+    options.SwaggerEndpoint($"/openapi/{version}.json", version);
     options.DocumentTitle = "Halcyon API";
     options.RoutePrefix = string.Empty;
 });
