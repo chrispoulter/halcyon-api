@@ -15,6 +15,7 @@ using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
@@ -140,12 +141,16 @@ builder.Services.AddRateLimiter(options =>
         policyName: "jwt",
         partitioner: httpContext =>
         {
-            var userName = httpContext.User.Identity?.Name ?? string.Empty;
+            var accessToken =
+                httpContext
+                    .Features.Get<IAuthenticateResultFeature>()
+                    ?.AuthenticateResult?.Properties?.GetTokenValue("access_token")
+                    ?.ToString() ?? string.Empty;
 
-            if (!StringValues.IsNullOrEmpty(userName))
+            if (!StringValues.IsNullOrEmpty(accessToken))
             {
                 return RateLimitPartition.GetTokenBucketLimiter(
-                    userName,
+                    accessToken,
                     _ => new TokenBucketRateLimiterOptions
                     {
                         TokenLimit = rateLimiterSettings.TokenLimit2,
