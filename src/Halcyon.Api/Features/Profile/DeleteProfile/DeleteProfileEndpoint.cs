@@ -11,8 +11,8 @@ public class DeleteProfileEndpoint : IEndpoint
     {
         app.MapDelete("/profile", HandleAsync)
             .RequireAuthorization()
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Profile)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);

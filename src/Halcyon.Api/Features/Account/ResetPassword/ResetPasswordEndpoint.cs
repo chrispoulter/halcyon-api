@@ -11,8 +11,8 @@ public class ResetPasswordEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/reset-password", HandleAsync)
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Account)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

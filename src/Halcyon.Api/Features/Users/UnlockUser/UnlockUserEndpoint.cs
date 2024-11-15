@@ -10,9 +10,9 @@ public class UnlockUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/unlock", HandleAsync)
-            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Users)
+            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);

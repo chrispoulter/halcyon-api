@@ -12,8 +12,8 @@ public class RegisterEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/register", HandleAsync)
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Account)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

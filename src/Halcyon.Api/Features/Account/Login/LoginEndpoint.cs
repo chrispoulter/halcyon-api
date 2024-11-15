@@ -11,8 +11,8 @@ public class LoginEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/login", HandleAsync)
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Account)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Account)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

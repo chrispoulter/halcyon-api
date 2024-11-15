@@ -10,9 +10,9 @@ public class GetUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user/{id}", HandleAsync)
-            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .RequireRateLimiting("jwt")
-            .WithTags(Tags.Users)
+            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Users)
             .Produces<GetUserResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
     }

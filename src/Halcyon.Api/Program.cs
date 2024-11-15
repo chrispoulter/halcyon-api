@@ -120,8 +120,8 @@ builder
 builder
     .Services.AddAuthorizationBuilder()
     .AddPolicy(
-        nameof(Policy.IsUserAdministrator),
-        policy => policy.RequireRole(Policy.IsUserAdministrator)
+        nameof(AuthorizationPolicy.IsUserAdministrator),
+        policy => policy.RequireRole(AuthorizationPolicy.IsUserAdministrator)
     );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -138,7 +138,7 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
     options.AddPolicy(
-        policyName: "jwt",
+        policyName: RateLimiterPolicy.Jwt,
         partitioner: httpContext =>
         {
             var accessToken =
@@ -220,7 +220,7 @@ builder.Services.AddSwaggerGen(options =>
         new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
+            BearerFormat = "Jwt",
             In = ParameterLocation.Header,
             Scheme = JwtBearerDefaults.AuthenticationScheme,
             Description = "Please insert JWT token into field",
@@ -288,7 +288,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages").RequireRateLimiting("jwt");
+app.MapHub<MessageHub>("/messages").RequireRateLimiting(RateLimiterPolicy.Jwt);
 app.MapEndpoints();
 app.Run();
 
