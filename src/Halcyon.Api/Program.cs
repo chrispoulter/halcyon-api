@@ -15,6 +15,7 @@ using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -160,39 +161,45 @@ builder.Services.AddOpenApi(
                     Description =
                         "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
                 };
+                return Task.CompletedTask;
+            }
+        );
 
-                document.Components ??= new OpenApiComponents();
+        var scheme = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Name = JwtBearerDefaults.AuthenticationScheme,
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Reference = new()
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme,
+            },
+        };
 
-                document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+        options.AddDocumentTransformer(
+            (document, context, cancellationToken) =>
+            {
+                document.Components ??= new();
+                document.Components.SecuritySchemes.Add(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    scheme
+                );
+                return Task.CompletedTask;
+            }
+        );
+
+        options.AddOperationTransformer(
+            (operation, context, cancellationToken) =>
+            {
+                if (
+                    context
+                        .Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>()
+                        .Any()
+                )
                 {
-                    ["Bearer"] = new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        In = ParameterLocation.Header,
-                        BearerFormat = "Json Web Token",
-                    },
-                };
-
-                foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations))
-                {
-                    operation.Value.Security.Add(
-                        new OpenApiSecurityRequirement
-                        {
-                            [
-                                new OpenApiSecurityScheme
-                                {
-                                    Reference = new OpenApiReference
-                                    {
-                                        Id = "Bearer",
-                                        Type = ReferenceType.SecurityScheme,
-                                    },
-                                }
-                            ] = Array.Empty<string>(),
-                        }
-                    );
+                    operation.Security = [new() { [scheme] = [] }];
                 }
-
                 return Task.CompletedTask;
             }
         );
