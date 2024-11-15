@@ -217,6 +217,9 @@ builder.Services.AddOpenApi(
                     Description =
                         "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
                 };
+
+                document.Servers.Clear();
+
                 return Task.CompletedTask;
             }
         );
