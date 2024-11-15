@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Authentication;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
@@ -12,7 +13,6 @@ public class CreateUserEndpoint : IEndpoint
     {
         app.MapPost("/user", HandleAsync)
             .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -20,11 +20,22 @@ public class CreateUserEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
+        IValidator<CreateUserRequest> validator,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
+        var validationResult = await validator.ValidateAsync(
+            request ?? new CreateUserRequest(),
+            cancellationToken
+        );
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         var existing = await dbContext.Users.AnyAsync(
             u => u.EmailAddress == request.EmailAddress,
             cancellationToken

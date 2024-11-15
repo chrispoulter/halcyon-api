@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Authentication;
+﻿using FluentValidation;
+using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,6 @@ public class ResetPasswordEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/reset-password", HandleAsync)
-            .AddEndpointFilter<ValidationFilter>()
             .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -18,11 +18,22 @@ public class ResetPasswordEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         ResetPasswordRequest request,
+        IValidator<ResetPasswordRequest> validator,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
+        var validationResult = await validator.ValidateAsync(
+            request ?? new ResetPasswordRequest(),
+            cancellationToken
+        );
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         var user = await dbContext.Users.FirstOrDefaultAsync(
             u => u.EmailAddress == request.EmailAddress,
             cancellationToken
