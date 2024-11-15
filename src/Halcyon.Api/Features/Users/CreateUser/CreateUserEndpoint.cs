@@ -12,8 +12,9 @@ public class CreateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/user", HandleAsync)
-            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .WithTags(Tags.Users)
+            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

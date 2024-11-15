@@ -10,8 +10,9 @@ public class DeleteUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapDelete("/user/{id}", HandleAsync)
-            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .WithTags(Tags.Users)
+            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
