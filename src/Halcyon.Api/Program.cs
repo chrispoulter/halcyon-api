@@ -98,7 +98,7 @@ builder
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
-            )
+            ),
         };
 
         options.Events = new JwtBearerEvents
@@ -112,7 +112,7 @@ builder
                     context.Token = accessToken;
                 }
                 return Task.CompletedTask;
-            }
+            },
         };
     });
 
@@ -155,7 +155,7 @@ builder.Services.AddRateLimiter(options =>
                             rateLimiterSettings.ReplenishmentPeriod
                         ),
                         TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
-                        AutoReplenishment = rateLimiterSettings.AutoReplenishment
+                        AutoReplenishment = rateLimiterSettings.AutoReplenishment,
                     }
                 );
             }
@@ -171,7 +171,7 @@ builder.Services.AddRateLimiter(options =>
                         rateLimiterSettings.ReplenishmentPeriod
                     ),
                     TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
-                    AutoReplenishment = true
+                    AutoReplenishment = true,
                 }
             );
         }
@@ -206,19 +206,19 @@ builder.Services.AddSwaggerGen(options =>
             Version = version,
             Title = "Halcyon API",
             Description =
-                "A .NET Core REST API project template. Built with a sense of peace and tranquillity."
+                "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
         }
     );
 
     options.AddSecurityDefinition(
-        "Bearer",
+        JwtBearerDefaults.AuthenticationScheme,
         new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
             BearerFormat = "JWT",
             In = ParameterLocation.Header,
-            Scheme = "bearer",
-            Description = "Please insert JWT token into field"
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Description = "Please insert JWT token into field",
         }
     );
 
@@ -228,10 +228,14 @@ builder.Services.AddSwaggerGen(options =>
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new() { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                    Reference = new()
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                    },
                 },
                 Array.Empty<string>()
-            }
+            },
         }
     );
 });
