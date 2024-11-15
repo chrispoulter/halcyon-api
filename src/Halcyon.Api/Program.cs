@@ -41,16 +41,18 @@ builder.Host.UseSerilog();
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
-builder
-    .Services.AddDbContext<HalcyonDbContext>(
-        (provider, options) =>
-            options
-                .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-                .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention()
-                .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
-    )
-    .AddHostedService<MigrationHostedService<HalcyonDbContext>>();
+builder.Services.AddDbContext<HalcyonDbContext>(
+    (provider, options) =>
+        options
+            .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
+            .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
+            .UseSnakeCaseNamingConvention()
+            .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
+);
+
+builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
+builder.Services.AddScoped<EntityChangedInterceptor>();
+builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
 
@@ -125,12 +127,6 @@ builder
         policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-
 var rateLimiterSettings = new RateLimiterSettings();
 builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimiterSettings);
 
@@ -198,10 +194,13 @@ builder.Services.AddCors(options =>
     )
 );
 
-builder.Services.AddProblemDetails();
-builder.Services.AddValidatorsFromAssembly(assembly);
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
-builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(
     version,
@@ -266,8 +265,7 @@ builder.Services.AddOpenApi(
 );
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
-
-builder.Services.AddScoped<EntityChangedInterceptor>();
+builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
