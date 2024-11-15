@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using FluentValidation;
 using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Database;
@@ -14,9 +15,11 @@ using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -118,14 +121,67 @@ builder
 builder
     .Services.AddAuthorizationBuilder()
     .AddPolicy(
-        nameof(Policy.IsUserAdministrator),
-        policy => policy.RequireRole(Policy.IsUserAdministrator)
+        nameof(AuthPolicy.IsUserAdministrator),
+        policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+var rateLimiterSettings = new RateLimiterSettings();
+builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimiterSettings);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy(
+        policyName: RateLimiterPolicy.Jwt,
+        partitioner: httpContext =>
+        {
+            var accessToken =
+                httpContext
+                    .Features.Get<IAuthenticateResultFeature>()
+                    ?.AuthenticateResult?.Properties?.GetTokenValue("access_token")
+                    ?.ToString() ?? string.Empty;
+
+            if (!StringValues.IsNullOrEmpty(accessToken))
+            {
+                return RateLimitPartition.GetTokenBucketLimiter(
+                    accessToken,
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = rateLimiterSettings.TokenLimit2,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = rateLimiterSettings.QueueLimit,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(
+                            rateLimiterSettings.ReplenishmentPeriod
+                        ),
+                        TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                        AutoReplenishment = rateLimiterSettings.AutoReplenishment,
+                    }
+                );
+            }
+
+            return RateLimitPartition.GetTokenBucketLimiter(
+                "Anon",
+                _ => new TokenBucketRateLimiterOptions
+                {
+                    TokenLimit = rateLimiterSettings.TokenLimit,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = rateLimiterSettings.QueueLimit,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(
+                        rateLimiterSettings.ReplenishmentPeriod
+                    ),
+                    TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                    AutoReplenishment = true,
+                }
+            );
+        }
+    );
 });
 
 var corsPolicySettings = new CorsPolicySettings();
@@ -238,6 +294,7 @@ app.UseSerilogRequestLogging();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapHealthChecks("/health");
 
 app.MapOpenApi();
@@ -248,7 +305,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages");
+app.MapHub<MessageHub>("/messages").RequireRateLimiting(RateLimiterPolicy.Jwt);
 app.MapEndpoints();
 app.Run();
 

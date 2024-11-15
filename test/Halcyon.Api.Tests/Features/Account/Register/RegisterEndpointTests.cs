@@ -37,7 +37,7 @@ public class RegisterEndpointTests(TestWebApplicationFactory factory) : BaseTest
         Assert.NotEqual(Guid.Empty, result.Id);
     }
 
-    private static RegisterRequest CreateRegisterRequest(string? emailAddress = null) =>
+    private static RegisterRequest CreateRegisterRequest(string emailAddress = null) =>
         new()
         {
             EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",

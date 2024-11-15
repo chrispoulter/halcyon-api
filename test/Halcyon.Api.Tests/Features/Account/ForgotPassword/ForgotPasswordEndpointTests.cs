@@ -38,7 +38,7 @@ public class ForgotPasswordEndpointTests(TestWebApplicationFactory factory) : Ba
         Assert.True(eventPublished, $"{nameof(SendResetPasswordEmailEvent)} not published");
     }
 
-    private static ForgotPasswordRequest CreateForgotPasswordRequest(string? emailAddress = null) =>
+    private static ForgotPasswordRequest CreateForgotPasswordRequest(string emailAddress = null) =>
         new()
         {
             EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",

@@ -64,6 +64,15 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "RabbitMq": "amqp://guest:guest@localhost:5672",
     "Redis": "localhost"
   },
+  "RateLimiter": {
+    "PermitLimit": 6,
+    "ReplenishmentPeriod": 1,
+    "QueueLimit": 2,
+    "TokenLimit": 8,
+    "TokenLimit2": 12,
+    "TokensPerPeriod": 4,
+    "AutoReplenishment": true
+  },
   "CorsPolicy": {
     "AllowedOrigins": [ "http://localhost:3000" ],
     "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
@@ -76,7 +85,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "SmtpPassword": null,
     "NoReplyAddress": "noreply@example.com"
   },
-  "Jwt": {
+ "Jwt": {
     "SecurityKey": "super_secret_key_that_should_be_changed",
     "Issuer": "HalcyonApi",
     "Audience": "HalcyonClient",

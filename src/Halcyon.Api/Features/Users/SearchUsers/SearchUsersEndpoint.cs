@@ -11,8 +11,9 @@ public class SearchUsersEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user", HandleAsync)
-            .RequireAuthorization(nameof(Policy.IsUserAdministrator))
-            .WithTags(Tags.Users)
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Users)
             .Produces<SearchUsersResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }

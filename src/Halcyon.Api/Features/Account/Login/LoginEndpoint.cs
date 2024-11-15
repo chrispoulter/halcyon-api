@@ -11,7 +11,8 @@ public class LoginEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/login", HandleAsync)
-            .WithTags(Tags.Account)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .WithTags(EndpointTag.Account)
             .Produces<string>(contentType: "text/plain")
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
@@ -25,16 +26,6 @@ public class LoginEndpoint : IEndpoint
         CancellationToken cancellationToken = default
     )
     {
-        var validationResult = await validator.ValidateAsync(
-            request ?? new LoginRequest(),
-            cancellationToken
-        );
-
-        if (!validationResult.IsValid)
-        {
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        }
-
         var user = await dbContext
             .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
