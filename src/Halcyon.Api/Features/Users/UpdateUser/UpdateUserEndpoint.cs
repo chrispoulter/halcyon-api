@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Core.Web;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,7 @@ public class UpdateUserEndpoint : IEndpoint
         app.MapPut("/user/{id}", HandleAsync)
             .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .AddValidationFilter<UpdateUserRequest>()
             .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -23,21 +23,10 @@ public class UpdateUserEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         Guid id,
         UpdateUserRequest request,
-        IValidator<UpdateUserRequest> validator,
         HalcyonDbContext dbContext,
         CancellationToken cancellationToken = default
     )
     {
-        var validationResult = await validator.ValidateAsync(
-            request ?? new UpdateUserRequest(),
-            cancellationToken
-        );
-
-        if (!validationResult.IsValid)
-        {
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        }
-
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
