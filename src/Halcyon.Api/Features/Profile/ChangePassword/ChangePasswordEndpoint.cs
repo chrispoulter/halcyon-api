@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Halcyon.Api.Core.Authentication;
+﻿using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,7 @@ public class ChangePasswordEndpoint : IEndpoint
         app.MapPut("/profile/change-password", HandleAsync)
             .RequireAuthorization()
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
+            .AddValidationFilter<ChangePasswordRequest>()
             .WithTags(EndpointTag.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -22,23 +22,12 @@ public class ChangePasswordEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(
         ChangePasswordRequest request,
-        IValidator<ChangePasswordRequest> validator,
         CurrentUser currentUser,
         HalcyonDbContext dbContext,
         IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
-        var validationResult = await validator.ValidateAsync(
-            request ?? new ChangePasswordRequest(),
-            cancellationToken
-        );
-
-        if (!validationResult.IsValid)
-        {
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        }
-
         var user = await dbContext.Users.FirstOrDefaultAsync(
             u => u.Id == currentUser.Id,
             cancellationToken
