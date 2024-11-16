@@ -122,8 +122,8 @@ builder
 builder
     .Services.AddAuthorizationBuilder()
     .AddPolicy(
-        nameof(AuthorizationPolicy.IsUserAdministrator),
-        policy => policy.RequireRole(AuthorizationPolicy.IsUserAdministrator)
+        nameof(AuthPolicy.IsUserAdministrator),
+        policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
 var rateLimiterSettings = new RateLimiterSettings();

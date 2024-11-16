@@ -10,7 +10,7 @@ public class LockUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}/lock", HandleAsync)
-            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()

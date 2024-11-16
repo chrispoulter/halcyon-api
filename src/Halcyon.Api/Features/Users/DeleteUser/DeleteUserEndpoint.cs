@@ -10,7 +10,7 @@ public class DeleteUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapDelete("/user/{id}", HandleAsync)
-            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()

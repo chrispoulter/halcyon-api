@@ -10,7 +10,7 @@ public class SearchUsersEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user", HandleAsync)
-            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<SearchUsersRequest>()
             .WithTags(EndpointTag.Users)

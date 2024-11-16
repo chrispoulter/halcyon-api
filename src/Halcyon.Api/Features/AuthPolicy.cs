@@ -2,7 +2,7 @@
 
 namespace Halcyon.Api.Features;
 
-public class AuthorizationPolicy
+public class AuthPolicy
 {
     public static readonly string[] IsUserAdministrator =
     [

@@ -10,7 +10,7 @@ public class UpdateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/user/{id}", HandleAsync)
-            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<UpdateUserRequest>()
             .WithTags(EndpointTag.Users)

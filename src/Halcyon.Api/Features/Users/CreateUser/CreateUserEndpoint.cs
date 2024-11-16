@@ -11,7 +11,7 @@ public class CreateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/user", HandleAsync)
-            .RequireAuthorization(nameof(AuthorizationPolicy.IsUserAdministrator))
+            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
             .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<CreateUserRequest>()
             .WithTags(EndpointTag.Users)
