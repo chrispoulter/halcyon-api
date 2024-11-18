@@ -6,23 +6,8 @@ on:
     workflow_dispatch:
 
 jobs:
-    build:
+    build-and-publish:
         runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-
-            - name: Build and test
-              run: |
-                  dotnet build "halcyon-api.sln"
-                  dotnet test "halcyon-api.sln"
-
-    publish:
-        runs-on: ubuntu-latest
-        needs: build
         permissions:
             contents: read
             packages: write
@@ -32,15 +17,19 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-
-            - name: Install GitVersion
-              uses: gittools/actions/gitversion/setup@v3.0.0
-              with:
-                  versionSpec: '6.x'
+                  
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
 
             - name: Determine Version
-              id: version_step
-              uses: gittools/actions/gitversion/execute@v3.0.0
+              run: |
+                  dotnet tool restore
+                  dotnet gitversion /output buildserver
+
+            - name: Build and test
+              run: |
+                  dotnet build "halcyon-api.sln"
+                  dotnet test "halcyon-api.sln"
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -60,10 +49,10 @@ jobs:
               with:
                   file: ./src/Halcyon.Api/Dockerfile
                   tags: |
-                      ghcr.io/${{ env.REPO }}:${{ steps.version_step.outputs.semVer }}
+                      ghcr.io/${{ env.REPO }}:${{ env.GitVersion_SemVer }}
                       ghcr.io/${{ env.REPO }}:latest
                   context: .
                   push: true
                   provenance: false
                   build-args: |
-                      VERSION=${{ steps.version_step.outputs.semVer }}
+                      VERSION=${{ env.GitVersion_SemVer }}

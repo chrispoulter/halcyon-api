@@ -30,13 +30,13 @@ public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> 
                     .. (user.Roles ?? []).Select(role => new Claim(
                         JwtClaimNames.Roles,
                         role.ToString()
-                    ))
+                    )),
                 ]
             ),
             Expires = timeProvider.GetUtcNow().AddSeconds(jwtSettings.ExpiresIn).UtcDateTime,
             SigningCredentials = credentials,
             Issuer = jwtSettings.Issuer,
-            Audience = jwtSettings.Audience
+            Audience = jwtSettings.Audience,
         };
 
         var handler = new JsonWebTokenHandler();

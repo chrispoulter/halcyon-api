@@ -14,7 +14,7 @@ public class SendResetPasswordEmailConsumer(IEmailSender emailSender)
         {
             d.Message.To,
             d.Message.PasswordResetToken,
-            d.Message.SiteUrl
+            d.Message.SiteUrl,
         });
 
         foreach (var item in batch)
@@ -26,7 +26,7 @@ public class SendResetPasswordEmailConsumer(IEmailSender emailSender)
                 {
                     Template = _template,
                     To = message.To,
-                    Data = new { message.PasswordResetToken, message.SiteUrl }
+                    Data = new { message.PasswordResetToken, message.SiteUrl },
                 },
                 context.CancellationToken
             );

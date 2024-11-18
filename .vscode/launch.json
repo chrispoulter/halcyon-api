@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/Halcyon.Api/bin/Debug/net8.0/Halcyon.Api.dll",
+      "program": "${workspaceFolder}/src/Halcyon.Api/bin/Debug/net9.0/Halcyon.Api.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/Halcyon.Api",
       "stopAtEntry": false,

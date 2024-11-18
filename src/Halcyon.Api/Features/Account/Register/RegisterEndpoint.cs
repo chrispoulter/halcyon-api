@@ -11,7 +11,6 @@ public class RegisterEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/register", HandleAsync)
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<RegisterRequest>()
             .WithTags(EndpointTag.Account)
             .Produces<UpdateResponse>()

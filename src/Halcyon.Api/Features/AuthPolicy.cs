@@ -7,6 +7,6 @@ public class AuthPolicy
     public static readonly string[] IsUserAdministrator =
     [
         Role.SystemAdministrator,
-        Role.UserAdministrator
+        Role.UserAdministrator,
     ];
 }

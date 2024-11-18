@@ -1,9 +1,8 @@
-﻿using Halcyon.Api.Core.Database;
-using NpgsqlTypes;
+﻿using NpgsqlTypes;
 
 namespace Halcyon.Api.Data;
 
-public class User : IEntityWithId
+public class User
 {
     public Guid Id { get; set; }
 

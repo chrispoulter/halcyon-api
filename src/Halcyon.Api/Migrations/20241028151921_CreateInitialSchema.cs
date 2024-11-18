@@ -37,7 +37,7 @@ namespace Halcyon.Api.Migrations
                         .Annotation(
                             "Npgsql:TsVectorProperties",
                             new[] { "first_name", "last_name", "email_address" }
-                        )
+                        ),
                 },
                 constraints: table =>
                 {

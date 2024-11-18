@@ -11,7 +11,6 @@ public class SearchUsersEndpoint : IEndpoint
     {
         app.MapGet("/user", HandleAsync)
             .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<SearchUsersRequest>()
             .WithTags(EndpointTag.Users)
             .Produces<SearchUsersResponse>()
@@ -37,18 +36,18 @@ public class SearchUsersEndpoint : IEndpoint
 
         query = request.Sort switch
         {
-            UserSort.EMAIL_ADDRESS_DESC
-                => query.OrderByDescending(r => r.EmailAddress).ThenBy(r => r.Id),
+            UserSort.EMAIL_ADDRESS_DESC => query
+                .OrderByDescending(r => r.EmailAddress)
+                .ThenBy(r => r.Id),
 
             UserSort.EMAIL_ADDRESS_ASC => query.OrderBy(r => r.EmailAddress).ThenBy(r => r.Id),
 
-            UserSort.NAME_DESC
-                => query
-                    .OrderByDescending(r => r.FirstName)
-                    .ThenByDescending(r => r.LastName)
-                    .ThenBy(r => r.Id),
+            UserSort.NAME_DESC => query
+                .OrderByDescending(r => r.FirstName)
+                .ThenByDescending(r => r.LastName)
+                .ThenBy(r => r.Id),
 
-            _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName).ThenBy(r => r.Id)
+            _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName).ThenBy(r => r.Id),
         };
 
         if (request.Page > 1)
@@ -67,7 +66,7 @@ public class SearchUsersEndpoint : IEndpoint
             {
                 Items = users,
                 HasNextPage = request.Page < pageCount,
-                HasPreviousPage = request.Page > 1 && request.Page <= pageCount
+                HasPreviousPage = request.Page > 1 && request.Page <= pageCount,
             }
         );
     }

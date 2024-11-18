@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.RateLimiting;
 using FluentValidation;
 using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Database;
@@ -11,14 +10,12 @@ using Halcyon.Api.Core.Email;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
-using Halcyon.Api.Features.Messaging;
 using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -46,40 +43,23 @@ builder.Services.AddDbContext<HalcyonDbContext>(
             .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
             .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
             .UseSnakeCaseNamingConvention()
-            .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
 );
 
 builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
-builder.Services.AddScoped<EntityChangedInterceptor>();
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
-
-var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
 
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumers(assembly);
 
-    options.UsingRabbitMq(
+    options.UsingInMemory(
         (context, cfg) =>
         {
-            cfg.Host(rabbitMqConnectionString);
-            cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(true));
+            cfg.ConfigureEndpoints(context);
             cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );
 });
-
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-
-builder
-    .Services.AddSignalR()
-    .AddStackExchangeRedis(redisConnectionString)
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
-        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -103,20 +83,6 @@ builder
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             ),
         };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
-                var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            },
-        };
     });
 
 builder
@@ -126,71 +92,8 @@ builder
         policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
-var rateLimiterSettings = new RateLimiterSettings();
-builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimiterSettings);
-
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-
-    options.AddPolicy(
-        policyName: RateLimiterPolicy.Jwt,
-        partitioner: httpContext =>
-        {
-            var accessToken =
-                httpContext
-                    .Features.Get<IAuthenticateResultFeature>()
-                    ?.AuthenticateResult?.Properties?.GetTokenValue("access_token")
-                    ?.ToString() ?? string.Empty;
-
-            if (!StringValues.IsNullOrEmpty(accessToken))
-            {
-                return RateLimitPartition.GetTokenBucketLimiter(
-                    accessToken,
-                    _ => new TokenBucketRateLimiterOptions
-                    {
-                        TokenLimit = rateLimiterSettings.TokenLimit2,
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = rateLimiterSettings.QueueLimit,
-                        ReplenishmentPeriod = TimeSpan.FromSeconds(
-                            rateLimiterSettings.ReplenishmentPeriod
-                        ),
-                        TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
-                        AutoReplenishment = rateLimiterSettings.AutoReplenishment,
-                    }
-                );
-            }
-
-            return RateLimitPartition.GetTokenBucketLimiter(
-                "Anon",
-                _ => new TokenBucketRateLimiterOptions
-                {
-                    TokenLimit = rateLimiterSettings.TokenLimit,
-                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                    QueueLimit = rateLimiterSettings.QueueLimit,
-                    ReplenishmentPeriod = TimeSpan.FromSeconds(
-                        rateLimiterSettings.ReplenishmentPeriod
-                    ),
-                    TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
-                    AutoReplenishment = true,
-                }
-            );
-        }
-    );
-});
-
-var corsPolicySettings = new CorsPolicySettings();
-builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
-
 builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy =>
-        policy
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .WithOrigins(corsPolicySettings.AllowedOrigins)
-            .WithMethods(corsPolicySettings.AllowedMethods)
-            .WithHeaders(corsPolicySettings.AllowedHeaders)
-            .AllowCredentials()
-    )
+    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -201,49 +104,67 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc(
-        version,
-        new OpenApiInfo
-        {
-            Version = version,
-            Title = "Halcyon API",
-            Description =
-                "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
-        }
-    );
+builder.Services.AddOpenApi(
+    version,
+    options =>
+    {
+        options.AddDocumentTransformer(
+            (document, context, cancellationToken) =>
+            {
+                document.Info = new()
+                {
+                    Version = version,
+                    Title = "Halcyon API",
+                    Description =
+                        "A .NET Core REST API project template. Built with a sense of peace and tranquillity.",
+                };
 
-    options.AddSecurityDefinition(
-        JwtBearerDefaults.AuthenticationScheme,
-        new OpenApiSecurityScheme
+                document.Servers.Clear();
+
+                return Task.CompletedTask;
+            }
+        );
+
+        var scheme = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
-            BearerFormat = "Jwt",
-            In = ParameterLocation.Header,
+            Name = JwtBearerDefaults.AuthenticationScheme,
             Scheme = JwtBearerDefaults.AuthenticationScheme,
-            Description = "Please insert JWT token into field",
-        }
-    );
-
-    options.AddSecurityRequirement(
-        new OpenApiSecurityRequirement
-        {
+            Reference = new()
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new()
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                    },
-                },
-                Array.Empty<string>()
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme,
             },
-        }
-    );
-});
+        };
+
+        options.AddDocumentTransformer(
+            (document, context, cancellationToken) =>
+            {
+                document.Components ??= new();
+                document.Components.SecuritySchemes.Add(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    scheme
+                );
+                return Task.CompletedTask;
+            }
+        );
+
+        options.AddOperationTransformer(
+            (operation, context, cancellationToken) =>
+            {
+                if (
+                    context
+                        .Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>()
+                        .Any()
+                )
+                {
+                    operation.Security = [new() { [scheme] = [] }];
+                }
+                return Task.CompletedTask;
+            }
+        );
+    }
+);
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddValidatorsFromAssembly(assembly);
@@ -276,18 +197,16 @@ app.UseSerilogRequestLogging();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
 app.MapHealthChecks("/health");
 
-app.UseSwagger();
+app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
+    options.SwaggerEndpoint($"/openapi/{version}.json", version);
     options.DocumentTitle = "Halcyon API";
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages").RequireRateLimiting(RateLimiterPolicy.Jwt);
 app.MapEndpoints();
 app.Run();
 
