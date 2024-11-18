@@ -12,8 +12,9 @@ services:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_HTTP_PORTS: 8080
             ASPNETCORE_HTTPS_PORTS: 8081
-            ConnectionStrings__Database: Host=postgres;Port=5432;Database=halcyon;Username=postgres;Password=password
-            Email__SmtpServer: mailhog
+            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon;Username=postgres;Password=password
+            Email__SmtpServer: host.docker.internal
+            Serilog__MinimumLevel__Override__Microsoft.AspNetCore.DataProtection: Error
         ports:
             - 5257:8080
             - 7257:8081
