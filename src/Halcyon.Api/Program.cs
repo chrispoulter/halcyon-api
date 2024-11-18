@@ -69,7 +69,6 @@ builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
-    {
         options.TokenValidationParameters = new()
         {
             NameClaimType = ClaimTypes.NameIdentifier,
@@ -82,8 +81,8 @@ builder
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             ),
-        };
-    });
+        }
+    );
 
 builder
     .Services.AddAuthorizationBuilder()
