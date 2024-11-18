@@ -40,7 +40,7 @@ jobs:
               id: version_step
               run: |
                   dotnet tool restore
-                  dotnet gitversion /updateprojectfiles /output buildserver
+                  dotnet gitversion /output buildserver
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
