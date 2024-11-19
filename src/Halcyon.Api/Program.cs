@@ -50,8 +50,13 @@ builder.Services.AddDbContext<HalcyonDbContext>(
 );
 
 builder.Services.AddScoped<EntityChangedInterceptor>();
+
+builder.Services.Configure<SeedSettings>(
+    builder.Configuration.GetSection(SeedSettings.SectionName)
+);
 builder.Services.AddScoped<IDbSeeder<HalcyonDbContext>, HalcyonDbSeeder>();
 builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
+
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
@@ -276,10 +281,6 @@ builder.Services.Configure<EmailSettings>(
 );
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
-
-builder.Services.Configure<SeedSettings>(
-    builder.Configuration.GetSection(SeedSettings.SectionName)
-);
 
 var app = builder.Build();
 
