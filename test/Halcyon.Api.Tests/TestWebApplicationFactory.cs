@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Email;
+﻿using Halcyon.Api.Core.Database;
+using Halcyon.Api.Core.Email;
 using Halcyon.Api.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
     {
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveAll(typeof(DbContextOptions<HalcyonDbContext>));
+            services.RemoveAll<DbContextOptions<HalcyonDbContext>>();
 
             services.AddDbContext<HalcyonDbContext>(options =>
                 options.UseNpgsql(dbContainer.GetConnectionString()).UseSnakeCaseNamingConvention()
