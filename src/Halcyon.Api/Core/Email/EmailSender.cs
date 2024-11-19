@@ -47,11 +47,17 @@ public class EmailSender(
                 cancellationToken: cancellationToken
             );
 
-            await client.AuthenticateAsync(
-                emailSettings.SmtpUserName,
-                emailSettings.SmtpPassword,
-                cancellationToken
-            );
+            if (
+                !string.IsNullOrEmpty(emailSettings.SmtpUserName)
+                && !string.IsNullOrEmpty(emailSettings.SmtpPassword)
+            )
+            {
+                await client.AuthenticateAsync(
+                    emailSettings.SmtpUserName,
+                    emailSettings.SmtpPassword,
+                    cancellationToken
+                );
+            }
 
             await client.SendAsync(email, cancellationToken);
             await client.DisconnectAsync(true, cancellationToken);
