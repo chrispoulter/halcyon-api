@@ -11,6 +11,7 @@ public class UnlockUserEndpoint : IEndpoint
     {
         app.MapPut("/user/{id}/unlock", HandleAsync)
             .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)

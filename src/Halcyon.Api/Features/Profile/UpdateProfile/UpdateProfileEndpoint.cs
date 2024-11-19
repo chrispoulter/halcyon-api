@@ -11,6 +11,7 @@ public class UpdateProfileEndpoint : IEndpoint
     {
         app.MapPut("/profile", HandleAsync)
             .RequireAuthorization()
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<UpdateProfileRequest>()
             .WithTags(EndpointTag.Profile)
             .Produces<UpdateResponse>()

@@ -12,6 +12,7 @@ public class CreateUserEndpoint : IEndpoint
     {
         app.MapPost("/user", HandleAsync)
             .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<CreateUserRequest>()
             .WithTags(EndpointTag.Users)
             .Produces<UpdateResponse>()

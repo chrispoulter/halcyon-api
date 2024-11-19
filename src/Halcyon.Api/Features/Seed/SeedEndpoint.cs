@@ -12,6 +12,7 @@ public class SeedEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/seed", HandleAsync)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .WithTags(EndpointTag.Seed)
             .Produces<string>(contentType: "text/plain");
     }
