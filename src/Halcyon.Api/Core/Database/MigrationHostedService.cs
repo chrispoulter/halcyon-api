@@ -19,16 +19,6 @@ public class MigrationHostedService<TDbContext>(
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
 
-        if (!dbContext.Database.IsRelational())
-        {
-            logger.LogWarning(
-                "Cannot apply migrations to non relational database for {DbContext}",
-                TypeCache<TDbContext>.ShortName
-            );
-
-            return;
-        }
-
         try
         {
             await dbContext.Database.MigrateAsync(cancellationToken);
@@ -38,6 +28,23 @@ public class MigrationHostedService<TDbContext>(
             logger.LogError(
                 ex,
                 "An error occurred while migrating database for {DbContext}",
+                TypeCache<TDbContext>.ShortName
+            );
+        }
+
+        logger.LogInformation("Seeding database for {DbContext}", TypeCache<TDbContext>.ShortName);
+
+        var dbSeeder = scope.ServiceProvider.GetRequiredService<IDbSeeder<TDbContext>>();
+
+        try
+        {
+            await dbSeeder.SeedAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(
+                ex,
+                "An error occurred while seeding database for {DbContext}",
                 TypeCache<TDbContext>.ShortName
             );
         }

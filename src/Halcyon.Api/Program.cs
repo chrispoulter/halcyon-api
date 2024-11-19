@@ -12,7 +12,6 @@ using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
 using Halcyon.Api.Features.Messaging;
-using Halcyon.Api.Features.Seed;
 using Mapster;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication;
@@ -50,8 +49,9 @@ builder.Services.AddDbContext<HalcyonDbContext>(
             .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
 );
 
-builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 builder.Services.AddScoped<EntityChangedInterceptor>();
+builder.Services.AddScoped<IDbSeeder<HalcyonDbContext>, HalcyonDbSeeder>();
+builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
