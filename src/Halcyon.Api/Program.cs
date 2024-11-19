@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using FluentValidation;
 using Halcyon.Api.Core.Authentication;
 using Halcyon.Api.Core.Database;
@@ -10,12 +11,14 @@ using Halcyon.Api.Core.Email;
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features;
-using Halcyon.Api.Features.Seed;
+using Halcyon.Api.Features.Messaging;
 using Mapster;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -43,23 +46,46 @@ builder.Services.AddDbContext<HalcyonDbContext>(
             .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
             .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
             .UseSnakeCaseNamingConvention()
+            .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
 );
 
+builder.Services.AddScoped<EntityChangedInterceptor>();
+
+builder.Services.Configure<SeedSettings>(
+    builder.Configuration.GetSection(SeedSettings.SectionName)
+);
+builder.Services.AddScoped<IDbSeeder<HalcyonDbContext>, HalcyonDbSeeder>();
 builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
+
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
+
+var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
 
 builder.Services.AddMassTransit(options =>
 {
     options.AddConsumers(assembly);
 
-    options.UsingInMemory(
+    options.UsingRabbitMq(
         (context, cfg) =>
         {
-            cfg.ConfigureEndpoints(context);
+            cfg.Host(rabbitMqConnectionString);
+            cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(true));
             cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
         }
     );
 });
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+
+builder
+    .Services.AddSignalR()
+    .AddStackExchangeRedis(redisConnectionString)
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -69,6 +95,7 @@ builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new()
         {
             NameClaimType = ClaimTypes.NameIdentifier,
@@ -81,8 +108,22 @@ builder
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)
             ),
-        }
-    );
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
+        };
+    });
 
 builder
     .Services.AddAuthorizationBuilder()
@@ -91,8 +132,71 @@ builder
         policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
+var rateLimiterSettings = new RateLimiterSettings();
+builder.Configuration.GetSection(RateLimiterSettings.SectionName).Bind(rateLimiterSettings);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy(
+        policyName: RateLimiterPolicy.Jwt,
+        partitioner: httpContext =>
+        {
+            var accessToken =
+                httpContext
+                    .Features.Get<IAuthenticateResultFeature>()
+                    ?.AuthenticateResult?.Properties?.GetTokenValue("access_token")
+                    ?.ToString() ?? string.Empty;
+
+            if (!StringValues.IsNullOrEmpty(accessToken))
+            {
+                return RateLimitPartition.GetTokenBucketLimiter(
+                    accessToken,
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = rateLimiterSettings.TokenLimit2,
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = rateLimiterSettings.QueueLimit,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(
+                            rateLimiterSettings.ReplenishmentPeriod
+                        ),
+                        TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                        AutoReplenishment = rateLimiterSettings.AutoReplenishment,
+                    }
+                );
+            }
+
+            return RateLimitPartition.GetTokenBucketLimiter(
+                "Anon",
+                _ => new TokenBucketRateLimiterOptions
+                {
+                    TokenLimit = rateLimiterSettings.TokenLimit,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = rateLimiterSettings.QueueLimit,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(
+                        rateLimiterSettings.ReplenishmentPeriod
+                    ),
+                    TokensPerPeriod = rateLimiterSettings.TokensPerPeriod,
+                    AutoReplenishment = true,
+                }
+            );
+        }
+    );
+});
+
+var corsPolicySettings = new CorsPolicySettings();
+builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
+
 builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+    options.AddDefaultPolicy(policy =>
+        policy
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithOrigins(corsPolicySettings.AllowedOrigins)
+            .WithMethods(corsPolicySettings.AllowedMethods)
+            .WithHeaders(corsPolicySettings.AllowedHeaders)
+            .AllowCredentials()
+    )
 );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -178,10 +282,6 @@ builder.Services.Configure<EmailSettings>(
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
 
-builder.Services.Configure<SeedSettings>(
-    builder.Configuration.GetSection(SeedSettings.SectionName)
-);
-
 var app = builder.Build();
 
 //app.UseHttpsRedirection();
@@ -196,6 +296,7 @@ app.UseSerilogRequestLogging();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapHealthChecks("/health");
 
 app.MapOpenApi();
@@ -206,6 +307,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+app.MapHub<MessageHub>("/messages").RequireRateLimiting(RateLimiterPolicy.Jwt);
 app.MapEndpoints();
 app.Run();
 

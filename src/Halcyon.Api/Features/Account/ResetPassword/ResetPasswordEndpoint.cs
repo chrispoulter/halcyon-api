@@ -10,6 +10,7 @@ public class ResetPasswordEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/reset-password", HandleAsync)
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<ResetPasswordRequest>()
             .WithTags(EndpointTag.Account)
             .Produces<UpdateResponse>()

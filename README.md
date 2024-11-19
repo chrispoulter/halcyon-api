@@ -10,6 +10,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
 - MassTransit
   [https://masstransit.io/](https://masstransit.io/)
+- SignalR
+  [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - Mapster
@@ -34,8 +36,14 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
+- RabbitMQ
+  [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
+- Redis
+  [https://redis.io/](https://redis.io/)
 - MailHog
   [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog)
+- Seq
+  [https://datalust.co/seq](https://datalust.co/seq)
 
 ### Install dependencies
 
@@ -52,7 +60,22 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password"
+    "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
+    "RabbitMq": "amqp://guest:guest@localhost:5672",
+    "Redis": "localhost"
+  },
+  "RateLimiter": {
+    "ReplenishmentPeriod": 1,
+    "QueueLimit": 2,
+    "TokenLimit": 8,
+    "TokenLimit2": 12,
+    "TokensPerPeriod": 4,
+    "AutoReplenishment": true
+  },
+  "CorsPolicy": {
+    "AllowedOrigins": [ "http://localhost:3000" ],
+    "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+    "AllowedHeaders": [ "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "X-Requested-With", "x-signalr-user-agent" ]
   },
   "Email": {
     "SmtpServer": "localhost",
@@ -61,7 +84,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "SmtpPassword": null,
     "NoReplyAddress": "noreply@example.com"
   },
-  "Jwt": {
+ "Jwt": {
     "SecurityKey": "super_secret_key_that_should_be_changed",
     "Issuer": "HalcyonApi",
     "Audience": "HalcyonClient",
@@ -97,6 +120,10 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
         "Args": {
           "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
         }
+      },
+      "Seq": {
+        "Name": "Seq",
+        "Args": { "serverUrl": "http://localhost:5341" }
       }
     }
   },

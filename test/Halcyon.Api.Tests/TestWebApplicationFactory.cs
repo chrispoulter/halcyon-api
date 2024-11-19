@@ -24,7 +24,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
     {
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveAll(typeof(DbContextOptions<HalcyonDbContext>));
+            services.RemoveAll<DbContextOptions<HalcyonDbContext>>();
 
             services.AddDbContext<HalcyonDbContext>(options =>
                 options.UseNpgsql(dbContainer.GetConnectionString()).UseSnakeCaseNamingConvention()

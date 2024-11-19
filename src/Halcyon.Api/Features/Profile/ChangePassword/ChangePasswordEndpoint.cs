@@ -11,6 +11,7 @@ public class ChangePasswordEndpoint : IEndpoint
     {
         app.MapPut("/profile/change-password", HandleAsync)
             .RequireAuthorization()
+            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<ChangePasswordRequest>()
             .WithTags(EndpointTag.Profile)
             .Produces<UpdateResponse>()
