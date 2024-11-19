@@ -65,7 +65,6 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "Redis": "localhost"
   },
   "RateLimiter": {
-    "PermitLimit": 6,
     "ReplenishmentPeriod": 1,
     "QueueLimit": 2,
     "TokenLimit": 8,
