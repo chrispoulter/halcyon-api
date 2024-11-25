@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Core.Database;
-using NpgsqlTypes;
 
 namespace Halcyon.Api.Data;
 
@@ -23,7 +22,5 @@ public class User : IEntityWithId
 
     public List<string> Roles { get; set; }
 
-    public uint Version { get; }
-
-    public NpgsqlTsVector SearchVector { get; }
+    public byte[] Version { get; }
 }

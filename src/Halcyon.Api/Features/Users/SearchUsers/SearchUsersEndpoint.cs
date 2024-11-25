@@ -28,9 +28,7 @@ public class SearchUsersEndpoint : IEndpoint
 
         if (!string.IsNullOrEmpty(request.Search))
         {
-            query = query.Where(u =>
-                u.SearchVector.Matches(EF.Functions.PhraseToTsQuery("english", request.Search))
-            );
+            query = query.Where(u => u.EmailAddress.Contains(request.Search));
         }
 
         var count = await query.CountAsync(cancellationToken);

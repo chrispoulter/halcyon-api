@@ -44,8 +44,7 @@ builder.Services.AddDbContext<HalcyonDbContext>(
     (provider, options) =>
         options
             .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
-            .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-            .UseSnakeCaseNamingConvention()
+            .UseSqlServer(databaseConnectionString, builder => builder.EnableRetryOnFailure())
             .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
 );
 

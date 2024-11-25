@@ -8,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 
 namespace Halcyon.Api.Tests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:16.4-alpine")
+    private readonly MsSqlContainer dbContainer = new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
         .Build();
 
     public readonly Mock<IEmailSender> MockEmailSender = new();
@@ -27,7 +27,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
             services.RemoveAll<DbContextOptions<HalcyonDbContext>>();
 
             services.AddDbContext<HalcyonDbContext>(options =>
-                options.UseNpgsql(dbContainer.GetConnectionString()).UseSnakeCaseNamingConvention()
+                options.UseSqlServer(dbContainer.GetConnectionString())
             );
 
             services.AddMassTransitTestHarness(cfg =>

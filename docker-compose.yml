@@ -12,7 +12,7 @@ services:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_HTTP_PORTS: 8080
             ASPNETCORE_HTTPS_PORTS: 8081
-            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon;Username=postgres;Password=password
+            ConnectionStrings__Database: Server=host.docker.internal;Database=Halcyon;User Id=sa;Password=Pass@word;TrustServerCertificate=True;
             ConnectionStrings__RabbitMq: amqp://guest:guest@host.docker.internal:5672
             ConnectionStrings__Redis: host.docker.internal
             Email__SmtpServer: host.docker.internal
@@ -25,36 +25,35 @@ services:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         depends_on:
-            postgres:
-                condition: service_healthy
+            # mssql:
+            #     condition: service_healthy
             rabbitmq:
                 condition: service_healthy
             redis:
                 condition: service_healthy
 
-    postgres:
-        image: postgres:16.4-alpine
-        user: postgres
+    mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
-            POSTGRES_PASSWORD: password
+            ACCEPT_EULA: Y
+            MSSQL_SA_PASSWORD: Pass@word
+            MSSQL_PID: Developer
+            MSSQL_ENABLE_HADR: 1
         ports:
-            - 5432:5432
+            - 1433:1433
         volumes:
-            - postgres:/var/lib/postgresql/data
-        healthcheck:
-            test: [ 'CMD', 'pg_isready' ]
-            interval: 10s
-            timeout: 5s
-            retries: 3
+            - mssql:/var/opt/mssql
+        restart: always
 
     rabbitmq:
-        image: rabbitmq:3.13.7-management-alpine
+        image: rabbitmq:4.0-management
         hostname: local
         ports:
             - 5672:5672
             - 15672:15672
         volumes:
             - rabbitmq:/var/lib/rabbitmq
+        restart: always
         healthcheck:
             test: [ 'CMD', 'rabbitmqctl', 'status' ]
             interval: 10s
@@ -62,12 +61,13 @@ services:
             retries: 3
 
     redis:
-        image: redis:7.2-alpine
+        image: redis:7.4
         ports:
             - 6379:6379
         # command: redis-server --save 60 1 --loglevel warning --requirepass password
         volumes: 
             - redis:/data
+        restart: always
         healthcheck:
             test: [ 'CMD', 'redis-cli', 'ping' ]
             interval: 10s
@@ -75,7 +75,7 @@ services:
             retries: 3
 
     mailhog:
-        image: mailhog/mailhog:v1.0.1
+        image: mailhog/mailhog:latest
         environment:
             MH_STORAGE: maildir
             MH_MAILDIR_PATH: /home/mailhog
@@ -87,6 +87,7 @@ services:
             - mailhog:/home/mailhog
             # MailHog bcrypt test
             # - ./mailhog-auth:/home/mailhog-auth
+        restart: always
 
     seq:
         image: datalust/seq:2024.3
@@ -99,9 +100,10 @@ services:
             - 5341:80
         volumes:
             - seq:/data
+        restart: always
 
 volumes:
-    postgres:
+    mssql:
     rabbitmq:
     redis:
     mailhog:
