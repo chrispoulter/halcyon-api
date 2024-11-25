@@ -1,8 +1,8 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Web;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
 
@@ -21,7 +21,6 @@ public class CreateUserEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         CreateUserRequest request,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
@@ -39,7 +38,7 @@ public class CreateUserEndpoint : IEndpoint
         }
 
         var user = request.Adapt<User>();
-        user.Password = passwordHasher.HashPassword(request.Password);
+        user.Password = BC.HashPassword(request.Password);
 
         dbContext.Users.Add(user);
 

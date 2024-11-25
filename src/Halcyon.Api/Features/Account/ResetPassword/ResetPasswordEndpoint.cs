@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Web;
+﻿using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
 
@@ -19,7 +19,6 @@ public class ResetPasswordEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         ResetPasswordRequest request,
         HalcyonDbContext dbContext,
-        IPasswordHasher passwordHasher,
         CancellationToken cancellationToken = default
     )
     {
@@ -36,7 +35,7 @@ public class ResetPasswordEndpoint : IEndpoint
             );
         }
 
-        user.Password = passwordHasher.HashPassword(request.NewPassword);
+        user.Password = BC.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
 
         await dbContext.SaveChangesAsync(cancellationToken);
