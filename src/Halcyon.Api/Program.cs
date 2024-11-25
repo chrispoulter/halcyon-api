@@ -55,7 +55,6 @@ builder.Services.Configure<SeedSettings>(
 );
 builder.Services.AddScoped<IDbSeeder<HalcyonDbContext>, HalcyonDbSeeder>();
 builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
-
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
@@ -132,14 +131,7 @@ builder
     );
 
 builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy =>
-        policy
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-    )
+    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
