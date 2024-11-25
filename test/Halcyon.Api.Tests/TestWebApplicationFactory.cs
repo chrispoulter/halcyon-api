@@ -14,9 +14,7 @@ namespace Halcyon.Api.Tests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MsSqlContainer dbContainer = new MsSqlBuilder()
-        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-        .Build();
+    private readonly MsSqlContainer dbContainer = new MsSqlBuilder().Build();
 
     public readonly Mock<IEmailSender> MockEmailSender = new();
 
