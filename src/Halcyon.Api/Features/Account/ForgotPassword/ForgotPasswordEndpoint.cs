@@ -11,7 +11,6 @@ public class ForgotPasswordEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/account/forgot-password", HandleAsync)
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<ForgotPasswordRequest>()
             .WithTags(EndpointTag.Account)
             .Produces(StatusCodes.Status200OK)

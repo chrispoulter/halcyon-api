@@ -15,7 +15,7 @@ namespace Halcyon.Api.Tests;
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:16.4-alpine")
+        .WithImage("postgres:17.0")
         .Build();
 
     public readonly Mock<IEmailSender> MockEmailSender = new();

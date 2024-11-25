@@ -10,7 +10,6 @@ public class LoginEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/account/login", HandleAsync)
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<LoginRequest>()
             .WithTags(EndpointTag.Account)
             .Produces<string>(contentType: "text/plain")

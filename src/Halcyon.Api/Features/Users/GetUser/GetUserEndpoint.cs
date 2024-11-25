@@ -11,7 +11,6 @@ public class GetUserEndpoint : IEndpoint
     {
         app.MapGet("/user/{id}", HandleAsync)
             .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .WithTags(EndpointTag.Users)
             .Produces<GetUserResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);

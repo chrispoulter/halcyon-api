@@ -33,7 +33,7 @@ services:
                 condition: service_healthy
 
     postgres:
-        image: postgres:16.4-alpine
+        image: postgres:17.0
         user: postgres
         environment:
             POSTGRES_PASSWORD: password
@@ -41,6 +41,7 @@ services:
             - 5432:5432
         volumes:
             - postgres:/var/lib/postgresql/data
+        restart: always
         healthcheck:
             test: [ 'CMD', 'pg_isready' ]
             interval: 10s
@@ -48,13 +49,14 @@ services:
             retries: 3
 
     rabbitmq:
-        image: rabbitmq:3.13.7-management-alpine
+        image: rabbitmq:4.0-management
         hostname: local
         ports:
             - 5672:5672
             - 15672:15672
         volumes:
             - rabbitmq:/var/lib/rabbitmq
+        restart: always
         healthcheck:
             test: [ 'CMD', 'rabbitmqctl', 'status' ]
             interval: 10s
@@ -62,12 +64,13 @@ services:
             retries: 3
 
     redis:
-        image: redis:7.2-alpine
+        image: redis:7.4
         ports:
             - 6379:6379
         # command: redis-server --save 60 1 --loglevel warning --requirepass password
         volumes: 
             - redis:/data
+        restart: always
         healthcheck:
             test: [ 'CMD', 'redis-cli', 'ping' ]
             interval: 10s
@@ -75,7 +78,7 @@ services:
             retries: 3
 
     mailhog:
-        image: mailhog/mailhog:v1.0.1
+        image: mailhog/mailhog:latest
         environment:
             MH_STORAGE: maildir
             MH_MAILDIR_PATH: /home/mailhog
@@ -87,6 +90,7 @@ services:
             - mailhog:/home/mailhog
             # MailHog bcrypt test
             # - ./mailhog-auth:/home/mailhog-auth
+        restart: always
 
     seq:
         image: datalust/seq:2024.3
@@ -99,6 +103,7 @@ services:
             - 5341:80
         volumes:
             - seq:/data
+        restart: always
 
 volumes:
     postgres:
