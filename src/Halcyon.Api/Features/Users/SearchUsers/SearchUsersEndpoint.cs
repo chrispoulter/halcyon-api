@@ -11,7 +11,6 @@ public class SearchUsersEndpoint : IEndpoint
     {
         app.MapGet("/user", HandleAsync)
             .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
-            .RequireRateLimiting(RateLimiterPolicy.Jwt)
             .AddValidationFilter<SearchUsersRequest>()
             .WithTags(EndpointTag.Users)
             .Produces<SearchUsersResponse>()
@@ -28,7 +27,12 @@ public class SearchUsersEndpoint : IEndpoint
 
         if (!string.IsNullOrEmpty(request.Search))
         {
-            query = query.Where(u => u.EmailAddress.Contains(request.Search));
+            query = query.Where(e =>
+                EF.Functions.Like(
+                    e.FirstName + " " + e.LastName + " " + e.EmailAddress,
+                    $"%{request.Search}%"
+                )
+            );
         }
 
         var count = await query.CountAsync(cancellationToken);

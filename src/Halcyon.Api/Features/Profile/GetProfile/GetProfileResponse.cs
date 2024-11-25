@@ -12,5 +12,5 @@ public class GetProfileResponse
 
     public DateOnly DateOfBirth { get; set; }
 
-    public uint Version { get; set; }
+    public byte[] Version { get; set; }
 }

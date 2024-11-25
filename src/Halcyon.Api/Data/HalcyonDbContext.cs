@@ -8,13 +8,14 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().Property(u => u.EmailAddress).IsRequired();
-        modelBuilder.Entity<User>().HasIndex(u => u.EmailAddress).IsUnique();
-        modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.DateOfBirth).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.Roles);
-        modelBuilder.Entity<User>().Property(u => u.IsLockedOut).HasDefaultValue(false);
-        modelBuilder.Entity<User>().Property(u => u.Version).IsRowVersion();
+        var user = modelBuilder.Entity<User>();
+        user.Property(u => u.Id).HasDefaultValueSql("NEWSEQUENTIALID()").ValueGeneratedOnAdd();
+        user.Property(u => u.EmailAddress).IsRequired();
+        user.HasIndex(u => u.EmailAddress).IsUnique();
+        user.Property(u => u.FirstName).IsRequired();
+        user.Property(u => u.LastName).IsRequired();
+        user.Property(u => u.DateOfBirth).IsRequired();
+        user.Property(u => u.IsLockedOut).HasDefaultValue(false);
+        user.Property(u => u.Version).IsRowVersion();
     }
 }
