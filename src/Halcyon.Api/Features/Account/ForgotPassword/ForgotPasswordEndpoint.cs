@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Core.Web;
+﻿using Halcyon.Api.Core.Validation;
+using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 using MassTransit;
