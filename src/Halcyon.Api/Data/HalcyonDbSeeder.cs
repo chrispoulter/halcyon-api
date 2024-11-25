@@ -1,13 +1,16 @@
-﻿using Halcyon.Api.Core.Database;
+﻿using Halcyon.Api.Core.Authentication;
+using Halcyon.Api.Core.Database;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using BC = BCrypt.Net.BCrypt;
 
 namespace Halcyon.Api.Data;
 
-public class HalcyonDbSeeder(HalcyonDbContext dbContext, IOptions<SeedSettings> seedSettings)
-    : IDbSeeder<HalcyonDbContext>
+public class HalcyonDbSeeder(
+    HalcyonDbContext dbContext,
+    IPasswordHasher passwordHasher,
+    IOptions<SeedSettings> seedSettings
+) : IDbSeeder<HalcyonDbContext>
 {
     private readonly SeedSettings seedSettings = seedSettings.Value;
 
@@ -30,7 +33,7 @@ public class HalcyonDbSeeder(HalcyonDbContext dbContext, IOptions<SeedSettings> 
             }
 
             seedUser.Adapt(user);
-            user.Password = BC.HashPassword(seedUser.Password);
+            user.Password = passwordHasher.HashPassword(seedUser.Password);
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);

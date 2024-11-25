@@ -2,7 +2,6 @@
 using Halcyon.Api.Core.Web;
 using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using BC = BCrypt.Net.BCrypt;
 
 namespace Halcyon.Api.Features.Account.Login;
 
@@ -20,6 +19,7 @@ public class LoginEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         LoginRequest request,
         HalcyonDbContext dbContext,
+        IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator,
         CancellationToken cancellationToken = default
     )
@@ -36,7 +36,7 @@ public class LoginEndpoint : IEndpoint
             );
         }
 
-        var verified = BC.Verify(request.Password, user.Password);
+        var verified = passwordHasher.VerifyPassword(request.Password, user.Password);
 
         if (!verified)
         {
