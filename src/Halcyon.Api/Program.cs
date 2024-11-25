@@ -48,12 +48,10 @@ builder.Services.AddDbContext<HalcyonDbContext>(
 
 builder.Services.AddScoped<EntityChangedInterceptor>();
 
-builder.Services.Configure<SeedSettings>(
-    builder.Configuration.GetSection(SeedSettings.SectionName)
-);
+var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
+builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddScoped<IDbSeeder<HalcyonDbContext>, HalcyonDbSeeder>();
 builder.Services.AddHostedService<MigrationHostedService<HalcyonDbContext>>();
-
 builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
@@ -74,9 +72,18 @@ builder.Services.AddMassTransit(options =>
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = redisConnectionString;
+    options.InstanceName = "HalcyonApi";
+});
+
+#pragma warning disable EXTEXP0018
+builder.Services.AddHybridCache();
+#pragma warning restore EXTEXP0018
+
 builder
     .Services.AddSignalR()
-    .AddStackExchangeRedis(redisConnectionString)
     .AddJsonProtocol(options =>
     {
         options.PayloadSerializerOptions.DefaultIgnoreCondition =
@@ -206,13 +213,13 @@ builder.Services.AddOpenApi(
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddValidatorsFromAssembly(assembly);
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
+var jwtConfig = builder.Configuration.GetSection(JwtSettings.SectionName);
+builder.Services.Configure<JwtSettings>(jwtConfig);
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-builder.Services.Configure<EmailSettings>(
-    builder.Configuration.GetSection(EmailSettings.SectionName)
-);
+var emailConfig = builder.Configuration.GetSection(EmailSettings.SectionName);
+builder.Services.Configure<EmailSettings>(emailConfig);
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
 
