@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Halcyon.Api.Core.Web;
+namespace Halcyon.Api.Core.Validation;
 
 public class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
     where T : class, new()
