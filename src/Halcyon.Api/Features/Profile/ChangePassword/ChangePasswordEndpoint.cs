@@ -41,7 +41,7 @@ public class ChangePasswordEndpoint : IEndpoint
             );
         }
 
-        if (request.Version is not null && request.Version != user.Version)
+        if (request.Version is not null && !request.Version.SequenceEqual(user.Version))
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status409Conflict,
