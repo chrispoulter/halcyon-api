@@ -107,7 +107,12 @@ services:
 
 volumes:
     postgres:
+        name: halcyon-postgres
     rabbitmq:
+        name: halcyon-rabbitmq
     redis:
+        name: halcyon-redis
     mailhog:
+        name: halcyon-mailhog
     seq:
+        name: halcyon-seq
