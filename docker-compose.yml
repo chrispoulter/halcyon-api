@@ -109,7 +109,12 @@ services:
 
 volumes:
     mssql:
+        name: halcyon-mssql
     rabbitmq:
+        name: halcyon-rabbitmq
     redis:
+        name: halcyon-redis
     mailhog:
+        name: halcyon-mailhog
     seq:
+        name: halcyon-seq
