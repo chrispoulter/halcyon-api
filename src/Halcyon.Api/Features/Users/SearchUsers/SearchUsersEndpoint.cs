@@ -24,17 +24,30 @@ public class SearchUsersEndpoint : IEndpoint
         CancellationToken cancellationToken = default
     )
     {
-        var query = dbContext.Users.AsNoTracking().AsQueryable();
+        var sql = "SELECT * FROM Users";
 
         if (!string.IsNullOrEmpty(request.Search))
         {
-            query = query.Where(e =>
-                EF.Functions.Like(
-                    e.FirstName + " " + e.LastName + " " + e.EmailAddress,
-                    $"%{request.Search}%"
-                )
-            );
+            sql += " WHERE FREETEXT((FirstName, LastName, EmailAddress), @p0)";
         }
+
+        var query = dbContext.Users.FromSqlRaw(sql, request.Search).AsNoTracking().AsQueryable();
+
+        //var query = dbContext.Users.AsNoTracking().AsQueryable();
+
+        //if (!string.IsNullOrEmpty(request.Search))
+        //{
+        //    query = query.Where(u => EF.Functions.FreeText(u.EmailAddress, request.Search));
+
+        //    //query = query.Where(u => EF.Functions.FreeText(u.EmailAddress, request.Search));
+
+        //    //query = query.Where(u =>
+        //    //    EF.Functions.Like(
+        //    //        u.FirstName + " " + u.LastName + " " + u.EmailAddress,
+        //    //        $"%{request.Search}%"
+        //    //    )
+        //    //);
+        //}
 
         var count = await query.CountAsync(cancellationToken);
 
