@@ -22,5 +22,5 @@ public class User : IEntityWithId
 
     public List<string> Roles { get; set; }
 
-    public byte[] Version { get; }
+    public byte[] Version { get; set; }
 }
