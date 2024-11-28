@@ -30,9 +30,11 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
                 options.UseNpgsql(dbContainer.GetConnectionString()).UseSnakeCaseNamingConvention()
             );
 
-            services.AddMassTransitTestHarness(cfg =>
-                cfg.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(3))
-            );
+            services.AddMassTransitTestHarness(options =>
+            {
+                options.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(1));
+                options.UsingInMemory();
+            });
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
