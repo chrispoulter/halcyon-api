@@ -98,7 +98,7 @@ services:
         environment:
             ACCEPT_EULA: Y
             # echo 'password' | docker run --rm -i datalust/seq config hash
-            SEQ_FIRSTRUN_ADMINPASSWORDHASH: QPeG8pGvEJu2fECM8zZ5EDQM/mXBxL4X5+GzwHMfhn8KILjH8Z6sBtIY47FhAWVFZchQC3S6SyBSZmQFzvS2HET+WrTqniK4GEJTL7S3sfqJ
+            # SEQ_FIRSTRUN_ADMINPASSWORDHASH: QPeG8pGvEJu2fECM8zZ5EDQM/mXBxL4X5+GzwHMfhn8KILjH8Z6sBtIY47FhAWVFZchQC3S6SyBSZmQFzvS2HET+WrTqniK4GEJTL7S3sfqJ
             SEQ_API_CANONICALURI: http://localhost:5341
         ports:
             - 5341:80
