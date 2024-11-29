@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Testcontainers.PostgreSql;
 
@@ -30,11 +31,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
                 options.UseNpgsql(dbContainer.GetConnectionString()).UseSnakeCaseNamingConvention()
             );
 
-            services.AddMassTransitTestHarness(options =>
-            {
-                options.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(1));
-                options.UsingInMemory();
-            });
+            services.AddMassTransitTestHarness(options => options.UsingInMemory());
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
