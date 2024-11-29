@@ -28,9 +28,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
                 options.UseSqlServer(dbContainer.GetConnectionString())
             );
 
-            services.AddMassTransitTestHarness(cfg =>
-                cfg.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(3))
-            );
+            services.AddMassTransitTestHarness(options => options.UsingInMemory());
 
             services
                 .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
