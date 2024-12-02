@@ -120,10 +120,15 @@ builder
             {
                 var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messages"))
+
+                if (
+                    !string.IsNullOrEmpty(accessToken)
+                    && path.StartsWithSegments(MessageHub.Pattern)
+                )
                 {
                     context.Token = accessToken;
                 }
+
                 return Task.CompletedTask;
             },
         };
@@ -136,8 +141,18 @@ builder
         policy => policy.RequireRole(AuthPolicy.IsUserAdministrator)
     );
 
+var corsPolicySettings = new CorsPolicySettings();
+builder.Configuration.GetSection(CorsPolicySettings.SectionName).Bind(corsPolicySettings);
+
 builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+    options.AddDefaultPolicy(policy =>
+        policy
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            .WithOrigins(corsPolicySettings.AllowedOrigins)
+            .WithMethods(corsPolicySettings.AllowedMethods)
+            .WithHeaders(corsPolicySettings.AllowedHeaders)
+            .AllowCredentials()
+    )
 );
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -247,7 +262,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapHub<MessageHub>("/messages");
+app.MapHub<MessageHub>(MessageHub.Pattern);
 app.MapEndpoints();
 app.Run();
 
