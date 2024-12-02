@@ -5,6 +5,8 @@ namespace Halcyon.Api.Features.Messaging;
 
 public class MessageHub : Hub<IMessageClient>
 {
+    public static string Pattern => "/message";
+
     public override async Task OnConnectedAsync()
     {
         var user = Context.User;
