@@ -34,8 +34,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 ### Prerequisites
 
-- PostgreSQL
-  [https://www.postgresql.org/](https://www.postgresql.org/)
+- SQL Server
+  [https://www.microsoft.com/en-gb/sql-server/sql-server-2022](https://www.microsoft.com/en-gb/sql-server/sql-server-2022)
 - RabbitMQ
   [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
 - Redis

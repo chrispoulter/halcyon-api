@@ -16,5 +16,5 @@ public class GetUserResponse
 
     public List<string> Roles { get; set; }
 
-    public uint Version { get; set; }
+    public byte[] Version { get; set; }
 }
