@@ -78,19 +78,17 @@ services:
             timeout: 5s
             retries: 3
 
-    mailhog:
-        image: mailhog/mailhog:latest
+    maildev:
+        image: maildev/maildev:2.1.0
         environment:
-            MH_STORAGE: maildir
-            MH_MAILDIR_PATH: /home/mailhog
-            # MH_AUTH_FILE: /home/mailhog-auth
+            MAILDEV_MAIL_DIRECTORY: /tmp
+            # MAILDEV_INCOMING_USER: mail-dev
+            # MAILDEV_INCOMING_PASS: password
         ports:
             - 1025:1025
-            - 8025:8025
+            - 1080:1080
         volumes:
-            - mailhog:/home/mailhog
-            # MailHog bcrypt test
-            # - ./mailhog-auth:/home/mailhog-auth
+            - maildev:/tmp
         restart: always
 
     seq:
@@ -113,7 +111,7 @@ volumes:
         name: halcyon-rabbitmq
     redis:
         name: halcyon-redis
-    mailhog:
-        name: halcyon-mailhog
+    maildev:
+        name: halcyon-maildev
     seq:
         name: halcyon-seq

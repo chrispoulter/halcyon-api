@@ -40,8 +40,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
 - Redis
   [https://redis.io/](https://redis.io/)
-- MailHog
-  [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog)
+- MailDev
+  [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
 - Seq
   [https://datalust.co/seq](https://datalust.co/seq)
 
@@ -72,6 +72,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
   "Email": {
     "SmtpServer": "localhost",
     "SmtpPort": 1025,
+    "SmtpSsl": false,
     "SmtpUserName": null,
     "SmtpPassword": null,
     "NoReplyAddress": "noreply@example.com"
