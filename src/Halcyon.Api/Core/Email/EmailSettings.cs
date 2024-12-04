@@ -8,6 +8,8 @@ public class EmailSettings
 
     public int SmtpPort { get; set; }
 
+    public bool SmtpSsl { get; set; }
+
     public string SmtpUserName { get; set; }
 
     public string SmtpPassword { get; set; }

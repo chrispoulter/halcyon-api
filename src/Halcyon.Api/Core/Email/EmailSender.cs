@@ -44,6 +44,7 @@ public class EmailSender(
             await client.ConnectAsync(
                 emailSettings.SmtpServer,
                 emailSettings.SmtpPort,
+                emailSettings.SmtpSsl,
                 cancellationToken: cancellationToken
             );
 
