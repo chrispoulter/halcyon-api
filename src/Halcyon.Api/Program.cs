@@ -16,6 +16,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -43,10 +44,10 @@ builder.Services.AddDbContext<HalcyonDbContext>(
             .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
             .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
             .UseSnakeCaseNamingConvention()
-            .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
+            .AddInterceptors(provider.GetServices<IInterceptor>())
 );
 
-builder.Services.AddScoped<EntityChangedInterceptor>();
+builder.Services.AddScoped<IInterceptor, EntityChangedInterceptor>();
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
