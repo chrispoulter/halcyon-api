@@ -16,6 +16,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -28,12 +29,12 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.WithProperty("Version", version)
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Host.UseSerilog(
+    (context, loggerConfig) =>
+        loggerConfig
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.WithProperty("Version", version)
+);
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
@@ -42,10 +43,10 @@ builder.Services.AddDbContext<HalcyonDbContext>(
         options
             .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
             .UseSqlServer(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-            .AddInterceptors(provider.GetRequiredService<EntityChangedInterceptor>())
+            .AddInterceptors(provider.GetServices<IInterceptor>())
 );
 
-builder.Services.AddScoped<EntityChangedInterceptor>();
+builder.Services.AddScoped<IInterceptor, EntityChangedInterceptor>();
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
