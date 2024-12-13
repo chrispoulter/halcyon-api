@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Api.Services.Authentication;
@@ -13,38 +14,38 @@ using Serilog;
 
 var assembly = typeof(Program).Assembly;
 
+var version = assembly
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    .InformationalVersion;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog(
-    (context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration)
+    (context, loggerConfig) =>
+        loggerConfig
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.WithProperty("Version", version)
 );
 
-var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
+builder.Services.AddDbContext<HalcyonDbContext>(
+    (provider, options) =>
+        options
+            .UseNpgsql(
+                builder.Configuration.GetConnectionString("Database"),
+                builder => builder.EnableRetryOnFailure()
+            )
+            .UseSnakeCaseNamingConvention()
+            .AddInterceptors(provider.GetServices<IInterceptor>())
+);
 
-builder
-    .Services.AddDbContext<HalcyonDbContext>(
-        (provider, options) =>
-            options
-                .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
-                .UseSnakeCaseNamingConvention()
-                .AddInterceptors(provider.GetServices<IInterceptor>())
-    )
-    .AddHealthChecks()
-    .AddDbContextCheck<HalcyonDbContext>();
+builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
 builder.AddMassTransit(connectionName: "RabbitMq", assembly);
-
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = redisConnectionString;
-    options.InstanceName = "HalcyonApi";
-});
+builder.AddRedis(connectionName: "Redis");
 
 #pragma warning disable EXTEXP0018
 builder.Services.AddHybridCache();
@@ -58,7 +59,7 @@ builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddCors();
 builder.AddSignalR();
-builder.AddOpenApi();
+builder.AddOpenApi(version);
 builder.AddAuthenticationServices();
 builder.AddEmailServices();
 builder.AddEventServices();
@@ -71,8 +72,9 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapOpenApiWithSwagger();
+app.MapOpenApiWithSwagger(version);
 app.MapEndpoints(assembly);
 app.MapHubs(assembly);
+app.MapHealthChecks("/health");
 
 app.Run();

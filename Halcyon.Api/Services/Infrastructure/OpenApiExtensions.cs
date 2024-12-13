@@ -6,10 +6,13 @@ namespace Halcyon.Api.Services.Infrastructure;
 
 public static class OpenApiExtensions
 {
-    public static IHostApplicationBuilder AddOpenApi(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddOpenApi(
+        this IHostApplicationBuilder builder,
+        string version
+    )
     {
         builder.Services.AddOpenApi(
-            "v1",
+            version,
             options =>
             {
                 var scheme = new OpenApiSecurityScheme
@@ -58,13 +61,13 @@ public static class OpenApiExtensions
         return builder;
     }
 
-    public static WebApplication MapOpenApiWithSwagger(this WebApplication app)
+    public static WebApplication MapOpenApiWithSwagger(this WebApplication app, string version)
     {
         app.MapOpenApi();
 
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint($"/openapi/v1.json", "v1");
+            options.SwaggerEndpoint($"/openapi/{version}.json", version);
             options.RoutePrefix = string.Empty;
         });
 
