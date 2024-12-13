@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using MassTransit;
-using MassTransit.Logging;
-using MassTransit.Monitoring;
 
 namespace Halcyon.Api.Services.Infrastructure;
 
@@ -26,11 +24,6 @@ public static class MassTransitExtensions
                 }
             );
         });
-
-        //builder
-        //    .Services.AddOpenTelemetry()
-        //    .WithTracing(tracing => tracing.AddSource(DiagnosticHeaders.DefaultListenerName))
-        //    .WithMetrics(metrics => metrics.AddMeter(InstrumentationOptions.MeterName));
 
         return builder;
     }
