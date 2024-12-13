@@ -19,7 +19,6 @@ public static class EntityFrameworkExtensions
                         builder.Configuration.GetConnectionString(connectionName),
                         builder => builder.EnableRetryOnFailure()
                     )
-                    .UseSnakeCaseNamingConvention()
                     .AddInterceptors(provider.GetServices<IInterceptor>())
         );
 

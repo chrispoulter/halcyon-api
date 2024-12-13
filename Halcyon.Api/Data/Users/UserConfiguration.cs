@@ -7,7 +7,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.Property(u => u.Id).HasDefaultValueSql("NEWSEQUENTIALID()").ValueGeneratedOnAdd();
         builder.Property(u => u.EmailAddress).IsRequired();
         builder.HasIndex(u => u.EmailAddress).IsUnique();
         builder.Property(u => u.FirstName).IsRequired();
