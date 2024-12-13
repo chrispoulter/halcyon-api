@@ -55,7 +55,7 @@ dotnet restore "halcyon-api.sln"
 
 ### Update local configuration _(optional)_
 
-In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
+In the `Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
 
 ```
 {
@@ -64,20 +64,16 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "RabbitMq": "amqp://guest:guest@localhost:5672",
     "Redis": "localhost"
   },
-  "CorsPolicy": {
-    "AllowedOrigins": [ "http://localhost:3000" ],
-    "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
-    "AllowedHeaders": [ "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "X-Requested-With", "x-signalr-user-agent" ]
-  },
   "Email": {
     "SmtpServer": "localhost",
     "SmtpPort": 1025,
     "SmtpSsl": false,
     "SmtpUserName": null,
     "SmtpPassword": null,
-    "NoReplyAddress": "noreply@example.com"
+    "NoReplyAddress": "noreply@example.com",
+    "CdnUrl": "http://localhost:3000"
   },
- "Jwt": {
+  "Jwt": {
     "SecurityKey": "super_secret_key_that_should_be_changed",
     "Issuer": "HalcyonApi",
     "Audience": "HalcyonClient",
@@ -127,20 +123,12 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ### Run the application
 
 ```
-dotnet run --project "src/Halcyon.Api/Halcyon.Api.csproj"
+dotnet run --project "Halcyon.Api/Halcyon.Api.csproj"
 ```
 
 ### Access the API
 
 Once running, you can explore the API using Swagger UI at http://localhost:5257
-
-## Testing
-
-This project includes unit tests. To run tests:
-
-```
-dotnet test "halcyon-api.sln"
-```
 
 ## Contributing
 
