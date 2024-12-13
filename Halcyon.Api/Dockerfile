@@ -8,10 +8,10 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG VERSION=1.0.0
 WORKDIR /src
-COPY ["src/Halcyon.Api/Halcyon.Api.csproj", "src/Halcyon.Api/"]
-RUN dotnet restore "./src/Halcyon.Api/Halcyon.Api.csproj"
+COPY ["Halcyon.Api/Halcyon.Api.csproj", "Halcyon.Api/"]
+RUN dotnet restore "./Halcyon.Api/Halcyon.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Halcyon.Api"
+WORKDIR "/src/Halcyon.Api"
 RUN dotnet build "./Halcyon.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:Version=$VERSION
 
 FROM build AS publish

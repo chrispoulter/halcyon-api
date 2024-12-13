@@ -9,10 +9,15 @@ using Mapster;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Serilog;
 
 var assembly = typeof(Program).Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(
+    (context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration)
+);
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
@@ -20,7 +25,6 @@ builder
     .Services.AddDbContext<HalcyonDbContext>(
         (provider, options) =>
             options
-                .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseNpgsql(databaseConnectionString, builder => builder.EnableRetryOnFailure())
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(provider.GetServices<IInterceptor>())
@@ -61,6 +65,7 @@ builder.AddEventServices();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.UseCors();
 app.UseAuthentication();
@@ -71,5 +76,3 @@ app.MapEndpoints(assembly);
 app.MapHubs(assembly);
 
 app.Run();
-
-public partial class Program { }
