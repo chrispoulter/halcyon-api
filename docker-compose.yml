@@ -12,7 +12,7 @@ services:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_HTTP_PORTS: 8080
             ASPNETCORE_HTTPS_PORTS: 8081
-            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon;Username=postgres;Password=password
+            ConnectionStrings__Database: Server=host.docker.internal;Database=Halcyon;User Id=sa;Password=Pass@word;TrustServerCertificate=true;MultipleActiveResultSets=true;
             ConnectionStrings__RabbitMq: amqp://guest:guest@host.docker.internal:5672
             ConnectionStrings__Redis: host.docker.internal
             Email__SmtpServer: host.docker.internal
@@ -25,25 +25,26 @@ services:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         depends_on:
-            postgres:
+            mssql:
                 condition: service_healthy
             rabbitmq:
                 condition: service_healthy
             redis:
                 condition: service_healthy
 
-    postgres:
-        image: postgres:17.0
-        user: postgres
+    mssql:
+        image: ghcr.io/chrispoulter/mssql-2022-full-text:latest
+        # image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
-            POSTGRES_PASSWORD: password
+            ACCEPT_EULA: Y
+            MSSQL_SA_PASSWORD: Pass@word
         ports:
-            - 5432:5432
+            - 1433:1433
         volumes:
-            - postgres:/var/lib/postgresql/data
+            - mssql:/var/opt/mssql
         restart: always
         healthcheck:
-            test: [ 'CMD', 'pg_isready' ]
+            test: /opt/mssql-tools18/bin/sqlcmd -U sa -P "$${MSSQL_SA_PASSWORD}" -C -Q "SELECT 1" -b -o /dev/null
             interval: 10s
             timeout: 5s
             retries: 3
@@ -104,8 +105,8 @@ services:
         restart: always
 
 volumes:
-    postgres:
-        name: halcyon-postgres
+    mssql:
+        name: halcyon-mssql
     rabbitmq:
         name: halcyon-rabbitmq
     redis:

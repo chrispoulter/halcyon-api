@@ -15,7 +15,7 @@ public static class EntityFrameworkExtensions
         builder.Services.AddDbContext<HalcyonDbContext>(
             (provider, options) =>
                 options
-                    .UseNpgsql(
+                    .UseSqlServer(
                         builder.Configuration.GetConnectionString(connectionName),
                         builder => builder.EnableRetryOnFailure()
                     )

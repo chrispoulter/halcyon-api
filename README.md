@@ -34,8 +34,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 ### Prerequisites
 
-- PostgreSQL
-  [https://www.postgresql.org/](https://www.postgresql.org/)
+- SQL Server
+  [https://www.microsoft.com/en-gb/sql-server/sql-server-2022](https://www.microsoft.com/en-gb/sql-server/sql-server-2022)
 - RabbitMQ
   [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
 - Redis
@@ -60,7 +60,7 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
+    "Database": "Server=localhost;Database=Halcyon;User Id=sa;Password=Pass@word;TrustServerCertificate=true;MultipleActiveResultSets=true;",
     "RabbitMq": "amqp://guest:guest@localhost:5672",
     "Redis": "localhost"
   },
@@ -73,7 +73,7 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
     "NoReplyAddress": "noreply@example.com",
     "CdnUrl": "http://localhost:3000"
   },
-  "Jwt": {
+ "Jwt": {
     "SecurityKey": "super_secret_key_that_should_be_changed",
     "Issuer": "HalcyonApi",
     "Audience": "HalcyonClient",
