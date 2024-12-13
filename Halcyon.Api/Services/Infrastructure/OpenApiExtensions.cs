@@ -30,6 +30,8 @@ public static class OpenApiExtensions
                 options.AddDocumentTransformer(
                     (document, context, cancellationToken) =>
                     {
+                        document.Servers.Clear();
+
                         document.Components ??= new();
                         document.Components.SecuritySchemes.Add(
                             JwtBearerDefaults.AuthenticationScheme,

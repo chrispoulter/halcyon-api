@@ -8,8 +8,6 @@ using Halcyon.Api.Services.Events;
 using Halcyon.Api.Services.Infrastructure;
 using Mapster;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Serilog;
 
 var assembly = typeof(Program).Assembly;
@@ -27,18 +25,7 @@ builder.Host.UseSerilog(
             .Enrich.WithProperty("Version", version)
 );
 
-builder.Services.AddDbContext<HalcyonDbContext>(
-    (provider, options) =>
-        options
-            .UseNpgsql(
-                builder.Configuration.GetConnectionString("Database"),
-                builder => builder.EnableRetryOnFailure()
-            )
-            .UseSnakeCaseNamingConvention()
-            .AddInterceptors(provider.GetServices<IInterceptor>())
-);
-
-builder.Services.AddHealthChecks().AddDbContextCheck<HalcyonDbContext>();
+builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
@@ -46,10 +33,6 @@ builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
 builder.AddMassTransit(connectionName: "RabbitMq", assembly);
 builder.AddRedis(connectionName: "Redis");
-
-#pragma warning disable EXTEXP0018
-builder.Services.AddHybridCache();
-#pragma warning restore EXTEXP0018
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddValidatorsFromAssembly(assembly);
