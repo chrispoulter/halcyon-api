@@ -1,4 +1,5 @@
 ﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 

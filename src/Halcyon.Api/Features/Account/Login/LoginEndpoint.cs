@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.Login;
@@ -12,8 +12,8 @@ public class LoginEndpoint : IEndpoint
     {
         app.MapPost("/account/login", HandleAsync)
             .AddValidationFilter<LoginRequest>()
-            .WithTags(EndpointTag.Account)
-            .Produces<string>(contentType: "text/plain")
+            .WithTags(Tags.Account)
+            .Produces<LoginResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
@@ -55,8 +55,8 @@ public class LoginEndpoint : IEndpoint
             );
         }
 
-        var result = jwtTokenGenerator.GenerateJwtToken(user);
+        var result = new LoginResponse { AccessToken = jwtTokenGenerator.GenerateJwtToken(user) };
 
-        return Results.Content(result);
+        return Results.Ok(result);
     }
 }

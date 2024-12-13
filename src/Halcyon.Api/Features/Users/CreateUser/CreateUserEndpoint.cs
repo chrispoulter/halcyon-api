@@ -1,7 +1,9 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Authorization;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +14,9 @@ public class CreateUserEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPost("/user", HandleAsync)
-            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
+            .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .AddValidationFilter<CreateUserRequest>()
-            .WithTags(EndpointTag.Users)
+            .WithTags(Tags.Users)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
@@ -43,6 +45,7 @@ public class CreateUserEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.Password);
 
         dbContext.Users.Add(user);
+        user.Raise(new UserCreatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

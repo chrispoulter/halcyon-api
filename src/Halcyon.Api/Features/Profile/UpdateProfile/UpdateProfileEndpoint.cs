@@ -1,6 +1,8 @@
-﻿using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +15,7 @@ public class UpdateProfileEndpoint : IEndpoint
         app.MapPut("/profile", HandleAsync)
             .RequireAuthorization()
             .AddValidationFilter<UpdateProfileRequest>()
-            .WithTags(EndpointTag.Profile)
+            .WithTags(Tags.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -70,6 +72,7 @@ public class UpdateProfileEndpoint : IEndpoint
         }
 
         request.Adapt(user);
+        user.Raise(new UserUpdatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

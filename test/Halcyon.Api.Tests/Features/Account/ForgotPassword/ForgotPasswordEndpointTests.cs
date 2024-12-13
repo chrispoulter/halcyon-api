@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Halcyon.Api.Features.Account.ForgotPassword;
-using Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
 namespace Halcyon.Api.Tests.Features.Account.ForgotPassword;
 
@@ -17,10 +16,8 @@ public class ForgotPasswordEndpointTests(TestWebApplicationFactory factory) : Ba
         var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var eventPublished = await _testHarness.Published.Any<SendResetPasswordEmailEvent>(filter =>
-            filter.Context.Message.To == request.EmailAddress
-        );
-        Assert.False(eventPublished, $"{nameof(SendResetPasswordEmailEvent)} published");
+        var eventPublished = await _testHarness.Published.Any<ResetPasswordRequestedEvent>();
+        Assert.False(eventPublished, $"{nameof(ResetPasswordRequestedEvent)} published");
     }
 
     [Fact]
@@ -32,16 +29,10 @@ public class ForgotPasswordEndpointTests(TestWebApplicationFactory factory) : Ba
         var response = await _client.PutAsJsonAsync(_requestUri, request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var eventPublished = await _testHarness.Published.Any<SendResetPasswordEmailEvent>(filter =>
-            filter.Context.Message.To == request.EmailAddress
-        );
-        Assert.True(eventPublished, $"{nameof(SendResetPasswordEmailEvent)} not published");
+        var eventPublished = await _testHarness.Published.Any<ResetPasswordRequestedEvent>();
+        Assert.True(eventPublished, $"{nameof(ResetPasswordRequestedEvent)} not published");
     }
 
     private static ForgotPasswordRequest CreateForgotPasswordRequest(string emailAddress = null) =>
-        new()
-        {
-            EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com",
-            SiteUrl = "http://localhost:3000",
-        };
+        new() { EmailAddress = emailAddress ?? $"{Guid.NewGuid()}@example.com" };
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Halcyon.Api.Data.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Data;
 
@@ -8,26 +9,6 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().Property(u => u.EmailAddress).IsRequired();
-        modelBuilder.Entity<User>().HasIndex(u => u.EmailAddress).IsUnique();
-        modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.DateOfBirth).IsRequired();
-        modelBuilder.Entity<User>().Property(u => u.Roles).HasColumnType("text[]");
-        modelBuilder.Entity<User>().Property(u => u.IsLockedOut).HasDefaultValue(false);
-        modelBuilder.Entity<User>().Property(u => u.Version).IsRowVersion();
-
-        modelBuilder
-            .Entity<User>()
-            .HasGeneratedTsVectorColumn(
-                u => u.SearchVector,
-                "english",
-                u => new
-                {
-                    u.FirstName,
-                    u.LastName,
-                    u.EmailAddress,
-                }
-            );
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(HalcyonDbContext).Assembly);
     }
 }

@@ -1,7 +1,8 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public class RegisterEndpoint : IEndpoint
     {
         app.MapPost("/account/register", HandleAsync)
             .AddValidationFilter<RegisterRequest>()
-            .WithTags(EndpointTag.Account)
+            .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
@@ -42,6 +43,7 @@ public class RegisterEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.Password);
 
         dbContext.Users.Add(user);
+        user.Raise(new UserCreatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

@@ -1,5 +1,5 @@
-﻿using Halcyon.Api.Core.Email;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Services.Email;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -18,7 +18,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
         .WithImage("postgres:17.0")
         .Build();
 
-    public readonly Mock<IEmailSender> MockEmailSender = new();
+    public readonly Mock<IEmailService> MockEmailService = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -39,7 +39,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
                     options => { }
                 );
 
-            services.AddScoped((_) => MockEmailSender.Object);
+            services.AddScoped((_) => MockEmailService.Object);
         });
     }
 

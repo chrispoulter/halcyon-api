@@ -1,5 +1,6 @@
-﻿using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ public class GetProfileEndpoint : IEndpoint
     {
         app.MapGet("/profile", HandleAsync)
             .RequireAuthorization()
-            .WithTags(EndpointTag.Profile)
+            .WithTags(Tags.Profile)
             .Produces<GetProfileResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound);
     }

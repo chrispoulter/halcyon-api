@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Halcyon.Api.Core.Web;
+using Halcyon.Api.Features;
 using Halcyon.Api.Features.Account.Register;
 using Microsoft.AspNetCore.Mvc;
 

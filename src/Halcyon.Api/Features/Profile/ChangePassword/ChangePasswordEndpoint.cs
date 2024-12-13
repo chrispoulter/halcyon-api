@@ -1,7 +1,8 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Profile.ChangePassword;
@@ -13,7 +14,7 @@ public class ChangePasswordEndpoint : IEndpoint
         app.MapPut("/profile/change-password", HandleAsync)
             .RequireAuthorization()
             .AddValidationFilter<ChangePasswordRequest>()
-            .WithTags(EndpointTag.Profile)
+            .WithTags(Tags.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -69,6 +70,7 @@ public class ChangePasswordEndpoint : IEndpoint
 
         user.Password = passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
+        user.Raise(new UserUpdatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

@@ -1,35 +1,31 @@
-using Halcyon.Api.Core.Email;
+using Halcyon.Api.Data;
+using Halcyon.Api.Features.Account.ForgotPassword;
+using Halcyon.Api.Services.Email;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
-public class SendResetPasswordEmailConsumer(IEmailSender emailSender)
-    : IConsumer<Batch<SendResetPasswordEmailEvent>>
+public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IEmailService emailService)
+    : IConsumer<Batch<ResetPasswordRequestedEvent>>
 {
-    private const string _template = "ResetPasswordEmail.html";
-
-    public async Task Consume(ConsumeContext<Batch<SendResetPasswordEmailEvent>> context)
+    public async Task Consume(ConsumeContext<Batch<ResetPasswordRequestedEvent>> context)
     {
-        var batch = context.Message.DistinctBy(d => new
-        {
-            d.Message.To,
-            d.Message.PasswordResetToken,
-            d.Message.SiteUrl,
-        });
+        var ids = context.Message.Select(m => m.Message.UserId).Distinct();
 
-        foreach (var item in batch)
-        {
-            var message = item.Message;
+        var users = await dbContext
+            .Users.Where(u => ids.Contains(u.Id) && !u.IsLockedOut && u.PasswordResetToken != null)
+            .ToListAsync(context.CancellationToken);
 
-            await emailSender.SendEmailAsync(
-                new()
-                {
-                    Template = _template,
-                    To = message.To,
-                    Data = new { message.PasswordResetToken, message.SiteUrl },
-                },
-                context.CancellationToken
+        foreach (var user in users)
+        {
+            var email = new EmailMessage(
+                "ResetPasswordEmail.html",
+                user.EmailAddress,
+                new { user.PasswordResetToken }
             );
+
+            await emailService.SendEmailAsync(email, context.CancellationToken);
         }
     }
 }

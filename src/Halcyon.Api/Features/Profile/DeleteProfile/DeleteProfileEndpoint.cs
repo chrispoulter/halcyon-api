@@ -1,5 +1,7 @@
-﻿using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +13,7 @@ public class DeleteProfileEndpoint : IEndpoint
     {
         app.MapDelete("/profile", HandleAsync)
             .RequireAuthorization()
-            .WithTags(EndpointTag.Profile)
+            .WithTags(Tags.Profile)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
@@ -46,6 +48,7 @@ public class DeleteProfileEndpoint : IEndpoint
         }
 
         dbContext.Users.Remove(user);
+        user.Raise(new UserDeletedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

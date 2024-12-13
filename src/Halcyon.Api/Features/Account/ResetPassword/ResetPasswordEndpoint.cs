@@ -1,7 +1,8 @@
-﻿using Halcyon.Api.Core.Authentication;
-using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Data.Users;
+using Halcyon.Api.Services.Authentication;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ResetPassword;
@@ -12,7 +13,7 @@ public class ResetPasswordEndpoint : IEndpoint
     {
         app.MapPut("/account/reset-password", HandleAsync)
             .AddValidationFilter<ResetPasswordRequest>()
-            .WithTags(EndpointTag.Account)
+            .WithTags(Tags.Account)
             .Produces<UpdateResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
@@ -39,6 +40,7 @@ public class ResetPasswordEndpoint : IEndpoint
 
         user.Password = passwordHasher.HashPassword(request.NewPassword);
         user.PasswordResetToken = null;
+        user.Raise(new UserUpdatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

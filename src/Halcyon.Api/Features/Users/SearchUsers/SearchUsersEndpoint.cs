@@ -1,6 +1,7 @@
-﻿using Halcyon.Api.Core.Validation;
-using Halcyon.Api.Core.Web;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
+using Halcyon.Api.Services.Authorization;
+using Halcyon.Api.Services.Infrastructure;
+using Halcyon.Api.Services.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +12,9 @@ public class SearchUsersEndpoint : IEndpoint
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet("/user", HandleAsync)
-            .RequireAuthorization(nameof(AuthPolicy.IsUserAdministrator))
+            .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .AddValidationFilter<SearchUsersRequest>()
-            .WithTags(EndpointTag.Users)
+            .WithTags(Tags.Users)
             .Produces<SearchUsersResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest);
     }
