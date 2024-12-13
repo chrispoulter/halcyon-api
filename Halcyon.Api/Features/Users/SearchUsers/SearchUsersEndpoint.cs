@@ -4,6 +4,7 @@ using Halcyon.Api.Services.Infrastructure;
 using Halcyon.Api.Services.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+
 namespace Halcyon.Api.Features.Users.SearchUsers;
 
 public class SearchUsersEndpoint : IEndpoint
