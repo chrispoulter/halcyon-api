@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/Halcyon.Api/bin/Debug/net9.0/Halcyon.Api.dll",
+      "program": "${workspaceFolder}/Halcyon.Api/bin/Debug/net9.0/Halcyon.Api.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/Halcyon.Api",
+      "cwd": "${workspaceFolder}/Halcyon.Api",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
