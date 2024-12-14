@@ -6,7 +6,7 @@ public static class EventExtensions
 {
     public static IHostApplicationBuilder AddEventServices(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddTransient<IInterceptor, DomainEventInterceptor>();
+        builder.Services.AddTransient<IInterceptor, EntityChangedInterceptor>();
 
         return builder;
     }

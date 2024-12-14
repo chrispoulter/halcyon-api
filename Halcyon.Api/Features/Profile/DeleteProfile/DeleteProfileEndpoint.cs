@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Data.Users;
 using Halcyon.Api.Services.Authentication;
 using Halcyon.Api.Services.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +47,6 @@ public class DeleteProfileEndpoint : IEndpoint
         }
 
         dbContext.Users.Remove(user);
-        user.Raise(new UserDeletedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
