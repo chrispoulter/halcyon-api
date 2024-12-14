@@ -1,7 +1,7 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Data.Users;
 using Halcyon.Api.Services.Infrastructure;
 using Halcyon.Api.Services.Validation;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword;
@@ -20,6 +20,7 @@ public class ForgotPasswordEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
         HalcyonDbContext dbContext,
+        IPublishEndpoint publishEndpoint,
         CancellationToken cancellationToken = default
     )
     {
@@ -31,12 +32,13 @@ public class ForgotPasswordEndpoint : IEndpoint
         if (user is not null && !user.IsLockedOut)
         {
             user.PasswordResetToken = Guid.NewGuid();
-            user.Raise(
-                new UserUpdatedDomainEvent(user.Id),
-                new ResetPasswordRequestedEvent(user.Id)
-            );
 
             await dbContext.SaveChangesAsync(cancellationToken);
+
+            await publishEndpoint.Publish(
+                new ResetPasswordRequestedEvent(user.Id),
+                cancellationToken
+            );
         }
 
         return Results.Ok();

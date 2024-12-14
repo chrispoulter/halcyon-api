@@ -1,5 +1,4 @@
 ﻿using Halcyon.Api.Data;
-using Halcyon.Api.Data.Users;
 using Halcyon.Api.Services.Authentication;
 using Halcyon.Api.Services.Authorization;
 using Halcyon.Api.Services.Infrastructure;
@@ -56,7 +55,6 @@ public class LockUserEndpoint : IEndpoint
         }
 
         user.IsLockedOut = true;
-        user.Raise(new UserUpdatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

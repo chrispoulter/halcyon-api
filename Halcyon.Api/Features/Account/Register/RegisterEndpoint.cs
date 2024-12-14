@@ -43,7 +43,6 @@ public class RegisterEndpoint : IEndpoint
         user.Password = passwordHasher.HashPassword(request.Password);
 
         dbContext.Users.Add(user);
-        user.Raise(new UserCreatedDomainEvent(user.Id));
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

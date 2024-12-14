@@ -1,5 +1,4 @@
-﻿using Halcyon.Api.Data.Users;
-using Halcyon.Api.Services.Authentication;
+﻿using Halcyon.Api.Services.Authentication;
 using Halcyon.Api.Services.Database;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -31,11 +30,6 @@ public class HalcyonDbSeeder(
             {
                 user = new();
                 dbContext.Users.Add(user);
-                user.Raise(new UserCreatedDomainEvent(user.Id));
-            }
-            else
-            {
-                user.Raise(new UserUpdatedDomainEvent(user.Id));
             }
 
             seedUser.Adapt(user);

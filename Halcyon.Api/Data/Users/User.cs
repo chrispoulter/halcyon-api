@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;
 
-public class User : Entity
+public class User : IEntity
 {
     public Guid Id { get; set; }
 
