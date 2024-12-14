@@ -26,13 +26,16 @@ builder.Host.UseSerilog(
 );
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
+builder.AddMassTransit(connectionName: "RabbitMq", assembly);
+builder.AddRedisDistributedCache(connectionName: "Redis");
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
-builder.AddMassTransit(connectionName: "RabbitMq", assembly);
-builder.AddRedis(connectionName: "Redis");
+#pragma warning disable EXTEXP0018
+builder.Services.AddHybridCache();
+#pragma warning restore EXTEXP0018
 
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddValidatorsFromAssembly(assembly);
