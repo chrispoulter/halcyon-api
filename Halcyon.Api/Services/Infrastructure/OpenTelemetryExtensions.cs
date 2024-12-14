@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using OpenTelemetry;
+﻿using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -22,7 +17,7 @@ public static class OpenTelemetryExtensions
 
         builder
             .Services.AddOpenTelemetry()
-            .ConfigureResource(config => config.AddService(builder.Environment.ApplicationName))
+            .ConfigureResource(options => options.AddService(builder.Environment.ApplicationName))
             .WithMetrics(metrics =>
             {
                 metrics

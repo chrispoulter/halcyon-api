@@ -1,4 +1,6 @@
-﻿namespace Halcyon.Api.Services.Infrastructure;
+﻿using static MailKit.Telemetry;
+
+namespace Halcyon.Api.Services.Infrastructure;
 
 public static class MailKitExtensions
 {
@@ -7,14 +9,12 @@ public static class MailKitExtensions
         string connectionName
     )
     {
-        MailKit.Telemetry.SmtpClient.Configure();
+        SmtpClient.Configure();
 
         builder
             .Services.AddOpenTelemetry()
-            .WithTracing(tracing =>
-                tracing.AddSource(MailKit.Telemetry.SmtpClient.ActivitySourceName)
-            )
-            .WithMetrics(metrics => metrics.AddMeter(MailKit.Telemetry.SmtpClient.MeterName));
+            .WithTracing(tracing => tracing.AddSource(SmtpClient.ActivitySourceName))
+            .WithMetrics(metrics => metrics.AddMeter(SmtpClient.MeterName));
 
         return builder;
     }
