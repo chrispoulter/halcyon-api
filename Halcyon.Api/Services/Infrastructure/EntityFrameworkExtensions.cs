@@ -1,6 +1,7 @@
 ﻿using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Npgsql;
 
 namespace Halcyon.Api.Services.Infrastructure;
 
@@ -24,6 +25,11 @@ public static class EntityFrameworkExtensions
         );
 
         builder.Services.AddHealthChecks().AddDbContextCheck<TContext>();
+
+        builder
+            .Services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddNpgsql())
+            .WithMetrics(metrics => metrics.AddNpgsqlInstrumentation());
 
         return builder;
     }

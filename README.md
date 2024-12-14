@@ -116,6 +116,7 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
       }
     }
   },
+  "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp/v1/traces",
   "AllowedHosts": "*"
 }
 ```
