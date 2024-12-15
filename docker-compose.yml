@@ -85,8 +85,8 @@ services:
         ports:
             - 1025:1025
             - 1080:1080
-        # volumes:
-        #     - maildev:/tmp
+        volumes:
+            - maildev:/tmp
         restart: always
 
     seq:
@@ -96,8 +96,8 @@ services:
             SEQ_API_CANONICALURI: http://localhost:5341
         ports:
             - 5341:80
-        # volumes:
-        #     - seq:/data
+        volumes:
+            - seq:/data
         restart: always
 
 volumes:
