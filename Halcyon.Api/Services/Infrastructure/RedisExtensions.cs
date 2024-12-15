@@ -10,6 +10,7 @@ public static class RedisExtensions
         builder.Services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = builder.Configuration.GetConnectionString(connectionName);
+            options.InstanceName = builder.Environment.ApplicationName;
         });
 
         return builder;

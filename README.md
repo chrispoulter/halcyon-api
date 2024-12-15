@@ -100,9 +100,6 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
       }
     },
     "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-    "Properties": {
-      "ApplicationName": "Halcyon.Api"
-    },
     "WriteTo": {
       "Console": {
         "Name": "Console",
@@ -116,6 +113,8 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
       }
     }
   },
+  "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp/v1/traces",
+  "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
   "AllowedHosts": "*"
 }
 ```
