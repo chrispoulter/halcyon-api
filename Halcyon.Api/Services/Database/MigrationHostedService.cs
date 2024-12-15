@@ -34,6 +34,8 @@ public class MigrationHostedService<TDbContext>(
                 typeof(TDbContext).Name
             );
 
+            activity.SetExceptionTags(ex);
+
             return;
         }
 
@@ -52,6 +54,8 @@ public class MigrationHostedService<TDbContext>(
                 "An error occurred while seeding database for {DbContext}",
                 typeof(TDbContext).Name
             );
+
+            activity.SetExceptionTags(ex);
         }
     }
 

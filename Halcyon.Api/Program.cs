@@ -22,6 +22,7 @@ builder.Host.UseSerilog(
     (context, loggerConfig) =>
         loggerConfig
             .ReadFrom.Configuration(context.Configuration)
+            .Enrich.WithProperty("ApplicationName", builder.Environment.ApplicationName)
             .Enrich.WithProperty("Version", version)
 );
 
@@ -40,11 +41,13 @@ builder.Services.AddHybridCache();
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks();
 
 builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddCors();
 builder.AddSignalR();
+builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
 builder.AddAuthenticationServices();
 builder.AddEmailServices();
