@@ -7,7 +7,10 @@ namespace Halcyon.Api.Services.Infrastructure;
 
 public static class OpenTelemetryExtensions
 {
-    public static IHostApplicationBuilder AddOpenTelemetry(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddOpenTelemetry(
+        this IHostApplicationBuilder builder,
+        string version
+    )
     {
         builder.Logging.AddOpenTelemetry(logging =>
         {
@@ -17,7 +20,13 @@ public static class OpenTelemetryExtensions
 
         builder
             .Services.AddOpenTelemetry()
-            .ConfigureResource(options => options.AddService(builder.Environment.ApplicationName))
+            .ConfigureResource(options =>
+                options.AddService(
+                    builder.Environment.ApplicationName,
+                    serviceVersion: version,
+                    serviceInstanceId: Environment.MachineName
+                )
+            )
             .WithMetrics(metrics =>
             {
                 metrics

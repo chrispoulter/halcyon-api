@@ -19,6 +19,7 @@ services:
             Serilog__MinimumLevel__Override__Microsoft.AspNetCore.DataProtection: Error
             Serilog__WriteTo__Seq__Args__serverUrl: http://host.docker.internal:5341
             OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:5341/ingest/otlp/v1/traces
+            OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
         ports:
             - 5257:8080
             - 7257:8081
@@ -84,8 +85,8 @@ services:
         ports:
             - 1025:1025
             - 1080:1080
-        volumes:
-            - maildev:/tmp
+        # volumes:
+        #     - maildev:/tmp
         restart: always
 
     seq:

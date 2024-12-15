@@ -47,7 +47,7 @@ builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddCors();
 builder.AddSignalR();
-builder.AddOpenTelemetry();
+builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
 builder.AddAuthenticationServices();
 builder.AddEmailServices();

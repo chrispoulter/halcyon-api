@@ -26,10 +26,10 @@ public static class EntityFrameworkExtensions
 
         builder.Services.AddHealthChecks().AddDbContextCheck<TContext>();
 
-        builder
-            .Services.AddOpenTelemetry()
-            .WithTracing(tracing => tracing.AddNpgsql())
-            .WithMetrics(metrics => metrics.AddNpgsqlInstrumentation());
+        //builder
+        //    .Services.AddOpenTelemetry()
+        //    .WithTracing(tracing => tracing.AddNpgsql())
+        //    .WithMetrics(metrics => metrics.AddNpgsqlInstrumentation());
 
         return builder;
     }
