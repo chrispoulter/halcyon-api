@@ -100,9 +100,6 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
       }
     },
     "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-    "Properties": {
-      "ApplicationName": "Halcyon.Api"
-    },
     "WriteTo": {
       "Console": {
         "Name": "Console",

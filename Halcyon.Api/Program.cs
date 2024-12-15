@@ -22,6 +22,7 @@ builder.Host.UseSerilog(
     (context, loggerConfig) =>
         loggerConfig
             .ReadFrom.Configuration(context.Configuration)
+            .Enrich.WithProperty("ApplicationName", builder.Environment.ApplicationName)
             .Enrich.WithProperty("Version", version)
 );
 

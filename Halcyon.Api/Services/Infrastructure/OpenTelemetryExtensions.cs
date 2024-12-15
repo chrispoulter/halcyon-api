@@ -21,12 +21,9 @@ public static class OpenTelemetryExtensions
         builder
             .Services.AddOpenTelemetry()
             .ConfigureResource(options =>
-                options.AddService(
-                    builder.Environment.ApplicationName,
-                    serviceVersion: version,
-                    serviceInstanceId: Environment.MachineName
-                )
-            )
+            {
+                options.AddService(builder.Environment.ApplicationName, serviceVersion: version);
+            })
             .WithTracing(tracing =>
             {
                 tracing
