@@ -9,12 +9,12 @@ public static class MailKitExtensions
         string connectionName
     )
     {
-        //SmtpClient.Configure();
+        SmtpClient.Configure();
 
-        //builder
-        //    .Services.AddOpenTelemetry()
-        //    .WithTracing(tracing => tracing.AddSource(SmtpClient.ActivitySourceName))
-        //    .WithMetrics(metrics => metrics.AddMeter(SmtpClient.MeterName));
+        builder
+            .Services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddSource(SmtpClient.ActivitySourceName))
+            .WithMetrics(metrics => metrics.AddMeter(SmtpClient.MeterName));
 
         return builder;
     }

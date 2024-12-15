@@ -27,19 +27,19 @@ public static class OpenTelemetryExtensions
                     serviceInstanceId: Environment.MachineName
                 )
             )
-            .WithMetrics(metrics =>
-            {
-                metrics
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
-            })
             .WithTracing(tracing =>
             {
                 tracing
                     .AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
+            })
+            .WithMetrics(metrics =>
+            {
+                metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation();
             })
             .UseOtlpExporter();
 
