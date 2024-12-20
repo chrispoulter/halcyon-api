@@ -7,6 +7,6 @@ public static class AuthorizationExtensions
         params string[] roles
     )
     {
-        return builder.AddEndpointFilter(new RequireRoleFilter(roles));
+        return builder.RequireAuthorization(policy => policy.RequireRole(roles));
     }
 }

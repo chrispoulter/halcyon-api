@@ -14,11 +14,11 @@ public class SearchUsersRequest
 {
     public string Search { get; set; }
 
-    public UserSort Sort { get; set; } = UserSort.NAME_ASC;
+    public UserSort? Sort { get; set; }
 
-    public int Page { get; set; } = 1;
+    public int? Page { get; set; }
 
-    public int Size { get; set; } = 50;
+    public int? Size { get; set; }
 }
 
 public class SearchUsersRequestValidator : AbstractValidator<SearchUsersRequest>

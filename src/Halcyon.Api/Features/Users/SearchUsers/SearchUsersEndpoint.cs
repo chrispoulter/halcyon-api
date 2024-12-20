@@ -52,23 +52,26 @@ public class SearchUsersEndpoint : IEndpoint
             _ => query.OrderBy(r => r.FirstName).ThenBy(r => r.LastName).ThenBy(r => r.Id),
         };
 
-        if (request.Page > 1)
+        var page = request.Page ?? 1;
+        var size = request.Size ?? 10;
+
+        if (page > 1)
         {
-            query = query.Skip((request.Page - 1) * request.Size);
+            query = query.Skip((page - 1) * size);
         }
 
-        query = query.Take(request.Size);
+        query = query.Take(size);
 
         var users = await query.ProjectToType<SearchUserResponse>().ToListAsync(cancellationToken);
 
-        var pageCount = (count + request.Size - 1) / request.Size;
+        var pageCount = (count + size - 1) / size;
 
         return Results.Ok(
             new SearchUsersResponse()
             {
                 Items = users,
-                HasNextPage = request.Page < pageCount,
-                HasPreviousPage = request.Page > 1 && request.Page <= pageCount,
+                HasNextPage = page < pageCount,
+                HasPreviousPage = page > 1 && page <= pageCount,
             }
         );
     }
