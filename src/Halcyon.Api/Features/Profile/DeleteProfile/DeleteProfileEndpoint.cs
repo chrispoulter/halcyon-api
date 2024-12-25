@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Api.Services.Authentication;
-using Halcyon.Api.Services.Infrastructure;
+﻿using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Infrastructure;
+using Halcyon.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
