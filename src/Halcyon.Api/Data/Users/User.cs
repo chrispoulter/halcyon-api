@@ -1,4 +1,4 @@
-﻿using Halcyon.Api.Services.Events;
+﻿using Halcyon.Api.Common.Events;
 using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;

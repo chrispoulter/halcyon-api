@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Halcyon.Api.Services.Validation;
+using Halcyon.Api.Common.Validation;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
 

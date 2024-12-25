@@ -1,11 +1,11 @@
 using System.Reflection;
 using FluentValidation;
+using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Database;
+using Halcyon.Api.Common.Email;
+using Halcyon.Api.Common.Events;
+using Halcyon.Api.Common.Infrastructure;
 using Halcyon.Api.Data;
-using Halcyon.Api.Services.Authentication;
-using Halcyon.Api.Services.Database;
-using Halcyon.Api.Services.Email;
-using Halcyon.Api.Services.Events;
-using Halcyon.Api.Services.Infrastructure;
 using Mapster;
 using MassTransit;
 using Serilog;
