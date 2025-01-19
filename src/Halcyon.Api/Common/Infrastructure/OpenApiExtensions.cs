@@ -12,7 +12,7 @@ public static class OpenApiExtensions
     )
     {
         builder.Services.AddOpenApi(
-            version,
+            "v1",
             options =>
             {
                 var scheme = new OpenApiSecurityScheme
@@ -31,6 +31,8 @@ public static class OpenApiExtensions
                     (document, context, cancellationToken) =>
                     {
                         document.Servers.Clear();
+
+                        document.Info.Version = version;
 
                         document.Components ??= new();
                         document.Components.SecuritySchemes.Add(
@@ -63,13 +65,13 @@ public static class OpenApiExtensions
         return builder;
     }
 
-    public static WebApplication MapOpenApiWithSwagger(this WebApplication app, string version)
+    public static WebApplication MapOpenApiWithSwagger(this WebApplication app)
     {
         app.MapOpenApi();
 
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint($"/openapi/{version}.json", version);
+            options.SwaggerEndpoint($"/openapi/v1.json", "v1");
             options.RoutePrefix = string.Empty;
         });
 

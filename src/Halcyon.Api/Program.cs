@@ -61,7 +61,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapOpenApiWithSwagger(version);
+app.MapOpenApiWithSwagger();
 app.MapEndpoints(assembly);
 app.MapHubs(assembly);
 app.MapHealthChecks("/health");
