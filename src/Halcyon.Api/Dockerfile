@@ -6,7 +6,6 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG VERSION=1.0.0
 WORKDIR /src
 COPY ["src/Halcyon.Api/Halcyon.Api.csproj", "src/Halcyon.Api/"]
 RUN dotnet restore "./src/Halcyon.Api/Halcyon.Api.csproj"

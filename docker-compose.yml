@@ -6,8 +6,6 @@ services:
         build:
             context: .
             dockerfile: src/Halcyon.Api/Dockerfile
-            args:
-                VERSION: 1.0.0-docker
         environment:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_HTTP_PORTS: 8080
