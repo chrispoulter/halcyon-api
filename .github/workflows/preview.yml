@@ -54,5 +54,4 @@ jobs:
                   context: .
                   push: true
                   provenance: false
-                  build-args: |
-                      VERSION=${{ env.GitVersion_SemVer }}
+
