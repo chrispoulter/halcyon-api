@@ -12,7 +12,7 @@ COPY ["src/Halcyon.Api/Halcyon.Api.csproj", "src/Halcyon.Api/"]
 RUN dotnet restore "./src/Halcyon.Api/Halcyon.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Halcyon.Api"
-RUN dotnet build "./Halcyon.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:Version=$VERSION
+RUN dotnet build "./Halcyon.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
