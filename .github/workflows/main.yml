@@ -24,7 +24,7 @@ jobs:
             - name: Determine Version
               run: |
                   dotnet tool restore
-                  dotnet gitversion /output buildserver
+                  dotnet gitversion /output buildserver /updateprojectfiles
 
             - name: Build and test
               run: |
