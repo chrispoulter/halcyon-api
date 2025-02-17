@@ -1,28 +1,11 @@
 {
-  "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (web)",
-      "type": "coreclr",
+      "name": "C#: Halcyon.Api [https]",
+      "type": "dotnet",
       "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/Halcyon.Api/bin/Debug/net9.0/Halcyon.Api.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}/src/Halcyon.Api",
-      "stopAtEntry": false,
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-      },
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7257;http://localhost:5257"
-      }
-    },
-    {
-      "name": ".NET Core Attach",
-      "type": "coreclr",
-      "request": "attach"
+      "projectPath": "${workspaceFolder}\\src\\Halcyon.Api\\Halcyon.Api.csproj",
+      "launchConfigurationId": "TargetFramework=;https"
     }
   ]
 }
