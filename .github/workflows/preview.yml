@@ -20,6 +20,7 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME_PREVIEW }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_DEV_COLLECT_TELEMETRY: no
+      HUSKY: 0
 
     steps:
       - name: Checkout
