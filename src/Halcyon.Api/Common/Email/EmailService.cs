@@ -1,4 +1,4 @@
-﻿using MailKit.Net.Smtp;
+﻿using MailKit.Client;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
@@ -6,6 +6,7 @@ using MimeKit.Text;
 namespace Halcyon.Api.Common.Email;
 
 public class EmailService(
+    MailKitClientFactory clientFactory,
     ITemplateEngine templateEngine,
     IOptions<EmailSettings> emailSettings,
     ILogger<EmailService> logger
@@ -41,29 +42,8 @@ public class EmailService(
 
         try
         {
-            using var client = new SmtpClient();
-
-            await client.ConnectAsync(
-                _emailSettings.SmtpServer,
-                _emailSettings.SmtpPort,
-                _emailSettings.SmtpSsl,
-                cancellationToken: cancellationToken
-            );
-
-            if (
-                !string.IsNullOrEmpty(_emailSettings.SmtpUserName)
-                && !string.IsNullOrEmpty(_emailSettings.SmtpPassword)
-            )
-            {
-                await client.AuthenticateAsync(
-                    _emailSettings.SmtpUserName,
-                    _emailSettings.SmtpPassword,
-                    cancellationToken
-                );
-            }
-
+            var client = await clientFactory.GetSmtpClientAsync(cancellationToken);
             await client.SendAsync(email, cancellationToken);
-            await client.DisconnectAsync(true, cancellationToken);
         }
         catch (Exception ex)
         {

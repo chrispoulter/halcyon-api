@@ -1,57 +1,63 @@
 name: Preview Build and Publish
 
 on:
-    pull_request:
-        branches: ['main']
-    workflow_dispatch:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-    build-and-publish:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
+  build-and-publish:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID_PREVIEW }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME_PREVIEW }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_DEV_COLLECT_TELEMETRY: no
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
                   
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
 
-            - name: Determine Version
-              run: |
-                  dotnet tool restore
-                  dotnet gitversion /output buildserver /updateprojectfiles
+      - name: Determine Version
+        run: |
+          dotnet tool restore
+          dotnet gitversion /output buildserver /updateprojectfiles
 
-            - name: Build and test
-              run: |
-                  dotnet build "halcyon-api.sln"
-                  dotnet test "halcyon-api.sln"
+      - name: Build and test
+        run: |
+          dotnet build
+          dotnet test
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
+      # - name: Install azd
+      #   uses: Azure/setup-azd@v1.0.0
 
-            - name: Log in to GitHub container registry
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ github.token }}
+      # - name: Install .NET Aspire workload
+      #   run: dotnet workload install aspire
 
-            - name: Lowercase the repo name and username
-              run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+      # - name: Log in with Azure (Federated Credentials)
+      #   run: |
+      #     azd auth login `
+      #       --client-id "$Env:AZURE_CLIENT_ID" `
+      #       --federated-credential-provider "github" `
+      #       --tenant-id "$Env:AZURE_TENANT_ID"
+      #   shell: pwsh
 
-            - name: Build and push container image to registry
-              uses: docker/build-push-action@v5
-              with:
-                  file: ./src/Halcyon.Api/Dockerfile
-                  tags: |
-                      ghcr.io/${{ env.REPO }}:${{ env.GitVersion_SemVer }}
-                      ghcr.io/${{ env.REPO }}:preview
-                  context: .
-                  push: true
-                  provenance: false
+      # - name: Provision Infrastructure
+      #   run: azd provision --no-prompt
+      #   env:
+      #     AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG_PREVIEW }}
 
+      # - name: Deploy Application
+      #   run: azd deploy --no-prompt

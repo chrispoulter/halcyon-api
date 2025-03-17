@@ -1,11 +1,18 @@
 {
   "configurations": [
     {
-      "name": "C#: Halcyon.Api [https]",
+      "name": "C#: Halcyon.AppHost [https]",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}\\src\\Halcyon.Api\\Halcyon.Api.csproj",
+      "projectPath": "${workspaceFolder}\\src\\Halcyon.AppHost\\Halcyon.AppHost.csproj",
       "launchConfigurationId": "TargetFramework=;https"
-    }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "localhost (Chrome)",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}\\src\\Halcyon.Web"
+  }
   ]
 }

@@ -1,8 +1,13 @@
 {
   "files.exclude": {
     "**/.vs": true,
-    "**/.idea": true,
     "**/bin": true,
+    "**/dist": true,
+    "**/node_modules": true,
     "**/obj": true
-  }
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "terminal.integrated.cwd": "${workspaceFolder}/src/Halcyon.Web"
 }

@@ -1,13 +1,13 @@
-# Halcyon API
+﻿# Halcyon Aspire
 
-A .NET Core REST API project template 👷 Built with a sense of peace and tranquillity 🙏
+A .NET Core web project template 👷 Built with a sense of peace and tranquillity 🙏
 
 ## Features
 
 - .NET
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
-  [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
+  [https://learn.microsoft.com/en-us/ef/](https://learn.microsoft.com/en-us/ef/)
 - MassTransit
   [https://masstransit.io/](https://masstransit.io/)
 - SignalR
@@ -16,19 +16,30 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - Mapster
   [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
-- Serilog
-  [https://serilog.net/](https://serilog.net/)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
-- Docker
-  [https://www.docker.com/](https://www.docker.com/)
+
+- Vite
+  [https://vite.dev/](https://vite.dev/)
+- React
+  [https://react.dev/](https://react.dev/)
+- React Router
+  [https://reactrouter.com/](https://reactrouter.com/)
+- TanStack Query
+  [https://tanstack.com/query](https://tanstack.com/query)
+- Shadcn UI
+  [https://ui.shadcn.com/](https://ui.shadcn.com/)
+- React Hook Form
+  [https://react-hook-form.com/](https://react-hook-form.com/)
+- Zod
+  [https://zod.dev/](https://zod.dev/)
+- Tailwind CSS
+  [https://tailwindcss.com/](https://tailwindcss.com/)
+
+- Aspire
+  [https://learn.microsoft.com/en-us/dotnet/aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - GitHub Actions
   [https://github.com/features/actions](https://github.com/features/actions)
-
-## Related Projects
-
-- Halcyon
-  [https://github.com/chrispoulter/halcyon](https://github.com/chrispoulter/halcyon)
 
 ## Getting Started
 
@@ -42,15 +53,13 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://redis.io/](https://redis.io/)
 - MailDev
   [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
-- Seq
-  [https://datalust.co/seq](https://datalust.co/seq)
 
 ### Install dependencies
 
 Restore NuGet packages:
 
 ```
-dotnet restore "halcyon-api.sln"
+dotnet restore
 ```
 
 ### Update local configuration _(optional)_
@@ -62,14 +71,10 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
   "ConnectionStrings": {
     "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
     "RabbitMq": "amqp://guest:guest@localhost:5672",
-    "Redis": "localhost"
+    "Redis": "localhost",
+    "Mail": "Endpoint=smtp://localhost:1025;Username=mail-dev;Password=password"
   },
   "Email": {
-    "SmtpServer": "localhost",
-    "SmtpPort": 1025,
-    "SmtpSsl": false,
-    "SmtpUserName": null,
-    "SmtpPassword": null,
     "NoReplyAddress": "noreply@example.com",
     "CdnUrl": "http://localhost:3000"
   },
@@ -91,30 +96,12 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
       }
     ]
   },
-  "Serilog": {
-    "MinimumLevel": {
+  "Logging": {
+    "LogLevel": {
       "Default": "Information",
-      "Override": {
-        "Microsoft.AspNetCore": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
-      }
-    },
-    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-    "WriteTo": {
-      "Console": {
-        "Name": "Console",
-        "Args": {
-          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        }
-      },
-      "Seq": {
-        "Name": "Seq",
-        "Args": { "serverUrl": "http://localhost:5341" }
-      }
+      "Microsoft.AspNetCore": "Warning"
     }
   },
-  "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp/v1/traces",
-  "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
   "AllowedHosts": "*"
 }
 ```
@@ -122,12 +109,12 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ### Run the application
 
 ```
-dotnet run --project "src/Halcyon.Api/Halcyon.Api.csproj"
+dotnet run --project "src/Halcyon.AppHost/Halcyon.AppHost.csproj"
 ```
 
-### Access the API
+### Access the .NET Aspire dashboard
 
-Once running, you can explore the API using Swagger UI at http://localhost:5257
+Once running, you can explore the .NET Aspire dashboard at https://localhost:17255
 
 ## Contributing
 

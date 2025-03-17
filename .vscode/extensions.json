@@ -1,6 +1,10 @@
 {
   "recommendations": [
+    "bradlc.vscode-tailwindcss",
     "csharpier.csharpier-vscode",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "mikestead.dotenv",
     "ms-dotnettools.vscode-dotnet-runtime",
     "ms-dotnettools.csharp",
     "ms-dotnettools.csdevkit",

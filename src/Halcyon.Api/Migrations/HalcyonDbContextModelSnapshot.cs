@@ -19,7 +19,7 @@ namespace Halcyon.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -64,7 +64,7 @@ namespace Halcyon.Api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("password_reset_token");
 
-                    b.Property<List<string>>("Roles")
+                    b.PrimitiveCollection<List<string>>("Roles")
                         .HasColumnType("text[]")
                         .HasColumnName("roles");
 
