@@ -34,9 +34,11 @@ var maildev = builder
 var jwtSecurityKey = builder.AddParameter("jwtSecurityKey", secret: true);
 var jwtIssuer = builder.AddParameter("jwtIssuer");
 var jwtAudience = builder.AddParameter("jwtAudience");
+var cdnUrl = builder.AddParameter("cdnUrl");
 
-var api = builder
+builder
     .AddProject<Halcyon_Api>("api")
+    .WithEnvironment("Email__CdnUrl", cdnUrl)
     .WithEnvironment("Jwt__SecurityKey", jwtSecurityKey)
     .WithEnvironment("Jwt__Issuer", jwtIssuer)
     .WithEnvironment("Jwt__Audience", jwtAudience)
@@ -49,15 +51,5 @@ var api = builder
     .WaitFor(redis)
     .WithReference(maildev)
     .WaitFor(maildev);
-
-var web = builder
-    .AddNpmApp("web", "../Halcyon.Web", scriptName: "dev")
-    .WithEnvironment("VITE_API_URL", api.GetEndpoint("https"))
-    .WithHttpEndpoint(port: 5173, env: "VITE_PORT", isProxied: false)
-    .WithExternalHttpEndpoints()
-    .PublishAsDockerFile()
-    .WaitFor(api);
-
-api.WithEnvironment("Email__CdnUrl", web.GetEndpoint("http"));
 
 builder.Build().Run();

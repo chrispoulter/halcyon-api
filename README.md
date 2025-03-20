@@ -1,13 +1,13 @@
-﻿# Halcyon Aspire
+﻿# Halcyon API
 
-A .NET Core web project template 👷 Built with a sense of peace and tranquillity 🙏
+A .NET Core REST API project template 👷 Built with a sense of peace and tranquillity 🙏
 
 ## Features
 
 - .NET
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
-  [https://learn.microsoft.com/en-us/ef/](https://learn.microsoft.com/en-us/ef/)
+  [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
 - MassTransit
   [https://masstransit.io/](https://masstransit.io/)
 - SignalR
@@ -18,28 +18,15 @@ A .NET Core web project template 👷 Built with a sense of peace and tranquilli
   [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
-
-- Vite
-  [https://vite.dev/](https://vite.dev/)
-- React
-  [https://react.dev/](https://react.dev/)
-- React Router
-  [https://reactrouter.com/](https://reactrouter.com/)
-- TanStack Query
-  [https://tanstack.com/query](https://tanstack.com/query)
-- Shadcn UI
-  [https://ui.shadcn.com/](https://ui.shadcn.com/)
-- React Hook Form
-  [https://react-hook-form.com/](https://react-hook-form.com/)
-- Zod
-  [https://zod.dev/](https://zod.dev/)
-- Tailwind CSS
-  [https://tailwindcss.com/](https://tailwindcss.com/)
-
 - Aspire
   [https://learn.microsoft.com/en-us/dotnet/aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - GitHub Actions
   [https://github.com/features/actions](https://github.com/features/actions)
+
+## Related Projects
+
+- Halcyon
+  [https://github.com/chrispoulter/halcyon](https://github.com/chrispoulter/halcyon)
 
 ## Getting Started
 

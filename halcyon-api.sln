@@ -24,8 +24,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.AppHost", "src\Halc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.ServiceDefaults", "src\Halcyon.ServiceDefaults\Halcyon.ServiceDefaults.csproj", "{52DFA8CE-448B-4552-9481-A8D867D1B8A8}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Halcyon.Web", "src\Halcyon.Web\Halcyon.Web.esproj", "{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,12 +42,6 @@ Global
 		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +50,5 @@ Global
 		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD} = {988DDD7E-C062-4062-8CEF-030494554B31}
 		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026} = {988DDD7E-C062-4062-8CEF-030494554B31}
 		{52DFA8CE-448B-4552-9481-A8D867D1B8A8} = {988DDD7E-C062-4062-8CEF-030494554B31}
-		{9AFC3BDE-93C2-4DAB-B9AD-38A0367E474A} = {988DDD7E-C062-4062-8CEF-030494554B31}
 	EndGlobalSection
 EndGlobal
