@@ -1,7 +1,6 @@
 {
   "files.exclude": {
     "**/.vs": true,
-    "**/.idea": true,
     "**/bin": true,
     "**/obj": true
   }

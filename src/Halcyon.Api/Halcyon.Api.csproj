@@ -1,48 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<Nullable>disable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>8f830d92-78a5-4ccd-903d-739dc8ba3c6e</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerfileContext>..\..</DockerfileContext>
-		<DockerfileTag>halcyon-api</DockerfileTag>
-		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
-		<PackageReference Include="FluentValidation" Version="11.11.0" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-		<PackageReference Include="MailKit" Version="4.11.0" />
-		<PackageReference Include="Mapster" Version="7.4.0" />
-		<PackageReference Include="MassTransit" Version="8.3.7" />
-		<PackageReference Include="MassTransit.RabbitMQ" Version="8.3.7" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="9.3.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.3" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-		<PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.3" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
-		<PackageReference Include="Serilog" Version="4.2.0" />
-		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-		<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.3.1" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Halcyon.ServiceDefaults\Halcyon.ServiceDefaults.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Features\**\*.html" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.1.0" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.1.0" />
+	<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+	<PackageReference Include="FluentValidation" Version="11.11.0" />
+	<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+	<PackageReference Include="MailKit" Version="4.11.0" />
+	<PackageReference Include="Mapster" Version="7.4.0" />
+	<PackageReference Include="MassTransit" Version="8.3.7" />
+	<PackageReference Include="MassTransit.RabbitMQ" Version="8.3.7" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3" />
+	<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="9.3.0" />
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Features\**\*.html" />
+  </ItemGroup>
 
 </Project>

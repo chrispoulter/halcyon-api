@@ -1,6 +1,4 @@
-﻿using static MailKit.Telemetry;
-
-namespace Halcyon.Api.Common.Email;
+﻿namespace Halcyon.Api.Common.Email;
 
 public static class EmailExtensions
 {
@@ -10,13 +8,6 @@ public static class EmailExtensions
         builder.Services.Configure<EmailSettings>(emailConfig);
         builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddSingleton<ITemplateEngine, TemplateEngine>();
-
-        SmtpClient.Configure();
-
-        builder
-            .Services.AddOpenTelemetry()
-            .WithTracing(tracing => tracing.AddSource(SmtpClient.ActivitySourceName))
-            .WithMetrics(metrics => metrics.AddMeter(SmtpClient.MeterName));
 
         return builder;
     }
