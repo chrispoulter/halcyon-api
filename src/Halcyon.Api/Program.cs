@@ -34,11 +34,8 @@ var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
-#pragma warning disable EXTEXP0018
-builder.Services.AddHybridCache();
-#pragma warning restore EXTEXP0018
-
 TypeAdapterConfig.GlobalSettings.Scan(assembly);
+builder.Services.AddHybridCache();
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
