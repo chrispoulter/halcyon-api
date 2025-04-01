@@ -1,9 +1,10 @@
-﻿using Halcyon.Api.Common.Events;
+﻿using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Events;
 using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;
 
-public class User : IEntity
+public class User : IEntity, IJwtUser
 {
     public Guid Id { get; set; }
 

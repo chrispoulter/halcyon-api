@@ -1,5 +1,4 @@
-﻿using Halcyon.Api.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Halcyon.Api.Common.Infrastructure;
@@ -12,7 +11,7 @@ public static class EntityFrameworkExtensions
     )
         where TContext : DbContext
     {
-        builder.Services.AddDbContext<HalcyonDbContext>(
+        builder.Services.AddDbContext<TContext>(
             (provider, options) =>
             {
                 options

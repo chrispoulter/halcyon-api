@@ -1,8 +1,6 @@
-﻿using Halcyon.Api.Data.Users;
-
-namespace Halcyon.Api.Common.Authentication;
+﻿namespace Halcyon.Api.Common.Authentication;
 
 public interface IJwtTokenGenerator
 {
-    public string GenerateJwtToken(User user);
+    public string GenerateJwtToken(IJwtUser user);
 }
