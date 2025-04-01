@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{47EEADE3-0F8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Api", "src\Halcyon.Api\Halcyon.Api.csproj", "{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Common", "src\Halcyon.Common\Halcyon.Common.csproj", "{5A9708C5-E0F9-5394-73BB-93EF8C541D61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,12 +39,17 @@ Global
 		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31} = {47EEADE3-0F83-405A-AE09-2FF893093507}
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61} = {47EEADE3-0F83-405A-AE09-2FF893093507}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5198F1F-1260-477B-AAC2-33A4082BC5C6}

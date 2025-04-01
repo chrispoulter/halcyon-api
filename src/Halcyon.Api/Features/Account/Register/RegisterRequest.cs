@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Halcyon.Api.Common.Validation;
+using Halcyon.Common.Validation;
 
 namespace Halcyon.Api.Features.Account.Register;
 

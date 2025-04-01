@@ -1,6 +1,6 @@
-using Halcyon.Api.Common.Email;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
+using Halcyon.Common.Email;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
