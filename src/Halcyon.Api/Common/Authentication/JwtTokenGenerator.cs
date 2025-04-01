@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Text;
-using Halcyon.Api.Data.Users;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +11,7 @@ public class JwtTokenGenerator(TimeProvider timeProvider, IOptions<JwtSettings> 
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
-    public string GenerateJwtToken(User user)
+    public string GenerateJwtToken(IJwtUser user)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey)
