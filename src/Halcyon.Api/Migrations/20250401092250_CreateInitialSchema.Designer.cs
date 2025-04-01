@@ -14,7 +14,7 @@ using NpgsqlTypes;
 namespace Halcyon.Api.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20241028151921_CreateInitialSchema")]
+    [Migration("20250401092250_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -22,12 +22,12 @@ namespace Halcyon.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Halcyon.Api.Data.User", b =>
+            modelBuilder.Entity("Halcyon.Api.Data.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace Halcyon.Api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("password_reset_token");
 
-                    b.Property<List<string>>("Roles")
+                    b.PrimitiveCollection<List<string>>("Roles")
                         .HasColumnType("text[]")
                         .HasColumnName("roles");
 
