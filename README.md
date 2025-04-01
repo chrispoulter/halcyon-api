@@ -14,6 +14,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
+- FluentEmail
+  [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
 - Mapster
   [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
 - Serilog
@@ -24,11 +26,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://www.docker.com/](https://www.docker.com/)
 - GitHub Actions
   [https://github.com/features/actions](https://github.com/features/actions)
-
-## Related Projects
-
-- Halcyon
-  [https://github.com/chrispoulter/halcyon](https://github.com/chrispoulter/halcyon)
 
 ## Getting Started
 
