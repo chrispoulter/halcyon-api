@@ -1,0 +1,32 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Npgsql;
+
+namespace Halcyon.Common.Infrastructure;
+
+public static class EntityFrameworkExtensions
+{
+    public static IHostApplicationBuilder AddDbContext<TContext>(
+        this IHostApplicationBuilder builder,
+        string connectionName
+    )
+        where TContext : DbContext
+    {
+        builder.Services.AddDbContext<TContext>(
+            (provider, options) =>
+            {
+                options
+                    .UseNpgsql(builder.Configuration.GetConnectionString(connectionName))
+                    .UseSnakeCaseNamingConvention()
+                    .AddInterceptors(provider.GetServices<IInterceptor>());
+            }
+        );
+
+        builder.EnrichNpgsqlDbContext<TContext>();
+
+        return builder;
+    }
+}

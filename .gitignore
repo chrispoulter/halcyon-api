@@ -365,3 +365,4 @@ FodyWeavers.xsd
 .azure
 
 appsettings.Development.json
+.env*

@@ -1,5 +1,5 @@
-﻿using Halcyon.Api.Common.Authentication;
-using Halcyon.Api.Common.Events;
+﻿using Halcyon.Common.Authentication;
+using Halcyon.Common.Events;
 using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;

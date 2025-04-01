@@ -1,10 +1,10 @@
 using FluentValidation;
-using Halcyon.Api.Common.Authentication;
-using Halcyon.Api.Common.Database;
-using Halcyon.Api.Common.Email;
-using Halcyon.Api.Common.Events;
-using Halcyon.Api.Common.Infrastructure;
 using Halcyon.Api.Data;
+using Halcyon.Common.Authentication;
+using Halcyon.Common.Database;
+using Halcyon.Common.Email;
+using Halcyon.Common.Events;
+using Halcyon.Common.Infrastructure;
 using Mapster;
 using MassTransit;
 
