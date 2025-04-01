@@ -21,7 +21,7 @@ public static class EntityFrameworkExtensions
             }
         );
 
-        builder.EnrichNpgsqlDbContext<HalcyonDbContext>();
+        builder.EnrichNpgsqlDbContext<TContext>();
 
         return builder;
     }
