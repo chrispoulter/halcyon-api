@@ -1,5 +1,5 @@
-﻿using Halcyon.Api.Common.Events;
-using Halcyon.Api.Data.Users;
+﻿using Halcyon.Api.Data.Users;
+using Halcyon.Common.Events;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 

@@ -1,9 +1,9 @@
-﻿using Halcyon.Api.Common.Authentication;
-using Halcyon.Api.Common.Authorization;
-using Halcyon.Api.Common.Infrastructure;
-using Halcyon.Api.Common.Validation;
-using Halcyon.Api.Data;
+﻿using Halcyon.Api.Data;
 using Halcyon.Api.Data.Users;
+using Halcyon.Common.Authentication;
+using Halcyon.Common.Authorization;
+using Halcyon.Common.Infrastructure;
+using Halcyon.Common.Validation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
