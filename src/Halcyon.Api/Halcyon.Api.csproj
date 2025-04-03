@@ -5,6 +5,9 @@
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>8f830d92-78a5-4ccd-903d-739dc8ba3c6e</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
+		<DockerfileTag>halcyon-api</DockerfileTag>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,6 +29,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Halcyon.Common\Halcyon.Common.csproj" />
+		<ProjectReference Include="..\Halcyon.ServiceDefaults\Halcyon.ServiceDefaults.csproj" />
 	</ItemGroup>
 
 </Project>
