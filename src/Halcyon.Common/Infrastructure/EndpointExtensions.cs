@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System.Reflection;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 
 namespace Halcyon.Common.Infrastructure;
 
