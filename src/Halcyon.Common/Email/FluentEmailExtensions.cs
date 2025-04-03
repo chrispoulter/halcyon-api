@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Halcyon.Common.Email;
 
-public static class EmailExtensions
+public static class FluentEmailExtensions
 {
     public static IHostApplicationBuilder AddFluentEmail(
         this IHostApplicationBuilder builder,
