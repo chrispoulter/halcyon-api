@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.1.0" />
@@ -19,12 +19,12 @@
 		<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Features\**\*.html" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Features\**\*.html" />
+	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Halcyon.Common\Halcyon.Common.csproj" />
+		<ProjectReference Include="..\Halcyon.Common\Halcyon.Common.csproj" />
 	</ItemGroup>
 
 </Project>
