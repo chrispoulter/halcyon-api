@@ -31,17 +31,8 @@ var maildev = builder
     .WithExternalHttpEndpoints()
     .WithLifetime(ContainerLifetime.Persistent);
 
-var jwtSecurityKey = builder.AddParameter("jwtSecurityKey", secret: true);
-var jwtIssuer = builder.AddParameter("jwtIssuer");
-var jwtAudience = builder.AddParameter("jwtAudience");
-var cdnUrl = builder.AddParameter("cdnUrl");
-
 builder
     .AddProject<Halcyon_Api>("api")
-    .WithEnvironment("Jwt__SecurityKey", jwtSecurityKey)
-    .WithEnvironment("Jwt__Issuer", jwtIssuer)
-    .WithEnvironment("Jwt__Audience", jwtAudience)
-    .WithEnvironment("Email__CdnUrl", cdnUrl)
     .WithExternalHttpEndpoints()
     .WithReference(database)
     .WaitFor(database)
