@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Halcyon.Common.Database;
+using Halcyon.Common.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 
-namespace Halcyon.Common.Infrastructure;
+namespace Halcyon.Common.Database;
 
 public static class EntityFrameworkExtensions
 {

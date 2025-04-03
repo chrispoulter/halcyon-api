@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Halcyon.Common.Database;
 
-public static class DatabaseExtensions
+public static class MigrationExtensions
 {
     public static IServiceCollection AddMigration<TDbContext, TDbSeeder>(
         this IServiceCollection services

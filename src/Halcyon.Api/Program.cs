@@ -29,6 +29,7 @@ builder.Host.UseSerilog(
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 builder.AddMassTransit(connectionName: "RabbitMq", assembly);
 builder.AddRedisDistributedCache(connectionName: "Redis");
+builder.AddFluentEmail();
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
@@ -47,7 +48,6 @@ builder.AddSignalR();
 builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
 builder.AddAuthenticationServices();
-builder.AddEmailServices();
 builder.AddEventServices();
 
 var app = builder.Build();
