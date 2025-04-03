@@ -8,10 +8,18 @@ namespace Halcyon.Common.Email;
 
 public static class EmailExtensions
 {
-    public static IHostApplicationBuilder AddEmailServices(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddFluentEmail(
+        this IHostApplicationBuilder builder,
+        string connectionName
+    )
     {
         var emailSettings = new EmailSettings();
         builder.Configuration.Bind(EmailSettings.SectionName, emailSettings);
+
+        if (builder.Configuration.GetConnectionString(connectionName) is string connectionString)
+        {
+            emailSettings.ParseConnectionString(connectionString);
+        }
 
         builder
             .Services.AddFluentEmail(emailSettings.NoReplyAddress)
@@ -25,10 +33,13 @@ public static class EmailExtensions
             .AddSmtpSender(
                 new SmtpClient
                 {
-                    Host = "localhost",
-                    Port = 1025,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("mail-dev", "password"),
+                    Host = emailSettings.SmtpServer,
+                    Port = emailSettings.SmtpPort,
+                    EnableSsl = emailSettings.SmtpSsl,
+                    Credentials = new NetworkCredential(
+                        emailSettings.SmtpUserName,
+                        emailSettings.SmtpPassword
+                    ),
                 }
             );
 
