@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Halcyon.Common\Halcyon.Common.csproj" />
+		<ProjectReference Include="..\Halcyon.Common\Halcyon.Common.csproj" />
 	</ItemGroup>
 
 </Project>
