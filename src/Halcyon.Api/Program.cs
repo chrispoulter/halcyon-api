@@ -17,7 +17,6 @@ builder.AddServiceDefaults();
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 builder.AddMassTransit(connectionName: "RabbitMq", assembly);
 builder.AddRedisDistributedCache(connectionName: "Redis");
-builder.AddMailKitClient(connectionName: "Mail");
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
