@@ -68,7 +68,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
     "SmtpUserName": null,
     "SmtpPassword": null,
     "NoReplyAddress": "noreply@example.com",
-    "CdnUrl": "http://localhost:3000"
+    "SiteUrl": "http://localhost:3000"
   },
   "Jwt": {
     "SecurityKey": "super_secret_key_that_should_be_changed",
