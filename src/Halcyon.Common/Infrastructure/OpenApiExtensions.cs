@@ -33,6 +33,8 @@ public static class OpenApiExtensions
                 options.AddDocumentTransformer(
                     (document, context, cancellationToken) =>
                     {
+                        document.Servers.Clear();
+
                         document.Info.Version = version;
 
                         document.Components ??= new();

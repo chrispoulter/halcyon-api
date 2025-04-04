@@ -53,7 +53,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon;Username=postgres;Password=password",
+    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
     "RabbitMq": "amqp://guest:guest@localhost:5672",
     "Redis": "localhost",
     "Mail": "Endpoint=smtp://localhost:1025;Username=mail-dev;Password=password"

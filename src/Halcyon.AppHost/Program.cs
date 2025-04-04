@@ -9,7 +9,7 @@ var postgres = builder
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
 
-var database = postgres.AddDatabase("database", databaseName: "halcyon");
+var database = postgres.AddDatabase("database", databaseName: "halcyon-api");
 
 var rabbitMqPassword = builder.AddParameter("rmqPassword", secret: true);
 
