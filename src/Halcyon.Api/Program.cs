@@ -49,7 +49,7 @@ builder.AddCors();
 builder.AddSignalR();
 builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
-builder.AddAuthenticationServices();
+builder.AddSecurityServices();
 builder.AddEventServices();
 
 var app = builder.Build();
