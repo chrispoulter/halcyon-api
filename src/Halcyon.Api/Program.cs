@@ -19,7 +19,7 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
+builder.AddServiceDefaults(version);
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 builder.AddMassTransit(connectionName: "RabbitMq", assembly);
