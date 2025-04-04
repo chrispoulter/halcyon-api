@@ -18,7 +18,7 @@ public class EmailSettings
 
     public string NoReplyAddress { get; set; }
 
-    public string CdnUrl { get; set; }
+    public string SiteUrl { get; set; }
 
     internal void ParseConnectionString(string connectionString)
     {

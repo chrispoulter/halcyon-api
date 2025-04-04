@@ -27,7 +27,7 @@ public static class FluentEmailExtensions
             {
                 configure.ConfigureTemplateContext = (context, _) =>
                 {
-                    context.SetValue("CdnUrl", emailSettings.CdnUrl);
+                    context.SetValue("SiteUrl", emailSettings.SiteUrl);
                 };
             })
             .AddSmtpSender(
