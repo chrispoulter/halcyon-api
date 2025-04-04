@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Halcyon.Common.Events;
+namespace Halcyon.Common.Database.EntityChanged;
 
 public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveChangesInterceptor
 {
-    private readonly List<(IEntity entity, EntityState oldState)> changedEntities = [];
+    private readonly List<(IPublishChanges entity, EntityState oldState)> changedEntities = [];
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
@@ -14,7 +14,7 @@ public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveCh
         CancellationToken cancellationToken = default
     )
     {
-        var entries = eventData.Context.ChangeTracker.Entries<IEntity>();
+        var entries = eventData.Context.ChangeTracker.Entries<IPublishChanges>();
         var changes = entries.Select(entry => (entry.Entity, entry.State));
         changedEntities.AddRange(changes);
 

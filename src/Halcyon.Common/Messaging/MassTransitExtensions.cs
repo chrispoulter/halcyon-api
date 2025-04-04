@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using Halcyon.Common.Infrastructure;
+using Halcyon.Common.Messaging;
 using MassTransit;
 using MassTransit.Logging;
 using MassTransit.Monitoring;
@@ -6,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Halcyon.Common.Infrastructure;
+namespace Halcyon.Common.Messaging;
 
 public static class MassTransitExtensions
 {

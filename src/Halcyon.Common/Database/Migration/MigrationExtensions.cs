@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Halcyon.Common.Database;
+namespace Halcyon.Common.Database.Migration;
 
 public static class MigrationExtensions
 {

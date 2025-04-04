@@ -9,7 +9,10 @@ namespace Halcyon.Common.Infrastructure;
 
 public static class OpenApiExtensions
 {
-    public static IHostApplicationBuilder AddOpenApi(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddOpenApi(
+        this IHostApplicationBuilder builder,
+        string version
+    )
     {
         builder.Services.AddOpenApi(
             "v1",
@@ -30,6 +33,8 @@ public static class OpenApiExtensions
                 options.AddDocumentTransformer(
                     (document, context, cancellationToken) =>
                     {
+                        document.Info.Version = version;
+
                         document.Components ??= new();
                         document.Components.SecuritySchemes.Add(
                             JwtBearerDefaults.AuthenticationScheme,

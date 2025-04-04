@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
-using Halcyon.Common.Infrastructure;
+using Halcyon.Common.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Halcyon.Common.Infrastructure;
+namespace Halcyon.Common.Messaging;
 
 public static class SignalRExtensions
 {

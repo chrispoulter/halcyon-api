@@ -1,14 +1,21 @@
+using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Data;
 using Halcyon.Common.Authentication;
 using Halcyon.Common.Database;
+using Halcyon.Common.Database.EntityChanged;
+using Halcyon.Common.Database.Migration;
 using Halcyon.Common.Email;
-using Halcyon.Common.Events;
 using Halcyon.Common.Infrastructure;
+using Halcyon.Common.Messaging;
 using Mapster;
 using MassTransit;
 
 var assembly = typeof(Program).Assembly;
+
+var version = assembly
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,9 +39,10 @@ builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddCors();
 builder.AddSignalR();
-builder.AddOpenApi();
-builder.AddAuthenticationServices();
-builder.AddEventServices();
+builder.AddOpenApi(version);
+
+builder.AddSecurityServices();
+builder.AddEntityChangedServices();
 
 var app = builder.Build();
 

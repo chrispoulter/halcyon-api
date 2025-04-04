@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Halcyon.Common.Database;
+namespace Halcyon.Common.Database.Migration;
 
 public class MigrationHostedService<TDbContext>(
     IServiceProvider serviceProvider,

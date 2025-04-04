@@ -2,11 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Halcyon.Common.Events;
+namespace Halcyon.Common.Database.EntityChanged;
 
-public static class EventExtensions
+public static class EntityChangedExtensions
 {
-    public static IHostApplicationBuilder AddEventServices(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddEntityChangedServices(
+        this IHostApplicationBuilder builder
+    )
     {
         builder.Services.AddTransient<IInterceptor, EntityChangedInterceptor>();
 
