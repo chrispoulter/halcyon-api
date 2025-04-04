@@ -10,7 +10,7 @@ services:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_HTTP_PORTS: 8080
             ASPNETCORE_HTTPS_PORTS: 8081
-            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon;Username=postgres;Password=password
+            ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon-api;Username=postgres;Password=password
             ConnectionStrings__RabbitMq: amqp://guest:guest@host.docker.internal:5672
             ConnectionStrings__Redis: host.docker.internal
             Email__SmtpServer: host.docker.internal
