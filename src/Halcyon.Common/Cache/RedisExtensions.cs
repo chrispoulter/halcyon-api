@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Halcyon.Common.Infrastructure;
+namespace Halcyon.Common.Cache;
 
 public static class RedisExtensions
 {
