@@ -8,10 +8,18 @@ namespace Halcyon.Common.Email;
 
 public static class FluentEmailExtensions
 {
-    public static IHostApplicationBuilder AddFluentEmail(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddFluentEmail(
+        this IHostApplicationBuilder builder,
+        string connectionName
+    )
     {
         var emailSettings = new EmailSettings();
         builder.Configuration.Bind(EmailSettings.SectionName, emailSettings);
+
+        if (builder.Configuration.GetConnectionString(connectionName) is string connectionString)
+        {
+            emailSettings.ParseConnectionString(connectionString);
+        }
 
         builder
             .Services.AddFluentEmail(emailSettings.NoReplyAddress)

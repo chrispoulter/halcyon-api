@@ -1,27 +1,28 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.31912.275
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62A0DCB9-F97D-48C8-964B-792D12FF324E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58896F8C-E014-4246-83F0-0CFEB4EF609B}"
 	ProjectSection(SolutionItems) = preProject
 		.csharpierrc.json = .csharpierrc.json
-		.dockerignore = .dockerignore
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		azure.yaml = azure.yaml
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		global.json = global.json
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		.github\workflows\main.yml = .github\workflows\main.yml
 		.github\workflows\preview.yml = .github\workflows\preview.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CD9D3714-7963-4C74-A6D5-F9138E669A14}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{988DDD7E-C062-4062-8CEF-030494554B31}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{47EEADE3-0F83-405A-AE09-2FF893093507}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Api", "src\Halcyon.Api\Halcyon.Api.csproj", "{BE2EDA4F-38C6-4486-B0CD-9766560A84DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Api", "src\Halcyon.Api\Halcyon.Api.csproj", "{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.AppHost", "src\Halcyon.AppHost\Halcyon.AppHost.csproj", "{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.ServiceDefaults", "src\Halcyon.ServiceDefaults\Halcyon.ServiceDefaults.csproj", "{52DFA8CE-448B-4552-9481-A8D867D1B8A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Common", "src\Halcyon.Common\Halcyon.Common.csproj", "{5A9708C5-E0F9-5394-73BB-93EF8C541D61}"
 EndProject
@@ -31,14 +32,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52DFA8CE-448B-4552-9481-A8D867D1B8A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A9708C5-E0F9-5394-73BB-93EF8C541D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,10 +53,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D0C9E6F3-BCC4-45FB-9138-CD38DC3C4B31} = {47EEADE3-0F83-405A-AE09-2FF893093507}
-		{5A9708C5-E0F9-5394-73BB-93EF8C541D61} = {47EEADE3-0F83-405A-AE09-2FF893093507}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E5198F1F-1260-477B-AAC2-33A4082BC5C6}
+		{BE2EDA4F-38C6-4486-B0CD-9766560A84DD} = {988DDD7E-C062-4062-8CEF-030494554B31}
+		{0C36EBC2-3E43-4F20-BFB7-4A8C8FB4A026} = {988DDD7E-C062-4062-8CEF-030494554B31}
+		{52DFA8CE-448B-4552-9481-A8D867D1B8A8} = {988DDD7E-C062-4062-8CEF-030494554B31}
+		{5A9708C5-E0F9-5394-73BB-93EF8C541D61} = {988DDD7E-C062-4062-8CEF-030494554B31}
 	EndGlobalSection
 EndGlobal
