@@ -11,28 +11,32 @@ public partial class Publisher(IConnectionFactory connectionFactory) : IPublishe
         var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
         var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-        var queueName = MessagingExtensions.GetQueueName<T>();
+        var queue = MessagingExtensions.GetQueueName<T>();
 
         await channel.QueueDeclareAsync(
-            queue: queueName,
+            queue,
             durable: true,
             exclusive: false,
             autoDelete: false,
-            arguments: null,
             cancellationToken: cancellationToken
         );
 
         foreach (var message in messages)
         {
-            var messageBodyBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
-            var props = new BasicProperties { ContentType = "application/json", Persistent = true };
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+
+            var properties = new BasicProperties
+            {
+                ContentType = "application/json",
+                Persistent = true,
+            };
 
             await channel.BasicPublishAsync(
                 exchange: string.Empty,
-                routingKey: queueName,
+                routingKey: queue,
                 mandatory: true,
-                basicProperties: props,
-                body: messageBodyBytes,
+                properties,
+                body,
                 cancellationToken: cancellationToken
             );
         }

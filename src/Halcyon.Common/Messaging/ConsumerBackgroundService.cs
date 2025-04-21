@@ -18,14 +18,13 @@ public partial class ConsumerBackgroundService<T>(
     {
         var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
         var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
-        var queueName = MessagingExtensions.GetQueueName<T>();
+        var queue = MessagingExtensions.GetQueueName<T>();
 
         await channel.QueueDeclareAsync(
-            queue: queueName,
+            queue,
             durable: true,
             exclusive: false,
             autoDelete: false,
-            arguments: null,
             cancellationToken: cancellationToken
         );
 
@@ -42,12 +41,8 @@ public partial class ConsumerBackgroundService<T>(
                 var json = Encoding.UTF8.GetString(body);
                 var message = JsonSerializer.Deserialize<T>(json);
 
-                if (message is not null)
-                {
-                    await handler.Consume(message, cancellationToken);
-                }
-
-                await channel.BasicAckAsync(ea.DeliveryTag, false);
+                await handler.Consume(message, cancellationToken);
+                await channel.BasicAckAsync(ea.DeliveryTag, multiple: false, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -66,11 +61,6 @@ public partial class ConsumerBackgroundService<T>(
             }
         };
 
-        await channel.BasicConsumeAsync(
-            queue: queueName,
-            autoAck: false,
-            consumer: consumer,
-            cancellationToken: cancellationToken
-        );
+        await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
     }
 }
