@@ -11,7 +11,7 @@ public partial class Publisher(IConnectionFactory connectionFactory) : IPublishe
         var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
         var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-        var queue = MessagingExtensions.GetQueueName<T>();
+        var queue = RabbitMqExtensions.GetQueueName<T>();
 
         await channel.QueueDeclareAsync(
             queue,

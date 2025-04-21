@@ -8,17 +8,18 @@ using RabbitMQ.Client.Events;
 
 namespace Halcyon.Common.Messaging;
 
-public partial class ConsumerBackgroundService<T>(
+public partial class ConsumerHostedService<T>(
     IServiceProvider serviceProvider,
     IConnectionFactory connectionFactory,
-    ILogger<ConsumerBackgroundService<T>> logger
+    ILogger<ConsumerHostedService<T>> logger
 ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
         var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
-        var queue = MessagingExtensions.GetQueueName<T>();
+
+        var queue = RabbitMqExtensions.GetQueueName<T>();
 
         await channel.QueueDeclareAsync(
             queue,

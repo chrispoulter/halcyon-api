@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,37 +25,36 @@ public static class RabbitMqExtensions
 
         builder.Services.AddTransient<IPublisher, Publisher>();
 
+        var consumers = assembly
+            .GetTypes()
+            .Where(t => !t.IsAbstract && !t.IsInterface)
+            .SelectMany(t =>
+                t.GetInterfaces()
+                    .Where(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IConsumer<>)
+                    )
+                    .Select(i => new
+                    {
+                        Interface = i,
+                        Implementation = t,
+                        MessageType = i.GetGenericArguments()[0],
+                    })
+            )
+            .ToList();
 
-
-
-        //var consumers = assembly
-        //    .GetTypes()
-        //    .Where(t => !t.IsAbstract && !t.IsInterface)
-        //    .SelectMany(t =>
-        //        t.GetInterfaces()
-        //            .Where(i =>
-        //                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IConsumer<>)
-        //            )
-        //            .Select(i => new
-        //            {
-        //                Interface = i,
-        //                Implementation = t,
-        //                MessageType = i.GetGenericArguments()[0],
-        //            })
-        //    )
-        //    .ToList();
-
-        //foreach (var entry in consumers)
-        //{
-        //    builder.Services.AddSingleton(entry.Interface, entry.Implementation);
-
-        //    var hostedService = typeof(ConsumerBackgroundService<>).MakeGenericType(
-        //        entry.MessageType
-        //    );
-
-        //    builder.Services.AddSingleton(typeof(IHostedService), hostedService);
-        //}
+        foreach (var entry in consumers)
+        {
+            var hostedService = typeof(ConsumerHostedService<>).MakeGenericType(entry.MessageType);
+            builder.Services.AddSingleton(typeof(IHostedService), hostedService);
+            builder.Services.AddTransient(entry.Interface, entry.Implementation);
+        }
 
         return builder;
+    }
+
+    public static string GetQueueName<T>()
+    {
+        var typeName = typeof(T).FullName;
+        return Regex.Replace(typeName.Replace(".", ""), "(?<!^)([A-Z])", "-$1").ToLowerInvariant();
     }
 }
