@@ -2,35 +2,38 @@ using System.Reflection;
 using FluentEmail.Core;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
-using MassTransit;
+using Halcyon.Common.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
 public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IFluentEmail fluentEmail)
-    : IConsumer<Batch<ResetPasswordRequestedEvent>>
+    : IConsumer<ResetPasswordRequestedEvent>
 {
-    public async Task Consume(ConsumeContext<Batch<ResetPasswordRequestedEvent>> context)
+    public async Task Consume(
+        ResetPasswordRequestedEvent message,
+        CancellationToken cancellationToken
+    )
     {
-        var ids = context.Message.Select(m => m.Message.UserId).Distinct();
+        var user = await dbContext
+            .Users.Where(u => u.Id == message.UserId && u.PasswordResetToken != null)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        var users = await dbContext
-            .Users.Where(u => ids.Contains(u.Id) && !u.IsLockedOut && u.PasswordResetToken != null)
-            .ToListAsync(context.CancellationToken);
+        if (user is null)
+        {
+            return;
+        }
 
         var assembly = Assembly.GetExecutingAssembly();
 
-        foreach (var user in users)
-        {
-            await fluentEmail
-                .To(user.EmailAddress)
-                .Subject("Reset Password // Halcyon")
-                .UsingTemplateFromEmbedded(
-                    "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail.html",
-                    new { user.PasswordResetToken },
-                    assembly
-                )
-                .SendAsync(context.CancellationToken);
-        }
+        await fluentEmail
+            .To(user.EmailAddress)
+            .Subject("Reset Password // Halcyon")
+            .UsingTemplateFromEmbedded(
+                "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail.html",
+                new { user.PasswordResetToken },
+                assembly
+            )
+            .SendAsync(cancellationToken);
     }
 }

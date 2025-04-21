@@ -1,6 +1,9 @@
 using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Data;
+using Halcyon.Api.Features.Account.ForgotPassword;
+using Halcyon.Api.Features.Account.SendResetPasswordEmail;
+using Halcyon.Api.Features.Notifications;
 using Halcyon.Common.Authentication;
 using Halcyon.Common.Cache;
 using Halcyon.Common.Database;
@@ -10,7 +13,6 @@ using Halcyon.Common.Email;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Messaging;
 using Mapster;
-using MassTransit;
 using Serilog;
 
 var assembly = typeof(Program).Assembly;
@@ -30,7 +32,7 @@ builder.Host.UseSerilog(
 );
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
-builder.AddMassTransit(connectionName: "RabbitMq", assembly);
+builder.AddRabbitMq(connectionName: "RabbitMq", assembly);
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.AddFluentEmail();
 
@@ -53,6 +55,12 @@ builder.AddOpenApi(version);
 
 builder.AddSecurityServices();
 builder.AddEntityChangedServices();
+
+builder.Services.AddHostedService<ConsumerBackgroundService<ResetPasswordRequestedEvent>>();
+builder.Services.AddHostedService<ConsumerBackgroundService<EntityChangedEvent>>();
+
+builder.Services.AddScoped<IConsumer<ResetPasswordRequestedEvent>, SendResetPasswordEmailConsumer>();
+builder.Services.AddScoped<IConsumer<EntityChangedEvent>, NotifyEntityChangedConsumer>();
 
 var app = builder.Build();
 
