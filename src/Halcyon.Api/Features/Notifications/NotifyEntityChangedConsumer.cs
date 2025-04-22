@@ -8,7 +8,7 @@ namespace Halcyon.Api.Features.Notifications;
 public class NotifyEntityChangedConsumer(
     IHubContext<NotificationHub, INotificationClient> eventHubContext,
     ILogger<NotifyEntityChangedConsumer> logger
-) : IConsumer<EntityChangedEvent>
+) : IMessageConsumer<EntityChangedEvent>
 {
     public async Task Consume(EntityChangedEvent message, CancellationToken cancellationToken)
     {

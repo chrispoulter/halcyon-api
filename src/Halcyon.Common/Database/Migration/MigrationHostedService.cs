@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,14 +11,8 @@ public class MigrationHostedService<TDbContext>(
 ) : IHostedService
     where TDbContext : DbContext
 {
-    public static readonly string ActivitySourceName = "DbMigrations";
-
-    private static readonly ActivitySource ActivitySource = new(ActivitySourceName);
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        using var activity = ActivitySource.StartActivity($"Migrating {typeof(TDbContext).Name}");
-
         logger.LogInformation("Migrating database for {DbContext}", typeof(TDbContext).Name);
 
         using var scope = serviceProvider.CreateScope();
@@ -36,8 +29,6 @@ public class MigrationHostedService<TDbContext>(
                 "An error occurred while migrating database for {DbContext}",
                 typeof(TDbContext).Name
             );
-
-            activity.SetExceptionTags(ex);
 
             return;
         }
@@ -57,8 +48,6 @@ public class MigrationHostedService<TDbContext>(
                 "An error occurred while seeding database for {DbContext}",
                 typeof(TDbContext).Name
             );
-
-            activity.SetExceptionTags(ex);
         }
     }
 

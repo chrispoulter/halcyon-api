@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +22,7 @@ public static class RabbitMqExtensions
                 }
         );
 
-        builder.Services.AddTransient<IPublisher, Publisher>();
+        builder.Services.AddTransient<IMessagePublisher, MessagePublisher>();
 
         var consumers = assembly
             .GetTypes()
@@ -31,7 +30,8 @@ public static class RabbitMqExtensions
             .SelectMany(t =>
                 t.GetInterfaces()
                     .Where(i =>
-                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IConsumer<>)
+                        i.IsGenericType
+                        && i.GetGenericTypeDefinition() == typeof(IMessageConsumer<>)
                     )
                     .Select(i => new
                     {
@@ -44,17 +44,11 @@ public static class RabbitMqExtensions
 
         foreach (var entry in consumers)
         {
-            var hostedService = typeof(ConsumerHostedService<>).MakeGenericType(entry.MessageType);
+            var hostedService = typeof(MessageHostedService<>).MakeGenericType(entry.MessageType);
             builder.Services.AddSingleton(typeof(IHostedService), hostedService);
             builder.Services.AddTransient(entry.Interface, entry.Implementation);
         }
 
         return builder;
-    }
-
-    public static string GetQueueName<T>()
-    {
-        var typeName = typeof(T).FullName;
-        return Regex.Replace(typeName.Replace(".", ""), "(?<!^)([A-Z])", "-$1").ToLowerInvariant();
     }
 }

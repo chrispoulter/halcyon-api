@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Halcyon.Common.Database.EntityChanged;
 
-public class EntityChangedInterceptor(IPublisher publisher) : SaveChangesInterceptor
+public class EntityChangedInterceptor(IMessagePublisher publisher) : SaveChangesInterceptor
 {
     private readonly List<(IPublishChanges entity, EntityState oldState)> changedEntities = [];
 

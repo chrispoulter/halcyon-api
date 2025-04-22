@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;
 
 public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IFluentEmail fluentEmail)
-    : IConsumer<ResetPasswordRequestedEvent>
+    : IMessageConsumer<ResetPasswordRequestedEvent>
 {
     public async Task Consume(
         ResetPasswordRequestedEvent message,

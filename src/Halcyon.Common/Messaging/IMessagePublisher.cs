@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Common.Messaging;
 
-public interface IPublisher
+public interface IMessagePublisher
 {
     Task Publish<T>(IEnumerable<T> message, CancellationToken cancellationToken);
 }

@@ -20,7 +20,7 @@ public class ForgotPasswordEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(
         ForgotPasswordRequest request,
         HalcyonDbContext dbContext,
-        IPublisher publisher,
+        IMessagePublisher publisher,
         CancellationToken cancellationToken = default
     )
     {

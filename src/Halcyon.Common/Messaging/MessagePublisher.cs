@@ -1,17 +1,18 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata;
+using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 
 namespace Halcyon.Common.Messaging;
 
-public partial class Publisher(IConnectionFactory connectionFactory) : IPublisher
+public partial class MessagePublisher(IConnectionFactory connectionFactory) : IMessagePublisher
 {
     public async Task Publish<T>(IEnumerable<T> messages, CancellationToken cancellationToken)
     {
         var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
         var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-        var queue = RabbitMqExtensions.GetQueueName<T>();
+        var queue = typeof(T).FullName;
 
         await channel.QueueDeclareAsync(
             queue,

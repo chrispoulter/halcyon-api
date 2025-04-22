@@ -1,6 +1,6 @@
 ﻿namespace Halcyon.Common.Messaging;
 
-public interface IConsumer<T>
+public interface IMessageConsumer<T>
 {
     Task Consume(T message, CancellationToken cancellationToken);
 }
