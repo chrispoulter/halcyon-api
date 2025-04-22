@@ -8,10 +8,10 @@ using RabbitMQ.Client.Events;
 
 namespace Halcyon.Common.Messaging;
 
-public partial class MessageHostedService<T>(
+public partial class MessageBackgroundService<T>(
     IServiceProvider serviceProvider,
     IConnectionFactory connectionFactory,
-    ILogger<MessageHostedService<T>> logger
+    ILogger<MessageBackgroundService<T>> logger
 ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)

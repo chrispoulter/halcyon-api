@@ -22,7 +22,7 @@ public static class RabbitMqExtensions
                 }
         );
 
-        builder.Services.AddTransient<IMessagePublisher, MessagePublisher>();
+        builder.Services.AddScoped<IMessagePublisher, MessagePublisher>();
 
         var consumers = assembly
             .GetTypes()
@@ -44,9 +44,11 @@ public static class RabbitMqExtensions
 
         foreach (var entry in consumers)
         {
-            var hostedService = typeof(MessageHostedService<>).MakeGenericType(entry.MessageType);
+            var hostedService = typeof(MessageBackgroundService<>).MakeGenericType(
+                entry.MessageType
+            );
             builder.Services.AddSingleton(typeof(IHostedService), hostedService);
-            builder.Services.AddTransient(entry.Interface, entry.Implementation);
+            builder.Services.AddScoped(entry.Interface, entry.Implementation);
         }
 
         return builder;
