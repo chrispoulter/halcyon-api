@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 
@@ -9,8 +8,11 @@ public partial class MessagePublisher(IConnectionFactory connectionFactory) : IM
 {
     public async Task Publish<T>(IEnumerable<T> messages, CancellationToken cancellationToken)
     {
-        var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
-        var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
+
+        using var channel = await connection.CreateChannelAsync(
+            cancellationToken: cancellationToken
+        );
 
         var queue = typeof(T).FullName;
 
