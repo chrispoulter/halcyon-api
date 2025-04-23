@@ -4,12 +4,10 @@ using RabbitMQ.Client;
 
 namespace Halcyon.Common.Messaging;
 
-public partial class MessagePublisher(IConnectionFactory connectionFactory) : IMessagePublisher
+public partial class MessagePublisher(IConnection connection) : IMessagePublisher
 {
     public async Task Publish<T>(IEnumerable<T> messages, CancellationToken cancellationToken)
     {
-        using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
-
         using var channel = await connection.CreateChannelAsync(
             cancellationToken: cancellationToken
         );

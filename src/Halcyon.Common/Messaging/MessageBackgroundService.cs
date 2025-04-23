@@ -8,7 +8,7 @@ using RabbitMQ.Client.Events;
 namespace Halcyon.Common.Messaging;
 
 public class MessageBackgroundService<TMessage, TConsumer>(
-    IConnectionFactory connectionFactory,
+    IConnection connection,
     IServiceProvider serviceProvider,
     ILogger<MessageBackgroundService<TMessage, TConsumer>> logger
 ) : BackgroundService
@@ -21,8 +21,6 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             typeof(TMessage).Name,
             typeof(TConsumer).Name
         );
-
-        using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
 
         using var channel = await connection.CreateChannelAsync(
             cancellationToken: cancellationToken

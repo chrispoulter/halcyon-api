@@ -15,12 +15,18 @@ public static class RabbitMqExtensions
     )
     {
         builder.Services.AddSingleton<IConnectionFactory>(
-            (_) =>
-                new ConnectionFactory
-                {
-                    Uri = new Uri(builder.Configuration.GetConnectionString(connectionName)),
-                    AutomaticRecoveryEnabled = true,
-                }
+            new ConnectionFactory
+            {
+                Uri = new(builder.Configuration.GetConnectionString(connectionName)),
+                AutomaticRecoveryEnabled = true,
+            }
+        );
+
+        builder.Services.AddSingleton(sp =>
+            sp.GetRequiredService<IConnectionFactory>()
+                .CreateConnectionAsync()
+                .GetAwaiter()
+                .GetResult()
         );
 
         builder.Services.AddScoped<IMessagePublisher, MessagePublisher>();
