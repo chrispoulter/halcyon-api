@@ -9,6 +9,7 @@ using Halcyon.Common.Database.Migration;
 using Halcyon.Common.Email;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Messaging;
+using Halcyon.Common.Realtime;
 using Mapster;
 using MassTransit;
 using Serilog;
