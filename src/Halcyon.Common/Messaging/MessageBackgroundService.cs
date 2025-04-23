@@ -27,9 +27,10 @@ public class MessageBackgroundService<TMessage, TConsumer>(
         );
 
         var exchange = typeof(TMessage).FullName;
-        var queue = typeof(TConsumer).FullName;
+        await channel.CreateExchangeWithDeadLetter(exchange, cancellationToken);
 
-        await ConfigureRabbitMq(exchange, queue, channel, cancellationToken);
+        var queue = typeof(TConsumer).FullName;
+        await channel.CreateQueueWithDeadLetter(exchange, queue, cancellationToken);
 
         var consumer = new AsyncEventingBasicConsumer(channel);
 
@@ -67,69 +68,5 @@ public class MessageBackgroundService<TMessage, TConsumer>(
         await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
 
         await Task.Delay(Timeout.Infinite, cancellationToken);
-    }
-
-    private static async Task<string> ConfigureRabbitMq(
-        string exchange,
-        string queue,
-        IChannel channel,
-        CancellationToken cancellationToken
-    )
-    {
-        var deadLetterExchange = $"{exchange}.DeadLetter";
-        var deadLetterQueue = $"{queue}.DeadLetter";
-        var arguments = new Dictionary<string, object>
-        {
-            { "x-dead-letter-exchange", deadLetterExchange },
-        };
-
-        await channel.ExchangeDeclareAsync(
-            exchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueDeclareAsync(
-            queue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            arguments,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            queue,
-            exchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.ExchangeDeclareAsync(
-            deadLetterExchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueDeclareAsync(
-            deadLetterQueue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            deadLetterQueue,
-            deadLetterExchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-
-        return queue;
     }
 }

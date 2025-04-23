@@ -13,8 +13,7 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
         );
 
         var exchange = typeof(T).FullName;
-
-        await ConfigureRabbitMq(channel, exchange, cancellationToken);
+        await channel.CreateExchangeWithDeadLetter(exchange, cancellationToken);
 
         foreach (var message in messages)
         {
@@ -35,20 +34,5 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
                 cancellationToken: cancellationToken
             );
         }
-    }
-
-    private static async Task ConfigureRabbitMq(
-        IChannel channel,
-        string exchange,
-        CancellationToken cancellationToken
-    )
-    {
-        await channel.ExchangeDeclareAsync(
-            exchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
     }
 }

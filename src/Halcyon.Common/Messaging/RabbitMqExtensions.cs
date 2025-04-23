@@ -56,4 +56,75 @@ public static class RabbitMqExtensions
 
         return builder;
     }
+
+    public static async Task CreateExchangeWithDeadLetter(
+        this IChannel channel,
+        string exchange,
+        CancellationToken cancellationToken
+    )
+    {
+        var deadLetterExchange = $"{exchange}.DeadLetter";
+
+        await channel.ExchangeDeclareAsync(
+            exchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.ExchangeDeclareAsync(
+            deadLetterExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task CreateQueueWithDeadLetter(
+        this IChannel channel,
+        string exchange,
+        string queue,
+        CancellationToken cancellationToken
+    )
+    {
+        var deadLetterExchange = $"{exchange}.DeadLetter";
+        var deadLetterQueue = $"{queue}.DeadLetter";
+        var arguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", deadLetterExchange },
+        };
+
+        await channel.QueueDeclareAsync(
+            queue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            queue,
+            exchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueDeclareAsync(
+            deadLetterQueue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            deadLetterQueue,
+            deadLetterExchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+    }
 }
