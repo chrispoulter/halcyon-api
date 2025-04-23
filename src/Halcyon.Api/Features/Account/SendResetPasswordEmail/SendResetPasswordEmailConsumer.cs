@@ -30,10 +30,22 @@ public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IFluentE
             .To(user.EmailAddress)
             .Subject("Reset Password // Halcyon")
             .UsingTemplateFromEmbedded(
-                "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail2.html",
+                "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail.html",
                 new { user.PasswordResetToken },
                 assembly
             )
             .SendAsync(cancellationToken);
+    }
+}
+
+public class AnotherOne()
+    : IMessageConsumer<ResetPasswordRequestedEvent>
+{
+    public async Task Consume(
+        ResetPasswordRequestedEvent message,
+        CancellationToken cancellationToken
+    )
+    {
+        throw new Exception("Bang!!!");
     }
 }

@@ -26,7 +26,10 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
-        var queue = await GetQueue(channel, cancellationToken);
+        var exchange = typeof(TMessage).FullName;
+        var queue = typeof(TConsumer).FullName;
+
+        await ConfigureRabbitMq(exchange, queue, channel, cancellationToken);
 
         var consumer = new AsyncEventingBasicConsumer(channel);
 
@@ -66,17 +69,15 @@ public class MessageBackgroundService<TMessage, TConsumer>(
         await Task.Delay(Timeout.Infinite, cancellationToken);
     }
 
-    private static async Task<string> GetQueue(
+    private static async Task<string> ConfigureRabbitMq(
+        string exchange,
+        string queue,
         IChannel channel,
         CancellationToken cancellationToken
     )
     {
-        var exchange = typeof(TMessage).FullName;
         var deadLetterExchange = $"{exchange}.DeadLetter";
-
-        var queue = typeof(TConsumer).FullName;
         var deadLetterQueue = $"{queue}.DeadLetter";
-
         var arguments = new Dictionary<string, object>
         {
             { "x-dead-letter-exchange", deadLetterExchange },
@@ -84,14 +85,6 @@ public class MessageBackgroundService<TMessage, TConsumer>(
 
         await channel.ExchangeDeclareAsync(
             exchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.ExchangeDeclareAsync(
-            deadLetterExchange,
             ExchangeType.Fanout,
             durable: true,
             autoDelete: false,
@@ -107,18 +100,26 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
+        await channel.QueueBindAsync(
+            queue,
+            exchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.ExchangeDeclareAsync(
+            deadLetterExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
         await channel.QueueDeclareAsync(
             deadLetterQueue,
             durable: true,
             exclusive: false,
             autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            queue,
-            exchange,
-            routingKey: string.Empty,
             cancellationToken: cancellationToken
         );
 
