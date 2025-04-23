@@ -29,34 +29,28 @@ public static class RabbitMqExtensions
                 .GetResult()
         );
 
-        builder.Services.AddScoped<IMessagePublisher, MessagePublisher>();
+        builder.Services.AddSingleton<IMessagePublisher, MessagePublisher>();
 
         var consumers = assembly
             .GetTypes()
-            .Where(t => !t.IsAbstract && !t.IsInterface)
+            .Where(t => t.IsClass && !t.IsAbstract)
             .SelectMany(t =>
                 t.GetInterfaces()
                     .Where(i =>
                         i.IsGenericType
                         && i.GetGenericTypeDefinition() == typeof(IMessageConsumer<>)
                     )
-                    .Select(i => new
-                    {
-                        Implementation = t,
-                        MessageType = i.GetGenericArguments()[0],
-                    })
-            )
-            .ToList();
-
-        foreach (var consumer in consumers)
-        {
-            builder.Services.AddScoped(consumer.Implementation);
-
-            var backgroundService = typeof(MessageBackgroundService<,>).MakeGenericType(
-                consumer.MessageType,
-                consumer.Implementation
+                    .Select(i => (ConcreteType: t, ConsumedType: i.GetGenericArguments()[0]))
             );
 
+        foreach (var (ConcreteType, ConsumedType) in consumers)
+        {
+            var backgroundService = typeof(MessageBackgroundService<,>).MakeGenericType(
+                ConsumedType,
+                ConcreteType
+            );
+
+            builder.Services.AddScoped(ConcreteType);
             builder.Services.AddSingleton(typeof(IHostedService), backgroundService);
         }
 
