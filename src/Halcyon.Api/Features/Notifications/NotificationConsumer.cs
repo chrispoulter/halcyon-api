@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Halcyon.Api.Features.Notifications;
 
-public class NotifyEntityChangedConsumer(
+public class NotificationConsumer(
     IHubContext<NotificationHub, INotificationClient> eventHubContext,
-    ILogger<NotifyEntityChangedConsumer> logger
+    ILogger<NotificationConsumer> logger
 ) : IConsumer<Batch<EntityChangedEvent>>
 {
     public async Task Consume(ConsumeContext<Batch<EntityChangedEvent>> context)

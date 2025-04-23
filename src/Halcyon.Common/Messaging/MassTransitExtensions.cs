@@ -26,8 +26,15 @@ public static class MassTransitExtensions
                 (context, cfg) =>
                 {
                     cfg.Host(builder.Configuration.GetConnectionString(connectionName));
-                    cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(true));
-                    //cfg.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(5)));
+
+                    cfg.ConfigureEndpoints(
+                        context,
+                        new KebabCaseEndpointNameFormatter(includeNamespace: true)
+                    );
+
+                    //cfg.UseMessageRetry(retry =>
+                    //    retry.Interval(retryCount: 3, TimeSpan.FromSeconds(5))
+                    //);
                 }
             );
         });
