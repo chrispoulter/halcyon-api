@@ -37,14 +37,3 @@ public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IFluentE
             .SendAsync(cancellationToken);
     }
 }
-public class AnotherConsumer(HalcyonDbContext dbContext, IFluentEmail fluentEmail)
-    : IMessageConsumer<ResetPasswordRequestedEvent>
-{
-    public async Task Consume(
-        ResetPasswordRequestedEvent message,
-        CancellationToken cancellationToken
-    )
-    {
-        // got here
-    }
-}

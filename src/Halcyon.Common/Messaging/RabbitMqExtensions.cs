@@ -25,32 +25,34 @@ public static class RabbitMqExtensions
 
         builder.Services.AddScoped<IMessagePublisher, MessagePublisher>();
 
-        //var consumers = assembly
-        //    .GetTypes()
-        //    .Where(t => !t.IsAbstract && !t.IsInterface)
-        //    .SelectMany(t =>
-        //        t.GetInterfaces()
-        //            .Where(i =>
-        //                i.IsGenericType
-        //                && i.GetGenericTypeDefinition() == typeof(IMessageConsumer<>)
-        //            )
-        //            .Select(i => new
-        //            {
-        //                Interface = i,
-        //                Implementation = t,
-        //                MessageType = i.GetGenericArguments()[0],
-        //            })
-        //    )
-        //    .ToList();
+        var consumers = assembly
+            .GetTypes()
+            .Where(t => !t.IsAbstract && !t.IsInterface)
+            .SelectMany(t =>
+                t.GetInterfaces()
+                    .Where(i =>
+                        i.IsGenericType
+                        && i.GetGenericTypeDefinition() == typeof(IMessageConsumer<>)
+                    )
+                    .Select(i => new
+                    {
+                        Implementation = t,
+                        MessageType = i.GetGenericArguments()[0],
+                    })
+            )
+            .ToList();
 
-        //foreach (var entry in consumers)
-        //{
-        //    var hostedService = typeof(MessageBackgroundService<>).MakeGenericType(
-        //        entry.MessageType
-        //    );
-        //    builder.Services.AddSingleton(typeof(IHostedService), hostedService);
-        //    builder.Services.AddScoped(entry.Interface, entry.Implementation);
-        //}
+        foreach (var consumer in consumers)
+        {
+            builder.Services.AddScoped(consumer.Implementation);
+
+            var backgroundService = typeof(MessageBackgroundService<,>).MakeGenericType(
+                consumer.MessageType,
+                consumer.Implementation
+            );
+
+            builder.Services.AddSingleton(typeof(IHostedService), backgroundService);
+        }
 
         return builder;
     }
