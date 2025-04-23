@@ -1,6 +1,9 @@
 using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Data;
+using Halcyon.Api.Features.Account.ForgotPassword;
+using Halcyon.Api.Features.Account.SendResetPasswordEmail;
+using Halcyon.Api.Features.Notifications;
 using Halcyon.Common.Authentication;
 using Halcyon.Common.Cache;
 using Halcyon.Common.Database;
@@ -53,6 +56,21 @@ builder.AddOpenApi(version);
 
 builder.AddSecurityServices();
 builder.AddEntityChangedServices();
+
+builder.Services.AddHostedService<
+    MessageBackgroundService<ResetPasswordRequestedEvent, SendResetPasswordEmailConsumer>
+>();
+builder.Services.AddScoped<SendResetPasswordEmailConsumer>();
+
+builder.Services.AddHostedService<
+    MessageBackgroundService<ResetPasswordRequestedEvent, AnotherConsumer>
+>();
+builder.Services.AddScoped<AnotherConsumer>();
+
+builder.Services.AddHostedService<
+    MessageBackgroundService<EntityChangedEvent, NotifyEntityChangedConsumer>
+>();
+builder.Services.AddScoped<NotifyEntityChangedConsumer>();
 
 var app = builder.Build();
 

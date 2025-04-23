@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,23 +7,38 @@ using RabbitMQ.Client.Events;
 
 namespace Halcyon.Common.Messaging;
 
-public partial class MessageBackgroundService<T>(
-    IServiceProvider serviceProvider,
+public class MessageBackgroundService<TMessage, TConsumer>(
     IConnectionFactory connectionFactory,
-    ILogger<MessageBackgroundService<T>> logger
+    IServiceProvider serviceProvider,
+    ILogger<MessageBackgroundService<TMessage, TConsumer>> logger
 ) : BackgroundService
+    where TConsumer : IMessageConsumer<TMessage>
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        //try
-        //{
+        logger.LogInformation(
+            "Message service for {Message} with {Consumer} started",
+            typeof(TMessage).Name,
+            typeof(TConsumer).Name
+        );
+
         using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
 
         using var channel = await connection.CreateChannelAsync(
             cancellationToken: cancellationToken
         );
 
-        var queue = typeof(T).FullName;
+        var exchange = typeof(TMessage).FullName;
+
+        await channel.ExchangeDeclareAsync(
+            exchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        var queue = typeof(TConsumer).FullName;
 
         await channel.QueueDeclareAsync(
             queue,
@@ -34,37 +48,40 @@ public partial class MessageBackgroundService<T>(
             cancellationToken: cancellationToken
         );
 
+        await channel.QueueBindAsync(
+            queue,
+            exchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
         var consumer = new AsyncEventingBasicConsumer(channel);
 
-        consumer.ReceivedAsync += async (sender, eventArgs) =>
+        consumer.ReceivedAsync += async (model, ea) =>
         {
-            using var scope = serviceProvider.CreateScope();
-            var handler = scope.ServiceProvider.GetRequiredService<IMessageConsumer<T>>();
-
             try
             {
-                var body = eventArgs.Body.ToArray();
-                var json = Encoding.UTF8.GetString(body);
-                var message = JsonSerializer.Deserialize<T>(json);
+                using var scope = serviceProvider.CreateScope();
+
+                var handler = scope.ServiceProvider.GetRequiredService<TConsumer>();
+
+                var body = ea.Body.ToArray();
+                var message = JsonSerializer.Deserialize<TMessage>(body);
 
                 await handler.Consume(message, cancellationToken);
-
-                await channel.BasicAckAsync(
-                    eventArgs.DeliveryTag,
-                    multiple: false,
-                    cancellationToken
-                );
+                await channel.BasicAckAsync(ea.DeliveryTag, multiple: false, cancellationToken);
             }
             catch (Exception ex)
             {
                 logger.LogError(
                     ex,
-                    "An error occurred while consuming message {Message}",
-                    typeof(T).Name
+                    "An error occurred while consuming message {Message} with {Consumer}",
+                    typeof(TMessage).Name,
+                    typeof(TConsumer).Name
                 );
 
                 await channel.BasicNackAsync(
-                    eventArgs.DeliveryTag,
+                    ea.DeliveryTag,
                     multiple: false,
                     requeue: false,
                     cancellationToken
@@ -73,14 +90,7 @@ public partial class MessageBackgroundService<T>(
         };
 
         await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
-        //}
-        //catch (Exception ex)
-        //{
-        //    logger.LogError(
-        //        ex,
-        //        "An error occurred while starting message background service for {Message}",
-        //        typeof(T).Name
-        //    );
-        //}
+
+        await Task.Delay(Timeout.Infinite, cancellationToken);
     }
 }

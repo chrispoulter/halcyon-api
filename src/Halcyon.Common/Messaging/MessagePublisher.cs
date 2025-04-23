@@ -14,12 +14,12 @@ public partial class MessagePublisher(IConnectionFactory connectionFactory) : IM
             cancellationToken: cancellationToken
         );
 
-        var queue = typeof(T).FullName;
+        var exchange = typeof(T).FullName;
 
-        await channel.QueueDeclareAsync(
-            queue,
+        await channel.ExchangeDeclareAsync(
+            exchange,
+            ExchangeType.Fanout,
             durable: true,
-            exclusive: false,
             autoDelete: false,
             cancellationToken: cancellationToken
         );
@@ -35,8 +35,8 @@ public partial class MessagePublisher(IConnectionFactory connectionFactory) : IM
             };
 
             await channel.BasicPublishAsync(
-                exchange: string.Empty,
-                routingKey: queue,
+                exchange: exchange,
+                routingKey: string.Empty,
                 mandatory: true,
                 properties,
                 body,
