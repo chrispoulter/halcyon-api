@@ -26,32 +26,7 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
-        var exchange = typeof(TMessage).FullName;
-
-        await channel.ExchangeDeclareAsync(
-            exchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        var queue = typeof(TConsumer).FullName;
-
-        await channel.QueueDeclareAsync(
-            queue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            queue,
-            exchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
+        var queue = await GetQueue(channel, cancellationToken);
 
         var consumer = new AsyncEventingBasicConsumer(channel);
 
@@ -60,7 +35,6 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             try
             {
                 using var scope = serviceProvider.CreateScope();
-
                 var handler = scope.ServiceProvider.GetRequiredService<TConsumer>();
 
                 var body = ea.Body.ToArray();
@@ -90,5 +64,71 @@ public class MessageBackgroundService<TMessage, TConsumer>(
         await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
 
         await Task.Delay(Timeout.Infinite, cancellationToken);
+    }
+
+    private static async Task<string> GetQueue(
+        IChannel channel,
+        CancellationToken cancellationToken
+    )
+    {
+        var exchange = typeof(TMessage).FullName;
+        var deadLetterExchange = $"{exchange}.DeadLetter";
+
+        var queue = typeof(TConsumer).FullName;
+        var deadLetterQueue = $"{queue}.DeadLetter";
+
+        var arguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", deadLetterExchange },
+        };
+
+        await channel.ExchangeDeclareAsync(
+            exchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.ExchangeDeclareAsync(
+            deadLetterExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueDeclareAsync(
+            queue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueDeclareAsync(
+            deadLetterQueue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            queue,
+            exchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            deadLetterQueue,
+            deadLetterExchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        return queue;
     }
 }

@@ -30,7 +30,7 @@ public class SendResetPasswordEmailConsumer(HalcyonDbContext dbContext, IFluentE
             .To(user.EmailAddress)
             .Subject("Reset Password // Halcyon")
             .UsingTemplateFromEmbedded(
-                "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail.html",
+                "Halcyon.Api.Features.Account.SendResetPasswordEmail.ResetPasswordEmail2.html",
                 new { user.PasswordResetToken },
                 assembly
             )

@@ -12,15 +12,7 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
             cancellationToken: cancellationToken
         );
 
-        var exchange = typeof(T).FullName;
-
-        await channel.ExchangeDeclareAsync(
-            exchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
+        var exchange = await GetExchange<T>(channel, cancellationToken);
 
         foreach (var message in messages)
         {
@@ -41,5 +33,23 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
                 cancellationToken: cancellationToken
             );
         }
+    }
+
+    private static async Task<string> GetExchange<T>(
+        IChannel channel,
+        CancellationToken cancellationToken
+    )
+    {
+        var exchange = typeof(T).FullName;
+
+        await channel.ExchangeDeclareAsync(
+            exchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        return exchange;
     }
 }
