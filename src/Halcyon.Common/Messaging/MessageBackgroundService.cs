@@ -26,12 +26,6 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
-        var exchange = typeof(TMessage).FullName;
-        await channel.CreateExchangeWithDeadLetter(exchange, cancellationToken);
-
-        var queue = typeof(TConsumer).FullName;
-        await channel.CreateQueueWithDeadLetter(exchange, queue, cancellationToken);
-
         var consumer = new AsyncEventingBasicConsumer(channel);
 
         consumer.ReceivedAsync += async (model, ea) =>
@@ -65,8 +59,96 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             }
         };
 
-        await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
+        var consumerQueue = await ConfigureRabbitMq(channel, cancellationToken);
+
+        await channel.BasicConsumeAsync(consumerQueue, autoAck: false, consumer, cancellationToken);
 
         await Task.Delay(Timeout.Infinite, cancellationToken);
+    }
+
+    private static async Task<string> ConfigureRabbitMq(
+        IChannel channel,
+        CancellationToken cancellationToken
+    )
+    {
+        var messageExchange = typeof(TMessage).FullName;
+
+        await channel.ExchangeDeclareAsync(
+            messageExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        var consumerExchange = typeof(TConsumer).FullName;
+
+        await channel.ExchangeDeclareAsync(
+            consumerExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.ExchangeBindAsync(
+            destination: consumerExchange,
+            source: messageExchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        var consumerDeadLetterExchange = $"{consumerExchange}.DeadLetter";
+
+        await channel.ExchangeDeclareAsync(
+            exchange: consumerDeadLetterExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        var consumerQueue = typeof(TConsumer).FullName;
+
+        var consumerQueueArguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", consumerDeadLetterExchange },
+        };
+
+        await channel.QueueDeclareAsync(
+            consumerQueue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            consumerQueueArguments,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            consumerQueue,
+            consumerExchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        var consumerDeadLetterQueue = $"{consumerQueue}.DeadLetter";
+
+        await channel.QueueDeclareAsync(
+            consumerDeadLetterQueue,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            consumerQueueArguments,
+            cancellationToken: cancellationToken
+        );
+
+        await channel.QueueBindAsync(
+            consumerDeadLetterQueue,
+            consumerDeadLetterExchange,
+            routingKey: string.Empty,
+            cancellationToken: cancellationToken
+        );
+
+        return consumerQueue;
     }
 }

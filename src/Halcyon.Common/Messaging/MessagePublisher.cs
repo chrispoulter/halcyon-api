@@ -6,14 +6,16 @@ namespace Halcyon.Common.Messaging;
 
 public partial class MessagePublisher(IConnection connection) : IMessagePublisher
 {
-    public async Task Publish<T>(IEnumerable<T> messages, CancellationToken cancellationToken)
+    public async Task Publish<TMessage>(
+        IEnumerable<TMessage> messages,
+        CancellationToken cancellationToken
+    )
     {
         using var channel = await connection.CreateChannelAsync(
             cancellationToken: cancellationToken
         );
 
-        var exchange = typeof(T).FullName;
-        await channel.CreateExchangeWithDeadLetter(exchange, cancellationToken);
+        var messageExchange = await ConfigureRabbitMq<TMessage>(channel, cancellationToken);
 
         foreach (var message in messages)
         {
@@ -26,7 +28,7 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
             };
 
             await channel.BasicPublishAsync(
-                exchange: exchange,
+                messageExchange,
                 routingKey: string.Empty,
                 mandatory: true,
                 properties,
@@ -34,5 +36,23 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
                 cancellationToken: cancellationToken
             );
         }
+    }
+
+    private static async Task<string> ConfigureRabbitMq<TMessage>(
+        IChannel channel,
+        CancellationToken cancellationToken
+    )
+    {
+        var messageExchange = typeof(TMessage).FullName;
+
+        await channel.ExchangeDeclareAsync(
+            messageExchange,
+            ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            cancellationToken: cancellationToken
+        );
+
+        return messageExchange;
     }
 }
