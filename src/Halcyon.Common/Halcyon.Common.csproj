@@ -8,12 +8,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0" />
+		<PackageReference Include="Aspire.RabbitMQ.Client.v7" Version="9.2.1" />
 		<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
 		<PackageReference Include="FluentEmail.Liquid" Version="3.0.2" />
 		<PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
-		<PackageReference Include="MassTransit" Version="8.4.0" />
-		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.4" />

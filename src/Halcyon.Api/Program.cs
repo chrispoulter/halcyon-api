@@ -8,8 +8,8 @@ using Halcyon.Common.Database.Migration;
 using Halcyon.Common.Email;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Messaging;
+using Halcyon.Common.Realtime;
 using Mapster;
-using MassTransit;
 
 var assembly = typeof(Program).Assembly;
 
@@ -22,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults(version);
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
-builder.AddMassTransit(connectionName: "RabbitMq", assembly);
+builder.AddRabbitMq(connectionName: "RabbitMq", assembly);
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.AddFluentEmail(connectionName: "Mail");
 

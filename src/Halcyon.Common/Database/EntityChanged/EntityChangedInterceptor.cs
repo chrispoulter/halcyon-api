@@ -1,10 +1,10 @@
-﻿using MassTransit;
+﻿using Halcyon.Common.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Halcyon.Common.Database.EntityChanged;
 
-public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveChangesInterceptor
+public class EntityChangedInterceptor(IMessagePublisher publisher) : SaveChangesInterceptor
 {
     private readonly List<(IPublishChanges entity, EntityState oldState)> changedEntities = [];
 
@@ -41,6 +41,6 @@ public class EntityChangedInterceptor(IPublishEndpoint publishEndpoint) : SaveCh
             }
         );
 
-        await publishEndpoint.PublishBatch(messages, cancellationToken);
+        await publisher.Publish(messages, cancellationToken);
     }
 }

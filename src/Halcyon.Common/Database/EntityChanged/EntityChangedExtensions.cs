@@ -10,7 +10,7 @@ public static class EntityChangedExtensions
         this IHostApplicationBuilder builder
     )
     {
-        builder.Services.AddTransient<IInterceptor, EntityChangedInterceptor>();
+        builder.Services.AddScoped<IInterceptor, EntityChangedInterceptor>();
 
         return builder;
     }

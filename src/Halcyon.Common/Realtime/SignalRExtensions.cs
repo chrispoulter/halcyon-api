@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
-using Halcyon.Common.Messaging;
+using Halcyon.Common.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Halcyon.Common.Messaging;
+namespace Halcyon.Common.Realtime;
 
 public static class SignalRExtensions
 {
@@ -30,9 +30,9 @@ public static class SignalRExtensions
 
     public static WebApplication MapHubs(this WebApplication app, Assembly assembly)
     {
-        var hubs = assembly.DefinedTypes.Where(type =>
-            type is { IsAbstract: false, IsInterface: false } && typeof(Hub).IsAssignableFrom(type)
-        );
+        var hubs = assembly
+            .GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && typeof(Hub).IsAssignableFrom(t));
 
         foreach (var hub in hubs)
         {
