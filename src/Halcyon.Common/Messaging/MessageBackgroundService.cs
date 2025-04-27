@@ -59,96 +59,10 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             }
         };
 
-        var consumerQueue = await ConfigureRabbitMq(channel, cancellationToken);
+        var queue = await channel.CreateConsumerQueue<TMessage, TConsumer>(cancellationToken);
 
-        await channel.BasicConsumeAsync(consumerQueue, autoAck: false, consumer, cancellationToken);
+        await channel.BasicConsumeAsync(queue, autoAck: false, consumer, cancellationToken);
 
         await Task.Delay(Timeout.Infinite, cancellationToken);
-    }
-
-    private static async Task<string> ConfigureRabbitMq(
-        IChannel channel,
-        CancellationToken cancellationToken
-    )
-    {
-        var messageExchange = typeof(TMessage).FullName;
-
-        await channel.ExchangeDeclareAsync(
-            messageExchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        var consumerExchange = typeof(TConsumer).FullName;
-
-        await channel.ExchangeDeclareAsync(
-            consumerExchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.ExchangeBindAsync(
-            destination: consumerExchange,
-            source: messageExchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-
-        var consumerDeadLetterExchange = $"{consumerExchange}.DLX";
-
-        await channel.ExchangeDeclareAsync(
-            exchange: consumerDeadLetterExchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        var consumerQueue = typeof(TConsumer).FullName;
-
-        var consumerQueueArguments = new Dictionary<string, object>
-        {
-            { "x-dead-letter-exchange", consumerDeadLetterExchange },
-        };
-
-        await channel.QueueDeclareAsync(
-            consumerQueue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            consumerQueueArguments,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            consumerQueue,
-            consumerExchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-
-        var consumerDeadLetterQueue = $"{consumerQueue}.DLQ";
-
-        await channel.QueueDeclareAsync(
-            consumerDeadLetterQueue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            consumerQueueArguments,
-            cancellationToken: cancellationToken
-        );
-
-        await channel.QueueBindAsync(
-            consumerDeadLetterQueue,
-            consumerDeadLetterExchange,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-
-        return consumerQueue;
     }
 }

@@ -15,7 +15,7 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
             cancellationToken: cancellationToken
         );
 
-        var messageExchange = await ConfigureRabbitMq<TMessage>(channel, cancellationToken);
+        var exchange = await channel.CreateMessageExchange<TMessage>(cancellationToken);
 
         foreach (var message in messages)
         {
@@ -28,7 +28,7 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
             };
 
             await channel.BasicPublishAsync(
-                messageExchange,
+                exchange,
                 routingKey: string.Empty,
                 mandatory: true,
                 properties,
@@ -36,23 +36,5 @@ public partial class MessagePublisher(IConnection connection) : IMessagePublishe
                 cancellationToken: cancellationToken
             );
         }
-    }
-
-    private static async Task<string> ConfigureRabbitMq<TMessage>(
-        IChannel channel,
-        CancellationToken cancellationToken
-    )
-    {
-        var messageExchange = typeof(TMessage).FullName;
-
-        await channel.ExchangeDeclareAsync(
-            messageExchange,
-            ExchangeType.Fanout,
-            durable: true,
-            autoDelete: false,
-            cancellationToken: cancellationToken
-        );
-
-        return messageExchange;
     }
 }
