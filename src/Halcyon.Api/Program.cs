@@ -11,7 +11,6 @@ using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Messaging;
 using Halcyon.Common.Realtime;
 using Mapster;
-using MassTransit;
 using Serilog;
 
 var assembly = typeof(Program).Assembly;
@@ -31,7 +30,7 @@ builder.Host.UseSerilog(
 );
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
-builder.AddMassTransit(connectionName: "RabbitMq", assembly);
+builder.AddRabbitMq(connectionName: "RabbitMq", assembly);
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.AddFluentEmail();
 

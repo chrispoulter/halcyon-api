@@ -8,8 +8,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
-- MassTransit
-  [https://masstransit.io/](https://masstransit.io/)
 - SignalR
   [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
