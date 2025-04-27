@@ -98,7 +98,7 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
-        var consumerDeadLetterExchange = $"{consumerExchange}.DeadLetter";
+        var consumerDeadLetterExchange = $"{consumerExchange}.DLX";
 
         await channel.ExchangeDeclareAsync(
             exchange: consumerDeadLetterExchange,
@@ -131,7 +131,7 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             cancellationToken: cancellationToken
         );
 
-        var consumerDeadLetterQueue = $"{consumerQueue}.DeadLetter";
+        var consumerDeadLetterQueue = $"{consumerQueue}.DLQ";
 
         await channel.QueueDeclareAsync(
             consumerDeadLetterQueue,
