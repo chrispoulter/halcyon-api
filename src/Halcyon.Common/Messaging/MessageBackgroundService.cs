@@ -17,7 +17,7 @@ public class MessageBackgroundService<TMessage, TConsumer>(
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation(
-            "Message service for {Message} with {Consumer} started",
+            "Message service for {MessageType} with {Consumer} started",
             typeof(TMessage).Name,
             typeof(TConsumer).Name
         );
@@ -45,7 +45,7 @@ public class MessageBackgroundService<TMessage, TConsumer>(
             {
                 logger.LogError(
                     ex,
-                    "An error occurred while consuming message {Message} with {Consumer}",
+                    "An error occurred while consuming message {MessageType} with {Consumer}",
                     typeof(TMessage).Name,
                     typeof(TConsumer).Name
                 );
