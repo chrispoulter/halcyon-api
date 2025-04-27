@@ -76,31 +76,8 @@ public static class RabbitMqExtensions
         var messageExchange = typeof(TMessage).FullName;
         await CreateExchange(channel, messageExchange, cancellationToken);
 
-        var consumerExchange = typeof(TConsumer).FullName;
-        await CreateExchange(channel, consumerExchange, cancellationToken);
-        await BindExchange(channel, consumerExchange, messageExchange, cancellationToken);
-
-        var consumerDeadLetterExchange = $"{consumerExchange}.DLX";
-        await CreateExchange(channel, consumerDeadLetterExchange, cancellationToken);
-
         var consumerQueue = typeof(TConsumer).FullName;
-
-        await CreateAndBindQueue(
-            channel,
-            consumerQueue,
-            consumerExchange,
-            consumerDeadLetterExchange,
-            cancellationToken
-        );
-
-        var consumerDeadLetterQueue = $"{consumerQueue}.DLQ";
-
-        await CreateAndBindQueue(
-            channel,
-            consumerDeadLetterQueue,
-            consumerDeadLetterExchange,
-            cancellationToken: cancellationToken
-        );
+        await CreateAndBindQueue(channel, consumerQueue, messageExchange, cancellationToken);
 
         return consumerQueue;
     }
@@ -120,42 +97,18 @@ public static class RabbitMqExtensions
         );
     }
 
-    private static async Task BindExchange(
-        IChannel channel,
-        string destination,
-        string source,
-        CancellationToken cancellationToken = default
-    )
-    {
-        await channel.ExchangeBindAsync(
-            destination,
-            source,
-            routingKey: string.Empty,
-            cancellationToken: cancellationToken
-        );
-    }
-
     private static async Task CreateAndBindQueue(
         IChannel channel,
         string queue,
         string exchange,
-        string deadLetterExchange = null,
         CancellationToken cancellationToken = default
     )
     {
-        var arguments = new Dictionary<string, object>();
-
-        if (deadLetterExchange is not null)
-        {
-            arguments.Add("x-dead-letter-exchange", deadLetterExchange);
-        }
-
         await channel.QueueDeclareAsync(
             queue,
             durable: true,
             exclusive: false,
             autoDelete: false,
-            arguments,
             cancellationToken: cancellationToken
         );
 
