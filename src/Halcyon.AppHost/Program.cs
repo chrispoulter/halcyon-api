@@ -19,8 +19,10 @@ var rabbitmq = builder
     .WithManagementPlugin(port: 15672)
     .WithLifetime(ContainerLifetime.Persistent);
 
+var redisPassword = builder.AddParameter("rdPassword", secret: true);
+
 var redis = builder
-    .AddRedis("redis", port: 6379)
+    .AddRedis("redis", password: redisPassword, port: 6379)
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
 
