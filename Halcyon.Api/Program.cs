@@ -1,4 +1,3 @@
-using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Common.Authentication;
 using Halcyon.Api.Common.Database;
@@ -7,10 +6,6 @@ using Halcyon.Api.Common.Infrastructure;
 using Halcyon.Api.Data;
 
 var assembly = typeof(Program).Assembly;
-
-var version = assembly
-    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-    .InformationalVersion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +24,8 @@ builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddSecurityServices();
 builder.AddCors();
-builder.AddOpenTelemetry(version);
-builder.AddOpenApi(version);
+builder.AddOpenTelemetry();
+builder.AddOpenApi();
 
 var app = builder.Build();
 
