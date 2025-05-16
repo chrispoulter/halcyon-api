@@ -4,7 +4,7 @@
       "name": "C#: Halcyon.Api [https]",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}\\src\\Halcyon.Api\\Halcyon.Api.csproj",
+      "projectPath": "${workspaceFolder}\\Halcyon.Api\\Halcyon.Api.csproj",
       "launchConfigurationId": "TargetFramework=;https"
     }
   ]

@@ -47,7 +47,7 @@ jobs:
             - name: Build and push container image to registry
               uses: docker/build-push-action@v5
               with:
-                  file: ./src/Halcyon.Api/Dockerfile
+                  file: ./Halcyon.Api/Dockerfile
                   tags: |
                       ghcr.io/${{ env.REPO }}:${{ env.GitVersion_SemVer }}
                       ghcr.io/${{ env.REPO }}:latest
