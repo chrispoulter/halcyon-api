@@ -4,7 +4,7 @@
       "name": "C#: Halcyon.AppHost [https]",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}\\src\\Halcyon.AppHost\\Halcyon.AppHost.csproj",
+      "projectPath": "${workspaceFolder}\\Halcyon.AppHost\\Halcyon.AppHost.csproj",
       "launchConfigurationId": "TargetFramework=;https"
     }
   ]

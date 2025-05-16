@@ -8,14 +8,10 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
-- SignalR
-  [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - FluentEmail
   [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
-- Mapster
-  [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
 - Aspire
@@ -29,10 +25,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
-- RabbitMQ
-  [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
-- Redis
-  [https://redis.io/](https://redis.io/)
 - MailDev
   [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
 
@@ -46,14 +38,12 @@ dotnet restore
 
 ### Update local configuration _(optional)_
 
-In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
+In the `Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
 
 ```
 {
   "ConnectionStrings": {
     "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
-    "RabbitMq": "amqp://guest:guest@localhost:5672",
-    "Redis": "localhost",
     "Mail": "Endpoint=smtp://localhost:1025;Username=mail-dev;Password=password"
   },
   "Email": {
@@ -91,7 +81,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ### Run the application
 
 ```
-dotnet run --project "src/Halcyon.AppHost/Halcyon.AppHost.csproj"
+dotnet run --project "Halcyon.AppHost/Halcyon.AppHost.csproj"
 ```
 
 ### Access the .NET Aspire dashboard
