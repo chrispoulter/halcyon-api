@@ -13,8 +13,7 @@ public class LoginEndpoint : IEndpoint
         app.MapPost("/account/login", HandleAsync)
             .AddValidationFilter<LoginRequest>()
             .WithTags(Tags.Account)
-            .Produces<LoginResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .Produces<LoginResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

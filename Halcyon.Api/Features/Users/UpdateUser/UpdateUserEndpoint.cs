@@ -14,10 +14,7 @@ public class UpdateUserEndpoint : IEndpoint
             .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .AddValidationFilter<UpdateUserRequest>()
             .WithTags(Tags.Users)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status409Conflict);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

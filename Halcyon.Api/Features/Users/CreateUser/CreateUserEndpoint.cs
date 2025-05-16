@@ -15,8 +15,7 @@ public class CreateUserEndpoint : IEndpoint
             .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .AddValidationFilter<CreateUserRequest>()
             .WithTags(Tags.Users)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

@@ -13,9 +13,7 @@ public class DeleteProfileEndpoint : IEndpoint
         app.MapDelete("/profile", HandleAsync)
             .RequireAuthorization()
             .WithTags(Tags.Profile)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status409Conflict);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(
