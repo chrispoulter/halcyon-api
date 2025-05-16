@@ -1,7 +1,6 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Common.Authorization;
 using Halcyon.Common.Infrastructure;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.GetUser;
@@ -35,7 +34,16 @@ public class GetUserEndpoint : IEndpoint
             );
         }
 
-        var result = user.Adapt<GetUserResponse>();
+        var result = new GetUserResponse
+        {
+            Id = user.Id,
+            EmailAddress = user.EmailAddress,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            DateOfBirth = user.DateOfBirth,
+            Roles = user.Roles,
+            IsLockedOut = user.IsLockedOut,
+        };
 
         return Results.Ok(result);
     }

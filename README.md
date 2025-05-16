@@ -14,8 +14,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - FluentEmail
   [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
-- Mapster
-  [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
 - Serilog
   [https://serilog.net/](https://serilog.net/)
 - Swagger

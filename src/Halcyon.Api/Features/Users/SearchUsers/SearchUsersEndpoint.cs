@@ -2,7 +2,6 @@
 using Halcyon.Common.Authorization;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Validation;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.SearchUsers;
@@ -62,7 +61,17 @@ public class SearchUsersEndpoint : IEndpoint
 
         query = query.Take(size);
 
-        var users = await query.ProjectToType<SearchUserResponse>().ToListAsync(cancellationToken);
+        var users = await query
+            .Select(u => new SearchUserResponse
+            {
+                Id = u.Id,
+                EmailAddress = u.EmailAddress,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Roles = u.Roles,
+                IsLockedOut = u.IsLockedOut,
+            })
+            .ToListAsync(cancellationToken);
 
         var pageCount = (count + size - 1) / size;
 

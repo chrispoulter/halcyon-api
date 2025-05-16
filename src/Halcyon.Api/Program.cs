@@ -10,7 +10,6 @@ using Halcyon.Common.Email;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Messaging;
 using Halcyon.Common.Realtime;
-using Mapster;
 using Serilog;
 
 var assembly = typeof(Program).Assembly;
@@ -38,7 +37,6 @@ var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
-TypeAdapterConfig.GlobalSettings.Scan(assembly);
 builder.Services.AddHybridCache();
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddProblemDetails();

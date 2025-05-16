@@ -2,7 +2,6 @@
 using Halcyon.Common.Authentication;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Validation;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Profile.UpdateProfile;
@@ -70,7 +69,10 @@ public class UpdateProfileEndpoint : IEndpoint
             }
         }
 
-        request.Adapt(user);
+        user.EmailAddress = request.EmailAddress;
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.DateOfBirth = request.DateOfBirth;
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

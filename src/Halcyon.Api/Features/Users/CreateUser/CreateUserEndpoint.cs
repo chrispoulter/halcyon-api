@@ -4,7 +4,6 @@ using Halcyon.Common.Authentication;
 using Halcyon.Common.Authorization;
 using Halcyon.Common.Infrastructure;
 using Halcyon.Common.Validation;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Users.CreateUser;
@@ -41,8 +40,15 @@ public class CreateUserEndpoint : IEndpoint
             );
         }
 
-        var user = request.Adapt<User>();
-        user.Password = passwordHasher.HashPassword(request.Password);
+        var user = new User
+        {
+            EmailAddress = request.EmailAddress,
+            Password = passwordHasher.HashPassword(request.Password),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            DateOfBirth = request.DateOfBirth,
+            Roles = request.Roles,
+        };
 
         dbContext.Users.Add(user);
 

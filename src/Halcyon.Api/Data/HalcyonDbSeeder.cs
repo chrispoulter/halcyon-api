@@ -1,6 +1,5 @@
 ﻿using Halcyon.Common.Authentication;
 using Halcyon.Common.Database.Migration;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -32,8 +31,12 @@ public class HalcyonDbSeeder(
                 dbContext.Users.Add(user);
             }
 
-            seedUser.Adapt(user);
+            user.EmailAddress = seedUser.EmailAddress;
             user.Password = passwordHasher.HashPassword(seedUser.Password);
+            user.FirstName = seedUser.FirstName;
+            user.LastName = seedUser.LastName;
+            user.DateOfBirth = seedUser.DateOfBirth;
+            user.Roles = seedUser.Roles;
             user.IsLockedOut = false;
         }
 

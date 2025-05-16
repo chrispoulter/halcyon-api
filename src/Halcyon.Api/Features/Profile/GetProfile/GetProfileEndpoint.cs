@@ -1,7 +1,6 @@
 ﻿using Halcyon.Api.Data;
 using Halcyon.Common.Authentication;
 using Halcyon.Common.Infrastructure;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Profile.GetProfile;
@@ -35,7 +34,15 @@ public class GetProfileEndpoint : IEndpoint
             );
         }
 
-        var result = user.Adapt<GetProfileResponse>();
+        var result = new GetProfileResponse
+        {
+            Id = user.Id,
+            EmailAddress = user.EmailAddress,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            DateOfBirth = user.DateOfBirth,
+            Version = user.Version,
+        };
 
         return Results.Ok(result);
     }
