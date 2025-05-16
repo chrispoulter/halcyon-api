@@ -32,7 +32,6 @@ builder.AddCors();
 builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
 
-
 var app = builder.Build();
 
 app.UseExceptionHandler();
