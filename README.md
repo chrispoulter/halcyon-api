@@ -12,8 +12,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - FluentEmail
   [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
-- Serilog
-  [https://serilog.net/](https://serilog.net/)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
 - Docker
@@ -29,8 +27,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://www.postgresql.org/](https://www.postgresql.org/)
 - MailDev
   [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
-- Seq
-  [https://datalust.co/seq](https://datalust.co/seq)
 
 ### Install dependencies
 
@@ -76,30 +72,12 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
       }
     ]
   },
-  "Serilog": {
-    "MinimumLevel": {
+  "Logging": {
+    "LogLevel": {
       "Default": "Information",
-      "Override": {
-        "Microsoft.AspNetCore": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
-      }
-    },
-    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-    "WriteTo": {
-      "Console": {
-        "Name": "Console",
-        "Args": {
-          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        }
-      },
-      "Seq": {
-        "Name": "Seq",
-        "Args": { "serverUrl": "http://localhost:5341" }
-      }
+      "Microsoft.AspNetCore": "Warning"
     }
   },
-  "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp/v1/traces",
-  "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
   "AllowedHosts": "*"
 }
 ```

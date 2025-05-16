@@ -5,7 +5,6 @@ using Halcyon.Api.Common.Database;
 using Halcyon.Api.Common.Email;
 using Halcyon.Api.Common.Infrastructure;
 using Halcyon.Api.Data;
-using Serilog;
 
 var assembly = typeof(Program).Assembly;
 
@@ -15,14 +14,6 @@ var version = assembly
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog(
-    (context, loggerConfig) =>
-        loggerConfig
-            .ReadFrom.Configuration(context.Configuration)
-            .Enrich.WithProperty("ApplicationName", builder.Environment.ApplicationName)
-            .Enrich.WithProperty("Version", version)
-);
-
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 builder.AddFluentEmail();
 
@@ -30,7 +21,6 @@ var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);
 builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
-builder.Services.AddHybridCache();
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
@@ -45,7 +35,6 @@ builder.AddOpenApi(version);
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.UseCors();
 app.UseAuthentication();
