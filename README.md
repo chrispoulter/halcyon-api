@@ -8,16 +8,10 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
-- SignalR
-  [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - FluentEmail
   [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
-- Mapster
-  [https://github.com/MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster)
-- Serilog
-  [https://serilog.net/](https://serilog.net/)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
 - Docker
@@ -31,14 +25,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
-- RabbitMQ
-  [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
-- Redis
-  [https://redis.io/](https://redis.io/)
 - MailDev
   [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
-- Seq
-  [https://datalust.co/seq](https://datalust.co/seq)
 
 ### Install dependencies
 
@@ -50,14 +38,12 @@ dotnet restore "halcyon-api.sln"
 
 ### Update local configuration _(optional)_
 
-In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
+In the `Halcyon.Api` directory of the project, create a new `appsettings.Development.json` file. This file will override settings in `appsettings.json` during local development. This file is ignored by Git, so the secrets will not be committed to the repository.
 
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
-    "RabbitMq": "amqp://guest:guest@localhost:5672",
-    "Redis": "localhost"
+    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password"
   },
   "Email": {
     "SmtpServer": "localhost",
@@ -86,30 +72,12 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
       }
     ]
   },
-  "Serilog": {
-    "MinimumLevel": {
+  "Logging": {
+    "LogLevel": {
       "Default": "Information",
-      "Override": {
-        "Microsoft.AspNetCore": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
-      }
-    },
-    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-    "WriteTo": {
-      "Console": {
-        "Name": "Console",
-        "Args": {
-          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        }
-      },
-      "Seq": {
-        "Name": "Seq",
-        "Args": { "serverUrl": "http://localhost:5341" }
-      }
+      "Microsoft.AspNetCore": "Warning"
     }
   },
-  "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp/v1/traces",
-  "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
   "AllowedHosts": "*"
 }
 ```
@@ -117,7 +85,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ### Run the application
 
 ```
-dotnet run --project "src/Halcyon.Api/Halcyon.Api.csproj"
+dotnet run --project "Halcyon.Api/Halcyon.Api.csproj"
 ```
 
 ### Access the API
