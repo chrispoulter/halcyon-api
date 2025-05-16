@@ -7,8 +7,11 @@ public static class FluentEmailExtensions
 {
     public static IHostApplicationBuilder AddFluentEmail(this IHostApplicationBuilder builder)
     {
-        var emailSettings = new EmailSettings();
-        builder.Configuration.Bind(EmailSettings.SectionName, emailSettings);
+        var emailSettings =
+            builder.Configuration.GetSection(EmailSettings.SectionName).Get<EmailSettings>()
+            ?? throw new InvalidOperationException(
+                "Email settings section is missing in configuration."
+            );
 
         builder
             .Services.AddFluentEmail(emailSettings.NoReplyAddress)
