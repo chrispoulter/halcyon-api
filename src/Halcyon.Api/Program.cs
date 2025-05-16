@@ -1,15 +1,15 @@
 using System.Reflection;
 using FluentValidation;
+using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Cache;
+using Halcyon.Api.Common.Database;
+using Halcyon.Api.Common.Database.EntityChanged;
+using Halcyon.Api.Common.Database.Migration;
+using Halcyon.Api.Common.Email;
+using Halcyon.Api.Common.Infrastructure;
+using Halcyon.Api.Common.Messaging;
+using Halcyon.Api.Common.Realtime;
 using Halcyon.Api.Data;
-using Halcyon.Common.Authentication;
-using Halcyon.Common.Cache;
-using Halcyon.Common.Database;
-using Halcyon.Common.Database.EntityChanged;
-using Halcyon.Common.Database.Migration;
-using Halcyon.Common.Email;
-using Halcyon.Common.Infrastructure;
-using Halcyon.Common.Messaging;
-using Halcyon.Common.Realtime;
 using Serilog;
 
 var assembly = typeof(Program).Assembly;

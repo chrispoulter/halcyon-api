@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Common.Authentication;
-using Halcyon.Common.Infrastructure;
-using Halcyon.Common.Validation;
+﻿using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Infrastructure;
+using Halcyon.Api.Common.Validation;
+using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Profile.ChangePassword;

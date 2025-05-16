@@ -1,5 +1,5 @@
 using FluentValidation;
-using Halcyon.Common.Validation;
+using Halcyon.Api.Common.Validation;
 
 namespace Halcyon.Api.Features.Users.UpdateUser;
 

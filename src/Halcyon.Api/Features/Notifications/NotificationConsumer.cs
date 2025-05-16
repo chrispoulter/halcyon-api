@@ -1,6 +1,6 @@
-﻿using Halcyon.Api.Data.Users;
-using Halcyon.Common.Database.EntityChanged;
-using Halcyon.Common.Messaging;
+﻿using Halcyon.Api.Common.Database.EntityChanged;
+using Halcyon.Api.Common.Messaging;
+using Halcyon.Api.Data.Users;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Halcyon.Api.Features.Notifications;

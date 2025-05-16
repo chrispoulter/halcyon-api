@@ -1,5 +1,5 @@
-﻿using Halcyon.Common.Authentication;
-using Halcyon.Common.Database.EntityChanged;
+﻿using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Database.EntityChanged;
 using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;

@@ -1,8 +1,8 @@
 using System.Reflection;
 using FluentEmail.Core;
+using Halcyon.Api.Common.Messaging;
 using Halcyon.Api.Data;
 using Halcyon.Api.Features.Account.ForgotPassword;
-using Halcyon.Common.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.SendResetPasswordEmail;

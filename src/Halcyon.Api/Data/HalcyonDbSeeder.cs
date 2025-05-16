@@ -1,5 +1,5 @@
-﻿using Halcyon.Common.Authentication;
-using Halcyon.Common.Database.Migration;
+﻿using Halcyon.Api.Common.Authentication;
+using Halcyon.Api.Common.Database.Migration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

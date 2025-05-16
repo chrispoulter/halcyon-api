@@ -1,7 +1,7 @@
-﻿using Halcyon.Api.Data;
-using Halcyon.Common.Infrastructure;
-using Halcyon.Common.Messaging;
-using Halcyon.Common.Validation;
+﻿using Halcyon.Api.Common.Infrastructure;
+using Halcyon.Api.Common.Messaging;
+using Halcyon.Api.Common.Validation;
+using Halcyon.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Features.Account.ForgotPassword;
