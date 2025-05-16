@@ -8,8 +8,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 - Entity Framework
   [https://learn.microsoft.com/en-us/ef](https://learn.microsoft.com/en-us/ef)
-- SignalR
-  [https://learn.microsoft.com/en-us/aspnet/signalr](https://learn.microsoft.com/en-us/aspnet/signalr)
 - FluentValidation
   [https://fluentvalidation.net/](https://fluentvalidation.net/)
 - FluentEmail
@@ -29,10 +27,6 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 
 - PostgreSQL
   [https://www.postgresql.org/](https://www.postgresql.org/)
-- RabbitMQ
-  [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
-- Redis
-  [https://redis.io/](https://redis.io/)
 - MailDev
   [https://github.com/maildev/maildev](https://github.com/maildev/maildev)
 - Seq
@@ -53,9 +47,7 @@ In the `src/Halcyon.Api` directory of the project, create a new `appsettings.Dev
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
-    "RabbitMq": "amqp://guest:guest@localhost:5672",
-    "Redis": "localhost"
+    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password"
   },
   "Email": {
     "SmtpServer": "localhost",

@@ -1,10 +1,9 @@
 ﻿using Halcyon.Api.Common.Authentication;
-using Halcyon.Api.Common.Database.EntityChanged;
 using NpgsqlTypes;
 
 namespace Halcyon.Api.Data.Users;
 
-public class User : IPublishChanges, IJwtUser
+public class User : IJwtUser
 {
     public Guid Id { get; set; }
 

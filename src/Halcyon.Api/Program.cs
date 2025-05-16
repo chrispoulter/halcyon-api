@@ -1,14 +1,9 @@
 using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Common.Authentication;
-using Halcyon.Api.Common.Cache;
 using Halcyon.Api.Common.Database;
-using Halcyon.Api.Common.Database.EntityChanged;
-using Halcyon.Api.Common.Database.Migration;
 using Halcyon.Api.Common.Email;
 using Halcyon.Api.Common.Infrastructure;
-using Halcyon.Api.Common.Messaging;
-using Halcyon.Api.Common.Realtime;
 using Halcyon.Api.Data;
 using Serilog;
 
@@ -29,8 +24,6 @@ builder.Host.UseSerilog(
 );
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
-builder.AddRabbitMq(connectionName: "RabbitMq", assembly);
-builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.AddFluentEmail();
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
@@ -44,13 +37,11 @@ builder.Services.AddHealthChecks();
 
 builder.ConfigureJsonOptions();
 builder.AddAuthentication();
+builder.AddSecurityServices();
 builder.AddCors();
-builder.AddSignalR();
 builder.AddOpenTelemetry(version);
 builder.AddOpenApi(version);
 
-builder.AddSecurityServices();
-builder.AddEntityChangedServices();
 
 var app = builder.Build();
 
@@ -62,7 +53,6 @@ app.UseAuthorization();
 
 app.MapOpenApiWithSwagger();
 app.MapEndpoints(assembly);
-app.MapHubs(assembly);
 app.MapHealthChecks("/health");
 
 app.Run();

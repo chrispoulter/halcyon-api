@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Halcyon.Api.Common.Database.Migration;
+namespace Halcyon.Api.Common.Database;
 
 public static class MigrationExtensions
 {
