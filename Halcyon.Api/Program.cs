@@ -10,7 +10,7 @@ var assembly = typeof(Program).Assembly;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
-builder.AddFluentEmail();
+builder.AddFluentEmail(connectionName: "Mail");
 
 var seedConfig = builder.Configuration.GetSection(SeedSettings.SectionName);
 builder.Services.Configure<SeedSettings>(seedConfig);

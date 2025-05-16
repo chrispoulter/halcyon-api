@@ -1,4 +1,6 @@
-﻿namespace Halcyon.Api.Common.Email;
+﻿using System.Data.Common;
+
+namespace Halcyon.Api.Common.Email;
 
 public class EmailSettings
 {
@@ -17,4 +19,24 @@ public class EmailSettings
     public string NoReplyAddress { get; set; }
 
     public string SiteUrl { get; set; }
+
+    internal void ParseConnectionString(string connectionString)
+    {
+        var connectionStringBuilder = new DbConnectionStringBuilder
+        {
+            ConnectionString = connectionString,
+        };
+
+        connectionStringBuilder.TryGetValue("Endpoint", out var endpoint);
+        connectionStringBuilder.TryGetValue("UserName", out var username);
+        connectionStringBuilder.TryGetValue("Password", out var password);
+
+        var uri = new Uri(endpoint.ToString());
+        SmtpServer = uri.Host;
+        SmtpPort = uri.Port;
+        SmtpSsl = uri.Scheme.EndsWith('s');
+
+        SmtpUserName = username?.ToString();
+        SmtpPassword = password?.ToString();
+    }
 }
