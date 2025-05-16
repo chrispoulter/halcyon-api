@@ -14,8 +14,7 @@ public class RegisterEndpoint : IEndpoint
         app.MapPost("/account/register", HandleAsync)
             .AddValidationFilter<RegisterRequest>()
             .WithTags(Tags.Account)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

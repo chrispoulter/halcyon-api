@@ -14,8 +14,7 @@ public class SearchUsersEndpoint : IEndpoint
             .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .AddValidationFilter<SearchUsersRequest>()
             .WithTags(Tags.Users)
-            .Produces<SearchUsersResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .Produces<SearchUsersResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

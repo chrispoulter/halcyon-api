@@ -13,10 +13,7 @@ public class DeleteUserEndpoint : IEndpoint
         app.MapDelete("/user/{id}", HandleAsync)
             .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .WithTags(Tags.Users)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status409Conflict);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

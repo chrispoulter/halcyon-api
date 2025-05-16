@@ -12,8 +12,7 @@ public class GetUserEndpoint : IEndpoint
         app.MapGet("/user/{id}", HandleAsync)
             .RequireRole(Roles.SystemAdministrator, Roles.UserAdministrator)
             .WithTags(Tags.Users)
-            .Produces<GetUserResponse>()
-            .ProducesProblem(StatusCodes.Status404NotFound);
+            .Produces<GetUserResponse>();
     }
 
     private static async Task<IResult> HandleAsync(

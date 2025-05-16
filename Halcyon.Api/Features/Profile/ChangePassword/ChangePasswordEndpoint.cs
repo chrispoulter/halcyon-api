@@ -14,10 +14,7 @@ public class ChangePasswordEndpoint : IEndpoint
             .RequireAuthorization()
             .AddValidationFilter<ChangePasswordRequest>()
             .WithTags(Tags.Profile)
-            .Produces<UpdateResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status409Conflict);
+            .Produces<UpdateResponse>();
     }
 
     private static async Task<IResult> HandleAsync(
