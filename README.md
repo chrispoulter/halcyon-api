@@ -1,4 +1,4 @@
-# Halcyon API
+﻿# Halcyon API
 
 A .NET Core REST API project template 👷 Built with a sense of peace and tranquillity 🙏
 
@@ -14,8 +14,8 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
   [https://github.com/lukencode/FluentEmail](https://github.com/lukencode/FluentEmail)
 - Swagger
   [https://swagger.io/](https://swagger.io/)
-- Docker
-  [https://www.docker.com/](https://www.docker.com/)
+- Aspire
+  [https://learn.microsoft.com/en-us/dotnet/aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - GitHub Actions
   [https://github.com/features/actions](https://github.com/features/actions)
 
@@ -33,7 +33,7 @@ A .NET Core REST API project template 👷 Built with a sense of peace and tranq
 Restore NuGet packages:
 
 ```
-dotnet restore "halcyon-api.sln"
+dotnet restore
 ```
 
 ### Update local configuration _(optional)_
@@ -44,7 +44,7 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
 {
   "ConnectionStrings": {
     "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
-    "Mail": "Host=localhost;Port=1025"
+    "Mail": "Host=localhost;Port=1025;Username=mail-dev;Password=password"
   },
   "Email": {
     "NoReplyAddress": "noreply@example.com",
@@ -81,12 +81,12 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
 ### Run the application
 
 ```
-dotnet run --project "Halcyon.Api/Halcyon.Api.csproj"
+dotnet run --project "Halcyon.AppHost/Halcyon.AppHost.csproj"
 ```
 
-### Access the API
+### Access the .NET Aspire dashboard
 
-Once running, you can explore the API using Swagger UI at http://localhost:5257
+Once running, you can explore the .NET Aspire dashboard at https://localhost:17255
 
 ## Contributing
 

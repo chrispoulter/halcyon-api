@@ -1,10 +1,10 @@
 {
   "configurations": [
     {
-      "name": "C#: Halcyon.Api [https]",
+      "name": "C#: Halcyon.AppHost [https]",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}\\Halcyon.Api\\Halcyon.Api.csproj",
+      "projectPath": "${workspaceFolder}\\Halcyon.AppHost\\Halcyon.AppHost.csproj",
       "launchConfigurationId": "TargetFramework=;https"
     }
   ]
