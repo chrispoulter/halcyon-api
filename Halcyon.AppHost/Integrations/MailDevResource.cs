@@ -44,6 +44,6 @@ public sealed class MailDevResource(
     // the connection string is composed of the SmtpEndpoint endpoint reference.
     public ReferenceExpression ConnectionStringExpression =>
         ReferenceExpression.Create(
-            $"Endpoint=smtp://{SmtpEndpoint.Property(EndpointProperty.Host)}:{SmtpEndpoint.Property(EndpointProperty.Port)};Username={UserNameReference};Password={PasswordParameter}"
+            $"Host={SmtpEndpoint.Property(EndpointProperty.Host)};Port={SmtpEndpoint.Property(EndpointProperty.Port)};Username={UserNameReference};Password={PasswordParameter}"
         );
 }
