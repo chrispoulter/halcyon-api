@@ -1,25 +1,26 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.31912.275
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62A0DCB9-F97D-48C8-964B-792D12FF324E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58896F8C-E014-4246-83F0-0CFEB4EF609B}"
 	ProjectSection(SolutionItems) = preProject
 		.csharpierrc.json = .csharpierrc.json
-		.dockerignore = .dockerignore
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		azure.yaml = azure.yaml
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		global.json = global.json
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		.github\workflows\main.yml = .github\workflows\main.yml
 		.github\workflows\preview.yml = .github\workflows\preview.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CD9D3714-7963-4C74-A6D5-F9138E669A14}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Api", "Halcyon.Api\Halcyon.Api.csproj", "{3095679F-795E-D51F-F850-FBDB5DCC74C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.AppHost", "Halcyon.AppHost\Halcyon.AppHost.csproj", "{B4C91215-69F8-DAD1-072C-43F3CC215C7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.ServiceDefaults", "Halcyon.ServiceDefaults\Halcyon.ServiceDefaults.csproj", "{9D10975B-9263-5CD1-AD8F-A5508A375A08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,19 +28,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD9D3714-7963-4C74-A6D5-F9138E669A14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3095679F-795E-D51F-F850-FBDB5DCC74C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3095679F-795E-D51F-F850-FBDB5DCC74C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3095679F-795E-D51F-F850-FBDB5DCC74C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3095679F-795E-D51F-F850-FBDB5DCC74C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4C91215-69F8-DAD1-072C-43F3CC215C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C91215-69F8-DAD1-072C-43F3CC215C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C91215-69F8-DAD1-072C-43F3CC215C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C91215-69F8-DAD1-072C-43F3CC215C7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D10975B-9263-5CD1-AD8F-A5508A375A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D10975B-9263-5CD1-AD8F-A5508A375A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D10975B-9263-5CD1-AD8F-A5508A375A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D10975B-9263-5CD1-AD8F-A5508A375A08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E5198F1F-1260-477B-AAC2-33A4082BC5C6}
 	EndGlobalSection
 EndGlobal

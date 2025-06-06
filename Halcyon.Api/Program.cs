@@ -9,6 +9,8 @@ var assembly = typeof(Program).Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.AddDbContext<HalcyonDbContext>(connectionName: "Database");
 builder.AddFluentEmail(connectionName: "Mail");
 
@@ -24,7 +26,6 @@ builder.ConfigureJsonOptions();
 builder.AddAuthentication();
 builder.AddSecurityServices();
 builder.AddCors();
-builder.AddOpenTelemetry();
 builder.AddOpenApi();
 
 var app = builder.Build();
@@ -36,6 +37,6 @@ app.UseAuthorization();
 
 app.MapOpenApiWithSwagger();
 app.MapEndpoints(assembly);
-app.MapHealthChecks("/health");
+app.MapDefaultEndpoints();
 
 app.Run();
