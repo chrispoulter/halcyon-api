@@ -1,5 +1,3 @@
-using Projects;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgresPassword = builder.AddParameter("pgPassword", secret: true);
@@ -19,7 +17,7 @@ var maildev = builder
     .WithLifetime(ContainerLifetime.Persistent);
 
 builder
-    .AddProject<Halcyon_Api>("api")
+    .AddProject<Projects.Halcyon_Api>("api")
     .WithExternalHttpEndpoints()
     .WithReference(database)
     .WaitFor(database)
