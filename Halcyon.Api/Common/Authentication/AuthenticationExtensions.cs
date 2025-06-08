@@ -10,9 +10,11 @@ public static class AuthenticationExtensions
 {
     public static IHostApplicationBuilder AddAuthentication(this IHostApplicationBuilder builder)
     {
-        var jwtSettings = builder
-            .Configuration.GetSection(JwtSettings.SectionName)
-            .Get<JwtSettings>() ?? throw new InvalidOperationException("Jwt settings section is missing in configuration.");
+        var jwtSettings =
+            builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+            ?? throw new InvalidOperationException(
+                "Jwt settings section is missing in configuration."
+            );
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
