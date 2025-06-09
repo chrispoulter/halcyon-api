@@ -14,7 +14,7 @@ using NpgsqlTypes;
 namespace Halcyon.Api.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20250401092250_CreateInitialSchema")]
+    [Migration("20250609085319_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace Halcyon.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -60,6 +60,7 @@ namespace Halcyon.Api.Migrations
                         .HasColumnName("last_name");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password");
 
@@ -68,10 +69,12 @@ namespace Halcyon.Api.Migrations
                         .HasColumnName("password_reset_token");
 
                     b.PrimitiveCollection<List<string>>("Roles")
+                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("roles");
 
                     b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
                         .HasColumnName("search_vector")

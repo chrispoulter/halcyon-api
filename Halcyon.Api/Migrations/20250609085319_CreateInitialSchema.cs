@@ -19,7 +19,7 @@ namespace Halcyon.Api.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     email_address = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: true),
+                    password = table.Column<string>(type: "text", nullable: false),
                     password_reset_token = table.Column<Guid>(type: "uuid", nullable: true),
                     first_name = table.Column<string>(type: "text", nullable: false),
                     last_name = table.Column<string>(type: "text", nullable: false),
@@ -29,10 +29,10 @@ namespace Halcyon.Api.Migrations
                         nullable: false,
                         defaultValue: false
                     ),
-                    roles = table.Column<List<string>>(type: "text[]", nullable: true),
+                    roles = table.Column<List<string>>(type: "text[]", nullable: false),
                     xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
                     search_vector = table
-                        .Column<NpgsqlTsVector>(type: "tsvector", nullable: true)
+                        .Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "english")
                         .Annotation(
                             "Npgsql:TsVectorProperties",
