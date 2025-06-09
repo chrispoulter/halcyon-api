@@ -1,6 +1,6 @@
-﻿# Halcyon API
+﻿# Halcyon Dotnet
 
-A .NET Core REST API project template 👷 Built with a sense of peace and tranquillity 🙏
+A .NET Core project template 👷 Built with a sense of peace and tranquillity 🙏
 
 ## Features
 
@@ -43,7 +43,7 @@ In the `Halcyon.Api` directory of the project, create a new `appsettings.Develop
 ```
 {
   "ConnectionStrings": {
-    "Database": "Host=localhost;Port=5432;Database=halcyon-api;Username=postgres;Password=password",
+    "Database": "Host=localhost;Port=5432;Database=halcyon-dotnet;Username=postgres;Password=password",
     "Mail": "Host=localhost;Port=1025;Username=mail-dev;Password=password"
   },
   "Email": {

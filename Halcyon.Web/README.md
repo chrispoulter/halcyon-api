@@ -30,7 +30,7 @@ A react web project template ðŸ‘· Built with a sense of peace and tranquillity ð
 ### Prerequisites
 
 - Halcyon API
-  [https://github.com/chrispoulter/halcyon-api](https://github.com/chrispoulter/halcyon-api)
+  [https://github.com/chrispoulter/halcyon-dotnet](https://github.com/chrispoulter/halcyon-dotnet)
 
 ### Install dependencies
 
