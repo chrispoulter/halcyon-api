@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgresPassword = builder.AddParameter("pgPassword", secret: true);
+var postgresPassword = builder.AddParameter("PostgresPassword", secret: true);
 
 var postgres = builder
     .AddPostgres("postgres", password: postgresPassword, port: 5432)
@@ -9,7 +9,7 @@ var postgres = builder
 
 var database = postgres.AddDatabase("database", databaseName: "halcyon-api");
 
-var maildevPassword = builder.AddParameter("mdPassword", secret: true);
+var maildevPassword = builder.AddParameter("MailDevPassword", secret: true);
 
 var maildev = builder
     .AddMailDev("mail", password: maildevPassword, httpPort: 1080, smtpPort: 1025)
@@ -29,7 +29,7 @@ builder
     .WithReference(api)
     .WaitFor(api)
     .WithEnvironment("BROWSER", "none")
-    .WithHttpEndpoint(env: "VITE_PORT")
+    .WithHttpEndpoint(env: "VITE_PORT", port: 5173)
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 

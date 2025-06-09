@@ -4,6 +4,10 @@
     "ms-dotnettools.vscode-dotnet-runtime",
     "ms-dotnettools.csharp",
     "ms-dotnettools.csdevkit",
-    "ms-dotnettools.vscodeintellicode-csharp"
+    "ms-dotnettools.vscodeintellicode-csharp",
+    "mikestead.dotenv",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
   ]
 }
