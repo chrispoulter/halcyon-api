@@ -21,7 +21,6 @@ builder.Services.AddMigration<HalcyonDbContext, HalcyonDbSeeder>();
 
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddProblemDetails();
-builder.Services.AddHealthChecks();
 
 builder.ConfigureJsonOptions();
 builder.AddAuthentication();
