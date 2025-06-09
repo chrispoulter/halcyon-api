@@ -13,9 +13,9 @@ RUN npm run build
 
 FROM nginx:alpine AS final
 
-COPY --from=builder /app/default.conf.template /etc/nginx/templates/default.conf.template
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY --from=builder /app/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
+COPY --from=build /app/default.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 
 RUN ["chmod", "755", "/docker-entrypoint.d/entrypoint.sh"]
 
