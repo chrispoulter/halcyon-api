@@ -1,3 +1,5 @@
+import { config } from '@/lib/config';
+
 export class ApiClientError extends Error {
     constructor(
         message: string,
@@ -96,4 +98,4 @@ class ApiClient {
     }
 }
 
-export const apiClient = new ApiClient(`${window.location.origin}/api`);
+export const apiClient = new ApiClient(config.VITE_API_URL);
