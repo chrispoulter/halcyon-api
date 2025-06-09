@@ -365,4 +365,5 @@ FodyWeavers.xsd
 *.env*
 appSettings.*.json
 
+.idea
 .azure
