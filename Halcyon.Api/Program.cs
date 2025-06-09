@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentValidation;
 using Halcyon.Api.Common.Authentication;
 using Halcyon.Api.Common.Database;
@@ -5,7 +6,7 @@ using Halcyon.Api.Common.Email;
 using Halcyon.Api.Common.Infrastructure;
 using Halcyon.Api.Data;
 
-var assembly = typeof(Program).Assembly;
+var assembly = Assembly.GetExecutingAssembly();
 
 var builder = WebApplication.CreateBuilder(args);
 
