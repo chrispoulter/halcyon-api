@@ -1,0 +1,12 @@
+**/.git
+**/.vscode
+**/node_modules
+**/dist
+**/.dockerignore
+**/.env*
+**/.gitignore
+**/.prettierrc
+**/Dockerfile
+**/eslint.config.js
+**/README.md
+**/*.esproj
