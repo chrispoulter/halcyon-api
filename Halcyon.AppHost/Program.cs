@@ -16,12 +16,21 @@ var maildev = builder
     .WithExternalHttpEndpoints()
     .WithLifetime(ContainerLifetime.Persistent);
 
-builder
+var api = builder
     .AddProject<Projects.Halcyon_Api>("api")
     .WithExternalHttpEndpoints()
     .WithReference(database)
     .WaitFor(database)
     .WithReference(maildev)
     .WaitFor(maildev);
+
+builder
+    .AddNpmApp("web", "../Halcyon.Web", scriptName: "dev")
+    .WithReference(api)
+    .WaitFor(api)
+    .WithEnvironment("BROWSER", "none")
+    .WithHttpEndpoint(env: "VITE_PORT")
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile();
 
 builder.Build().Run();
