@@ -4,9 +4,6 @@ namespace Aspire.Hosting;
 
 public static class MailDevResourceBuilderExtensions
 {
-    private const string UserEnvVarName = "MAILDEV_INCOMING_USER";
-    private const string PasswordEnvVarName = "MAILDEV_INCOMING_PASS";
-
     /// <summary>
     /// Adds the <see cref="MailDevResource"/> to the given
     /// <paramref name="builder"/> instance. Uses the "2.1.0" tag.
@@ -23,23 +20,14 @@ public static class MailDevResourceBuilderExtensions
         this IDistributedApplicationBuilder builder,
         string name,
         int? httpPort = null,
-        int? smtpPort = null,
-        IResourceBuilder<ParameterResource>? userName = null,
-        IResourceBuilder<ParameterResource>? password = null
+        int? smtpPort = null
     )
     {
-        var passwordParameter =
-            password?.Resource
-            ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(
-                builder,
-                $"{name}-password"
-            );
-
         // The AddResource method is a core API within .NET Aspire and is
         // used by resource developers to wrap a custom resource in an
         // IResourceBuilder<T> instance. Extension methods to customize
         // the resource (if any exist) target the builder interface.
-        var resource = new MailDevResource(name, userName?.Resource, passwordParameter);
+        var resource = new MailDevResource(name);
 
         return builder
             .AddResource(resource)
@@ -51,12 +39,7 @@ public static class MailDevResourceBuilderExtensions
                 port: httpPort,
                 name: MailDevResource.HttpEndpointName
             )
-            .WithEndpoint(targetPort: 1025, port: smtpPort, name: MailDevResource.SmtpEndpointName)
-            .WithEnvironment(context =>
-            {
-                context.EnvironmentVariables[UserEnvVarName] = resource.UserNameReference;
-                context.EnvironmentVariables[PasswordEnvVarName] = resource.PasswordParameter;
-            });
+            .WithEndpoint(targetPort: 1025, port: smtpPort, name: MailDevResource.SmtpEndpointName);
     }
 }
 

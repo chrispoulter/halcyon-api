@@ -9,12 +9,10 @@ var postgres = builder
 
 var database = postgres.AddDatabase("database", databaseName: "halcyon-dotnet");
 
-var maildevPassword = builder.AddParameter("MailDevPassword", secret: true);
-
 var maildev = builder
-    .AddMailDev("mail", password: maildevPassword, httpPort: 1080, smtpPort: 1025)
-    .WithExternalHttpEndpoints()
-    .WithLifetime(ContainerLifetime.Persistent);
+    .AddMailDev("mail", httpPort: 1080, smtpPort: 1025)
+    .WithLifetime(ContainerLifetime.Persistent)
+    .PublishAsConnectionString();
 
 var api = builder
     .AddProject<Projects.Halcyon_Api>("api")
