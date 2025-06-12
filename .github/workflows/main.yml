@@ -21,12 +21,6 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-            node-version: 22
-            cache: 'npm'
-
       - name: Determine Version
         run: |
           dotnet tool restore
@@ -36,6 +30,13 @@ jobs:
         run: |
           dotnet build "halcyon.sln"
           dotnet test "halcyon.sln"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+            node-version: 22
+            cache: 'npm'
+            cache-dependency-path: ./Halcyon.Web
 
       - name: Build and lint (npm)
         working-directory: ./Halcyon.Web
