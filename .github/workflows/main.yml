@@ -76,6 +76,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO }}-web:${{ env.GitVersion_SemVer }}
             ghcr.io/${{ env.REPO }}-web:latest
-          context: .
+          context: ./Halcyon.Web
           push: true
           provenance: false
