@@ -20,12 +20,12 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            port: parseInt(env.VITE_PORT),
+            port: env.VITE_PORT ? parseInt(env.VITE_PORT) : undefined,
             proxy: {
                 '/api': {
                     target:
                         process.env.services__api__https__0 ||
-                        process.env.services__api__https__0,
+                        process.env.services__api__http__0,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                     secure: false,
