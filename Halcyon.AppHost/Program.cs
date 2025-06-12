@@ -22,7 +22,7 @@ var api = builder
     .WithReference(maildev)
     .WaitFor(maildev);
 
-builder
+var web = builder
     .AddNpmApp("web", "../Halcyon.Web", scriptName: "dev")
     .WithReference(api)
     .WaitFor(api)
@@ -30,5 +30,7 @@ builder
     .WithHttpEndpoint(env: "VITE_PORT", port: 5173)
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
+
+api.WithEnvironment("Email__SiteUrl", web.GetEndpoint("http"));
 
 builder.Build().Run();
