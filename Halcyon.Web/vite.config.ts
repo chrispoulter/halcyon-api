@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            port: env.VITE_PORT ? parseInt(env.VITE_PORT) : undefined,
+            port: parseInt(env.VITE_PORT),
             proxy: {
                 '/api': {
                     target:
