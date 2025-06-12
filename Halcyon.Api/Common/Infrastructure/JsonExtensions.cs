@@ -8,7 +8,7 @@ public static class JsonExtensions
     {
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
-            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 

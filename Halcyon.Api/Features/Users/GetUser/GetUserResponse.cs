@@ -14,7 +14,7 @@ public class GetUserResponse
 
     public bool IsLockedOut { get; set; }
 
-    public List<string> Roles { get; set; } = null!;
+    public List<string>? Roles { get; set; }
 
     public uint Version { get; set; }
 }

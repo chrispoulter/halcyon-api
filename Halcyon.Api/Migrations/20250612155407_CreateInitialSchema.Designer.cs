@@ -14,7 +14,7 @@ using NpgsqlTypes;
 namespace Halcyon.Api.Migrations
 {
     [DbContext(typeof(HalcyonDbContext))]
-    [Migration("20250609085319_CreateInitialSchema")]
+    [Migration("20250612155407_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -69,7 +69,6 @@ namespace Halcyon.Api.Migrations
                         .HasColumnName("password_reset_token");
 
                     b.PrimitiveCollection<List<string>>("Roles")
-                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("roles");
 

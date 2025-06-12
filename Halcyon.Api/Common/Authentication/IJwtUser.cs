@@ -10,5 +10,5 @@ public interface IJwtUser
 
     public string LastName { get; }
 
-    public List<string> Roles { get; }
+    public List<string>? Roles { get; }
 }
