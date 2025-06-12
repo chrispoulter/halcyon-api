@@ -5,7 +5,8 @@ var postgresPassword = builder.AddParameter("PostgresPassword", secret: true);
 var postgres = builder
     .AddPostgres("postgres", password: postgresPassword, port: 5432)
     .WithDataVolume(isReadOnly: false)
-    .WithLifetime(ContainerLifetime.Persistent);
+    .WithLifetime(ContainerLifetime.Persistent)
+    .PublishAsConnectionString();
 
 var database = postgres.AddDatabase("database", databaseName: "halcyon-dotnet");
 
