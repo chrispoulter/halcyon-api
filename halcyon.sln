@@ -5,16 +5,16 @@ VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58896F8C-E014-4246-83F0-0CFEB4EF609B}"
 	ProjectSection(SolutionItems) = preProject
+		.csharpierrc = .csharpierrc
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		azure.yaml = azure.yaml
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		global.json = global.json
-		LICENSE.txt = LICENSE.txt
+		LICENSE = LICENSE
 		.github\workflows\main.yml = .github\workflows\main.yml
 		.github\workflows\preview.yml = .github\workflows\preview.yml
 		README.md = README.md
-		.csharpierrc = .csharpierrc
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halcyon.Api", "Halcyon.Api\Halcyon.Api.csproj", "{3095679F-795E-D51F-F850-FBDB5DCC74C3}"
