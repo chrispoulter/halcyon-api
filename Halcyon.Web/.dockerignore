@@ -5,8 +5,10 @@
 **/.dockerignore
 **/.env*
 **/.gitignore
+**/.gitattributes
 **/.prettierrc
 **/Dockerfile
 **/eslint.config.js
 **/README.md
+**/LICENSE
 **/*.esproj
