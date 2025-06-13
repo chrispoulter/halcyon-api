@@ -7,13 +7,6 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
-    const serverPort = env.VITE_PORT ? parseInt(env.VITE_PORT) : undefined;
-
-    const proxyApiTarget =
-        env.services__api__https__0 ||
-        env.services__api__http__0 ||
-        env.VITE_API_URL;
-
     return {
         plugins: [react(), tailwindcss()],
         define: {
@@ -27,10 +20,12 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            port: serverPort,
+            port: parseInt(env.VITE_PORT),
             proxy: {
                 '/api': {
-                    target: proxyApiTarget,
+                    target:
+                        env.services__api__https__0 ||
+                        env.services__api__http__0,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                     secure: false,
