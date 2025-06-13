@@ -4,9 +4,9 @@ namespace Halcyon.Api.Features.Profile.ChangePassword;
 
 public class ChangePasswordRequest : UpdateRequest
 {
-    public string CurrentPassword { get; set; }
+    public string CurrentPassword { get; set; } = null!;
 
-    public string NewPassword { get; set; }
+    public string NewPassword { get; set; } = null!;
 }
 
 public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>

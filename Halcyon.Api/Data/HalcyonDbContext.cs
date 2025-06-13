@@ -1,4 +1,5 @@
-﻿using Halcyon.Api.Data.Users;
+﻿using System.Reflection;
+using Halcyon.Api.Data.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Halcyon.Api.Data;
@@ -9,6 +10,6 @@ public class HalcyonDbContext(DbContextOptions<HalcyonDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(HalcyonDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

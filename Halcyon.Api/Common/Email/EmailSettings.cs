@@ -6,19 +6,19 @@ public class EmailSettings
 {
     public static string SectionName { get; } = "Email";
 
-    public string SmtpServer { get; set; }
+    public string SmtpServer { get; set; } = null!;
 
     public int SmtpPort { get; set; }
 
     public bool SmtpSsl { get; set; }
 
-    public string SmtpUserName { get; set; }
+    public string SmtpUserName { get; set; } = null!;
 
-    public string SmtpPassword { get; set; }
+    public string SmtpPassword { get; set; } = null!;
 
-    public string NoReplyAddress { get; set; }
+    public string NoReplyAddress { get; set; } = null!;
 
-    public string SiteUrl { get; set; }
+    public string SiteUrl { get; set; } = null!;
 
     internal void ParseConnectionString(string connectionString)
     {
@@ -29,12 +29,12 @@ public class EmailSettings
 
         if (connectionStringBuilder.TryGetValue("Host", out var host))
         {
-            SmtpServer = host?.ToString();
+            SmtpServer = host?.ToString() ?? string.Empty;
         }
 
         if (connectionStringBuilder.TryGetValue("Port", out var port))
         {
-            if (int.TryParse(port.ToString(), out var portValue))
+            if (int.TryParse(port?.ToString(), out var portValue))
             {
                 SmtpPort = portValue;
             }
@@ -47,12 +47,12 @@ public class EmailSettings
 
         if (connectionStringBuilder.TryGetValue("UserName", out var username))
         {
-            SmtpUserName = username?.ToString();
+            SmtpUserName = username?.ToString() ?? string.Empty;
         }
 
         if (connectionStringBuilder.TryGetValue("Password", out var password))
         {
-            SmtpPassword = password?.ToString();
+            SmtpPassword = password?.ToString() ?? string.Empty;
         }
     }
 }

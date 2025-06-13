@@ -12,7 +12,7 @@ public enum UserSort
 
 public class SearchUsersRequest
 {
-    public string Search { get; set; }
+    public string? Search { get; set; }
 
     public UserSort? Sort { get; set; }
 

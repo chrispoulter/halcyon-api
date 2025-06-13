@@ -5,15 +5,15 @@ namespace Halcyon.Api.Features.Users.UpdateUser;
 
 public class UpdateUserRequest : UpdateRequest
 {
-    public string EmailAddress { get; set; }
+    public string EmailAddress { get; set; } = null!;
 
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = null!;
 
-    public string LastName { get; set; }
+    public string LastName { get; set; } = null!;
 
     public DateOnly DateOfBirth { get; set; }
 
-    public List<string> Roles { get; set; }
+    public List<string> Roles { get; set; } = null!;
 }
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
