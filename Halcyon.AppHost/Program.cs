@@ -25,12 +25,12 @@ var api = builder
 
 var web = builder
     .AddNpmApp("web", "../Halcyon.Web", scriptName: "dev")
-    .WithReference(api)
-    .WaitFor(api)
     .WithEnvironment("BROWSER", "none")
     .WithHttpEndpoint(env: "VITE_PORT", port: 5173)
     .WithExternalHttpEndpoints()
-    .PublishAsDockerFile();
+    .PublishAsDockerFile()
+    .WithReference(api)
+    .WaitFor(api);
 
 api.WithEnvironment("Email__SiteUrl", web.GetEndpoint("http"));
 

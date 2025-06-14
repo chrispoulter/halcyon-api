@@ -24,8 +24,8 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 '/api': {
                     target:
-                        process.env.services__api__https__0 ||
-                        process.env.services__api__http__0,
+                        env.services__api__https__0 ||
+                        env.services__api__http__0,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                     secure: false,

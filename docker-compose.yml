@@ -1,0 +1,73 @@
+name: halcyon
+
+services:
+  halcyon-dotnet-web:
+    image: halcyon-dotnet-web:latest
+    build:
+      context: ./Halcyon.Web
+      dockerfile: Dockerfile
+    environment:
+      VITE_PORT: 5173
+      services__api__https__0: https://host.docker.internal:7257
+    ports:
+      - 5173:5173
+
+  halcyon-dotnet-api:
+    image: halcyon-dotnet-api:latest
+    build:
+      context: .
+      dockerfile: ./Halcyon.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ASPNETCORE_HTTPS_PORTS: 8081
+      ConnectionStrings__Database: Host=host.docker.internal;Port=5432;Database=halcyon-dotnet;Username=postgres;Password=password
+      ConnectionStrings__Mail: Host=host.docker.internal;Port=1025;Username=mail-dev;Password=password
+      Email__SiteUrl: http://localhost:5173
+      Email__NoReplyAddress: noreply@example.com
+      Jwt__SecurityKey: super_secret_key_that_should_be_changed
+      Seed__Users__0__EmailAddress: system.administrator@example.com
+      Seed__Users__0__Password: super_secret_password_that_should_be_changed
+      Logging__LogLevel__Microsoft.AspNetCore.DataProtection: Error
+    ports:
+      - 5257:8080
+      - 7257:8081
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17.4
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  maildev:
+    image: maildev/maildev:2.1.0
+    environment:
+      MAILDEV_MAIL_DIRECTORY: /tmp
+    ports:
+      - 1025:1025
+      - 1080:1080
+    volumes:
+      - maildev:/tmp
+    restart: always
+
+volumes:
+  postgres:
+    name: halcyon-postgres
+  maildev:
+    name: halcyon-maildev
